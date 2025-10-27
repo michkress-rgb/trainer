@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zeitenfolge-Trainer</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .tense-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .tense-card {
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+            text-align: center;
+        }
+
+        .tense-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .tense-card.active {
+            border-color: #333;
+            transform: scale(1.05);
+        }
+
+        .tense-card.präsens { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .tense-card.perfekt { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .tense-card.imperfekt { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .tense-card.plusquamperfekt { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .tense-card.futur { background: linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%); }
+        .tense-card.futurperfekt { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+
+        .tense-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .tense-progress {
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            height: 25px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .tense-progress-bar {
+            height: 100%;
+            background: rgba(255,255,255,0.9);
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .difficulty-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .difficulty-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .difficulty-btn.leicht { background: #43e97b; }
+        .difficulty-btn.mittel { background: #f5576c; }
+        .difficulty-btn.schwer { background: #764ba2; }
+
+        .difficulty-btn.active {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .difficulty-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .exercise-area {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            min-height: 400px;
+        }
+
+        .task-description {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            min-height: 100px;
+            border: 2px dashed #ddd;
+        }
+
+        .word {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.2s;
+            user-select: none;
+            font-weight: 500;
+        }
+
+        .word:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .word.used {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .answer-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            min-height: 100px;
+            border: 3px solid #667eea;
+            align-items: center;
+        }
+
+        .answer-word {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .answer-word:hover {
+            transform: scale(1.05);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .btn-check {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .feedback.correct {
+            background: #43e97b;
+            color: white;
+        }
+
+        .feedback.incorrect {
+            background: #f5576c;
+            color: white;
+        }
+
+        .correct-answer {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            color: #333;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .no-exercise {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .level-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .level-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .level-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .level-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 1.8em;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+            border: 3px solid rgba(255,255,255,0.3);
+            transition: all 0.3s;
+        }
+
+        .level-badge.close-to-levelup {
+            animation: pulseBadge 2s infinite;
+        }
+
+        @keyframes pulseBadge {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255,255,255,0.7);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 20px 10px rgba(255,255,255,0);
+            }
+        }
+
+        .level-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .xp-display {
+            text-align: right;
+        }
+
+        .xp-amount {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .xp-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .level-progress-container {
+            margin-top: 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            height: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .level-progress-bar {
+            height: 100%;
+            background: rgba(255,255,255,0.9);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .level-progress-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .difficulty-recommendation {
+            background: rgba(255,255,255,0.15);
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 0.95em;
+            backdrop-filter: blur(5px);
+        }
+
+        .levelup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(102, 126, 234, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+            animation: fadeIn 0.3s;
+        }
+
+        .levelup-content {
+            text-align: center;
+            color: white;
+            animation: scaleIn 0.5s;
+        }
+
+        .levelup-text {
+            font-size: 5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            animation: pulse 1s infinite;
+        }
+
+        .levelup-title {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .levelup-subtitle {
+            font-size: 1.5em;
+            opacity: 0.9;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .welcome-back {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 10002;
+            animation: slideInRight 0.5s, fadeOut 0.5s 2.5s forwards;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .tense-selector {
+                grid-template-columns: 1fr;
+            }
+
+            .word, .answer-word {
+                font-size: 1em;
+                padding: 10px 15px;
+            }
+        }
+
+        .celebration-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s;
+        }
+
+        .celebration-content {
+            background: white;
+            padding: 50px;
+            border-radius: 30px;
+            text-align: center;
+            animation: scaleIn 0.5s;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+        }
+
+        .celebration-emoji {
+            font-size: 8em;
+            animation: bounce 1s infinite;
+        }
+
+        .celebration-text {
+            font-size: 3em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 20px 0;
+        }
+
+        .celebration-subtext {
+            font-size: 1.5em;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+        }
+
+        .firework {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: explode 1s ease-out forwards;
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        @keyframes explode {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--dx, 0), var(--dy, 0)) scale(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Shuffle function to randomize word order
+        const shuffleArray = (array) => {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        };
+
+        // Level system configuration
+        const LEVEL_THRESHOLDS = [
+            { level: 1, xp: 0, title: "Anfänger", color: "#43e97b" },
+            { level: 2, xp: 10, title: "Lernender", color: "#4facfe" },
+            { level: 3, xp: 25, title: "Fortgeschrittener", color: "#f5576c" },
+            { level: 4, xp: 45, title: "Kompetenter", color: "#fa709a" },
+            { level: 5, xp: 70, title: "Experte", color: "#764ba2" },
+            { level: 6, xp: 100, title: "Meister", color: "#667eea" },
+        ];
+
+        const getPlayerLevel = (xp) => {
+            for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
+                if (xp >= LEVEL_THRESHOLDS[i].xp) {
+                    return LEVEL_THRESHOLDS[i];
+                }
+            }
+            return LEVEL_THRESHOLDS[0];
+        };
+
+        const getNextLevel = (currentLevel) => {
+            const nextIndex = LEVEL_THRESHOLDS.findIndex(l => l.level === currentLevel) + 1;
+            return nextIndex < LEVEL_THRESHOLDS.length ? LEVEL_THRESHOLDS[nextIndex] : null;
+        };
+
+        const SENTENCES = {
+            präsens: {
+                leicht: [
+                    { words: ["Die", "Delegation", "verhandelt", "über", "die", "künftigen", "Regelungen"], correct: "Die Delegation verhandelt über die künftigen Regelungen" },
+                    { words: ["Der", "Wissenschaftler", "analysiert", "die", "komplexen", "Daten", "gründlich"], correct: "Der Wissenschaftler analysiert die komplexen Daten gründlich" },
+                    { words: ["Die", "Regierung", "erwägt", "verschiedene", "Maßnahmen", "zur", "Krisenbewältigung"], correct: "Die Regierung erwägt verschiedene Maßnahmen zur Krisenbewältigung" },
+                    { words: ["Der", "Rechtsanwalt", "verteidigt", "seinen", "Mandanten", "vehement"], correct: "Der Rechtsanwalt verteidigt seinen Mandanten vehement" },
+                    { words: ["Die", "Philosophin", "reflektiert", "über", "ethische", "Dilemmata"], correct: "Die Philosophin reflektiert über ethische Dilemmata" },
+                    { words: ["Das", "Orchester", "probt", "die", "anspruchsvolle", "Symphonie", "intensiv"], correct: "Das Orchester probt die anspruchsvolle Symphonie intensiv" },
+                    { words: ["Der", "Architekt", "entwirft", "innovative", "und", "nachhaltige", "Gebäude"], correct: "Der Architekt entwirft innovative und nachhaltige Gebäude" },
+                ],
+                mittel: [
+                    { words: ["Die", "Abgeordneten", "debattieren", "kontrovers", "über", "die", "vorgeschlagene", "Gesetzesnovelle"], correct: "Die Abgeordneten debattieren kontrovers über die vorgeschlagene Gesetzesnovelle" },
+                    { words: ["Der", "Ökonom", "prognostiziert", "eine", "erhebliche", "Rezession", "für", "das", "kommende", "Quartal"], correct: "Der Ökonom prognostiziert eine erhebliche Rezession für das kommende Quartal" },
+                    { words: ["Die", "Biochemikerin", "untersucht", "die", "molekularen", "Strukturen", "mithilfe", "modernster", "Technologie"], correct: "Die Biochemikerin untersucht die molekularen Strukturen mithilfe modernster Technologie" },
+                    { words: ["Der", "Journalist", "enthüllt", "systematische", "Korruption", "in", "den", "höchsten", "Ämtern"], correct: "Der Journalist enthüllt systematische Korruption in den höchsten Ämtern" },
+                    { words: ["Die", "Dozentin", "erörtert", "die", "philosophischen", "Implikationen", "der", "künstlichen", "Intelligenz"], correct: "Die Dozentin erörtert die philosophischen Implikationen der künstlichen Intelligenz" },
+                    { words: ["Das", "Unternehmen", "implementiert", "revolutionäre", "Strategien", "zur", "Effizienzsteigerung"], correct: "Das Unternehmen implementiert revolutionäre Strategien zur Effizienzsteigerung" },
+                ],
+                schwer: [
+                    { words: ["Der", "Forscher,", "der", "die", "Hypothese", "vertritt,", "widerlegt", "sämtliche", "Gegenargumente", "systematisch"], correct: "Der Forscher, der die Hypothese vertritt, widerlegt sämtliche Gegenargumente systematisch" },
+                    { words: ["Je", "vehementer", "die", "Opposition", "protestiert,", "desto", "unnachgiebiger", "beharrt", "die", "Regierung", "auf", "ihrem", "Standpunkt"], correct: "Je vehementer die Opposition protestiert, desto unnachgiebiger beharrt die Regierung auf ihrem Standpunkt" },
+                    { words: ["Die", "Soziologin,", "deren", "Forschung", "bahnbrechend", "ist,", "hinterfragt", "etablierte", "gesellschaftliche", "Normen", "fundamental"], correct: "Die Soziologin, deren Forschung bahnbrechend ist, hinterfragt etablierte gesellschaftliche Normen fundamental" },
+                    { words: ["Während", "die", "Kritiker", "die", "Maßnahmen", "verurteilen,", "rechtfertigen", "die", "Befürworter", "sie", "vehement"], correct: "Während die Kritiker die Maßnahmen verurteilen, rechtfertigen die Befürworter sie vehement" },
+                    { words: ["Der", "Diplomat,", "der", "zwischen", "den", "verfeindeten", "Nationen", "vermittelt,", "beweist", "außergewöhnliches", "Verhandlungsgeschick"], correct: "Der Diplomat, der zwischen den verfeindeten Nationen vermittelt, beweist außergewöhnliches Verhandlungsgeschick" },
+                    { words: ["Die", "Künstlerin,", "die", "konventionelle", "Grenzen", "überschreitet,", "provoziert", "kontroverse", "Diskussionen", "in", "Fachkreisen"], correct: "Die Künstlerin, die konventionelle Grenzen überschreitet, provoziert kontroverse Diskussionen in Fachkreisen" },
+                ]
+            },
+            perfekt: {
+                leicht: [
+                    { words: ["Der", "Ausschuss", "hat", "die", "Angelegenheit", "eingehend", "geprüft"], correct: "Der Ausschuss hat die Angelegenheit eingehend geprüft" },
+                    { words: ["Die", "Künstlerin", "hat", "ein", "bemerkenswertes", "Werk", "geschaffen"], correct: "Die Künstlerin hat ein bemerkenswertes Werk geschaffen" },
+                    { words: ["Der", "Angeklagte", "hat", "sämtliche", "Vorwürfe", "bestritten"], correct: "Der Angeklagte hat sämtliche Vorwürfe bestritten" },
+                    { words: ["Die", "Forscherin", "ist", "zu", "überraschenden", "Erkenntnissen", "gelangt"], correct: "Die Forscherin ist zu überraschenden Erkenntnissen gelangt" },
+                    { words: ["Das", "Gericht", "hat", "ein", "wegweisendes", "Urteil", "gefällt"], correct: "Das Gericht hat ein wegweisendes Urteil gefällt" },
+                    { words: ["Die", "Verhandlungen", "sind", "gescheitert"], correct: "Die Verhandlungen sind gescheitert" },
+                    { words: ["Der", "Minister", "hat", "zurückgetreten"], correct: "Der Minister hat zurückgetreten" },
+                ],
+                mittel: [
+                    { words: ["Die", "Staatsanwaltschaft", "hat", "umfangreiche", "Ermittlungen", "gegen", "die", "Verdächtigen", "eingeleitet"], correct: "Die Staatsanwaltschaft hat umfangreiche Ermittlungen gegen die Verdächtigen eingeleitet" },
+                    { words: ["Der", "Konzern", "hat", "seinen", "Hauptsitz", "aus", "steuerlichen", "Gründen", "ins", "Ausland", "verlegt"], correct: "Der Konzern hat seinen Hauptsitz aus steuerlichen Gründen ins Ausland verlegt" },
+                    { words: ["Die", "Archäologen", "haben", "sensationelle", "Artefakte", "aus", "der", "Antike", "ausgegraben"], correct: "Die Archäologen haben sensationelle Artefakte aus der Antike ausgegraben" },
+                    { words: ["Der", "Vorstand", "hat", "drastische", "Sparmaßnahmen", "zur", "Sanierung", "beschlossen"], correct: "Der Vorstand hat drastische Sparmaßnahmen zur Sanierung beschlossen" },
+                    { words: ["Die", "Wissenschaftler", "haben", "die", "umstrittene", "These", "empirisch", "widerlegt"], correct: "Die Wissenschaftler haben die umstrittene These empirisch widerlegt" },
+                    { words: ["Der", "Autor", "hat", "sich", "mit", "seinem", "kontroversen", "Roman", "exponiert"], correct: "Der Autor hat sich mit seinem kontroversen Roman exponiert" },
+                ],
+                schwer: [
+                    { words: ["Nachdem", "der", "Angeklagte", "gestanden", "hatte,", "hat", "das", "Gericht", "mildernde", "Umstände", "berücksichtigt"], correct: "Nachdem der Angeklagte gestanden hatte, hat das Gericht mildernde Umstände berücksichtigt" },
+                    { words: ["Die", "Philosophin,", "deren", "Dissertation", "preisgekrönt", "ist,", "hat", "fundamentale", "Annahmen", "der", "Erkenntnistheorie", "infrage", "gestellt"], correct: "Die Philosophin, deren Dissertation preisgekrönt ist, hat fundamentale Annahmen der Erkenntnistheorie infrage gestellt" },
+                    { words: ["Der", "Zeuge,", "der", "anfangs", "geschwiegen", "hat,", "hat", "schließlich", "belastende", "Aussagen", "gemacht"], correct: "Der Zeuge, der anfangs geschwiegen hat, hat schließlich belastende Aussagen gemacht" },
+                    { words: ["Die", "Delegation", "hat", "einen", "Kompromiss", "ausgehandelt,", "der", "allen", "Beteiligten", "Zugeständnisse", "abverlangt"], correct: "Die Delegation hat einen Kompromiss ausgehandelt, der allen Beteiligten Zugeständnisse abverlangt" },
+                    { words: ["Obwohl", "die", "Kritiker", "protestiert", "haben,", "hat", "die", "Jury", "ihr", "kontroverses", "Urteil", "gefällt"], correct: "Obwohl die Kritiker protestiert haben, hat die Jury ihr kontroverses Urteil gefällt" },
+                    { words: ["Der", "Historiker", "hat", "bislang", "unbekannte", "Dokumente", "entdeckt,", "die", "das", "etablierte", "Geschichtsbild", "revolutionieren"], correct: "Der Historiker hat bislang unbekannte Dokumente entdeckt, die das etablierte Geschichtsbild revolutionieren" },
+                ]
+            },
+            imperfekt: {
+                leicht: [
+                    { words: ["Der", "Abgeordnete", "vertrat", "eine", "radikale", "Position"], correct: "Der Abgeordnete vertrat eine radikale Position" },
+                    { words: ["Die", "Expertin", "widersprach", "der", "gängigen", "Meinung"], correct: "Die Expertin widersprach der gängigen Meinung" },
+                    { words: ["Das", "Ministerium", "verweigerte", "jegliche", "Auskunft"], correct: "Das Ministerium verweigerte jegliche Auskunft" },
+                    { words: ["Der", "Journalist", "recherchierte", "monatelang", "undercover"], correct: "Der Journalist recherchierte monatelang undercover" },
+                    { words: ["Die", "Kommission", "legte", "einen", "umfassenden", "Bericht", "vor"], correct: "Die Kommission legte einen umfassenden Bericht vor" },
+                    { words: ["Der", "Konzern", "erwirtschaftete", "immense", "Gewinne"], correct: "Der Konzern erwirtschaftete immense Gewinne" },
+                    { words: ["Die", "Demonstranten", "forderten", "grundlegende", "Reformen"], correct: "Die Demonstranten forderten grundlegende Reformen" },
+                ],
+                mittel: [
+                    { words: ["Der", "Staatsanwalt", "präsentierte", "unwiderlegbare", "Beweise", "vor", "dem", "Schwurgericht"], correct: "Der Staatsanwalt präsentierte unwiderlegbare Beweise vor dem Schwurgericht" },
+                    { words: ["Die", "Revolutionäre", "stürzten", "das", "korrupte", "Regime", "in", "einem", "blutigen", "Aufstand"], correct: "Die Revolutionäre stürzten das korrupte Regime in einem blutigen Aufstand" },
+                    { words: ["Der", "Physiker", "konnte", "das", "Phänomen", "mit", "herkömmlichen", "Theorien", "nicht", "erklären"], correct: "Der Physiker konnte das Phänomen mit herkömmlichen Theorien nicht erklären" },
+                    { words: ["Die", "Autorin", "musste", "aufgrund", "politischer", "Verfolgung", "ins", "Exil", "fliehen"], correct: "Die Autorin musste aufgrund politischer Verfolgung ins Exil fliehen" },
+                    { words: ["Der", "Diplomat", "wollte", "einen", "Friedensvertrag", "vermitteln,", "scheiterte", "jedoch"], correct: "Der Diplomat wollte einen Friedensvertrag vermitteln, scheiterte jedoch" },
+                    { words: ["Die", "Zensurbehörde", "durfte", "missliebige", "Veröffentlichungen", "willkürlich", "verbieten"], correct: "Die Zensurbehörde durfte missliebige Veröffentlichungen willkürlich verbieten" },
+                ],
+                schwer: [
+                    { words: ["Während", "die", "Bourgeoisie", "prosperierte,", "verarmte", "das", "Proletariat", "zusehends"], correct: "Während die Bourgeoisie prosperierte, verarmte das Proletariat zusehends" },
+                    { words: ["Der", "Dissident,", "den", "das", "Regime", "verfolgte,", "musste", "untertauchen,", "um", "der", "Verhaftung", "zu", "entgehen"], correct: "Der Dissident, den das Regime verfolgte, musste untertauchen, um der Verhaftung zu entgehen" },
+                    { words: ["Je", "verzweifelter", "die", "Lage", "wurde,", "desto", "radikaler", "wurden", "die", "Forderungen"], correct: "Je verzweifelter die Lage wurde, desto radikaler wurden die Forderungen" },
+                    { words: ["Die", "Monarchin,", "die", "absolutistisch", "herrschte,", "konnte", "die", "Revolution", "nicht", "verhindern"], correct: "Die Monarchin, die absolutistisch herrschte, konnte die Revolution nicht verhindern" },
+                    { words: ["Obwohl", "der", "Angeklagte", "seine", "Unschuld", "beteuerte,", "verurteilte", "ihn", "das", "Gericht"], correct: "Obwohl der Angeklagte seine Unschuld beteuerte, verurteilte ihn das Gericht" },
+                    { words: ["Der", "Philosoph,", "dessen", "Thesen", "ketzerisch", "waren,", "durfte", "nicht", "lehren"], correct: "Der Philosoph, dessen Thesen ketzerisch waren, durfte nicht lehren" },
+                ]
+            },
+            plusquamperfekt: {
+                leicht: [
+                    { words: ["Der", "Richter", "hatte", "das", "Urteil", "bereits", "verkündet"], correct: "Der Richter hatte das Urteil bereits verkündet" },
+                    { words: ["Die", "Partei", "war", "an", "der", "Sperrklausel", "gescheitert"], correct: "Die Partei war an der Sperrklausel gescheitert" },
+                    { words: ["Der", "Zeuge", "hatte", "die", "Aussage", "verweigert"], correct: "Der Zeuge hatte die Aussage verweigert" },
+                    { words: ["Die", "Verhandlungen", "waren", "festgefahren"], correct: "Die Verhandlungen waren festgefahren" },
+                    { words: ["Das", "Parlament", "hatte", "den", "Antrag", "abgelehnt"], correct: "Das Parlament hatte den Antrag abgelehnt" },
+                    { words: ["Der", "Skandal", "war", "vertuscht", "worden"], correct: "Der Skandal war vertuscht worden" },
+                    { words: ["Die", "Fraktion", "hatte", "geschlossen", "votiert"], correct: "Die Fraktion hatte geschlossen votiert" },
+                ],
+                mittel: [
+                    { words: ["Nachdem", "der", "Skandal", "aufgedeckt", "worden", "war,", "trat", "der", "Minister", "zurück"], correct: "Nachdem der Skandal aufgedeckt worden war, trat der Minister zurück" },
+                    { words: ["Die", "Staatsanwältin", "hatte", "bereits", "Anklage", "erhoben,", "bevor", "weitere", "Beweise", "auftauchten"], correct: "Die Staatsanwältin hatte bereits Anklage erhoben, bevor weitere Beweise auftauchten" },
+                    { words: ["Nachdem", "die", "Koalition", "zerbrochen", "war,", "mussten", "Neuwahlen", "anberaumt", "werden"], correct: "Nachdem die Koalition zerbrochen war, mussten Neuwahlen anberaumt werden" },
+                    { words: ["Der", "Verdächtige", "war", "untergetaucht,", "bevor", "die", "Polizei", "ihn", "verhaften", "konnte"], correct: "Der Verdächtige war untergetaucht, bevor die Polizei ihn verhaften konnte" },
+                    { words: ["Die", "Diplomaten", "hatten", "wochenlang", "verhandelt,", "bevor", "ein", "Abkommen", "zustande", "kam"], correct: "Die Diplomaten hatten wochenlang verhandelt, bevor ein Abkommen zustande kam" },
+                    { words: ["Nachdem", "die", "Revision", "gescheitert", "war,", "wurde", "das", "Urteil", "rechtskräftig"], correct: "Nachdem die Revision gescheitert war, wurde das Urteil rechtskräftig" },
+                ],
+                schwer: [
+                    { words: ["Nachdem", "die", "Opposition", "monatelang", "obstruiert", "hatte,", "erzwang", "die", "Regierung", "die", "Abstimmung", "mittels", "Geschäftsordnungstricks"], correct: "Nachdem die Opposition monatelang obstruiert hatte, erzwang die Regierung die Abstimmung mittels Geschäftsordnungstricks" },
+                    { words: ["Der", "Whistleblower,", "der", "brisante", "Dokumente", "geleakt", "hatte,", "war", "ins", "Exil", "geflohen"], correct: "Der Whistleblower, der brisante Dokumente geleakt hatte, war ins Exil geflohen" },
+                    { words: ["Die", "Wissenschaftlerin", "hatte", "jahrzehntelang", "geforscht,", "bevor", "ihre", "bahnbrechende", "Entdeckung", "Anerkennung", "fand"], correct: "Die Wissenschaftlerin hatte jahrzehntelang geforscht, bevor ihre bahnbrechende Entdeckung Anerkennung fand" },
+                    { words: ["Weil", "der", "Angeklagte", "nicht", "ausgesagt", "hatte,", "musste", "das", "Gericht", "aufgrund", "indizieller", "Beweise", "urteilen"], correct: "Weil der Angeklagte nicht ausgesagt hatte, musste das Gericht aufgrund indizieller Beweise urteilen" },
+                    { words: ["Nachdem", "die", "Zeugin", "ihre", "Aussage", "widerrufen", "hatte,", "brach", "die", "Anklage", "zusammen"], correct: "Nachdem die Zeugin ihre Aussage widerrufen hatte, brach die Anklage zusammen" },
+                    { words: ["Der", "Autor,", "dessen", "Werk", "zunächst", "verkannt", "worden", "war,", "erlangte", "posthum", "Weltruhm"], correct: "Der Autor, dessen Werk zunächst verkannt worden war, erlangte posthum Weltruhm" },
+                ]
+            },
+            futur: {
+                leicht: [
+                    { words: ["Der", "Ausschuss", "wird", "morgen", "tagen"], correct: "Der Ausschuss wird morgen tagen" },
+                    { words: ["Die", "Kanzlerin", "wird", "eine", "Rede", "halten"], correct: "Die Kanzlerin wird eine Rede halten" },
+                    { words: ["Das", "Gericht", "wird", "das", "Urteil", "verkünden"], correct: "Das Gericht wird das Urteil verkünden" },
+                    { words: ["Die", "Kommission", "wird", "Empfehlungen", "aussprechen"], correct: "Die Kommission wird Empfehlungen aussprechen" },
+                    { words: ["Der", "Minister", "wird", "zurücktreten"], correct: "Der Minister wird zurücktreten" },
+                    { words: ["Die", "Verhandlungen", "werden", "scheitern"], correct: "Die Verhandlungen werden scheitern" },
+                    { words: ["Das", "Parlament", "wird", "abstimmen"], correct: "Das Parlament wird abstimmen" },
+                ],
+                mittel: [
+                    { words: ["Die", "Regierung", "wird", "tiefgreifende", "Reformen", "durchsetzen", "müssen"], correct: "Die Regierung wird tiefgreifende Reformen durchsetzen müssen" },
+                    { words: ["Der", "Staatsanwalt", "wird", "weitere", "Ermittlungen", "anstrengen"], correct: "Der Staatsanwalt wird weitere Ermittlungen anstrengen" },
+                    { words: ["Die", "Opposition", "wird", "das", "Gesetz", "vor", "dem", "Verfassungsgericht", "anfechten"], correct: "Die Opposition wird das Gesetz vor dem Verfassungsgericht anfechten" },
+                    { words: ["Der", "Konzern", "wird", "seine", "Produktion", "ins", "Ausland", "verlagern"], correct: "Der Konzern wird seine Produktion ins Ausland verlagern" },
+                    { words: ["Die", "Wissenschaftler", "werden", "ihre", "Erkenntnisse", "publizieren"], correct: "Die Wissenschaftler werden ihre Erkenntnisse publizieren" },
+                    { words: ["Das", "Tribunal", "wird", "die", "Kriegsverbrechen", "ahnden"], correct: "Das Tribunal wird die Kriegsverbrechen ahnden" },
+                ],
+                schwer: [
+                    { words: ["Die", "Delegation", "wird", "einen", "Kompromiss", "aushandeln", "müssen,", "der", "allen", "Parteien", "gerecht", "wird"], correct: "Die Delegation wird einen Kompromiss aushandeln müssen, der allen Parteien gerecht wird" },
+                    { words: ["Der", "Kläger,", "dessen", "Ansprüche", "berechtigt", "sind,", "wird", "vor", "dem", "Europäischen", "Gerichtshof", "obsiegen"], correct: "Der Kläger, dessen Ansprüche berechtigt sind, wird vor dem Europäischen Gerichtshof obsiegen" },
+                    { words: ["Je", "länger", "die", "Verhandlungen", "dauern,", "desto", "schwieriger", "wird", "es", "werden,", "eine", "Einigung", "zu", "erzielen"], correct: "Je länger die Verhandlungen dauern, desto schwieriger wird es werden, eine Einigung zu erzielen" },
+                    { words: ["Die", "Historikerin", "wird", "revolutionäre", "Thesen", "aufstellen,", "die", "das", "etablierte", "Geschichtsbild", "infrage", "stellen"], correct: "Die Historikerin wird revolutionäre Thesen aufstellen, die das etablierte Geschichtsbild infrage stellen" },
+                    { words: ["Wenn", "die", "Reform", "scheitert,", "werden", "die", "Konsequenzen", "verheerend", "sein"], correct: "Wenn die Reform scheitert, werden die Konsequenzen verheerend sein" },
+                    { words: ["Der", "Angeklagte", "wird", "versuchen", "müssen,", "seine", "Unschuld", "zu", "beweisen"], correct: "Der Angeklagte wird versuchen müssen, seine Unschuld zu beweisen" },
+                ]
+            },
+            futurperfekt: {
+                leicht: [
+                    { words: ["Der", "Prozess", "wird", "beendet", "worden", "sein"], correct: "Der Prozess wird beendet worden sein" },
+                    { words: ["Die", "Wahl", "wird", "stattgefunden", "haben"], correct: "Die Wahl wird stattgefunden haben" },
+                    { words: ["Das", "Gesetz", "wird", "verabschiedet", "worden", "sein"], correct: "Das Gesetz wird verabschiedet worden sein" },
+                    { words: ["Die", "Koalition", "wird", "zerbrochen", "sein"], correct: "Die Koalition wird zerbrochen sein" },
+                    { words: ["Der", "Vertrag", "wird", "ratifiziert", "worden", "sein"], correct: "Der Vertrag wird ratifiziert worden sein" },
+                    { words: ["Die", "Verhandlungen", "werden", "gescheitert", "sein"], correct: "Die Verhandlungen werden gescheitert sein" },
+                    { words: ["Das", "Urteil", "wird", "rechtskräftig", "geworden", "sein"], correct: "Das Urteil wird rechtskräftig geworden sein" },
+                ],
+                mittel: [
+                    { words: ["Bis", "zum", "Jahresende", "wird", "die", "Reform", "vollständig", "implementiert", "worden", "sein"], correct: "Bis zum Jahresende wird die Reform vollständig implementiert worden sein" },
+                    { words: ["In", "einer", "Woche", "werden", "die", "Ermittlungen", "abgeschlossen", "sein"], correct: "In einer Woche werden die Ermittlungen abgeschlossen sein" },
+                    { words: ["Bis", "morgen", "wird", "die", "Jury", "ihr", "Urteil", "gefällt", "haben"], correct: "Bis morgen wird die Jury ihr Urteil gefällt haben" },
+                    { words: ["Nächsten", "Monat", "wird", "die", "Kommission", "ihren", "Bericht", "vorgelegt", "haben"], correct: "Nächsten Monat wird die Kommission ihren Bericht vorgelegt haben" },
+                    { words: ["In", "zwei", "Jahren", "wird", "das", "Projekt", "verwirklicht", "worden", "sein"], correct: "In zwei Jahren wird das Projekt verwirklicht worden sein" },
+                    { words: ["Bis", "dahin", "werden", "alle", "Dokumente", "vernichtet", "worden", "sein"], correct: "Bis dahin werden alle Dokumente vernichtet worden sein" },
+                ],
+                schwer: [
+                    { words: ["Bis", "die", "Opposition", "reagiert,", "wird", "die", "Regierung", "bereits", "vollendete", "Tatsachen", "geschaffen", "haben"], correct: "Bis die Opposition reagiert, wird die Regierung bereits vollendete Tatsachen geschaffen haben" },
+                    { words: ["Die", "Angeklagte", "wird", "bis", "zum", "Prozessende", "alle", "Beweise", "widerlegt", "haben,", "die", "gegen", "sie", "vorgebracht", "wurden"], correct: "Die Angeklagte wird bis zum Prozessende alle Beweise widerlegt haben, die gegen sie vorgebracht wurden" },
+                    { words: ["In", "zehn", "Jahren", "werden", "die", "Historiker", "die", "Ereignisse", "vollständig", "rekonstruiert", "haben"], correct: "In zehn Jahren werden die Historiker die Ereignisse vollständig rekonstruiert haben" },
+                    { words: ["Bis", "zum", "Gipfeltreffen", "werden", "die", "Delegationen", "einen", "Kompromiss", "ausgehandelt", "haben"], correct: "Bis zum Gipfeltreffen werden die Delegationen einen Kompromiss ausgehandelt haben" },
+                    { words: ["Wenn", "der", "Whistleblower", "aussagt,", "wird", "bereits", "irreparabler", "Schaden", "entstanden", "sein"], correct: "Wenn der Whistleblower aussagt, wird bereits irreparabler Schaden entstanden sein" },
+                    { words: ["Bis", "die", "Wahrheit", "ans", "Licht", "kommt,", "werden", "Jahre", "vergangen", "sein"], correct: "Bis die Wahrheit ans Licht kommt, werden Jahre vergangen sein" },
+                ]
+            }
+        };
+
+        function App() {
+            // Load saved progress from localStorage
+            const loadProgress = () => {
+                try {
+                    const saved = localStorage.getItem('zeitenfolge-progress');
+                    if (saved) {
+                        const data = JSON.parse(saved);
+                        return {
+                            totalXP: data.totalXP || 0,
+                            playerLevel: data.playerLevel || 1,
+                            stats: data.stats || {
+                                präsens: { mastery: 0, maxMastery: 18 },
+                                perfekt: { mastery: 0, maxMastery: 18 },
+                                imperfekt: { mastery: 0, maxMastery: 18 },
+                                plusquamperfekt: { mastery: 0, maxMastery: 18 },
+                                futur: { mastery: 0, maxMastery: 18 },
+                                futurperfekt: { mastery: 0, maxMastery: 18 }
+                            },
+                            completedSentences: data.completedSentences ? {
+                                präsens: { 
+                                    leicht: new Set(data.completedSentences.präsens?.leicht || []),
+                                    mittel: new Set(data.completedSentences.präsens?.mittel || []),
+                                    schwer: new Set(data.completedSentences.präsens?.schwer || [])
+                                },
+                                perfekt: { 
+                                    leicht: new Set(data.completedSentences.perfekt?.leicht || []),
+                                    mittel: new Set(data.completedSentences.perfekt?.mittel || []),
+                                    schwer: new Set(data.completedSentences.perfekt?.schwer || [])
+                                },
+                                imperfekt: { 
+                                    leicht: new Set(data.completedSentences.imperfekt?.leicht || []),
+                                    mittel: new Set(data.completedSentences.imperfekt?.mittel || []),
+                                    schwer: new Set(data.completedSentences.imperfekt?.schwer || [])
+                                },
+                                plusquamperfekt: { 
+                                    leicht: new Set(data.completedSentences.plusquamperfekt?.leicht || []),
+                                    mittel: new Set(data.completedSentences.plusquamperfekt?.mittel || []),
+                                    schwer: new Set(data.completedSentences.plusquamperfekt?.schwer || [])
+                                },
+                                futur: { 
+                                    leicht: new Set(data.completedSentences.futur?.leicht || []),
+                                    mittel: new Set(data.completedSentences.futur?.mittel || []),
+                                    schwer: new Set(data.completedSentences.futur?.schwer || [])
+                                },
+                                futurperfekt: { 
+                                    leicht: new Set(data.completedSentences.futurperfekt?.leicht || []),
+                                    mittel: new Set(data.completedSentences.futurperfekt?.mittel || []),
+                                    schwer: new Set(data.completedSentences.futurperfekt?.schwer || [])
+                                }
+                            } : null
+                        };
+                    }
+                } catch (e) {
+                    console.error('Error loading progress:', e);
+                }
+                return null;
+            };
+
+            const savedProgress = loadProgress();
+            const [showWelcomeBack, setShowWelcomeBack] = useState(!!savedProgress);
+
+            useEffect(() => {
+                if (showWelcomeBack) {
+                    setTimeout(() => setShowWelcomeBack(false), 3000);
+                }
+            }, []);
+
+            const [selectedTense, setSelectedTense] = useState(null);
+            const [difficulty, setDifficulty] = useState('leicht');
+            const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
+            const [userAnswer, setUserAnswer] = useState([]);
+            const [feedback, setFeedback] = useState(null);
+            const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
+            const [shuffledWords, setShuffledWords] = useState([]);
+            const [celebrating, setCelebrating] = useState(false);
+            const [totalXP, setTotalXP] = useState(savedProgress?.totalXP || 0);
+            const [playerLevel, setPlayerLevel] = useState(savedProgress?.playerLevel || 1);
+            const [showLevelUp, setShowLevelUp] = useState(false);
+            const [stats, setStats] = useState(savedProgress?.stats || {
+                präsens: { mastery: 0, maxMastery: 18 }, // 6 leicht + 6 mittel + 6 schwer
+                perfekt: { mastery: 0, maxMastery: 18 },
+                imperfekt: { mastery: 0, maxMastery: 18 },
+                plusquamperfekt: { mastery: 0, maxMastery: 18 },
+                futur: { mastery: 0, maxMastery: 18 },
+                futurperfekt: { mastery: 0, maxMastery: 18 }
+            });
+            const [completedSentences, setCompletedSentences] = useState(savedProgress?.completedSentences || {
+                präsens: { leicht: new Set(), mittel: new Set(), schwer: new Set() },
+                perfekt: { leicht: new Set(), mittel: new Set(), schwer: new Set() },
+                imperfekt: { leicht: new Set(), mittel: new Set(), schwer: new Set() },
+                plusquamperfekt: { leicht: new Set(), mittel: new Set(), schwer: new Set() },
+                futur: { leicht: new Set(), mittel: new Set(), schwer: new Set() },
+                futurperfekt: { leicht: new Set(), mittel: new Set(), schwer: new Set() }
+            });
+
+            const currentExercise = selectedTense && SENTENCES[selectedTense][difficulty][currentSentenceIndex];
+
+            // Auto-save progress whenever it changes
+            useEffect(() => {
+                const saveProgress = () => {
+                    try {
+                        const dataToSave = {
+                            totalXP,
+                            playerLevel,
+                            stats,
+                            completedSentences: {
+                                präsens: {
+                                    leicht: Array.from(completedSentences.präsens.leicht),
+                                    mittel: Array.from(completedSentences.präsens.mittel),
+                                    schwer: Array.from(completedSentences.präsens.schwer)
+                                },
+                                perfekt: {
+                                    leicht: Array.from(completedSentences.perfekt.leicht),
+                                    mittel: Array.from(completedSentences.perfekt.mittel),
+                                    schwer: Array.from(completedSentences.perfekt.schwer)
+                                },
+                                imperfekt: {
+                                    leicht: Array.from(completedSentences.imperfekt.leicht),
+                                    mittel: Array.from(completedSentences.imperfekt.mittel),
+                                    schwer: Array.from(completedSentences.imperfekt.schwer)
+                                },
+                                plusquamperfekt: {
+                                    leicht: Array.from(completedSentences.plusquamperfekt.leicht),
+                                    mittel: Array.from(completedSentences.plusquamperfekt.mittel),
+                                    schwer: Array.from(completedSentences.plusquamperfekt.schwer)
+                                },
+                                futur: {
+                                    leicht: Array.from(completedSentences.futur.leicht),
+                                    mittel: Array.from(completedSentences.futur.mittel),
+                                    schwer: Array.from(completedSentences.futur.schwer)
+                                },
+                                futurperfekt: {
+                                    leicht: Array.from(completedSentences.futurperfekt.leicht),
+                                    mittel: Array.from(completedSentences.futurperfekt.mittel),
+                                    schwer: Array.from(completedSentences.futurperfekt.schwer)
+                                }
+                            }
+                        };
+                        localStorage.setItem('zeitenfolge-progress', JSON.stringify(dataToSave));
+                    } catch (e) {
+                        console.error('Error saving progress:', e);
+                    }
+                };
+                saveProgress();
+            }, [totalXP, playerLevel, stats, completedSentences]);
+
+            // Shuffle words whenever exercise changes
+            useEffect(() => {
+                if (currentExercise) {
+                    setShuffledWords(shuffleArray(currentExercise.words));
+                }
+            }, [selectedTense, difficulty, currentSentenceIndex]);
+
+            // Create fireworks effect on celebration
+            useEffect(() => {
+                if (celebrating) {
+                    const colors = ['#f093fb', '#4facfe', '#43e97b', '#fa709a', '#ff9a56', '#30cfd0'];
+                    const fireworksInterval = setInterval(() => {
+                        for (let i = 0; i < 5; i++) {
+                            setTimeout(() => {
+                                const firework = document.createElement('div');
+                                firework.className = 'firework';
+                                firework.style.left = Math.random() * window.innerWidth + 'px';
+                                firework.style.top = Math.random() * window.innerHeight + 'px';
+                                firework.style.background = colors[Math.floor(Math.random() * colors.length)];
+                                
+                                const angle = Math.random() * Math.PI * 2;
+                                const velocity = 100 + Math.random() * 100;
+                                const dx = Math.cos(angle) * velocity;
+                                const dy = Math.sin(angle) * velocity;
+                                
+                                firework.style.setProperty('--dx', dx + 'px');
+                                firework.style.setProperty('--dy', dy + 'px');
+                                
+                                document.body.appendChild(firework);
+                                setTimeout(() => firework.remove(), 1000);
+                            }, i * 50);
+                        }
+                    }, 200);
+                    
+                    return () => clearInterval(fireworksInterval);
+                }
+            }, [celebrating]);
+
+            const handleWordClick = (word, index) => {
+                if (!feedback) {
+                    setUserAnswer([...userAnswer, { word, originalIndex: index }]);
+                }
+            };
+
+            const handleAnswerWordClick = (indexToRemove) => {
+                if (!feedback) {
+                    setUserAnswer(userAnswer.filter((_, i) => i !== indexToRemove));
+                }
+            };
+
+            const checkAnswer = () => {
+                const userSentence = userAnswer.map(item => item.word).join(' ');
+                const isCorrect = userSentence === currentExercise.correct;
+                
+                setFeedback(isCorrect ? 'correct' : 'incorrect');
+                // Don't show answer immediately - let them try again
+                setShowCorrectAnswer(false);
+
+                if (isCorrect) {
+                    const sentenceKey = `${difficulty}-${currentSentenceIndex}`;
+                    const alreadyCompleted = completedSentences[selectedTense][difficulty].has(sentenceKey);
+                    
+                    if (!alreadyCompleted) {
+                        // Award XP based on difficulty
+                        const xpGain = difficulty === 'leicht' ? 1 : difficulty === 'mittel' ? 2 : 3;
+                        const newTotalXP = totalXP + xpGain;
+                        const oldLevel = getPlayerLevel(totalXP);
+                        const newLevel = getPlayerLevel(newTotalXP);
+                        
+                        setTotalXP(newTotalXP);
+                        
+                        // Check for level up
+                        if (newLevel.level > oldLevel.level) {
+                            setPlayerLevel(newLevel.level);
+                            setShowLevelUp(true);
+                            setTimeout(() => setShowLevelUp(false), 4000);
+                        }
+                        
+                        setCompletedSentences(prev => {
+                            const newCompleted = { ...prev };
+                            newCompleted[selectedTense][difficulty] = new Set(newCompleted[selectedTense][difficulty]);
+                            newCompleted[selectedTense][difficulty].add(sentenceKey);
+                            return newCompleted;
+                        });
+
+                        setStats(prev => {
+                            const newMastery = prev[selectedTense].mastery + 1;
+                            const newStats = {
+                                ...prev,
+                                [selectedTense]: {
+                                    ...prev[selectedTense],
+                                    mastery: newMastery
+                                }
+                            };
+                            
+                            // Trigger celebration if mastery complete
+                            if (newMastery === prev[selectedTense].maxMastery) {
+                                setCelebrating(true);
+                                setTimeout(() => setCelebrating(false), 5000);
+                            }
+                            
+                            // Check for ultimate mastery (all stars)
+                            const totalStars = Object.keys(SENTENCES).reduce((total, t) => {
+                                const comp = t === selectedTense ? 
+                                    { leicht: newMastery >= 6 ? 6 : 0, mittel: newMastery >= 12 ? 6 : 0, schwer: newMastery >= 18 ? 6 : 0 } :
+                                    completedSentences[t];
+                                return total + 
+                                    (comp.leicht === 6 || (typeof comp.leicht === 'object' && comp.leicht.size === 6) ? 1 : 0) +
+                                    (comp.mittel === 6 || (typeof comp.mittel === 'object' && comp.mittel.size === 6) ? 1 : 0) +
+                                    (comp.schwer === 6 || (typeof comp.schwer === 'object' && comp.schwer.size === 6) ? 1 : 0);
+                            }, 0);
+                            
+                            if (totalStars === 18) {
+                                setTimeout(() => {
+                                    setCelebrating(true);
+                                    setTimeout(() => setCelebrating(false), 7000);
+                                }, 500);
+                            }
+                            
+                            return newStats;
+                        });
+                    }
+                }
+            };
+
+            const tryAgain = () => {
+                setUserAnswer([]);
+                setFeedback(null);
+                setShowCorrectAnswer(false);
+            };
+
+            const revealAnswer = () => {
+                setShowCorrectAnswer(true);
+            };
+
+            const resetProgress = () => {
+                if (confirm('Möchtest du deinen gesamten Fortschritt wirklich zurücksetzen? Diese Aktion kann nicht rückgängig gemacht werden!')) {
+                    localStorage.removeItem('zeitenfolge-progress');
+                    setTotalXP(0);
+                    setPlayerLevel(1);
+                    setStats({
+                        präsens: { mastery: 0, maxMastery: 18 },
+                        perfekt: { mastery: 0, maxMastery: 18 },
+                        imperfekt: { mastery: 0, maxMastery: 18 },
+                        plusquamperfekt: { mastery: 0, maxMastery: 18 },
+                        futur: { mastery: 0, maxMastery: 18 },
+                        futurperfekt: { mastery: 0, maxMastery: 18 }
+                    });
+                    setCompletedSentences({
+                        präsens: { leicht: new Set(), mittel: new Set(), schwer: new Set() },
+                        perfekt: { leicht: new Set(), mittel: new Set(), schwer: new Set() },
+                        imperfekt: { leicht: new Set(), mittel: new Set(), schwer: new Set() },
+                        plusquamperfekt: { leicht: new Set(), mittel: new Set(), schwer: new Set() },
+                        futur: { leicht: new Set(), mittel: new Set(), schwer: new Set() },
+                        futurperfekt: { leicht: new Set(), mittel: new Set(), schwer: new Set() }
+                    });
+                    setSelectedTense(null);
+                    setUserAnswer([]);
+                    setFeedback(null);
+                    setShowCorrectAnswer(false);
+                }
+            };
+
+            const resetAnswer = () => {
+                setUserAnswer([]);
+                setFeedback(null);
+                setShowCorrectAnswer(false);
+            };
+
+            const nextSentence = () => {
+                const maxIndex = SENTENCES[selectedTense][difficulty].length - 1;
+                if (currentSentenceIndex < maxIndex) {
+                    setCurrentSentenceIndex(currentSentenceIndex + 1);
+                } else {
+                    setCurrentSentenceIndex(0);
+                }
+                resetAnswer();
+            };
+
+            const selectTense = (tense) => {
+                setSelectedTense(tense);
+                setCurrentSentenceIndex(0);
+                resetAnswer();
+            };
+
+            const selectDifficulty = (diff) => {
+                setDifficulty(diff);
+                setCurrentSentenceIndex(0);
+                resetAnswer();
+            };
+
+            const calculateProgress = (tense) => {
+                const tenseStats = stats[tense];
+                return Math.round((tenseStats.mastery / tenseStats.maxMastery) * 100);
+            };
+
+            const usedIndices = userAnswer.map(item => item.originalIndex);
+
+            return (
+                <div className="container">
+                    <h1>Zeitenfolge-Trainer</h1>
+                    <p className="subtitle">Interaktives Übungsprogramm für deutsche Zeitformen</p>
+
+                    <div className="level-display">
+                        <div className="level-header">
+                            <div className="level-info">
+                                <div className={`level-badge ${getNextLevel(getPlayerLevel(totalXP).level) && (getNextLevel(getPlayerLevel(totalXP).level).xp - totalXP <= 3) ? 'close-to-levelup' : ''}`}>
+                                    Level {getPlayerLevel(totalXP).level}
+                                </div>
+                                <div>
+                                    <div className="level-title">{getPlayerLevel(totalXP).title}</div>
+                                    <div style={{fontSize: '0.9em', opacity: 0.9}}>
+                                        {getNextLevel(getPlayerLevel(totalXP).level) ? 
+                                            `${totalXP} / ${getNextLevel(getPlayerLevel(totalXP).level).xp} XP` :
+                                            'Maximales Level erreicht!'
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="xp-display">
+                                <div className="xp-amount">{totalXP} XP</div>
+                                <div className="xp-label">Gesamterfahrung</div>
+                                <div style={{marginTop: '10px', fontSize: '1.2em'}}>
+                                    {Object.keys(SENTENCES).reduce((total, tense) => {
+                                        return total + 
+                                            (completedSentences[tense].leicht.size === 6 ? 1 : 0) +
+                                            (completedSentences[tense].mittel.size === 6 ? 1 : 0) +
+                                            (completedSentences[tense].schwer.size === 6 ? 1 : 0);
+                                    }, 0)} / 18 Abzeichen
+                                </div>
+                            </div>
+                        </div>
+                        {getNextLevel(getPlayerLevel(totalXP).level) && (
+                            <div className="level-progress-container">
+                                <div 
+                                    className="level-progress-bar"
+                                    style={{ 
+                                        width: `${((totalXP - getPlayerLevel(totalXP).xp) / (getNextLevel(getPlayerLevel(totalXP).level).xp - getPlayerLevel(totalXP).xp)) * 100}%` 
+                                    }}
+                                />
+                                <div className="level-progress-text">
+                                    {Math.round(((totalXP - getPlayerLevel(totalXP).xp) / (getNextLevel(getPlayerLevel(totalXP).level).xp - getPlayerLevel(totalXP).xp)) * 100)}% zum nächsten Level
+                                </div>
+                            </div>
+                        )}
+                        <div className="difficulty-recommendation">
+                            <strong>Tipp:</strong> {
+                                totalXP < 15 ? 'Beginne mit LEICHT, um die Grundlagen zu meistern!' :
+                                totalXP < 40 ? 'Du bist bereit für MITTEL! Fordere dich heraus!' :
+                                totalXP < 80 ? 'Zeit für SCHWER! Zeige deine Meisterschaft!' :
+                                'Du bist ein wahrer Meister! Perfektioniere alle Zeitformen auf SCHWER!'
+                            }
+                        </div>
+                        <div style={{marginTop: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85em', opacity: 0.9}}>
+                            <span>Fortschritt wird automatisch gespeichert</span>
+                            <button 
+                                onClick={resetProgress}
+                                style={{
+                                    background: 'rgba(255,255,255,0.2)',
+                                    border: '1px solid rgba(255,255,255,0.3)',
+                                    color: 'white',
+                                    padding: '8px 15px',
+                                    borderRadius: '8px',
+                                    cursor: 'pointer',
+                                    fontSize: '0.9em',
+                                    transition: 'all 0.2s'
+                                }}
+                                onMouseOver={(e) => e.target.style.background = 'rgba(255,255,255,0.3)'}
+                                onMouseOut={(e) => e.target.style.background = 'rgba(255,255,255,0.2)'}
+                            >
+                                Fortschritt zurücksetzen
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="tense-selector">
+                        {Object.keys(SENTENCES).map(tense => {
+                            const leichtComplete = completedSentences[tense].leicht.size === 6;
+                            const mittelComplete = completedSentences[tense].mittel.size === 6;
+                            const schwerComplete = completedSentences[tense].schwer.size === 6;
+                            
+                            return (
+                                <div
+                                    key={tense}
+                                    className={`tense-card ${tense} ${selectedTense === tense ? 'active' : ''}`}
+                                    onClick={() => selectTense(tense)}
+                                >
+                                    <div className="tense-name">
+                                        {tense.charAt(0).toUpperCase() + tense.slice(1)}
+                                    </div>
+                                    <div style={{fontSize: '1em', marginTop: '5px', fontWeight: 'bold'}}>
+                                        {leichtComplete ? '✓' : '○'} {mittelComplete ? '✓' : '○'} {schwerComplete ? '✓' : '○'}
+                                    </div>
+                                    <div className="tense-progress">
+                                        <div 
+                                            className="tense-progress-bar"
+                                            style={{ width: `${calculateProgress(tense)}%` }}
+                                        >
+                                            {calculateProgress(tense)}%
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {selectedTense && (
+                        <>
+                            <div className="difficulty-selector">
+                                <button
+                                    className={`difficulty-btn leicht ${difficulty === 'leicht' ? 'active' : ''}`}
+                                    onClick={() => selectDifficulty('leicht')}
+                                >
+                                    Leicht
+                                    <div style={{fontSize: '0.8em', marginTop: '5px', opacity: 0.9}}>+1 XP pro Satz</div>
+                                </button>
+                                <button
+                                    className={`difficulty-btn mittel ${difficulty === 'mittel' ? 'active' : ''}`}
+                                    onClick={() => selectDifficulty('mittel')}
+                                >
+                                    Mittel
+                                    <div style={{fontSize: '0.8em', marginTop: '5px', opacity: 0.9}}>+2 XP pro Satz</div>
+                                </button>
+                                <button
+                                    className={`difficulty-btn schwer ${difficulty === 'schwer' ? 'active' : ''}`}
+                                    onClick={() => selectDifficulty('schwer')}
+                                >
+                                    Schwer
+                                    <div style={{fontSize: '0.8em', marginTop: '5px', opacity: 0.9}}>+3 XP pro Satz</div>
+                                </button>
+                            </div>
+
+                            <div className="exercise-area">
+                                <div className="task-description">
+                                    <strong>Aufgabe:</strong> Setze die Wörter in die richtige Reihenfolge. Klicke auf die Wörter, um den Satz zu bilden.
+                                    <div style={{marginTop: '10px', fontSize: '0.85em', color: '#666'}}>
+                                        <strong>Hinweis:</strong> Die Sätze werden innerhalb jeder Schwierigkeitsstufe progressiv anspruchsvoller. 
+                                        {difficulty === 'leicht' && ' Beginne mit einfachen Strukturen.'}
+                                        {difficulty === 'mittel' && ' Hier kommen Nebensätze und komplexere Konstruktionen.'}
+                                        {difficulty === 'schwer' && ' Meistere Relativsätze, Modalverben und anspruchsvolle Grammatik!'}
+                                    </div>
+                                    <div style={{marginTop: '10px', fontSize: '0.9em', color: '#667eea', fontWeight: 'bold'}}>
+                                        Satz {currentSentenceIndex + 1} von {SENTENCES[selectedTense][difficulty].length}
+                                        {completedSentences[selectedTense][difficulty].has(`${difficulty}-${currentSentenceIndex}`) && 
+                                            <span style={{color: '#43e97b', marginLeft: '10px'}}>Bereits gemeistert!</span>
+                                        }
+                                    </div>
+                                </div>
+
+                                <div className="word-bank">
+                                    {shuffledWords.map((word, index) => (
+                                        <div
+                                            key={index}
+                                            className={`word ${usedIndices.includes(index) ? 'used' : ''}`}
+                                            onClick={() => !usedIndices.includes(index) && handleWordClick(word, index)}
+                                        >
+                                            {word}
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="answer-area">
+                                    {userAnswer.length === 0 && (
+                                        <div style={{ color: '#999', fontStyle: 'italic' }}>
+                                            Deine Antwort erscheint hier...
+                                        </div>
+                                    )}
+                                    {userAnswer.map((item, index) => (
+                                        <div
+                                            key={index}
+                                            className="answer-word"
+                                            onClick={() => handleAnswerWordClick(index)}
+                                        >
+                                            {item.word}
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="button-group">
+                                    <button
+                                        className="btn btn-check"
+                                        onClick={checkAnswer}
+                                        disabled={userAnswer.length === 0 || feedback !== null}
+                                    >
+                                        Überprüfen
+                                    </button>
+                                    <button
+                                        className="btn btn-reset"
+                                        onClick={resetAnswer}
+                                    >
+                                        Zurücksetzen
+                                    </button>
+                                    <button
+                                        className="btn btn-next"
+                                        onClick={nextSentence}
+                                    >
+                                        Nächster Satz
+                                    </button>
+                                </div>
+
+                                {feedback && (
+                                    <div className={`feedback ${feedback}`}>
+                                        {feedback === 'correct' ? (
+                                            <>
+                                                Richtig! Hervorragend!
+                                                <div style={{marginTop: '10px', fontSize: '0.9em'}}>
+                                                    +{difficulty === 'leicht' ? '1' : difficulty === 'mittel' ? '2' : '3'} XP
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <>
+                                                Leider falsch. Versuch es nochmal!
+                                                <div className="button-group" style={{marginTop: '15px'}}>
+                                                    <button
+                                                        className="btn btn-check"
+                                                        onClick={tryAgain}
+                                                    >
+                                                        Nochmal versuchen
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-reset"
+                                                        onClick={revealAnswer}
+                                                    >
+                                                        Antwort zeigen
+                                                    </button>
+                                                </div>
+                                            </>
+                                        )}
+                                        {showCorrectAnswer && (
+                                            <div className="correct-answer">
+                                                <strong>Richtige Antwort:</strong> {currentExercise.correct}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="stats">
+                                <div className="stat-card">
+                                    <div className="stat-value">{stats[selectedTense].mastery}</div>
+                                    <div className="stat-label">Gemeisterte Sätze</div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-value">{stats[selectedTense].maxMastery - stats[selectedTense].mastery}</div>
+                                    <div className="stat-label">Verbleibend</div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-value">{stats[selectedTense].maxMastery}</div>
+                                    <div className="stat-label">Gesamt</div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-value">{calculateProgress(selectedTense)}%</div>
+                                    <div className="stat-label">Meisterschaft</div>
+                                </div>
+                            </div>
+                        </>
+                    )}
+
+                    {!selectedTense && (
+                        <div className="no-exercise">
+                            Wähle oben eine Zeitform aus, um mit dem Üben zu beginnen!
+                        </div>
+                    )}
+
+                    {celebrating && (
+                        <div className="celebration-overlay" onClick={() => setCelebrating(false)}>
+                            <div className="celebration-content">
+                                <div className="celebration-text">
+                                    {Object.keys(SENTENCES).reduce((total, tense) => {
+                                        return total + 
+                                            (completedSentences[tense].leicht.size === 6 ? 1 : 0) +
+                                            (completedSentences[tense].mittel.size === 6 ? 1 : 0) +
+                                            (completedSentences[tense].schwer.size === 6 ? 1 : 0);
+                                    }, 0) === 18 ? 'ULTIMATIVE MEISTERSCHAFT!' : 'Gratulation!'}
+                                </div>
+                                <div className="celebration-subtext">
+                                    {Object.keys(SENTENCES).reduce((total, tense) => {
+                                        return total + 
+                                            (completedSentences[tense].leicht.size === 6 ? 1 : 0) +
+                                            (completedSentences[tense].mittel.size === 6 ? 1 : 0) +
+                                            (completedSentences[tense].schwer.size === 6 ? 1 : 0);
+                                    }, 0) === 18 ? 
+                                        'Du hast alle 18 Abzeichen gesammelt und alle Zeitformen gemeistert!' :
+                                        `Du hast ${selectedTense.charAt(0).toUpperCase() + selectedTense.slice(1)} zu 100% gemeistert!`
+                                    }
+                                </div>
+                                <div style={{marginTop: '30px', color: '#667eea', fontSize: '1.2em'}}>
+                                    Klicke irgendwo zum Fortfahren
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {showLevelUp && (
+                        <div className="levelup-overlay">
+                            <div className="levelup-content">
+                                <div className="levelup-text">LEVEL UP!</div>
+                                <div className="levelup-title">Level {getPlayerLevel(totalXP).level}</div>
+                                <div className="levelup-subtitle">{getPlayerLevel(totalXP).title}</div>
+                            </div>
+                        </div>
+                    )}
+
+                    {showWelcomeBack && (
+                        <div className="welcome-back">
+                            👋 Willkommen zurück! Dein Fortschritt wurde geladen.
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
