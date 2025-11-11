@@ -415,12 +415,11 @@
 
         .button-group {
             display: flex;
-            flex-wrap: wrap; /* ADDED */
+            flex-wrap: wrap;
             gap: 15px;
             margin-top: 20px;
         }
         
-        /* ADDED for better wrapping */
         .button-group .btn {
             margin-bottom: 10px;
         }
@@ -716,7 +715,7 @@
                 <div class="exercise-box">
                     <h3>Externer Vokabel-Trainer</h3>
                     <p>Hier findest du einen zusätzlichen Trainer, um deinen Wortschatz zu erweitern. Der Link öffnet sich in einem neuen Tab.</p>
-                    <a href="https-://michkress-rgb.github.io/vokab/vokabel-trainer.html" target="_blank" class="btn btn-primary" style="margin-top: 15px;">Vokabel-Trainer öffnen</a>
+                    <a href="https://michkress-rgb.github.io/vokab/vokabel-trainer.html" target="_blank" class="btn btn-primary" style="margin-top: 15px;">Vokabel-Trainer öffnen</a>
                 </div>
             </div>
 
@@ -1001,7 +1000,6 @@
         function loadGrammatikContent() {
             const content = document.getElementById('grammatikContent');
             
-            // --- NEW --- Add external links box first
             let html = `
                 <div class="exercise-box">
                     <h3>Externe Grammatik-Trainer (Links)</h3>
@@ -1648,10 +1646,21 @@
         // Sachtexte Content
         function loadSachtexteContent() {
             const content = document.getElementById('sachtexteContent');
-            let html = '';
+            
+            // --- NEW --- Add external links box first
+            let html = `
+                <div class="exercise-box">
+                    <h3>Externe Sachtext-Trainer (Links)</h3>
+                    <p>Hier findest du zusätzliche Übungen und Erklärungen zu Sachtexten. Diese Links öffnen in einem neuen Tab.</p>
+                    <div class="button-group">
+                        <a href="https://michkress-rgb.github.io/trainer/Sachtexte.html" target="_blank" class="btn btn-primary">Sachtext Trainer</a>
+                        <a href="https://notebooklm.google.com/notebook/c457ed99-c4a0-4e64-a9fc-8c91a4ab0452" target="_blank" class="btn btn-primary">Sachtexte erklärt</a>
+                    </div>
+                </div>
+            `;
             
             if (currentGrade === 6) {
-                html = `
+                html += `
                     <div class="exercise-box">
                         <h3>Sachtext: Klimawandel (Grundlagen)</h3>
                         <div class="sachtext-passage">
@@ -1717,7 +1726,7 @@
                     </div>
                 `;
             } else if (currentGrade === 7) {
-                html = `
+                html += `
                     <div class="exercise-box">
                         <h3>Sachtext: Erneuerbare Energien</h3>
                         <div class="sachtext-passage">
@@ -1783,7 +1792,7 @@
                     </div>
                 `;
             } else {
-                html = `
+                html += `
                     <div class="exercise-box">
                         <h3>Sachtext: Künstliche Intelligenz</h3>
                         <div class="sachtext-passage">
