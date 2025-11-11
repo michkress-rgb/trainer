@@ -371,6 +371,8 @@
             cursor: pointer;
             transition: all 0.3s;
             font-weight: bold;
+            text-decoration: none; /* For <a> tags styled as buttons */
+            display: inline-block; /* For <a> tags styled as buttons */
         }
 
         .btn:disabled {
@@ -413,8 +415,14 @@
 
         .button-group {
             display: flex;
+            flex-wrap: wrap; /* ADDED */
             gap: 15px;
             margin-top: 20px;
+        }
+        
+        /* ADDED for better wrapping */
+        .button-group .btn {
+            margin-bottom: 10px;
         }
 
         .feedback {
@@ -622,6 +630,7 @@
             <div class="tab active" onclick="switchTab('fortschritt')">Fortschritt</div>
             <div class="tab" onclick="switchTab('kompetenzen')">Kompetenzen</div>
             <div class="tab" onclick="switchTab('grammatik')">Grammatik</div>
+            <div class="tab" onclick="switchTab('vokabeln')">Vokabeln</div>
             <div class="tab" onclick="switchTab('fehlerkorrektur')">Fehlerkorrektur</div>
             <div class="tab" onclick="switchTab('leseverstehen')">Leseverstehen</div>
             <div class="tab" onclick="switchTab('sachtexte')">Sachtexte</div>
@@ -700,6 +709,15 @@
             <div id="grammatik" class="tab-content">
                 <h2>Grammatik-Übungen</h2>
                 <div id="grammatikContent"></div>
+            </div>
+
+            <div id="vokabeln" class="tab-content">
+                <h2>Vokabel-Trainer</h2>
+                <div class="exercise-box">
+                    <h3>Externer Vokabel-Trainer</h3>
+                    <p>Hier findest du einen zusätzlichen Trainer, um deinen Wortschatz zu erweitern. Der Link öffnet sich in einem neuen Tab.</p>
+                    <a href="https-://michkress-rgb.github.io/vokab/vokabel-trainer.html" target="_blank" class="btn btn-primary" style="margin-top: 15px;">Vokabel-Trainer öffnen</a>
+                </div>
             </div>
 
             <div id="fehlerkorrektur" class="tab-content">
@@ -982,7 +1000,21 @@
         // Grammatik Content
         function loadGrammatikContent() {
             const content = document.getElementById('grammatikContent');
-            let html = '';
+            
+            // --- NEW --- Add external links box first
+            let html = `
+                <div class="exercise-box">
+                    <h3>Externe Grammatik-Trainer (Links)</h3>
+                    <p>Hier findest du zusätzliche Übungen zu bestimmten Grammatikthemen. Diese Links öffnen in einem neuen Tab.</p>
+                    <div class="button-group">
+                        <a href="https://michkress-rgb.github.io/trainer/zeitenfolge-trainer%20(2).html" target="_blank" class="btn btn-primary">Zeitenfolge Trainer</a>
+                        <a href="https://michkress-rgb.github.io/zeitfolge2/zeitfolge-level2.html" target="_blank" class="btn btn-primary">Zeitenfolge (Level 2)</a>
+                        <a href="https://michkress-rgb.github.io/einheit2/grammatik-trainer.html" target="_blank" class="btn btn-primary">Grammatik Trainer (Einheit 2)</a>
+                        <a href="https://michkress-rgb.github.io/deutschlernen/deutschlernen.html" target="_blank" class="btn btn-primary">Allg. Deutsch Lernen</a>
+                        <a href="https://michkress-rgb.github.io/deutsch/index.html" target="_blank" class="btn btn-primary">Deutsch Index</a>
+                    </div>
+                </div>
+            `;
             
             if (currentGrade === 6) {
                 html += createGrammarExercise6();
@@ -2083,7 +2115,6 @@
                     e.preventDefault();
                     const draggable = document.querySelector('.dragging');
                     if (draggable && !zone.classList.contains('filled')) {
-                        // *** FIX 1 ***
                         zone.style.borderColor = 'var(--success)';
                     }
                 });
@@ -2250,13 +2281,11 @@
                         correct++;
                     } else {
                         allCorrect = false;
-                        // *** FIX 2 ***
                         word.style.borderColor = 'var(--danger)';
                     }
                 } else {
                     if (isCapitalized) {
                         allCorrect = false;
-                        // *** FIX 3 ***
                         word.style.borderColor = 'var(--danger)';
                     }
                 }
@@ -2327,7 +2356,6 @@
                     const correctOption = question.querySelector('.mcq-option[data-correct="true"]');
                     if (correctOption) {
                         correctOption.classList.add('correct');
-                        // *** FIX 4 ***
                         correctOption.style.borderColor = 'var(--danger)'; // Highlight missed correct answer
                     }
                 }
@@ -2340,7 +2368,7 @@
             // Update statistics
             studentData.exercises[category].attempted++;
             if (correct === total) {
-                studentData.exercises[key].correct++;
+                studentData.exercises[category].correct++;
             }
             saveData();
             updateAllStats();
