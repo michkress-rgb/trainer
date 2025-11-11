@@ -3,639 +3,2454 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sachtext-Trainer</title>
+    <title>Deutsch Klassenarbeit Trainer</title>
     <style>
-        /* Grundlegendes Styling */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            line-height: 1.6;
+        * {
             margin: 0;
-            padding: 0 20px;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* New "Happier" Palette */
+            --primary: #00897B; /* Friendly Teal */
+            --secondary: #FFB300; /* Sunny Yellow */
+            --success: #4CAF50; /* Clear Green */
+            --warning: #FB8C00; /* Bright Orange */
+            --danger: #e74c3c; /* Clear Red */
+            --light: #F9F9F9;   /* Clean Light Gray */
+            --dark: #00695C;    /* Darker Teal */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* New soft gradient background */
+            background: linear-gradient(135deg, #E0F2F1 0%, #FFFDE7 100%);
+            min-height: 100vh;
+            padding: 20px;
         }
 
         .container {
-            max-width: 1000px;
-            margin: 20px auto;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            /* Softer shadow */
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
             overflow: hidden;
         }
 
-        header {
-            background-color: #007bff;
+        .header {
+            /* Updated gradient using new primary/dark colors */
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
             color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 2.5rem;
-        }
-
-        /* Tab-Navigation */
-        .tab-nav {
-            display: flex;
-            background-color: #e9ecef;
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        .tab-btn {
-            padding: 15px 25px;
-            cursor: pointer;
-            border: none;
-            background-color: transparent;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #495057;
-            transition: background-color 0.2s, color 0.2s;
-        }
-
-        .tab-btn:hover {
-            background-color: #f1f3f5;
-        }
-
-        .tab-btn.active {
-            background-color: #ffffff;
-            color: #007bff;
-            border-bottom: 2px solid #007bff;
-            margin-bottom: -2px; /* Löst den Tab visuell heraus */
-        }
-
-        /* Tab-Inhalt */
-        .tab-content {
-            display: none; /* Standardmäßig ausgeblendet */
             padding: 30px;
-            animation: fadeIn 0.5s;
-        }
-
-        .tab-content.active {
-            display: block; /* Aktiver Tab wird angezeigt */
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Spezifisches Styling für Sektionen */
-        h2 {
-            color: #0056b3;
-            border-bottom: 2px solid #e0e0e0;
-            padding-bottom: 10px;
-            margin-top: 0;
-        }
-
-        h3 {
-            color: #17a2b8;
-            margin-top: 25px;
-        }
-
-        /* Klassenstufen-Auswahl */
-        .grade-selection {
             text-align: center;
-            margin: 20px 0;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .grade-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            background: var(--light);
+            border-bottom: 3px solid var(--primary);
         }
 
         .grade-btn {
-            font-size: 1.2rem;
-            padding: 12px 25px;
-            margin: 5px;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: 3px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 10px;
             cursor: pointer;
-            border: 2px solid #17a2b8;
-            background-color: #fff;
-            color: #17a2b8;
-            border-radius: 5px;
-            transition: background-color 0.2s, color 0.2s;
+            transition: all 0.3s;
         }
 
-        .grade-btn:hover, .grade-btn.selected {
-            background-color: #17a2b8;
+        .grade-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .grade-btn.active {
+            /* Use primary color for active state */
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .tabs {
+            display: flex;
+            background: var(--dark);
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .tab.active {
+            /* Use primary color for active tab */
+            background: var(--primary);
+            border-bottom-color: var(--secondary); /* Sunny yellow underline */
+        }
+
+        .content {
+            padding: 30px;
+            min-height: 500px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .progress-section {
+            /* Updated gradient */
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
             color: white;
         }
 
-        #current-grade-display {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #28a745;
-            margin-top: 20px;
-            text-align: center;
+        .progress-meter {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
         }
 
-        /* Material-Tab */
-        .material-sektion ul {
-            list-style-type: disc;
-            margin-left: 20px;
-            padding-left: 10px;
-        }
-        .material-sektion li {
-            margin-bottom: 10px;
-        }
-        .material-sektion .beispiel {
-            background-color: #fdfae1;
-            border-left: 4px solid #f0ad4e;
-            padding: 10px;
-            margin: 10px 0;
-        }
-        .material-sektion .tipp {
-            background-color: #e6f7ff;
-            border-left: 4px solid #007bff;
-            padding: 10px;
-        }
-
-        /* Übungen-Tab */
-        .drill {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-        .drill-options label {
-            display: block;
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            border: 1px solid #ccc;
-            transition: background-color 0.2s;
-        }
-        .drill-options label:hover {
-            background-color: #f1f1f1;
-        }
-        .drill-options input[type="radio"] {
-            margin-right: 10px;
-        }
-
-        .clickable-text {
-            border: 1px dashed #ccc;
-            padding: 15px;
-            line-height: 2;
-        }
-        .clickable-text span {
-            cursor: pointer;
-            padding: 2px 4px;
-            border-radius: 3px;
-            transition: background-color 0.2s;
-        }
-        .clickable-text span:hover {
-            background-color: #f0f0f0;
-        }
-        .clickable-text span.marked {
-            background-color: #ffeeba;
-            border: 1px solid #ffc107;
-        }
-
-        .feedback {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 5px;
-            display: none; /* Versteckt bis zum Klick */
-        }
-        .feedback.correct {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            display: block;
-        }
-        .feedback.wrong {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            display: block;
-        }
-
-        /* Dein Text-Tab */
-        .save-reminder {
-            background-color: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeeba;
-            padding: 15px;
-            border-radius: 5px;
-            text-align: center;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .checklist ul {
-            list-style-type: none;
-            padding-left: 0;
-        }
-        .checklist li {
-            margin-bottom: 12px;
+        .meter-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--success) 0deg,
+                var(--success) var(--progress-deg, 0deg),
+                rgba(255,255,255,0.2) var(--progress-deg, 0deg)
+            );
             display: flex;
-            align-items: top;
-        }
-        .checklist input[type="checkbox"] {
-            margin-right: 12px;
-            flex-shrink: 0;
-            margin-top: 5px;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .text-editor-container {
+        .meter-inner {
+            width: 80%;
+            height: 80%;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        .meter-percentage {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .meter-label {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        .readiness-message {
+            text-align: center;
+            font-size: 1.3em;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .exercise-box {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            /* Use primary color for border */
+            border-left: 5px solid var(--primary);
+        }
+
+        .exercise-box h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .question {
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #eee;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .word-bank {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .text-editor-container div {
-            flex: 1;
-            min-width: 300px;
-        }
-        .text-editor-container textarea {
-            width: 100%;
-            height: 400px;
+            gap: 10px;
+            margin: 15px 0;
             padding: 15px;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-            font-family: Arial, sans-serif;
-            font-size: 1rem;
-            box-sizing: border-box; /* Wichtig für 100% Breite */
+            background: #f8f9fa;
+            border-radius: 8px;
+            min-height: 60px;
         }
 
-        .export-buttons {
+        .draggable-word {
+            padding: 8px 16px;
+            /* Use primary color for draggable words */
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+            cursor: move;
+            user-select: none;
+            transition: all 0.2s;
+        }
+
+        .draggable-word:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .draggable-word.dragging {
+            opacity: 0.5;
+        }
+
+        .drop-zone {
+            display: inline-block;
+            min-width: 100px;
+            min-height: 35px;
+            padding: 8px;
+            margin: 0 5px;
+            /* Use primary color for drop zone dash */
+            border: 2px dashed var(--primary);
+            border-radius: 6px;
+            background: white;
+            vertical-align: middle;
+        }
+
+        .drop-zone.filled {
+            border-style: solid;
+            background: #eee;
+        }
+
+        .drop-zone.correct {
+            border-color: var(--success);
+            background: #d4edda;
+        }
+
+        .drop-zone.incorrect {
+            border-color: var(--danger);
+            background: #f8d7da;
+        }
+
+        .clickable-word {
+            display: inline-block;
+            padding: 4px 8px;
+            margin: 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .clickable-word:hover {
+            background: #eee;
+        }
+
+        .clickable-word.selected {
+            background: var(--warning);
+            color: white;
+        }
+
+        .clickable-word.correct {
+            background: var(--success);
+            color: white;
+        }
+
+        .clickable-word.incorrect {
+            background: var(--danger);
+            color: white;
+        }
+
+        .capitalize-word {
+            display: inline-block;
+            padding: 4px 8px;
+            margin: 2px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .capitalize-word:hover {
+            border-color: var(--secondary);
+            background: #eee;
+        }
+
+        .capitalize-word.capitalized {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .mcq-option {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .mcq-option:hover {
+            border-color: var(--secondary);
+            background: #FFFDE7;
+        }
+
+        .mcq-option.selected {
+            border-color: var(--secondary);
+            background: #FFFDE7;
+        }
+
+        .mcq-option.correct {
+            border-color: var(--success);
+            background: #d4edda;
+        }
+
+        .mcq-option.incorrect {
+            border-color: var(--danger);
+            background: #f8d7da;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            text-decoration: none; /* For <a> tags styled as buttons */
+            display: inline-block; /* For <a> tags styled as buttons */
+        }
+
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-primary {
+            /* Use primary color for main buttons */
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--dark); /* Use dark variant on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap; /* ADDED */
+            gap: 15px;
             margin-top: 20px;
         }
         
-        button, .button-link {
-            background-color: #28a745;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            margin-right: 10px;
-            text-decoration: none;
-            display: inline-block;
-        }
-        button:hover, .button-link:hover {
-            background-color: #218838;
-        }
-        button.secondary {
-            background-color: #6c757d;
-        }
-        button.secondary:hover {
-            background-color: #5a6268;
+        /* ADDED for better wrapping */
+        .button-group .btn {
+            margin-bottom: 10px;
         }
 
+        .feedback {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid var(--success);
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid var(--danger);
+        }
+
+        .feedback.partial {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid var(--warning);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 1em;
+            color: var(--dark);
+            margin-top: 5px;
+        }
+
+        .skills-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .skills-table th,
+        .skills-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .skills-table th {
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+        }
+
+        .skills-table tr:hover {
+            background: var(--light);
+        }
+
+        .skill-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .skill-beginner {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .skill-intermediate {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .skill-advanced {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .survival-story {
+            background: linear-gradient(135deg, #434343 0%, #000000 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .survival-story h3 {
+            color: #ff6b6b;
+            margin-bottom: 15px;
+        }
+
+        .sachtext-passage {
+            background: #f8f9fa;
+            padding: 20px;
+            border-left: 4px solid var(--secondary);
+            margin: 20px 0;
+            line-height: 1.8;
+            font-size: 1.05em;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #eee;
+            border-radius: 6px;
+            font-size: 1em;
+            margin: 10px 0;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .download-section {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #eee;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--primary));
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .grade-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .grade-selector {
+                flex-direction: column;
+            }
+            
+            .progress-meter {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .meter-percentage {
+                font-size: 2em;
+            }
+        }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <header>
-            <h1>Sachtext-Trainer</h1>
-            <p>Werde zum Profi im Verfassen und Analysieren von Sachtexten!</p>
-        </header>
-
-        <nav class="tab-nav">
-            <button class="tab-btn active" data-tab="tab-start">🏠 Start</button>
-            <button class="tab-btn" data-tab="tab-material">📚 Material</button>
-            <button class="tab-btn" data-tab="tab-uebungen">✏️ Übungen</button>
-            <button class="tab-btn" data-tab="tab-dein-text">🚀 Dein Text</button>
-        </nav>
-
-        <div id="tab-start" class="tab-content active">
-            <h2>Willkommen!</h2>
-            <p>Dieser Trainer hilft dir dabei, die Merkmale von Sachtexten zu verstehen und deine eigenen Texte sachlicher und präziser zu formulieren.</p>
-            <p>Sachtexte begegnen dir überall: in der Zeitung, im Schulbuch oder bei Gebrauchsanweisungen. Ihr Ziel ist es, klar und objektiv zu informieren.</p>
-            
-            <div class="grade-selection">
-                <h3>Wähle zuerst deine Klassenstufe:</h3>
-                <button class="grade-btn" data-grade="6">6. Klasse</button>
-                <button class="grade-btn" data-grade="7">7. Klasse</button>
-                <button class="grade-btn" data-grade="8">8. Klasse</button>
-            </div>
-            
-            <div id="current-grade-display"></div>
-            
-            <p style="margin-top: 30px;">Klicke oben auf <strong>"Material"</strong>, um die Grundlagen zu wiederholen, oder starte direkt mit den <strong>"Übungen"</strong>!</p>
+        <div class="header">
+            <h1>Deutsch Klassenarbeit Trainer</h1>
+            <p>Intensive Vorbereitung für native speakers</p>
         </div>
 
-        <div id="tab-material" class="tab-content">
-            <h2>📚 Material: Was macht einen Sachtext aus?</h2>
-            
-            <div class="material-sektion">
-                <h3>1. Die Absicht: Informieren</h3>
-                <p>Ein Sachtext will den Leser über einen Sachverhalt (eine Sache, ein Ereignis) informieren. Er will nichts verkaufen, niemanden überreden oder eine erfundene Geschichte erzählen.</p>
-                <ul>
-                    <li><strong>Sachtext (informativ):</strong> "Am Montag kollidierten zwei Fahrzeuge auf der B9."</li>
-                    <li><strong>Kein Sachtext (Meinung/Werbung):</strong> "Kaufen Sie das neue Super-Auto, es ist das beste der Welt!"</li>
-                </ul>
-            </div>
-
-            <div class="material-sektion">
-                <h3>2. Die Sprache: Sachlich & Neutral</h3>
-                <p>Die Sprache ist der Schlüssel. Ein Sachtext vermeidet emotionale oder persönliche Ausdrücke.</p>
-                
-                <div class="beispiel">
-                    <strong>Unsachlich (emotional):</strong> "Der Film war total langweilig und eine echte Katastrophe."<br>
-                    <strong>Sachlich (neutral):</strong> "Der Film behandelt das Thema X und dauert 120 Minuten."
-                </div>
-                
-                <div class="beispiel">
-                    <strong>Unsachlich (persönlich):</strong> "Ich finde, dass der Klimawandel schrecklich ist."<br>
-                    <strong>Sachlich (objektiv):</strong> "Der Klimawandel führt zu einem Anstieg der globalen Durchschnittstemperatur."
-                </div>
-
-                <div class="tipp">
-                    <strong>Merke dir:</strong> Vermeide "Ich-Wörter" (ich, mir, mein) und wertende Adjektive (toll, super, schrecklich, furchtbar, langweilig).
-                </div>
-            </div>
-
-            <div class="material-sektion">
-                <h3>3. Merkmale der Sachtext-Sprache</h3>
-                <ul>
-                    <li><strong>Präzise (genaue) Wörter:</strong> Statt "ein Mann" besser "ein 30-jähriger Zeuge". Statt "schnell fahren" besser "die Geschwindigkeitsbegrenzung überschreiten".</li>
-                    <li><strong>Fachbegriffe:</strong> Wenn nötig, werden Fachwörter verwendet (z.B. "Fotosynthese" im Biologie-Text).</li>
-                    <li><strong>Klare Satzstruktur:</strong> Oft Hauptsätze oder einfache Nebensätze. Keine komplizierten Schachtelsätze.</li>
-                    <li><strong>Zeitform:</strong> Oft im Präsens (Gegenwart), um Allgemeingültiges zu beschreiben (z.B. Lexikonartikel) oder im Präteritum (Vergangenheit) für Berichte.</li>
-                </ul>
-            </div>
+        <div class="grade-selector">
+            <button class="grade-btn active" onclick="selectGrade(6)">Klasse 6</button>
+            <button class="grade-btn" onclick="selectGrade(7)">Klasse 7</button>
+            <button class="grade-btn" onclick="selectGrade(8)">Klasse 8</button>
         </div>
 
-        <div id="tab-uebungen" class="tab-content">
-            <h2>✏️ Übungen</h2>
-            <p>Hier kannst du dein Wissen testen. Die Aufgaben werden (in einer echten Version) an deine Klassenstufe angepasst.</p>
-
-            <div class="drill">
-                <h3>Übung 1: Was ist sachlicher?</h3>
-                <p>Du schreibst einen Polizeibericht über einen Diebstahl. Welcher Satz ist am besten geeignet?</p>
-                <div class="drill-options" id="drill-1-options">
-                    <label><input type="radio" name="q1" value="wrong"> Der miese Dieb war total frech und hat die arme Frau einfach umgerannt.</label>
-                    <label><input type="radio" name="q1" value="correct"> Der Tatverdächtige stieß die Zeugin beiseite und flüchtete mit der Beute.</label>
-                    <label><input type="radio" name="q1" value="wrong"> Ich glaube, der Typ war echt böse, so wie der geguckt hat.</label>
-                </div>
-                <button class="secondary" onclick="checkDrill1()">Prüfen</button>
-                <div id="feedback-q1" class="feedback"></div>
-            </div>
-
-            <div class="drill">
-                <h3>Übung 2: Finde die "Störfaktoren"</h3>
-                <p>Du liest eine Tierbeschreibung über einen Wolf. Klicke auf alle Sätze oder Satzteile, die **unsachlich** sind oder eine persönliche Meinung enthalten.</p>
-                <div class="clickable-text" id="drill-2-text">
-                    Der Wolf (Canis lupus) ist ein Raubtier aus der Familie der Hunde. 
-                    (<span>Ich finde Wölfe total faszinierend.</span>) 
-                    Er lebt meist in Rudeln zusammen. 
-                    (<span>Diese blöden Tiere fressen leider unsere Schafe, was echt doof ist.</span>) 
-                    Ein ausgewachsener Wolf erreicht eine Schulterhöhe von 60 bis 90 Zentimetern. 
-                    (<span>Sein Geheul ist wunderschön und ein bisschen gruselig.</span>) 
-                    Seine Nahrung besteht hauptsächlich aus Hirschen, Rehen und Wildschweinen.
-                </div>
-                <button class="secondary" onclick="checkDrill2()">Prüfen</button>
-                <div id="feedback-q2" class="feedback"></div>
-            </div>
-
-            <div class="drill">
-                <h3>Übung 3: Welche Überschrift passt?</h3>
-                <p>Ein Text beschreibt objektiv die Eröffnung eines neuen Jugendzentrums in der Stadt. Welche Überschrift wäre für diesen Sachtext (z.B. einen Zeitungsbericht) am passendsten?</p>
-                <div class="drill-options" id="drill-3-options">
-                    <label><input type="radio" name="q3" value="wrong"> Endlich! Bester Ort der Stadt hat offen!</label>
-                    <label><input type="radio" name="q3" value="wrong"> Langweiliger Bau kostet Millionen – Wer braucht sowas?</label>
-                    <label><input type="radio" name="q3" value="correct"> Neues Jugendzentrum in der Schillerstraße eröffnet.</label>
-                </div>
-                <button class="secondary" onclick="checkDrill3()">Prüfen</button>
-                <div id="feedback-q3" class="feedback"></div>
-            </div>
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('fortschritt')">Fortschritt</div>
+            <div class="tab" onclick="switchTab('kompetenzen')">Kompetenzen</div>
+            <div class="tab" onclick="switchTab('grammatik')">Grammatik</div>
+            <div class="tab" onclick="switchTab('vokabeln')">Vokabeln</div>
+            <div class="tab" onclick="switchTab('fehlerkorrektur')">Fehlerkorrektur</div>
+            <div class="tab" onclick="switchTab('leseverstehen')">Leseverstehen</div>
+            <div class="tab" onclick="switchTab('sachtexte')">Sachtexte</div>
+            <div class="tab" onclick="switchTab('ueberlebensgeschichten')">Überlebensgeschichten</div>
+            <div class="tab" onclick="switchTab('ergebnisse')">Ergebnisse</div>
         </div>
 
-        <div id="tab-dein-text" class="tab-content">
-            <h2>🚀 Verbessere deinen eigenen Sachtext</h2>
-            <p>Jetzt bist du dran! Nimm einen Sachtext, den du selbst geschrieben hast (z.B. einen Bericht, eine Beschreibung, eine Inhaltsangabe) und überarbeite ihn.</p>
-            
-            <div class="save-reminder">
-                🔔 **WICHTIG:** Klicke regelmäßig auf "Fortschritt herunterladen", um deine Arbeit auf deinem Computer zu sichern! Dein Text wird nicht automatisch online gespeichert.
-            </div>
-
-            <div class="text-editor-container">
-                <div>
-                    <h3>Checkliste zur Überarbeitung</h3>
-                    <div class="checklist">
-                        <ul>
-                            <li><input type="checkbox" id="check1"><label for="check1"><strong>Sachlichkeit:</strong> Habe ich alle persönlichen Meinungen ("ich finde...", "meiner Meinung nach...") entfernt?</label></li>
-                            <li><input type="checkbox" id="check2"><label for="check2"><strong>Emotionen:</strong> Habe ich wertende Adjektive (z.B. "toll", "schrecklich", "langweilig", "super") durch neutrale Wörter ersetzt?</label></li>
-                            <li><input type="checkbox" id="check3"><label for="check3"><strong>Präzision:</strong> Bin ich genau? (z.B. statt "ein paar Leute" -> "fünf Personen"; statt "schnell" -> "mit 80 km/h").</label></li>
-                            <li><input type="checkbox" id="check4"><label for="check4"><strong>Aufbau:</strong> Ist der Text logisch gegliedert (z.B. Einleitung, Hauptteil, Schluss)? Sind Absätze sinnvoll gesetzt?</label></li>
-                            <li><input type="checkbox" id="check5"><label for="check5"><strong>Wortwahl:</strong> Verwende ich treffende Verben (statt "machen" -> "herstellen") und Nomen (Fachbegriffe, wenn nötig)?</label></li>
-                            <li><input type="checkbox" id="check6"><label for="check6"><strong>Satzbau:</strong> Sind meine Sätze klar und verständlich? Habe ich zu lange Schachtelsätze vermieden?</label></li>
-                            <li><input type="checkbox" id="check7"><label for="check7"><strong>Zeitform:</strong> Ist die Zeitform einheitlich und passend (z.B. Präteritum für einen Bericht, Präsens für eine Beschreibung)?</label></li>
-                            <li><input type="checkbox" id="check8"><label for="check8"><strong>W-Fragen (für Berichte):</strong> Werden die wichtigsten W-Fragen (Wer, Was, Wann, Wo, Wie, Warum) am Anfang geklärt?</label></li>
-                            <li><input type="checkbox" id="check9"><label for="check9"><strong>Rechtschreibung/Grammatik:</strong> Ist alles auf Fehler geprüft?</label></li>
-                        </ul>
+        <div class="content">
+            <div id="fortschritt" class="tab-content active">
+                <div class="progress-section">
+                    <h2 style="text-align: center; margin-bottom: 20px;">Deine Prüfungsvorbereitung</h2>
+                    <div class="grade-title" id="gradeTitle">Klasse 6: Arbeitshilfe für die erste Klassenarbeit am 2. Dezember</div>
+                    
+                    <div class="progress-meter" id="progressMeter">
+                        <div class="meter-circle">
+                            <div class="meter-inner">
+                                <div class="meter-percentage" id="meterPercentage">0%</div>
+                                <div class="meter-label">bereit</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="readiness-message" id="readinessMessage">
+                        Du musst noch viel üben!
                     </div>
                 </div>
 
-                <div>
-                    <h3>Dein Entwurf (Vorher)</h3>
-                    <textarea id="text-before" placeholder="Füge hier deinen ersten Textentwurf ein..."></textarea>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalExercises">0</div>
+                        <div class="stat-label">Übungen absolviert</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="correctAnswers">0</div>
+                        <div class="stat-label">Richtige Antworten</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="accuracyRate">0%</div>
+                        <div class="stat-label">Genauigkeit</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="weakestArea">—</div>
+                        <div class="stat-label">Schwächster Bereich</div>
+                    </div>
+                </div>
+
+                <div class="exercise-box">
+                    <h3>Deine Fortschrittsbereiche</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="grammarProgress" style="width: 0%"></div>
+                    </div>
+                    <p>Grammatik</p>
                     
-                    <h3>Deine Verbesserung (Nachher)</h3>
-                    <textarea id="text-after" placeholder="Überarbeite deinen Text hier mithilfe der Checkliste..."></textarea>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="errorProgress" style="width: 0%"></div>
+                    </div>
+                    <p>Fehlerkorrektur</p>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="readingProgress" style="width: 0%"></div>
+                    </div>
+                    <p>Leseverstehen</p>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="survivalProgress" style="width: 0%"></div>
+                    </div>
+                    <p>Überlebensgeschichten & Sachtexte</p>
                 </div>
             </div>
 
-            <div class="export-buttons">
-                <h3>Speichern & Exportieren</h3>
-                <button id="btn-download">💾 Fortschritt herunterladen (.txt)</button>
-                <a id="btn-email" class="button-link" href="#">📧 An E-Mail anhängen (Vorschau)</a>
+            <div id="kompetenzen" class="tab-content">
+                <h2>Erwartete Kompetenzen</h2>
+                <div id="kompetenzContent"></div>
             </div>
 
+            <div id="grammatik" class="tab-content">
+                <h2>Grammatik-Übungen</h2>
+                <div id="grammatikContent"></div>
+            </div>
+
+            <div id="vokabeln" class="tab-content">
+                <h2>Vokabel-Trainer</h2>
+                <div class="exercise-box">
+                    <h3>Externer Vokabel-Trainer</h3>
+                    <p>Hier findest du einen zusätzlichen Trainer, um deinen Wortschatz zu erweitern. Der Link öffnet sich in einem neuen Tab.</p>
+                    <a href="https-://michkress-rgb.github.io/vokab/vokabel-trainer.html" target="_blank" class="btn btn-primary" style="margin-top: 15px;">Vokabel-Trainer öffnen</a>
+                </div>
+            </div>
+
+            <div id="fehlerkorrektur" class="tab-content">
+                <h2>Fehlerkorrektur</h2>
+                <div id="fehlerkorrekturContent"></div>
+            </div>
+
+            <div id="leseverstehen" class="tab-content">
+                <h2>Leseverstehen</h2>
+                <div id="leseContent"></div>
+            </div>
+
+            <div id="sachtexte" class="tab-content">
+                <h2>Sachtexte</h2>
+                <div id="sachtexteContent"></div>
+            </div>
+
+            <div id="ueberlebensgeschichten" class="tab-content">
+                <div class="survival-story">
+                    <h2>Überlebensgeschichten: „Feuer machen" von Jack London</h2>
+                    <p>Hier testest du dein Wissen über die Kurzgeschichte und allgemeines Survival-Wissen.</p>
+                </div>
+                <div id="survivalContent"></div>
+            </div>
+
+            <div id="ergebnisse" class="tab-content">
+                <h2>Deine Ergebnisse und Analyse</h2>
+                <div id="ergebnisseContent"></div>
+                
+                <div class="download-section">
+                    <h3>Ergebnisse herunterladen</h3>
+                    <p>Lade eine detaillierte Analyse deiner Leistungen herunter.</p>
+                    <button class="btn btn-success" onclick="downloadResults()">PDF herunterladen</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // --- Globale Variablen ---
-        let currentGrade = null;
+        // Global State
+        let currentGrade = 6;
+        let studentData = {
+            grade: 6,
+            exercises: {
+                grammar: { attempted: 0, correct: 0 },
+                error: { attempted: 0, correct: 0 },
+                reading: { attempted: 0, correct: 0 },
+                sachtext: { attempted: 0, correct: 0 },
+                survival: { attempted: 0, correct: 0 }
+            },
+            completedExercises: []
+        };
 
-        // --- Tab-Navigation ---
-        const tabButtons = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const targetTab = button.getAttribute('data-tab');
-
-                // Buttons
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-
-                // Inhalte
-                tabContents.forEach(content => {
-                    if (content.id === targetTab) {
-                        content.classList.add('active');
-                    } else {
-                        content.classList.remove('active');
-                    }
-                });
-            });
-        });
-
-        // --- Klassenstufen-Auswahl ---
-        const gradeButtons = document.querySelectorAll('.grade-btn');
-        const gradeDisplay = document.getElementById('current-grade-display');
-
-        gradeButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                currentGrade = button.getAttribute('data-grade');
-                
-                // Visuelles Feedback
-                gradeButtons.forEach(btn => btn.classList.remove('selected'));
-                button.classList.add('selected');
-                
-                gradeDisplay.textContent = `Du bearbeitest die Aufgaben für die ${currentGrade}. Klasse.`;
-                
-                // Hier könnte man Logik hinzufügen, um Übungen basierend auf "currentGrade" zu laden/filtern
-            });
-        });
-
-        // --- Übungs-Logik ---
-
-        // Übung 1: Sachlicher Ausdruck
-        function checkDrill1() {
-            const answer = document.querySelector('input[name="q1"]:checked');
-            const feedback = document.getElementById('feedback-q1');
-            
-            if (!answer) {
-                feedback.textContent = "Bitte wähle eine Antwort aus.";
-                feedback.className = "feedback wrong";
-                return;
-            }
-
-            if (answer.value === 'correct') {
-                feedback.textContent = "Richtig! Dieser Satz ist neutral, präzise und enthält keine Emotionen.";
-                feedback.className = "feedback correct";
-            } else {
-                feedback.textContent = "Leider falsch. Dein gewählter Satz enthält entweder eine starke persönliche Wertung ('mies', 'arme Frau') oder eine Vermutung ('Ich glaube').";
-                feedback.className = "feedback wrong";
+        // Load saved data
+        function loadData() {
+            const saved = localStorage.getItem('deutschTrainerData');
+            if (saved) {
+                studentData = JSON.parse(saved);
+                currentGrade = studentData.grade;
             }
         }
 
-        // Übung 2: Sätze markieren
-        const clickableSpans = document.querySelectorAll('#drill-2-text span');
-        clickableSpans.forEach(span => {
-            span.addEventListener('click', () => {
-                span.classList.toggle('marked');
-            });
-        });
+        // Save data
+        function saveData() {
+            localStorage.setItem('deutschTrainerData', JSON.stringify(studentData));
+        }
+        
+        // --- Content Loaders ---
+        function loadAllContentForGrade() {
+            loadKompetenzContent();
+            loadGrammatikContent();
+            loadFehlerkorrekturContent();
+            loadLeseContent();
+            loadSachtexteContent();
+            loadSurvivalContent();
+            loadErgebnisseContent();
+            updateAllStats();
+        }
 
-        function checkDrill2() {
-            const feedback = document.getElementById('feedback-q2');
-            let correctMarks = 0;
-            let wrongMarks = 0;
-            const totalCorrect = 3;
+        // Grade Selection
+        function selectGrade(grade) {
+            currentGrade = grade;
+            studentData.grade = grade;
+            
+            // Update UI
+            document.querySelectorAll('.grade-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update grade title
+            const titles = {
+                6: 'Klasse 6: Arbeitshilfe für die erste Klassenarbeit am 2. Dezember',
+                7: 'Klasse 7: Vorbereitung auf die Klassenarbeit',
+                8: 'Klasse 8: Intensive Prüfungsvorbereitung'
+            };
+            document.getElementById('gradeTitle').textContent = titles[grade];
+            
+            // Reload content for new grade
+            loadAllContentForGrade();
+            
+            saveData();
+        }
 
-            clickableSpans.forEach(span => {
-                if (span.classList.contains('marked')) {
-                    correctMarks++;
+        // Tab Switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+            
+            // Refresh results tab every time it's clicked
+            if (tabName === 'ergebnisse') {
+                loadErgebnisseContent();
+            }
+        }
+
+        // Update Statistics
+        function updateAllStats() {
+            const total = Object.values(studentData.exercises).reduce((sum, cat) => sum + cat.attempted, 0);
+            const correct = Object.values(studentData.exercises).reduce((sum, cat) => sum + cat.correct, 0);
+            const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
+            
+            document.getElementById('totalExercises').textContent = total;
+            document.getElementById('correctAnswers').textContent = correct;
+            document.getElementById('accuracyRate').textContent = accuracy + '%';
+            
+            // Find weakest area
+            let weakest = '—';
+            let lowestScore = 101; // Set higher than 100
+            let areasAttempted = 0;
+
+            Object.entries(studentData.exercises).forEach(([key, data]) => {
+                if (data.attempted > 0) {
+                    areasAttempted++;
+                    const score = (data.correct / data.attempted) * 100;
+                    if (score < lowestScore) {
+                        lowestScore = score;
+                        weakest = key;
+                    }
                 }
             });
+            
+            if (areasAttempted === 0) {
+                 weakest = '—';
+            }
 
-            // (In einer echten App wäre die Prüfung komplexer, um auch FALSCH markierte Sätze zu finden)
-            if (correctMarks === totalCorrect) {
-                feedback.textContent = "Super! Du hast alle drei unsachlichen Stellen gefunden.";
-                feedback.className = "feedback correct";
-            } else if (correctMarks > 0) {
-                feedback.textContent = `Du hast ${correctMarks} von ${totalCorrect} Stellen gefunden. Schau nochmal genau hin!`;
-                feedback.className = "feedback wrong";
-            } else {
-                feedback.textContent = "Du hast noch keine Stellen markiert. Klicke auf die Sätze, die du für unsachlich hältst.";
-                feedback.className = "feedback wrong";
+            const areaNames = {
+                grammar: 'Grammatik',
+                error: 'Fehlerkorrektur',
+                reading: 'Lesen',
+                sachtext: 'Sachtexte',
+                survival: 'Survival'
+            };
+            document.getElementById('weakestArea').textContent = areaNames[weakest] || '—';
+            
+            // Update progress bars
+            updateProgressBar('grammarProgress', studentData.exercises.grammar);
+            updateProgressBar('errorProgress', studentData.exercises.error);
+            updateProgressBar('readingProgress', studentData.exercises.reading);
+            updateProgressBar('survivalProgress', studentData.exercises.survival, studentData.exercises.sachtext);
+            
+            // Update readiness meter
+            updateReadinessMeter(accuracy);
+        }
+
+        function updateProgressBar(id, data1, data2 = null) {
+            let attempted = data1.attempted;
+            let correct = data1.correct;
+
+            if (data2) {
+                attempted += data2.attempted;
+                correct += data2.correct;
+            }
+
+            const percentage = attempted > 0 ? Math.round((correct / attempted) * 100) : 0;
+            const element = document.getElementById(id);
+            if (element) {
+                element.style.width = percentage + '%';
+                element.textContent = percentage + '%';
             }
         }
 
-        // Übung 3: Überschriften
-        function checkDrill3() {
-            const answer = document.querySelector('input[name="q3"]:checked');
-            const feedback = document.getElementById('feedback-q3');
-            
-            if (!answer) {
-                feedback.textContent = "Bitte wähle eine Antwort aus.";
-                feedback.className = "feedback wrong";
-                return;
-            }
 
-            if (answer.value === 'correct') {
-                feedback.textContent = "Genau richtig! Diese Überschrift nennt die Fakten (Was? Wo?) und ist neutral.";
-                feedback.className = "feedback correct";
+        function updateReadinessMeter(percentage) {
+            const meterPercentage = document.getElementById('meterPercentage');
+            const readinessMessage = document.getElementById('readinessMessage');
+            const meterCircle = document.querySelector('.meter-circle');
+            
+            meterPercentage.textContent = percentage + '%';
+            
+            // Update CSS variable for conic gradient
+            const degrees = (percentage / 100) * 360;
+            meterCircle.style.setProperty('--progress-deg', degrees + 'deg');
+            
+            // Critical messages
+            if (percentage < 40) {
+                readinessMessage.textContent = 'Sehr viel Übung nötig! Arbeite systematisch an deinen Schwächen.';
+                readinessMessage.style.color = '#e74c3c';
+            } else if (percentage < 60) {
+                readinessMessage.textContent = 'Noch nicht ausreichend. Übe weiter, besonders die schwierigen Bereiche!';
+                readinessMessage.style.color = '#f39c12';
+            } else if (percentage < 75) {
+                readinessMessage.textContent = 'Guter Fortschritt, aber du kannst noch besser werden!';
+                readinessMessage.style.color = '#00897B';
+            } else if (percentage < 90) {
+                readinessMessage.textContent = 'Sehr gut! Du bist fast bereit. Wiederhole noch einmal die schwierigen Themen.';
+                readinessMessage.style.color = '#4CAF50';
             } else {
-                feedback.textContent = "Nicht ganz. Die anderen Überschriften nutzen entweder stark wertende Sprache ('Bester Ort', 'Langweiliger Bau') oder Ausrufezeichen, was für einen Sachtext untypisch ist.";
-                feedback.className = "feedback wrong";
+                readinessMessage.textContent = 'Ausgezeichnet! Du bist gut vorbereitet. Bleib konzentriert!';
+                readinessMessage.style.color = '#4CAF50';
             }
         }
 
-        // --- Export-Funktionen ---
-
-        // 1. Download als .txt
-        const downloadBtn = document.getElementById('btn-download');
-        const textBefore = document.getElementById('text-before');
-        const textAfter = document.getElementById('text-after');
-
-        downloadBtn.addEventListener('click', () => {
-            const beforeContent = textBefore.value;
-            const afterContent = textAfter.value;
-
-            const fullText = `SACHTEXT-ÜBERARBEITUNG\n\n` +
-                             `====================\n` +
-                             `DEIN ENTWURF (VORHER)\n` +
-                             `====================\n\n` +
-                             `${beforeContent}\n\n` +
-                             `====================\n` +
-                             `DEINE VERBESSERUNG (NACHHER)\n` +
-                             `====================\n\n` +
-                             `${afterContent}`;
+        // Kompetenzen Content
+        function loadKompetenzContent() {
+            const content = document.getElementById('kompetenzContent');
             
-            const blob = new Blob([fullText], { type: 'text/plain;charset=utf-8' });
+            const kompetenzen = {
+                6: {
+                    title: 'Klasse 6 (Stage 7 – A1 CEFR)',
+                    skills: [
+                        { area: 'Hören & Lesen', desc: 'Hauptidee und Details in kurzen, vertrauten Texten verstehen', level: 'beginner' },
+                        { area: 'Schreiben & Grammatik', desc: 'Kurze, korrekte Sätze über sich selbst, Familie, Schule schreiben', level: 'beginner' },
+                        { area: 'Schreiben & Grammatik', desc: 'Großschreibung von Nomen korrekt anwenden', level: 'beginner' },
+                        { area: 'Schreiben & Grammatik', desc: 'Grundlegende Verbkonjugationen (sein, haben, wohnen, gehen, spielen)', level: 'beginner' },
+                        { area: 'Schreiben & Grammatik', desc: 'Verb-Zweit-Stellung im Hauptsatz beherrschen', level: 'intermediate' },
+                        { area: 'Fehlerkorrektur', desc: 'Einen Grammatik- oder Großschreibungsfehler identifizieren', level: 'intermediate' },
+                        { area: 'Sprechen', desc: 'Kurze Selbstvorstellung und Beschreibung vertrauter Dinge', level: 'beginner' }
+                    ]
+                },
+                7: {
+                    title: 'Klasse 7 (Stage 8 – A1+ bis A2 CEFR)',
+                    skills: [
+                        { area: 'Hören & Lesen', desc: 'Hauptideen und Meinungen in kurzen Texten verstehen', level: 'intermediate' },
+                        { area: 'Schreiben & Grammatik', desc: 'Verknüpfte Sätze und kurze Absätze über Schule, Freizeit schreiben', level: 'intermediate' },
+                        { area: 'Schreiben & Grammatik', desc: 'Präsens und Futur I korrekt verwenden', level: 'intermediate' },
+                        { area: 'Schreiben & Grammatik', desc: 'weil + Verb-End-Stellung richtig anwenden', level: 'intermediate' },
+                        { area: 'Schreiben & Grammatik', desc: 'Konnektoren für Ursache und Reihenfolge nutzen', level: 'intermediate' },
+                        { area: 'Fehlerkorrektur', desc: 'Mehrere Fehler in Zeitform, Wortstellung oder Konnektoren erkennen', level: 'advanced' },
+                        { area: 'Sprechen', desc: 'Kurze Dialoge führen; Meinungen äußern und begründen', level: 'intermediate' }
+                    ]
+                },
+                8: {
+                    title: 'Klasse 8 (Stage 9 – A2 CEFR)',
+                    skills: [
+                        { area: 'Hören & Lesen', desc: 'Details, Meinungen und Abfolgen in authentischen Texten verstehen', level: 'advanced' },
+                        { area: 'Schreiben & Grammatik', desc: 'Zusammenhängende Absätze (E-Mails, Tagebucheinträge) schreiben', level: 'advanced' },
+                        { area: 'Schreiben & Grammatik', desc: 'Präsens, Perfekt, Präteritum und Futur I korrekt einsetzen', level: 'advanced' },
+                        { area: 'Schreiben & Grammatik', desc: 'Korrekte Wortstellung in Haupt- und Nebensätzen', level: 'advanced' },
+                        { area: 'Schreiben & Grammatik', desc: 'Vielfältige Konnektoren verwenden (zuerst, dann, obwohl)', level: 'advanced' },
+                        { area: 'Fehlerkorrektur', desc: 'Absatz mit gemischten Fehlern editieren und neu schreiben', level: 'advanced' },
+                        { area: 'Sprechen', desc: 'Ausführliche Gespräche über Erfahrungen und Pläne führen', level: 'advanced' }
+                    ]
+                }
+            };
+            
+            const gradeData = kompetenzen[currentGrade];
+            
+            let html = `<h3>${gradeData.title}</h3>`;
+            html += '<table class="skills-table"><thead><tr><th>Bereich</th><th>Kompetenz</th><th>Niveau</th></tr></thead><tbody>';
+            
+            gradeData.skills.forEach(skill => {
+                const badgeClass = `skill-${skill.level}`;
+                const levelText = {
+                    beginner: 'Grundlegend',
+                    intermediate: 'Fortgeschritten',
+                    advanced: 'Erweitert'
+                };
+                html += `<tr>
+                    <td><strong>${skill.area}</strong></td>
+                    <td>${skill.desc}</td>
+                    <td><span class="skill-badge ${badgeClass}">${levelText[skill.level]}</span></td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            content.innerHTML = html;
+        }
+
+        // Grammatik Content
+        function loadGrammatikContent() {
+            const content = document.getElementById('grammatikContent');
+            
+            // --- NEW --- Add external links box first
+            let html = `
+                <div class="exercise-box">
+                    <h3>Externe Grammatik-Trainer (Links)</h3>
+                    <p>Hier findest du zusätzliche Übungen zu bestimmten Grammatikthemen. Diese Links öffnen in einem neuen Tab.</p>
+                    <div class="button-group">
+                        <a href="https://michkress-rgb.github.io/trainer/zeitenfolge-trainer%20(2).html" target="_blank" class="btn btn-primary">Zeitenfolge Trainer</a>
+                        <a href="https://michkress-rgb.github.io/zeitfolge2/zeitfolge-level2.html" target="_blank" class="btn btn-primary">Zeitenfolge (Level 2)</a>
+                        <a href="https://michkress-rgb.github.io/einheit2/grammatik-trainer.html" target="_blank" class="btn btn-primary">Grammatik Trainer (Einheit 2)</a>
+                        <a href="https://michkress-rgb.github.io/deutschlernen/deutschlernen.html" target="_blank" class="btn btn-primary">Allg. Deutsch Lernen</a>
+                        <a href="https://michkress-rgb.github.io/deutsch/index.html" target="_blank" class="btn btn-primary">Deutsch Index</a>
+                    </div>
+                </div>
+            `;
+            
+            if (currentGrade === 6) {
+                html += createGrammarExercise6();
+            } else if (currentGrade === 7) {
+                html += createGrammarExercise7();
+            } else {
+                html += createGrammarExercise8();
+            }
+            
+            content.innerHTML = html;
+            initializeDragAndDrop();
+        }
+
+        function createGrammarExercise6() {
+            return `
+                <div class="exercise-box">
+                    <h3>Übung 1: Relativsätze und Verbformen</h3>
+                    <div class="question">
+                        <p class="question-text">Ergänze die Relativpronomen und setze die Verben in der richtigen Zeitform ein:</p>
+                        <p>Der Mann, <span class="drop-zone" data-answer="der"></span> ich gestern <span class="drop-zone" data-answer="sah"></span>, ist mein Nachbar. Das Buch, <span class="drop-zone" data-answer="das"></span> auf dem Tisch <span class="drop-zone" data-answer="liegt"></span>, gehört meiner Schwester.</p>
+                        <div class="word-bank" id="bank1">
+                            <div class="draggable-word" draggable="true">der</div>
+                            <div class="draggable-word" draggable="true">den</div>
+                            <div class="draggable-word" draggable="true">das</div>
+                            <div class="draggable-word" draggable="true">sah</div>
+                            <div class="draggable-word" draggable="true">sehen</div>
+                            <div class="draggable-word" draggable="true">liegt</div>
+                            <div class="draggable-word" draggable="true">legen</div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkGrammarAnswers(this, 'grammar')">Prüfen</button>
+                    </div>
+                </div>
+
+                <div class="exercise-box">
+                    <h3>Übung 2: Konjunktiv II (Höflichkeit)</h3>
+                    <div class="question">
+                        <p class="question-text">Formuliere die Sätze höflicher mit Konjunktiv II:</p>
+                        <p>1. Kannst du mir helfen? → <span class="drop-zone" data-answer="Könntest"></span> du mir helfen?</p>
+                        <p>2. Haben Sie Zeit? → <span class="drop-zone" data-answer="Hätten"></span> Sie Zeit?</p>
+                        <div class="word-bank" id="bank2">
+                            <div class="draggable-word" draggable="true">Könntest</div>
+                            <div class="draggable-word" draggable="true">Könnten</div>
+                            <div class="draggable-word" draggable="true">Hätten</div>
+                            <div class="draggable-word" draggable="true">Hatten</div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkGrammarAnswers(this, 'grammar')">Prüfen</button>
+                    </div>
+                </div>
+                
+                <div class="exercise-box">
+                    <h3>Übung 3: Adjektivdeklination (Akkusativ & Dativ)</h3>
+                    <div class="question">
+                        <p class="question-text">Ergänze die richtigen Adjektivendungen:</p>
+                        <p>Der Mann gibt sein<span class="drop-zone" data-answer="em"></span> klein<span class="drop-zone" data-answer="en"></span> Hund ein<span class="drop-zone" data-answer="en"></span> groß<span class="drop-zone" data-answer="en"></span> Knochen.</p>
+                        <div class="word-bank" id="bank7">
+                            <div class="draggable-word" draggable="true">em</div>
+                            <div class="draggable-word" draggable="true">en</div>
+                            <div class="draggable-word" draggable="true">en</div>
+                            <div class="draggable-word" draggable="true">en</div>
+                            <div class="draggable-word" draggable="true">er</div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkGrammarAnswers(this, 'grammar')">Prüfen</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createGrammarExercise7() {
+            return `
+                <div class="exercise-box">
+                    <h3>Übung 1: Nebensätze mit "weil"</h3>
+                    <div class="question">
+                        <p class="question-text">Verbinde die Sätze mit "weil" (achte auf die Verb-End-Stellung):</p>
+                        <p>Ich bleibe zu Hause, weil ich <span class="drop-zone" data-answer="krank"></span> <span class="drop-zone" data-answer="bin"></span>.</p>
+                        <p>Sie lernt viel, weil sie gute Noten <span class="drop-zone" data-answer="bekommen"></span> <span class="drop-zone" data-answer="möchte"></span>.</p>
+                        <div class="word-bank" id="bank3">
+                            <div class="draggable-word" draggable="true">krank</div>
+                            <div class="draggable-word" draggable="true">bin</div>
+                            <div class="draggable-word" draggable="true">ist</div>
+                            <div class="draggable-word" draggable="true">bekommen</div>
+                            <div class="draggable-word" draggable="true">möchte</div>
+                            <div class="draggable-word" draggable="true">will</div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkGrammarAnswers(this, 'grammar')">Prüfen</button>
+                    </div>
+                </div>
+
+                <div class="exercise-box">
+                    <h3>Übung 2: Präteritum</h3>
+                    <div class="question">
+                        <p class="question-text">Setze die Verben ins Präteritum:</p>
+                        <p>Gestern <span class="drop-zone" data-answer="ging"></span> ich ins Kino. Der Film <span class="drop-zone" data-answer="war"></span> sehr spannend. Wir <span class="drop-zone" data-answer="hatten"></span> viel Spaß.</p>
+                        <div class="word-bank" id="bank4">
+                            <div class="draggable-word" draggable="true">ging</div>
+                            <div class="draggable-word" draggable="true">gehe</div>
+                            <div class="draggable-word" draggable="true">war</div>
+                            <div class="draggable-word" draggable="true">ist</div>
+                            <div class="draggable-word" draggable="true">hatten</div>
+                            <div class="draggable-word" draggable="true">haben</div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkGrammarAnswers(this, 'grammar')">Prüfen</button>
+                    </div>
+                </div>
+                
+                <div class="exercise-box">
+                    <h3>Übung 3: Zweiteilige Konnektoren</h3>
+                    <div class="question">
+                        <p class="question-text">Setze die fehlenden Konnektoren ein:</p>
+                        <p>Wir fahren <span class="drop-zone" data-answer="entweder"></span> nach Italien <span class="drop-zone" data-answer="oder"></span> nach Spanien.</p>
+                        <p>Er ist <span class="drop-zone" data-answer="weder"></span> müde <span class="drop-zone" data-answer="noch"></span> hungrig.</p>
+                        <div class="word-bank" id="bank8">
+                            <div class="draggable-word" draggable="true">entweder</div>
+                            <div class="draggable-word" draggable="true">oder</div>
+                            <div class="draggable-word" draggable="true">weder</div>
+                            <div class="draggable-word" draggable="true">noch</div>
+                            <div class="draggable-word" draggable="true">und</div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkGrammarAnswers(this, 'grammar')">Prüfen</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createGrammarExercise8() {
+            return `
+                <div class="exercise-box">
+                    <h3>Übung 1: Passiv</h3>
+                    <div class="question">
+                        <p class="question-text">Forme die Sätze ins Passiv um:</p>
+                        <p>Die Schüler schreiben einen Test. → Ein Test <span class="drop-zone" data-answer="wird"></span> <span class="drop-zone" data-answer="geschrieben"></span>.</p>
+                        <p>Der Autor veröffentlichte das Buch. → Das Buch <span class="drop-zone" data-answer="wurde"></span> <span class="drop-zone" data-answer="veröffentlicht"></span>.</p>
+                        <div class="word-bank" id="bank5">
+                            <div class="draggable-word" draggable="true">wird</div>
+                            <div class="draggable-word" draggable="true">wurde</div>
+                            <div class="draggable-word" draggable="true">geschrieben</div>
+                            <div class="draggable-word" draggable="true">veröffentlicht</div>
+                            <div class="draggable-word" draggable="true">schreiben</div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkGrammarAnswers(this, 'grammar')">Prüfen</button>
+                    </div>
+                </div>
+
+                <div class="exercise-box">
+                    <h3>Übung 2: Komplexe Nebensätze</h3>
+                    <div class="question">
+                        <p class="question-text">Vervollständige die Sätze mit den richtigen Konjunktionen und Verbformen:</p>
+                        <p><span class="drop-zone" data-answer="Obwohl"></span> es regnete, gingen wir spazieren, <span class="drop-zone" data-answer="weil"></span> wir frische Luft <span class="drop-zone" data-answer="brauchten"></span>.</p>
+                        <div class="word-bank" id="bank6">
+                            <div class="draggable-word" draggable="true">Obwohl</div>
+                            <div class="draggable-word" draggable="true">Weil</div>
+                            <div class="draggable-word" draggable="true">weil</div>
+                            <div class="draggable-word" draggable="true">brauchten</div>
+                            <div class="draggable-word" draggable="true">brauchen</div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkGrammarAnswers(this, 'grammar')">Prüfen</button>
+                    </div>
+                </div>
+                
+                <div class="exercise-box">
+                    <h3>Übung 3: Konjunktiv I (Indirekte Rede)</h3>
+                    <div class="question">
+                        <p class="question-text">Setze die Verben in den Konjunktiv I:</p>
+                        <p>Direkte Rede: "Ich habe keine Zeit."</p>
+                        <p>Indirekte Rede: Er sagt, er <span class="drop-zone" data-answer="habe"></span> keine Zeit.</p>
+                        <p>Direkte Rede: "Wir gehen ins Kino."</p>
+                        <p>Indirekte Rede: Sie erzählen, sie <span class="drop-zone" data-answer="gehen"></span> ins Kino.</p>
+                        <div class="word-bank" id="bank9">
+                            <div class="draggable-word" draggable="true">habe</div>
+                            <div class="draggable-word" draggable="true">hätte</div>
+                            <div class="draggable-word" draggable="true">gehen</div>
+                            <div class="draggable-word" draggable="true">gingen</div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkGrammarAnswers(this, 'grammar')">Prüfen</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Fehlerkorrektur Content
+        function loadFehlerkorrekturContent() {
+            const content = document.getElementById('fehlerkorrekturContent');
+            let html = '';
+            
+            if (currentGrade === 6) {
+                html = `
+                    <div class="exercise-box">
+                        <h3>Finde die Fehler (klicke auf fehlerhafte Wörter)</h3>
+                        <div class="question">
+                            <p class="question-text">Klicke auf alle Wörter mit Fehlern (Grammatik & Großschreibung):</p>
+                            <p id="errorText1">
+                                ${createClickableText('Obwohl', false)}
+                                ${createClickableText('es', false)}
+                                ${createClickableText('gestern', false)}
+                                ${createClickableText('stark', false)}
+                                ${createClickableText('geregnet', false)}
+                                ${createClickableText('hat', false)}
+                                ${createClickableText('sind', true)}
+                                ${createClickableText('wir', false)}
+                                ${createClickableText('trotzdem', false)}
+                                ${createClickableText('spazieren', false)}
+                                ${createClickableText('gegangen', false)}.
+                                ${createClickableText('Mein', false)}
+                                ${createClickableText('bruder', true)}
+                                ${createClickableText('meinte', false)}
+                                ${createClickableText('das', true)}
+                                ${createClickableText('es', false)}
+                                ${createClickableText('zu', false)}
+                                ${createClickableText('kalt', false)}
+                                ${createClickableText('währe', true)}.
+                            </p>
+                            <button class="btn btn-primary" onclick="checkErrorCorrection(this, 'error')">Prüfen</button>
+                        </div>
+                    </div>
+
+                    <div class="exercise-box">
+                        <h3>Großschreibung korrigieren</h3>
+                        <div class="question">
+                            <p class="question-text">Klicke auf alle Wörter, die großgeschrieben werden müssen:</p>
+                            <p id="capText1">
+                                ${createCapitalizeText('beim', true)}
+                                ${createCapitalizeText('turnen', true)}
+                                ${createCapitalizeText('habe', false)}
+                                ${createCapitalizeText('ich', false)}
+                                ${createCapitalizeText('mir', false)}
+                                ${createCapitalizeText('gestern', false)}
+                                ${createCapitalizeText('abend', true)}
+                                ${createCapitalizeText('den', false)}
+                                ${createCapitalizeText('fuß', true)}
+                                ${createCapitalizeText('verstaucht', false)}.
+                            </p>
+                            <button class="btn btn-primary" onclick="checkCapitalization(this, 'error')">Prüfen</button>
+                        </div>
+                    </div>
+                    
+                    <div class="exercise-box">
+                        <h3>Rechtschreibfehler finden</h3>
+                        <div class="question">
+                            <p class="question-text">Finde die Rechtschreibfehler:</p>
+                            <p id="errorText4">
+                                ${createClickableText('Die', false)}
+                                ${createClickableText('Kinder', false)}
+                                ${createClickableText('spielen', false)}
+                                ${createClickableText('auf', false)}
+                                ${createClickableText('der', false)}
+                                ${createClickableText('Wise', true)}
+                                ${createClickableText('und', false)}
+                                ${createClickableText('lachen', false)}.
+                                ${createClickableText('Es', false)}
+                                ${createClickableText('ist', false)}
+                                ${createClickableText('ein', false)}
+                                ${createClickableText('schöhner', true)}
+                                ${createClickableText('Tag', false)}.
+                                ${createClickableText('Plötzlich', false)}
+                                ${createClickableText('sehen', false)}
+                                ${createClickableText('sie', false)}
+                                ${createClickableText('einen', false)}
+                                ${createClickableText('fil', true)}
+                                ${createClickableText('zu', false)}
+                                ${createClickableText('großen', false)}
+                                ${createClickableText('Ballon', false)}.
+                            </p>
+                            <button class="btn btn-primary" onclick="checkErrorCorrection(this, 'error')">Prüfen</button>
+                        </div>
+                    </div>
+                `;
+            } else if (currentGrade === 7) {
+                html = `
+                    <div class="exercise-box">
+                        <h3>Satzbau-Fehler finden</h3>
+                        <div class="question">
+                            <p class="question-text">Finde alle Fehler (Satzbau, Rechtschreibung, Großschreibung):</p>
+                            <p id="errorText2">
+                                ${createClickableText('Als', false)}
+                                ${createClickableText('ich', false)}
+                                ${createClickableText('in', false)}
+                                ${createClickableText('die', false)}
+                                ${createClickableText('schule', true)}
+                                ${createClickableText('gekommen', false)}
+                                ${createClickableText('bin', false)},
+                                ${createClickableText('die', true)}
+                                ${createClickableText('Lehrerin', false)}
+                                ${createClickableText('hat', true)}
+                                ${createClickableText('schon', false)}
+                                ${createClickableText('mit', false)}
+                                ${createClickableText('dem', false)}
+                                ${createClickableText('Unterricht', false)}
+                                ${createClickableText('angefangen', false)}.
+                                ${createClickableText('Sie', false)}
+                                ${createClickableText('meinte', false)},
+                                ${createClickableText('ich', false)}
+                                ${createClickableText('sollte', false)}
+                                ${createClickableText('früher', false)}
+                                ${createClickableText('aufgestanden', true)}.
+                            </p>
+                            <button class="btn btn-primary" onclick="checkErrorCorrection(this, 'error')">Prüfen</button>
+                        </div>
+                    </div>
+                    
+                    <div class="exercise-box">
+                        <h3>Tempus-Fehler (Zeitformen)</h3>
+                        <div class="question">
+                            <p class="question-text">Finde die Fehler in den Zeitformen:</p>
+                            <p id="errorText5">
+                                ${createClickableText('Gestern', false)}
+                                ${createClickableText('ging', false)}
+                                ${createClickableText('ich', false)}
+                                ${createClickableText('ins', false)}
+                                ${createClickableText('Kino', false)}.
+                                ${createClickableText('Der', false)}
+                                ${createClickableText('Film', false)}
+                                ${createClickableText('ist', true)}
+                                ${createClickableText('sehr', false)}
+                                ${createClickableText('spannend', false)}.
+                                ${createClickableText('Nachdem', false)}
+                                ${createClickableText('ich', false)}
+                                ${createClickableText('nach', false)}
+                                ${createClickableText('Hause', false)}
+                                ${createClickableText('kam', false)},
+                                ${createClickableText('habe', true)}
+                                ${createClickableText('ich', false)}
+                                ${createClickableText('sofort', false)}
+                                ${createClickableText('meine', false)}
+                                ${createClickableText('Hausaufgaben', false)}
+                                ${createClickableText('gemacht', false)}.
+                            </p>
+                            <button class="btn btn-primary" onclick="checkErrorCorrection(this, 'error')">Prüfen</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                html = `
+                    <div class="exercise-box">
+                        <h3>Komplexe Fehlerkorrektur</h3>
+                        <div class="question">
+                            <p class="question-text">Finde alle Fehler in diesem Absatz (Zeitformen, Satzbau, Stil, Anglizismen):</p>
+                            <p id="errorText3">
+                                ${createClickableText('Mein', false)}
+                                ${createClickableText('Opa', false)}
+                                ${createClickableText('erzählt', false)}
+                                ${createClickableText('oft', false)}
+                                ${createClickableText('stories', true)}
+                                ${createClickableText('aus', false)}
+                                ${createClickableText('seiner', false)}
+                                ${createClickableText('Kindheit', false)}.
+                                ${createClickableText('Er', false)}
+                                ${createClickableText('ist', false)}
+                                ${createClickableText('in', false)}
+                                ${createClickableText('einem', false)}
+                                ${createClickableText('kleinen', false)}
+                                ${createClickableText('village', true)}
+                                ${createClickableText('aufgewachsen', false)},
+                                ${createClickableText('wo', false)}
+                                ${createClickableText('alle', false)}
+                                ${createClickableText('sich', false)}
+                                ${createClickableText('gegenseitig', false)}
+                                ${createClickableText('kannten', false)}.
+                                ${createClickableText('Die', false)}
+                                ${createClickableText('kids', true)}
+                                ${createClickableText('dort', false)}
+                                ${createClickableText('hatten', false)}
+                                ${createClickableText('kein', false)}
+                                ${createClickableText('Internet', false)}.
+                            </p>
+                            <button class="btn btn-primary" onclick="checkErrorCorrection(this, 'error')">Prüfen</button>
+                        </div>
+                    </div>
+                    
+                    <div class="exercise-box">
+                        <h3>Stil- und Wortwahlfehler</h3>
+                        <div class="question">
+                            <p class="question-text">Finde die unangemessenen oder falschen Wörter (Stil, Wortwahl):</p>
+                            <p id="errorText6">
+                                ${createClickableText('Der', false)}
+                                ${createClickableText('Autor', false)}
+                                ${createClickableText('sagt', true)}
+                                ${createClickableText('in', false)}
+                                ${createClickableText('seinem', false)}
+                                ${createClickableText('Text', false)},
+                                ${createClickableText('dass', false)}
+                                ${createClickableText('Klimawandel', false)}
+                                ${createClickableText('schlecht', true)}
+                                ${createClickableText('ist', false)}.
+                                ${createClickableText('Er', false)}
+                                ${createClickableText('sagt', true)}
+                                ${createClickableText('auch', false)},
+                                ${createClickableText('dass', false)}
+                                ${createClickableText('wir', false)}
+                                ${createClickableText('Dinge', true)}
+                                ${createClickableText('machen', false)}
+                                ${createClickableText('müssen', false)}.
+                                ${createClickableText('Das', false)}
+                                ${createClickableText('ist', false)}
+                                ${createClickableText('total', true)}
+                                ${createClickableText('wichtig', false)}.
+                            </p>
+                            <button class="btn btn-primary" onclick="checkErrorCorrection(this, 'error')">Prüfen</button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            content.innerHTML = html;
+        }
+
+        function createClickableText(word, isError) {
+            return `<span class="clickable-word" data-error="${isError}">${word}</span>`;
+        }
+
+        function createCapitalizeText(word, shouldCapitalize) {
+            return `<span class="capitalize-word" data-capitalize="${shouldCapitalize}">${word}</span>`;
+        }
+
+        // Leseverstehen Content
+        function loadLeseContent() {
+            const content = document.getElementById('leseContent');
+            let html = '';
+            
+            if (currentGrade === 6) {
+                html = `
+                    <div class="exercise-box">
+                        <h3>Textinterpretation: „Die Entscheidung“</h3>
+                        <div class="sachtext-passage">
+                            <p>Als Lukas an jenem regnerischen Novembermorgen erwachte, wusste er bereits, dass dieser Tag anders sein würde. Das Gefühl, das sich in seiner Magengrube zusammenballte, war ihm nicht fremd – es war dieselbe Mischung aus Vorfreude und Unbehagen, die ihn stets begleitete, wenn er vor einer wichtigen Entscheidung stand.</p>
+                            <p>Seine Eltern hatten ihm am Abend zuvor verkündet, dass sie nach München ziehen würden. Der neue Job seines Vaters sei eine großartige Chance, erklärte seine Mutter mit einem Lächeln, das ihre eigene Unsicherheit nur mühsam verbergen konnte.</p>
+                        </div>
+                        <div class="question" id="reading1">
+                            <p class="question-text">1. Beschreibe Lukas' emotionalen Zustand zu Beginn. Was verrät die Metapher „Magengrube"?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Die Metapher zeigt seine innere Anspannung und nervöse Vorfreude gemischt mit Sorge.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Er ist einfach nur müde vom Aufwachen.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Er freut sich uneingeschränkt auf den Umzug.
+                            </div>
+                        </div>
+                        <div class="question" id="reading2">
+                            <p class="question-text">2. Warum lächelt die Mutter, obwohl sie selbst unsicher ist?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Sie versucht, Lukas zu beruhigen und ihre eigenen Zweifel zu verbergen.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Sie freut sich aufrichtig über den Umzug.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Sie versteht Lukas' Gefühle nicht.
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkReadingAnswers(this, 'reading')">Prüfen</button>
+                    </div>
+                    
+                    <div class="exercise-box">
+                        <h3>Fabel: „Der Fuchs und die Trauben“</h3>
+                        <div class="sachtext-passage">
+                            <p>Ein Fuchs sah süße Trauben an einem hohen Weinstock hängen. Er versuchte alles, um sie zu erreichen, sprang und streckte sich, doch vergeblich. Schließlich drehte er sich mit einem Schnauben um und sagte: „Sie sind mir eh zu sauer. Ich mag keine sauren Trauben."</p>
+                        </div>
+                        <div class="question" id="reading7">
+                            <p class="question-text">1. Warum sagt der Fuchs, die Trauben seien sauer?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Er kann sie nicht erreichen und möchte seinen Misserfolg verbergen.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Er hat die Trauben probiert und sie schmecken ihm nicht.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Er mag prinzipiell keine Trauben.
+                            </div>
+                        </div>
+                        <div class="question" id="reading8">
+                            <p class="question-text">2. Was ist die Moral (Lehre) dieser Fabel?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Manchmal redet man Dinge schlecht, die man nicht haben kann.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Man sollte nur Dinge essen, die man leicht erreicht.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Füchse sind kluge Tiere.
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkReadingAnswers(this, 'reading')">Prüfen</button>
+                    </div>
+                `;
+            } else if (currentGrade === 7) {
+                html = `
+                    <div class="exercise-box">
+                        <h3>Detailliertes Leseverstehen: „Die Mutprobe“</h3>
+                        <div class="sachtext-passage">
+                            <p>Emma stand am Rand des Schwimmbeckens und starrte auf das Zehn-Meter-Brett. Von hier unten wirkte es noch höher, als sie es in Erinnerung hatte. Ihr Herz klopfte wild, während ihre Klassenkameraden unten warteten und sie anfeuerten. „Du schaffst das!", rief Tom, ihr bester Freund.</p>
+                            <p>Doch Emma zweifelte. Warum hatte sie überhaupt zugestimmt, von diesem Brett zu springen? Nur weil Lisa behauptet hatte, Emma sei zu ängstlich? Das war doch kindisch. Dennoch wollte sie beweisen, dass Lisa sich irrte.</p>
+                        </div>
+                        <div class="question" id="reading3">
+                            <p class="question-text">1. Was zeigt, dass Emma Angst hat? Nenne zwei Beispiele aus dem Text.</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Ihr wild klopfendes Herz und dass das Brett höher wirkt als erinnert.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Sie ruft nach Tom und fragt ihn um Hilfe.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Sie springt sofort vom Brett.
+                            </div>
+                        </div>
+                        <div class="question" id="reading4">
+                            <p class="question-text">2. Was ist Emmas Hauptmotivation, den Sprung zu wagen?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Sie will beweisen, dass die Behauptung von Lisa falsch ist.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Sie möchte ihren besten Freund Tom beeindrucken.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Sie liebt das Gefühl des Springens vom Zehn-Meter-Brett.
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkReadingAnswers(this, 'reading')">Prüfen</button>
+                    </div>
+                    
+                    <div class="exercise-box">
+                        <h3>Textinterpretation: „Digital Detox“</h3>
+                        <div class="sachtext-passage">
+                            <p>Jonas legte sein Smartphone weg. Es war der erste Tag seiner selbst auferlegten „Digital Detox“-Woche. Die ersten Stunden waren die Hölle. Er fühlte eine ständige Unruhe, als würde er etwas Wichtiges verpassen – die sogenannte "FOMO" (Fear Of Missing Out). Statt durch Feeds zu scrollen, starrte er die Wand an. Doch am zweiten Tag nahm er ein altes Buch zur Hand. Am dritten Tag traf er sich mit Freunden im Park – ohne dass jemand auf ein Display starrte. Am Ende der Woche fühlte er sich seltsam befreit.</p>
+                        </div>
+                        <div class="question" id="reading9">
+                            <p class="question-text">1. Was bedeutet "FOMO" im Kontext des Textes?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Die Angst, wichtige soziale Interaktionen oder Neuigkeiten zu verpassen.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Die Freude, online zu sein.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Die Abkürzung für eine neue Social-Media-App.
+                            </div>
+                        </div>
+                        <div class="question" id="reading10">
+                            <p class="question-text">2. Wie verändert sich Jonas' Zustand während der Woche?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Von anfänglicher Unruhe und Langeweile zu einem Gefühl der Befreiung.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Er wird immer unruhiger und bricht das Experiment ab.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Er merkt, dass er sein Smartphone überhaupt nicht braucht.
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkReadingAnswers(this, 'reading')">Prüfen</button>
+                    </div>
+                `;
+            } else {
+                html = `
+                    <div class="exercise-box">
+                        <h3>Literarische Analyse: „Der innere Konflikt“</h3>
+                        <div class="sachtext-passage">
+                            <p>Sarah stand vor der verschlossenen Tür. Hinter ihr lag der lange, dunkle Korridor, vor ihr das Unbekannte. Sie hörte ihre Lehrerin noch immer rufen: „Komm zurück! Das ist zu gefährlich!" Aber Sarah wusste, dass sie keine Wahl hatte. Ihre beste Freundin war dort drinnen, und sie würde sie nicht im Stich lassen.</p>
+                            <p>Sie atmete tief ein, ignorierte das Zittern ihrer Hände und drückte die Klinke herunter. In diesem Moment ging es nicht mehr um Angst oder Gehorsam, sondern nur noch um Loyalität.</p>
+                        </div>
+                        <div class="question" id="reading5">
+                            <p class="question-text">1. Welche sprachlichen Mittel erzeugen Spannung in diesem Text?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Kontraste (dunkler Korridor vs. Unbekanntes) und die Beschreibung körperlicher Angstsymptome (Zittern).
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Nur lange, beschreibende Sätze.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Die wörtliche Rede der Lehrerin.
+                            </div>
+                        </div>
+                        <div class="question" id="reading6">
+                            <p class="question-text">2. Welcher innere Konflikt wird bei Sarah deutlich?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Der Konflikt zwischen ihrer Angst (und dem Gehorsam) und ihrer Loyalität zur Freundin.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Der Konflikt zwischen ihr und der Lehrerin.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Der Konflikt, ob sie die Tür leise oder laut öffnen soll.
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkReadingAnswers(this, 'reading')">Prüfen</button>
+                    </div>
+                    
+                    <div class="exercise-box">
+                        <h3>Gedichtinterpretation: „Der Erlkönig“ (Auszug)</h3>
+                        <div class="sachtext-passage">
+                            <p>Wer reitet so spät durch Nacht und Wind?<br>
+                            Es ist der Vater mit seinem Kind;<br>
+                            Er hat den Knaben wohl in dem Arm,<br>
+                            Er fasst ihn sicher, er hält ihn warm.</p>
+                            <p>„Mein Sohn, was birgst du so bang dein Gesicht?“ –<br>
+                            „Siehst, Vater, du den Erlkönig nicht?<br>
+                            Den Erlenkönig mit Kron’ und Schweif?“ –<br>
+                            „Mein Sohn, es ist ein Nebelstreif.“ –</p>
+                        </div>
+                        <div class="question" id="reading11">
+                            <p class="question-text">1. Welche Atmosphäre wird in der ersten Strophe geschaffen?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Eine unheimliche, stürmische und dringliche Atmosphäre, gemischt mit väterlicher Sorge.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Eine ruhige und friedliche Nachtszene.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Eine fröhliche und ausgelassene Stimmung.
+                            </div>
+                        </div>
+                        <div class="question" id="reading12">
+                            <p class="question-text">2. Was zeigt der Dialog zwischen Vater und Sohn in der zweiten Strophe?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Der Sohn sieht eine übernatürliche Bedrohung (Erlkönig), die der Vater rational erklärt (Nebelstreif).
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Der Vater glaubt dem Sohn und hat ebenfalls Angst vor dem Erlkönig.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Der Sohn macht einen Scherz, um den Vater zu erschrecken.
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkReadingAnswers(this, 'reading')">Prüfen</button>
+                    </div>
+                `;
+            }
+            
+            content.innerHTML = html;
+        }
+
+        // Sachtexte Content
+        function loadSachtexteContent() {
+            const content = document.getElementById('sachtexteContent');
+            let html = '';
+            
+            if (currentGrade === 6) {
+                html = `
+                    <div class="exercise-box">
+                        <h3>Sachtext: Klimawandel (Grundlagen)</h3>
+                        <div class="sachtext-passage">
+                            <p>Der Klimawandel ist eine der größten Herausforderungen unserer Zeit. Die Erderwärmung führt dazu, dass Gletscher schmelzen und der Meeresspiegel steigt. Extreme Wetterereignisse wie Stürme und Dürren werden häufiger. Wissenschaftler sind sich einig: Der Mensch trägt durch den Ausstoß von CO₂ maßgeblich zur Erderwärmung bei.</p>
+                        </div>
+                        <div class="question" id="sachtext1">
+                            <p class="question-text">1. Was ist eine Hauptursache des Klimawandels laut Text?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Der menschliche Ausstoß von CO₂
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Natürliche Erdzyklen allein
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Die Aktivität der Sonne
+                            </div>
+                        </div>
+                        <div class="question" id="sachtext2">
+                            <p class="question-text">2. Welche Folge des Klimawandels wird NICHT erwähnt?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Zunahme von Erdbeben
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Schmelzende Gletscher
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Extreme Wetterereignisse
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkReadingAnswers(this, 'sachtext')">Prüfen</button>
+                    </div>
+                    
+                    <div class="exercise-box">
+                        <h3>Sachtext: Verantwortung für ein Haustier</h3>
+                        <div class="sachtext-passage">
+                            <p>Ein Haustier zu besitzen, bringt viel Freude, aber auch eine große Verantwortung. Hunde brauchen täglichen Auslauf und Training. Katzen benötigen saubere Katzentoiletten und Klettermöglichkeiten. Alle Tiere brauchen artgerechtes Futter, frisches Wasser und regelmäßige Besuche beim Tierarzt. Ein Tier ist kein Spielzeug, das man weglegen kann, wenn man keine Lust mehr hat, sondern ein Lebewesen, für das man viele Jahre sorgt.</p>
+                        </div>
+                        <div class="question" id="sachtext7">
+                            <p class="question-text">1. Was ist die Hauptbotschaft des Textes?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Haustierhaltung erfordert langfristiges Engagement und Verantwortung.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Hunde sind bessere Haustiere als Katzen.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Haustiere sind nur zum Spielen da.
+                            </div>
+                        </div>
+                        <div class="question" id="sachtext8">
+                            <p class="question-text">2. Was ist laut Text ein Grundbedürfnis, das ALLE Tiere teilen?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Artgerechtes Futter, Wasser und tierärztliche Versorgung.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Täglicher Auslauf im Park.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Eine Klettermöglichkeit.
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkReadingAnswers(this, 'sachtext')">Prüfen</button>
+                    </div>
+                `;
+            } else if (currentGrade === 7) {
+                html = `
+                    <div class="exercise-box">
+                        <h3>Sachtext: Erneuerbare Energien</h3>
+                        <div class="sachtext-passage">
+                            <p>Erneuerbare Energien wie Solar- und Windkraft gewinnen zunehmend an Bedeutung. Anders als fossile Brennstoffe sind sie praktisch unerschöpflich und verursachen deutlich weniger CO₂-Emissionen. Allerdings stellt die Energiespeicherung noch eine Herausforderung dar, da Wind und Sonne nicht konstant verfügbar sind. Moderne Batterietechnologien sollen dieses Problem in Zukunft lösen.</p>
+                        </div>
+                        <div class="question" id="sachtext3">
+                            <p class="question-text">1. Welcher Vorteil erneuerbarer Energien wird genannt?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Sie sind unerschöpflich und verursachen weniger CO₂
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Sie sind immer verfügbar
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Sie brauchen keine Speicherung
+                            </div>
+                        </div>
+                        <div class="question" id="sachtext4">
+                            <p class="question-text">2. Was ist laut Text eine aktuelle Herausforderung?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Die Energiespeicherung bei wechselnder Verfügbarkeit
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Die hohen CO₂-Emissionen
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Die Erschöpfung der Energiequellen
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkReadingAnswers(this, 'sachtext')">Prüfen</button>
+                    </div>
+                    
+                    <div class="exercise-box">
+                        <h3>Sachtext: Die Geschichte des Internets</h3>
+                        <div class="sachtext-passage">
+                            <p>Das Internet, wie wir es heute kennen, begann in den 1960er Jahren als ein Projekt des US-Militärs namens ARPANET. Es sollte ein dezentrales Computernetzwerk schaffen, das selbst bei Ausfall einzelner Teile weiterfunktionieren könnte. In den 1980er Jahren wurde es für Universitäten geöffnet. Der große Durchbruch für die Öffentlichkeit kam jedoch erst 1991 mit der Erfindung des World Wide Web (WWW) durch Tim Berners-Lee, das grafische Oberflächen und Hyperlinks ermöglichte.</p>
+                        </div>
+                        <div class="question" id="sachtext9">
+                            <p class="question-text">1. Was war der ursprüngliche Zweck des ARPANET?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Ein ausfallsicheres, dezentrales Militärnetzwerk.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Eine Plattform für soziale Medien zu schaffen.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Den Universitäten den Austausch von E-Mails zu ermöglichen.
+                            </div>
+                        </div>
+                        <div class="question" id="sachtext10">
+                            <p class="question-text">2. Was war der entscheidende Faktor für die Popularität des Internets in der Öffentlichkeit?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Die Erfindung des World Wide Web (WWW) mit grafischen Oberflächen.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Die Öffnung für Universitäten in den 1980er Jahren.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Das ARPANET-Projekt des Militärs.
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkReadingAnswers(this, 'sachtext')">Prüfen</button>
+                    </div>
+                `;
+            } else {
+                html = `
+                    <div class="exercise-box">
+                        <h3>Sachtext: Künstliche Intelligenz</h3>
+                        <div class="sachtext-passage">
+                            <p>Künstliche Intelligenz (KI) revolutioniert zahlreiche Bereiche unseres Lebens. Von selbstfahrenden Autos bis zur medizinischen Diagnostik – die Einsatzmöglichkeiten scheinen grenzenlos. Kritiker warnen jedoch vor den Risiken: Arbeitsplätze könnten wegfallen, und die Kontrolle über hochentwickelte KI-Systeme birgt ethische Fragestellungen. Die Gesellschaft steht vor der Aufgabe, einen verantwortungsvollen Umgang mit dieser Technologie zu finden.</p>
+                        </div>
+                        <div class="question" id="sachtext5">
+                            <p class="question-text">1. Der Text präsentiert KI als:</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Technologie mit großem Potenzial, aber auch Risiken
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Ausschließlich positive Entwicklung
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Gefährliche Technologie ohne Nutzen
+                            </div>
+                        </div>
+                        <div class="question" id="sachtext6">
+                            <p class="question-text">2. Welche ethische Frage wird impliziert?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Wie kontrollieren und verantworten wir hochentwickelte KI?
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Sollen wir KI komplett verbieten?
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Ist KI überhaupt möglich?
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkReadingAnswers(this, 'sachtext')">Prüfen</button>
+                    </div>
+                    
+                    <div class="exercise-box">
+                        <h3>Sachtext: Fake News und Medienkompetenz</h3>
+                        <div class="sachtext-passage">
+                            <p>Im digitalen Zeitalter verbreiten sich Informationen rasend schnell – leider auch Falschinformationen, sogenannte „Fake News“. Diese können gezielt eingesetzt werden, um Meinungen zu manipulieren oder Panik zu säen. Ein Merkmal von Fake News ist oft die reißerische Überschrift und das Fehlen von überprüfbaren Quellen. Umso wichtiger ist Medienkompetenz: die Fähigkeit, Informationen kritisch zu hinterfragen, Quellen zu prüfen (Impressum, Autor) und nicht jede Nachricht ungeprüft zu teilen.</p>
+                        </div>
+                        <div class="question" id="sachtext11">
+                            <p class="question-text">1. Was ist laut Text ein typisches Merkmal von Fake News?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Reißerische Überschriften und fehlende Quellenangaben.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Langweilige Sprache und viele wissenschaftliche Zitate.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Sie werden nur in gedruckten Zeitungen veröffentlicht.
+                            </div>
+                        </div>
+                        <div class="question" id="sachtext12">
+                            <p class="question-text">2. Was versteht der Text unter „Medienkompetenz“?</p>
+                            <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                                Die Fähigkeit, Informationen kritisch zu bewerten und Quellen zu prüfen.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Die Fähigkeit, ein Smartphone schnell zu bedienen.
+                            </div>
+                            <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                                Die Fähigkeit, eigene Fake News zu erstellen.
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="checkReadingAnswers(this, 'sachtext')">Prüfen</button>
+                    </div>
+                `;
+            }
+            
+            content.innerHTML = html;
+        }
+
+        // Survival Content
+        function loadSurvivalContent() {
+            const content = document.getElementById('survivalContent');
+            
+            const html = `
+                <div class="exercise-box">
+                    <h3>Quiz: „Feuer machen" von Jack London</h3>
+                    
+                    <div class="question" id="survival1">
+                        <p class="question-text">1. Was ist das zentrale Problem des Protagonisten in der Geschichte?</p>
+                        <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                            Er muss bei extremer Kälte ein Feuer machen, um zu überleben.
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            Er sucht nach Gold im Yukon.
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            Er versucht, einen Fluss zu überqueren.
+                        </div>
+                    </div>
+
+                    <div class="question" id="survival2">
+                        <p class="question-text">2. Welcher fatale Fehler führt zum Tod des Protagonisten?</p>
+                        <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                            Er baut das Feuer unter einem schneebeladenen Baum, der das Feuer löscht.
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            Er hat keine Streichhölzer dabei.
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            Er wird von einem wilden Tier angegriffen.
+                        </div>
+                    </div>
+
+                    <div class="question" id="survival3">
+                        <p class="question-text">3. Welche Rolle spielt der Hund in der Geschichte?</p>
+                        <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                            Der Hund folgt seinem Instinkt und überlebt, während der Mensch stirbt.
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            Der Hund hilft dem Mann, das Feuer zu machen.
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            Der Hund stirbt vor dem Mann.
+                        </div>
+                    </div>
+
+                    <div class="question" id="survival4">
+                        <p class="question-text">4. Was symbolisiert das Feuer in der Geschichte?</p>
+                        <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                            Leben, Zivilisation und die Macht des Menschen über die Natur
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            Zerstörung und Gefahr
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            Nur eine praktische Wärmequelle ohne tiefere Bedeutung
+                        </div>
+                    </div>
+
+                    <div class="question" id="survival5">
+                        <p class="question-text">5. Welche Lektion vermittelt die Geschichte über den Menschen und die Natur?</p>
+                        <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                            Die Natur ist übermächtig; Überheblichkeit und Unterschätzung können tödlich sein.
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            Der Mensch kann die Natur immer kontrollieren.
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            Technologie ist nutzlos in der Wildnis.
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="checkReadingAnswers(this, 'survival')">Prüfen</button>
+                </div>
+
+                <div class="exercise-box">
+                    <h3>Allgemeines Survival-Wissen</h3>
+                    
+                    <div class="question" id="survival6">
+                        <p class="question-text">6. Was ist die „Dreierregel" beim Überleben?</p>
+                        <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                            3 Minuten ohne Luft, 3 Stunden ohne Schutz (bei Extremwetter), 3 Tage ohne Wasser, 3 Wochen ohne Nahrung
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            3 Schritte zum Feuermachen
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            3 Arten von essbaren Pflanzen
+                        </div>
+                    </div>
+
+                    <div class="question" id="survival7">
+                        <p class="question-text">7. Welche Priorität hat beim Überleben in der Wildnis die höchste Dringlichkeit?</p>
+                        <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                            Schutz vor extremen Witterungsbedingungen (Unterkühlung/Hitzschlag)
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            Nahrung finden
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            Ein Lager bauen
+                        </div>
+                    </div>
+
+                    <div class="question" id="survival8">
+                        <p class="question-text">8. Wie kann man in der Wildnis trinkbares Wasser gewinnen?</p>
+                        <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                            Abkochen, Filtern durch Stoff/Sand oder Wasserreinigungstabletten
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            Jedes Wasser aus Flüssen ist direkt trinkbar
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            Nur Regenwasser ist sicher
+                        </div>
+                    </div>
+                    
+                    <div class="question" id="survival9">
+                        <p class="question-text">9. Was bedeutet das Survival-Akronym S.T.O.P.?</p>
+                        <div class="mcq-option" data-correct="true" onclick="selectMCQ(this)">
+                            Stop (Anhalten), Think (Nachdenken), Observe (Beobachten), Plan (Planen)
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            Seek (Suchen), Travel (Reisen), Omit (Weglassen), Panic (Panik)
+                        </div>
+                        <div class="mcq-option" data-correct="false" onclick="selectMCQ(this)">
+                            Shout (Schreien), Tire (Ermüden), Overlook (Übersehen), Proceed (Fortfahren)
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="checkReadingAnswers(this, 'survival')">Prüfen</button>
+                </div>
+            `;
+            
+            content.innerHTML = html;
+        }
+
+        // Ergebnisse Content
+        function loadErgebnisseContent() {
+            const content = document.getElementById('ergebnisseContent');
+            
+            const categories = ['grammar', 'error', 'reading', 'sachtext', 'survival'];
+            let html = '<div class="stats-grid">';
+            
+            const names = {
+                grammar: 'Grammatik',
+                error: 'Fehlerkorrektur',
+                reading: 'Leseverstehen',
+                sachtext: 'Sachtexte',
+                survival: 'Survival'
+            };
+            
+            categories.forEach(cat => {
+                const data = studentData.exercises[cat];
+                const percentage = data.attempted > 0 ? Math.round((data.correct / data.attempted) * 100) : 0;
+                
+                html += `
+                    <div class="stat-card">
+                        <h3>${names[cat]}</h3>
+                        <div class="stat-number">${percentage}%</div>
+                        <div class="stat-label">${data.correct} / ${data.attempted} richtig</div>
+                        <div class="progress-bar" style="margin-top: 10px;">
+                            <div class="progress-fill" style="width: ${percentage}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            
+            // Recommendations
+            html += '<div class="exercise-box"><h3>Empfehlungen zur Verbesserung</h3>';
+            
+            let recommendations = 0;
+            categories.forEach(cat => {
+                const data = studentData.exercises[cat];
+                if (data.attempted > 0) {
+                    const percentage = Math.round((data.correct / data.attempted) * 100);
+                    
+                    if (percentage < 70) {
+                        html += `<p><strong>${names[cat]}:</strong> Du solltest diesen Bereich intensiv üben. Gehe die Übungen noch einmal durch und achte besonders auf die Fehler.</p>`;
+                        recommendations++;
+                    } else if (percentage < 85) {
+                        html += `<p><strong>${names[cat]}:</strong> Gute Leistung! Mit etwas mehr Übung erreichst du Spitzenleistungen.</p>`;
+                        recommendations++;
+                    }
+                }
+            });
+            
+            if (recommendations === 0) {
+                 html += '<p>Bisher keine Daten oder alles perfekt! Mach weiter so oder starte mit den Übungen.</p>';
+            }
+            
+            html += '</div>';
+            
+            content.innerHTML = html;
+        }
+
+        // Download Results
+        function downloadResults() {
+            const total = Object.values(studentData.exercises).reduce((sum, cat) => sum + cat.attempted, 0);
+            const correct = Object.values(studentData.exercises).reduce((sum, cat) => sum + cat.correct, 0);
+            const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
+            
+            let text = `Deutsch Klassenarbeit Trainer - Ergebnisbericht\n`;
+            text += `Klasse: ${currentGrade}\n`;
+            text += `Datum: ${new Date().toLocaleDateString('de-DE')}\n\n`;
+            text += `Gesamtstatistik:\n`;
+            text += `- Übungen absolviert: ${total}\n`;
+            text += `- Richtige Antworten: ${correct}\n`;
+            text += `- Genauigkeit: ${accuracy}%\n\n`;
+            text += `Detaillierte Ergebnisse:\n\n`;
+            
+            const names = {
+                grammar: 'Grammatik',
+                error: 'Fehlerkorrektur',
+                reading: 'Leseverstehen',
+                sachtext: 'Sachtexte',
+                survival: 'Survival'
+            };
+            
+            Object.entries(studentData.exercises).forEach(([cat, data]) => {
+                const percentage = data.attempted > 0 ? Math.round((data.correct / data.attempted) * 100) : 0;
+                text += `${names[cat]}:\n`;
+                text += `  Versuche: ${data.attempted}\n`;
+                text += `  Richtig: ${data.correct}\n`;
+                text += `  Genauigkeit: ${percentage}%\n\n`;
+            });
+            
+            // Create blob and download
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
-            
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'sachtext_ueberarbeitung.txt';
-            document.body.appendChild(a);
+            a.download = `Deutsch_Ergebnisse_Klasse${currentGrade}_${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a); // Required for Firefox
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-        });
+        }
 
-        // 2. Per E-Mail senden (öffnet lokales E-Mail-Programm)
-        const emailBtn = document.getElementById('btn-email');
-        emailBtn.addEventListener('click', (e) => {
-            e.preventDefault(); // Verhindert, dass der Link sofort folgt
+        // Drag and Drop Implementation
+        function initializeDragAndDrop() {
+            const draggables = document.querySelectorAll('.draggable-word');
+            const dropZones = document.querySelectorAll('.drop-zone');
             
-            const beforeContent = textBefore.value;
-            const afterContent = textAfter.value;
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', () => {
+                    draggable.classList.add('dragging');
+                });
+                
+                draggable.addEventListener('dragend', () => {
+                    draggable.classList.remove('dragging');
+                });
+            });
+            
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    const draggable = document.querySelector('.dragging');
+                    if (draggable && !zone.classList.contains('filled')) {
+                        zone.style.borderColor = 'var(--success)';
+                    }
+                });
+                
+                zone.addEventListener('dragleave', () => {
+                    zone.style.borderColor = '';
+                });
+                
+                zone.addEventListener('drop', e => {
+                    e.preventDefault();
+                    const draggable = document.querySelector('.dragging');
+                    if (draggable && !zone.classList.contains('filled')) {
+                        // Add to drop zone
+                        zone.textContent = draggable.textContent;
+                        zone.classList.add('filled');
+                        zone.style.borderColor = '';
+                        
+                        // Remove draggable from view
+                        draggable.style.display = 'none';
+                    }
+                });
+                
+                 // Add click-to-return functionality
+                zone.addEventListener('click', () => {
+                    // Do not allow if checked
+                    const button = zone.closest('.question').querySelector('.btn');
+                    if (button.dataset.checked) return;
 
-            if (!beforeContent && !afterContent) {
-                alert("Bitte fülle erst die Textfelder aus, bevor du sie per E-Mail sendest.");
-                return;
+                    if (zone.classList.contains('filled')) {
+                        const wordText = zone.textContent;
+                        const question = zone.closest('.question');
+                        
+                        // Find the hidden word and show it
+                        let wordFound = false;
+                        question.querySelectorAll('.draggable-word').forEach(w => {
+                            if (w.textContent === wordText && w.style.display === 'none' && !wordFound) {
+                                w.style.display = 'inline-block';
+                                wordFound = true;
+                            }
+                        });
+
+                        // Clear zone
+                        zone.textContent = '';
+                        zone.classList.remove('filled', 'correct', 'incorrect');
+                    }
+                });
+            });
+        }
+
+        // Check Grammar Answers
+        function checkGrammarAnswers(button, category) {
+            // --- Statistics Bug Fix ---
+            if (button.dataset.checked) return; 
+            
+            const exercise = button.closest('.exercise-box');
+            const dropZones = exercise.querySelectorAll('.drop-zone');
+            let allCorrect = true;
+            let correct = 0;
+            let total = dropZones.length;
+            
+            dropZones.forEach(zone => {
+                const answer = zone.getAttribute('data-answer');
+                const userAnswer = zone.textContent.trim();
+                
+                if (userAnswer === answer) {
+                    zone.classList.add('correct');
+                    zone.classList.remove('incorrect');
+                    correct++;
+                } else {
+                    zone.classList.add('incorrect');
+                    zone.classList.remove('correct');
+                    allCorrect = false;
+                }
+            });
+            
+            // --- Mark as checked ONLY after evaluation ---
+            button.dataset.checked = 'true';
+            button.disabled = true;
+            button.textContent = 'Geprüft!';
+            
+            // Update statistics
+            studentData.exercises[category].attempted++;
+            if (allCorrect) {
+                studentData.exercises[category].correct++;
             }
-
-            const subject = "Meine Sachtext-Überarbeitung";
-            const body = `Hallo,\n\nhier ist meine Überarbeitung meines Sachtextes:\n\n` +
-                         `--------------------\n` +
-                         `ENTWURF (VORHER):\n` +
-                         `--------------------\n` +
-                         `${beforeContent}\n\n` +
-                         `--------------------\n` +
-                         `VERBESSERUNG (NACHHER):\n` +
-                         `--------------------\n` +
-                         `${afterContent}`;
+            saveData();
+            updateAllStats();
             
-            // Wichtig: Ersetze 'deine-email@schule.de' mit der E-Mail-Adresse des Lehrers
-            const mailtoLink = `mailto:deine-email@schule.de?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            // Show feedback
+            showFeedback(button, correct, total);
+        }
 
-            // Überprüft, ob der Link zu lang wird (Browser haben Limits)
-            if (mailtoLink.length > 2000) {
-                alert("Dein Text ist zu lang für einen E-Mail-Link! Bitte benutze stattdessen den 'Herunterladen'-Button und hänge die .txt-Datei manuell an eine E-Mail an.");
+        // Check Error Correction
+        function checkErrorCorrection(button, category) {
+            if (button.dataset.checked) return; 
+            
+            const exercise = button.closest('.exercise-box');
+            const words = exercise.querySelectorAll('.clickable-word');
+            let correct = 0;
+            let total = 0;
+            let allCorrect = true;
+            
+            words.forEach(word => {
+                const isError = word.getAttribute('data-error') === 'true';
+                const isSelected = word.classList.contains('selected');
+                
+                if (isError) {
+                    total++;
+                    if (isSelected) {
+                        word.classList.add('correct');
+                        word.classList.remove('incorrect', 'selected');
+                        correct++;
+                    } else {
+                        word.classList.add('incorrect');
+                        allCorrect = false; // Missed an error
+                    }
+                } else {
+                    if (isSelected) {
+                        word.classList.add('incorrect');
+                        word.classList.remove('selected');
+                        allCorrect = false; // Selected a correct word
+                    }
+                }
+            });
+            
+            button.dataset.checked = 'true';
+            button.disabled = true;
+            button.textContent = 'Geprüft!';
+
+            // Update statistics
+            studentData.exercises[category].attempted++;
+            if (allCorrect && total > 0) { // Check that there were errors to find
+                studentData.exercises[category].correct++;
+            } else if (total === 0 && !allCorrect) {
+                // Penalize if they selected correct words when there were no errors
+            } else if (total === 0 && allCorrect) {
+                 studentData.exercises[category].correct++;
+            }
+            
+            saveData();
+            updateAllStats();
+            
+            // Show feedback
+            showFeedback(button, correct, total);
+        }
+
+        // Check Capitalization
+        function checkCapitalization(button, category) {
+            if (button.dataset.checked) return; 
+            
+            const exercise = button.closest('.exercise-box');
+            const words = exercise.querySelectorAll('.capitalize-word');
+            let correct = 0;
+            let total = 0;
+            let allCorrect = true;
+            
+            words.forEach(word => {
+                const shouldCapitalize = word.getAttribute('data-capitalize') === 'true';
+                const isCapitalized = word.classList.contains('capitalized');
+                
+                if (shouldCapitalize) {
+                    total++;
+                    if (isCapitalized) {
+                        correct++;
+                    } else {
+                        allCorrect = false;
+                        word.style.borderColor = 'var(--danger)';
+                    }
+                } else {
+                    if (isCapitalized) {
+                        allCorrect = false;
+                        word.style.borderColor = 'var(--danger)';
+                    }
+                }
+            });
+            
+            button.dataset.checked = 'true';
+            button.disabled = true;
+            button.textContent = 'Geprüft!';
+
+            // Update statistics
+            studentData.exercises[category].attempted++;
+            if (allCorrect) {
+                studentData.exercises[category].correct++;
+            }
+            saveData();
+            updateAllStats();
+            
+            // Show feedback
+            showFeedback(button, correct, total);
+        }
+
+        // Select MCQ
+        function selectMCQ(option) {
+            // Do not allow changing answer after checking
+            const button = option.closest('.exercise-box').querySelector('.btn');
+            if (button.dataset.checked) return;
+
+            const question = option.closest('.question');
+            const options = question.querySelectorAll('.mcq-option');
+            
+            options.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            option.classList.add('selected');
+        }
+
+        // Check Reading Answers
+        function checkReadingAnswers(button, category) {
+            if (button.dataset.checked) return;
+            
+            const exercise = button.closest('.exercise-box');
+            const questions = exercise.querySelectorAll('.question');
+            let correct = 0;
+            let total = questions.length;
+            
+            questions.forEach(question => {
+                const selectedOption = question.querySelector('.mcq-option.selected');
+                if (selectedOption) {
+                    const isCorrect = selectedOption.getAttribute('data-correct') === 'true';
+                    
+                    if (isCorrect) {
+                        selectedOption.classList.add('correct');
+                        selectedOption.classList.remove('incorrect');
+                        correct++;
+                    } else {
+                        selectedOption.classList.add('incorrect');
+                        selectedOption.classList.remove('correct');
+                        
+                        // Show correct answer
+                        const correctOption = question.querySelector('.mcq-option[data-correct="true"]');
+                        if (correctOption) {
+                            correctOption.classList.add('correct');
+                        }
+                    }
+                } else {
+                    // Mark unanswered questions
+                    const correctOption = question.querySelector('.mcq-option[data-correct="true"]');
+                    if (correctOption) {
+                        correctOption.classList.add('correct');
+                        correctOption.style.borderColor = 'var(--danger)'; // Highlight missed correct answer
+                    }
+                }
+            });
+            
+            button.dataset.checked = 'true';
+            button.disabled = true;
+            button.textContent = 'Geprüft!';
+
+            // Update statistics
+            studentData.exercises[category].attempted++;
+            if (correct === total) {
+                studentData.exercises[category].correct++;
+            }
+            saveData();
+            updateAllStats();
+            
+            // Show feedback
+            showFeedback(button, correct, total);
+        }
+
+        // Show Feedback
+        function showFeedback(button, correct, total) {
+            // Remove existing feedback
+            const existingFeedback = button.parentElement.querySelector('.feedback');
+            if (existingFeedback) {
+                existingFeedback.remove();
+            }
+            
+            // Create new feedback
+            const feedback = document.createElement('div');
+            feedback.className = 'feedback';
+            
+            if (total === 0) { // Case for no errors to find
+                 feedback.classList.add('correct');
+                 feedback.textContent = `Perfekt! Es gab keine Fehler zu finden.`;
             } else {
-                window.location.href = mailtoLink;
+                const percentage = Math.round((correct / total) * 100);
+                
+                if (correct === total) {
+                    feedback.classList.add('correct');
+                    feedback.textContent = `Perfekt! Alle ${total} Antworten richtig!`;
+                } else if (percentage >= 70) {
+                    feedback.classList.add('partial');
+                    feedback.textContent = `Gut! ${correct} von ${total} richtig (${percentage}%). Aber es gibt noch Verbesserungsbedarf!`;
+                } else {
+                    feedback.classList.add('incorrect');
+                    feedback.textContent = `Nur ${correct} von ${total} richtig (${percentage}%). Übe weiter und achte auf die Fehler!`;
+                }
+            }
+            
+            button.parentElement.appendChild(feedback);
+        }
+
+        // Click handlers for error correction
+        document.addEventListener('click', function(e) {
+            // Do not allow changing answer after checking
+            const button = e.target.closest('.question')?.querySelector('.btn');
+            if (button && button.dataset.checked) return;
+
+            if (e.target.classList.contains('clickable-word')) {
+                e.target.classList.toggle('selected');
+            }
+            
+            if (e.target.classList.contains('capitalize-word')) {
+                e.target.classList.toggle('capitalized');
+                if (e.target.classList.contains('capitalized')) {
+                    e.target.textContent = e.target.textContent.charAt(0).toUpperCase() + e.target.textContent.slice(1);
+                } else {
+                    e.target.textContent = e.target.textContent.charAt(0).toLowerCase() + e.target.textContent.slice(1);
+                }
             }
         });
 
+        // Initialize on load
+        window.addEventListener('load', function() {
+            loadData();
+            // Set active grade button based on loaded data
+            document.querySelectorAll('.grade-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.textContent.match(/\d+/)) === currentGrade) {
+                    btn.classList.add('active');
+                }
+            });
+            // Update grade title based on loaded data
+            const titles = {
+                6: 'Klasse 6: Arbeitshilfe für die erste Klassenarbeit am 2. Dezember',
+                7: 'Klasse 7: Vorbereitung auf die Klassenarbeit',
+                8: 'Klasse 8: Intensive Prüfungsvorbereitung'
+            };
+            document.getElementById('gradeTitle').textContent = titles[currentGrade];
+
+            // Load content for the saved grade
+            loadAllContentForGrade();
+        });
     </script>
 </body>
 </html>

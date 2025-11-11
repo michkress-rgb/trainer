@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sachtext-Trainer</title>
+    <style>
+        /* Grundlegendes Styling */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        /* Tab-Navigation */
+        .tab-nav {
+            display: flex;
+            background-color: #e9ecef;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .tab-btn {
+            padding: 15px 25px;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #495057;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .tab-btn:hover {
+            background-color: #f1f3f5;
+        }
+
+        .tab-btn.active {
+            background-color: #ffffff;
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            margin-bottom: -2px; /* Löst den Tab visuell heraus */
+        }
+
+        /* Tab-Inhalt */
+        .tab-content {
+            display: none; /* Standardmäßig ausgeblendet */
+            padding: 30px;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block; /* Aktiver Tab wird angezeigt */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Spezifisches Styling für Sektionen */
+        h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        h3 {
+            color: #17a2b8;
+            margin-top: 25px;
+        }
+
+        /* Klassenstufen-Auswahl */
+        .grade-selection {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .grade-btn {
+            font-size: 1.2rem;
+            padding: 12px 25px;
+            margin: 5px;
+            cursor: pointer;
+            border: 2px solid #17a2b8;
+            background-color: #fff;
+            color: #17a2b8;
+            border-radius: 5px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .grade-btn:hover, .grade-btn.selected {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        #current-grade-display {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #28a745;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        /* Material-Tab */
+        .material-sektion ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            padding-left: 10px;
+        }
+        .material-sektion li {
+            margin-bottom: 10px;
+        }
+        .material-sektion .beispiel {
+            background-color: #fdfae1;
+            border-left: 4px solid #f0ad4e;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .material-sektion .tipp {
+            background-color: #e6f7ff;
+            border-left: 4px solid #007bff;
+            padding: 10px;
+        }
+
+        /* Übungen-Tab */
+        .drill {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        .drill-options label {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            transition: background-color 0.2s;
+        }
+        .drill-options label:hover {
+            background-color: #f1f1f1;
+        }
+        .drill-options input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .clickable-text {
+            border: 1px dashed #ccc;
+            padding: 15px;
+            line-height: 2;
+        }
+        .clickable-text span {
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: background-color 0.2s;
+        }
+        .clickable-text span:hover {
+            background-color: #f0f0f0;
+        }
+        .clickable-text span.marked {
+            background-color: #ffeeba;
+            border: 1px solid #ffc107;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none; /* Versteckt bis zum Klick */
+        }
+        .feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        .feedback.wrong {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        /* Dein Text-Tab */
+        .save-reminder {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .checklist ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .checklist li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: top;
+        }
+        .checklist input[type="checkbox"] {
+            margin-right: 12px;
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+
+        .text-editor-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .text-editor-container div {
+            flex: 1;
+            min-width: 300px;
+        }
+        .text-editor-container textarea {
+            width: 100%;
+            height: 400px;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            font-size: 1rem;
+            box-sizing: border-box; /* Wichtig für 100% Breite */
+        }
+
+        .export-buttons {
+            margin-top: 20px;
+        }
+        
+        button, .button-link {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-right: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        button:hover, .button-link:hover {
+            background-color: #218838;
+        }
+        button.secondary {
+            background-color: #6c757d;
+        }
+        button.secondary:hover {
+            background-color: #5a6268;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Sachtext-Trainer</h1>
+            <p>Werde zum Profi im Verfassen und Analysieren von Sachtexten!</p>
+        </header>
+
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="tab-start">🏠 Start</button>
+            <button class="tab-btn" data-tab="tab-material">📚 Material</button>
+            <button class="tab-btn" data-tab="tab-uebungen">✏️ Übungen</button>
+            <button class="tab-btn" data-tab="tab-dein-text">🚀 Dein Text</button>
+        </nav>
+
+        <div id="tab-start" class="tab-content active">
+            <h2>Willkommen!</h2>
+            <p>Dieser Trainer hilft dir dabei, die Merkmale von Sachtexten zu verstehen und deine eigenen Texte sachlicher und präziser zu formulieren.</p>
+            <p>Sachtexte begegnen dir überall: in der Zeitung, im Schulbuch oder bei Gebrauchsanweisungen. Ihr Ziel ist es, klar und objektiv zu informieren.</p>
+            
+            <div class="grade-selection">
+                <h3>Wähle zuerst deine Klassenstufe:</h3>
+                <button class="grade-btn" data-grade="6">6. Klasse</button>
+                <button class="grade-btn" data-grade="7">7. Klasse</button>
+                <button class="grade-btn" data-grade="8">8. Klasse</button>
+            </div>
+            
+            <div id="current-grade-display"></div>
+            
+            <p style="margin-top: 30px;">Klicke oben auf <strong>"Material"</strong>, um die Grundlagen zu wiederholen, oder starte direkt mit den <strong>"Übungen"</strong>!</p>
+        </div>
+
+        <div id="tab-material" class="tab-content">
+            <h2>📚 Material: Was macht einen Sachtext aus?</h2>
+            
+            <div class="material-sektion">
+                <h3>1. Die Absicht: Informieren</h3>
+                <p>Ein Sachtext will den Leser über einen Sachverhalt (eine Sache, ein Ereignis) informieren. Er will nichts verkaufen, niemanden überreden oder eine erfundene Geschichte erzählen.</p>
+                <ul>
+                    <li><strong>Sachtext (informativ):</strong> "Am Montag kollidierten zwei Fahrzeuge auf der B9."</li>
+                    <li><strong>Kein Sachtext (Meinung/Werbung):</strong> "Kaufen Sie das neue Super-Auto, es ist das beste der Welt!"</li>
+                </ul>
+            </div>
+
+            <div class="material-sektion">
+                <h3>2. Die Sprache: Sachlich & Neutral</h3>
+                <p>Die Sprache ist der Schlüssel. Ein Sachtext vermeidet emotionale oder persönliche Ausdrücke.</p>
+                
+                <div class="beispiel">
+                    <strong>Unsachlich (emotional):</strong> "Der Film war total langweilig und eine echte Katastrophe."<br>
+                    <strong>Sachlich (neutral):</strong> "Der Film behandelt das Thema X und dauert 120 Minuten."
+                </div>
+                
+                <div class="beispiel">
+                    <strong>Unsachlich (persönlich):</strong> "Ich finde, dass der Klimawandel schrecklich ist."<br>
+                    <strong>Sachlich (objektiv):</strong> "Der Klimawandel führt zu einem Anstieg der globalen Durchschnittstemperatur."
+                </div>
+
+                <div class="tipp">
+                    <strong>Merke dir:</strong> Vermeide "Ich-Wörter" (ich, mir, mein) und wertende Adjektive (toll, super, schrecklich, furchtbar, langweilig).
+                </div>
+            </div>
+
+            <div class="material-sektion">
+                <h3>3. Merkmale der Sachtext-Sprache</h3>
+                <ul>
+                    <li><strong>Präzise (genaue) Wörter:</strong> Statt "ein Mann" besser "ein 30-jähriger Zeuge". Statt "schnell fahren" besser "die Geschwindigkeitsbegrenzung überschreiten".</li>
+                    <li><strong>Fachbegriffe:</strong> Wenn nötig, werden Fachwörter verwendet (z.B. "Fotosynthese" im Biologie-Text).</li>
+                    <li><strong>Klare Satzstruktur:</strong> Oft Hauptsätze oder einfache Nebensätze. Keine komplizierten Schachtelsätze.</li>
+                    <li><strong>Zeitform:</strong> Oft im Präsens (Gegenwart), um Allgemeingültiges zu beschreiben (z.B. Lexikonartikel) oder im Präteritum (Vergangenheit) für Berichte.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="tab-uebungen" class="tab-content">
+            <h2>✏️ Übungen</h2>
+            <p>Hier kannst du dein Wissen testen. Die Aufgaben werden (in einer echten Version) an deine Klassenstufe angepasst.</p>
+
+            <div class="drill">
+                <h3>Übung 1: Was ist sachlicher?</h3>
+                <p>Du schreibst einen Polizeibericht über einen Diebstahl. Welcher Satz ist am besten geeignet?</p>
+                <div class="drill-options" id="drill-1-options">
+                    <label><input type="radio" name="q1" value="wrong"> Der miese Dieb war total frech und hat die arme Frau einfach umgerannt.</label>
+                    <label><input type="radio" name="q1" value="correct"> Der Tatverdächtige stieß die Zeugin beiseite und flüchtete mit der Beute.</label>
+                    <label><input type="radio" name="q1" value="wrong"> Ich glaube, der Typ war echt böse, so wie der geguckt hat.</label>
+                </div>
+                <button class="secondary" onclick="checkDrill1()">Prüfen</button>
+                <div id="feedback-q1" class="feedback"></div>
+            </div>
+
+            <div class="drill">
+                <h3>Übung 2: Finde die "Störfaktoren"</h3>
+                <p>Du liest eine Tierbeschreibung über einen Wolf. Klicke auf alle Sätze oder Satzteile, die **unsachlich** sind oder eine persönliche Meinung enthalten.</p>
+                <div class="clickable-text" id="drill-2-text">
+                    Der Wolf (Canis lupus) ist ein Raubtier aus der Familie der Hunde. 
+                    (<span>Ich finde Wölfe total faszinierend.</span>) 
+                    Er lebt meist in Rudeln zusammen. 
+                    (<span>Diese blöden Tiere fressen leider unsere Schafe, was echt doof ist.</span>) 
+                    Ein ausgewachsener Wolf erreicht eine Schulterhöhe von 60 bis 90 Zentimetern. 
+                    (<span>Sein Geheul ist wunderschön und ein bisschen gruselig.</span>) 
+                    Seine Nahrung besteht hauptsächlich aus Hirschen, Rehen und Wildschweinen.
+                </div>
+                <button class="secondary" onclick="checkDrill2()">Prüfen</button>
+                <div id="feedback-q2" class="feedback"></div>
+            </div>
+
+            <div class="drill">
+                <h3>Übung 3: Welche Überschrift passt?</h3>
+                <p>Ein Text beschreibt objektiv die Eröffnung eines neuen Jugendzentrums in der Stadt. Welche Überschrift wäre für diesen Sachtext (z.B. einen Zeitungsbericht) am passendsten?</p>
+                <div class="drill-options" id="drill-3-options">
+                    <label><input type="radio" name="q3" value="wrong"> Endlich! Bester Ort der Stadt hat offen!</label>
+                    <label><input type="radio" name="q3" value="wrong"> Langweiliger Bau kostet Millionen – Wer braucht sowas?</label>
+                    <label><input type="radio" name="q3" value="correct"> Neues Jugendzentrum in der Schillerstraße eröffnet.</label>
+                </div>
+                <button class="secondary" onclick="checkDrill3()">Prüfen</button>
+                <div id="feedback-q3" class="feedback"></div>
+            </div>
+        </div>
+
+        <div id="tab-dein-text" class="tab-content">
+            <h2>🚀 Verbessere deinen eigenen Sachtext</h2>
+            <p>Jetzt bist du dran! Nimm einen Sachtext, den du selbst geschrieben hast (z.B. einen Bericht, eine Beschreibung, eine Inhaltsangabe) und überarbeite ihn.</p>
+            
+            <div class="save-reminder">
+                🔔 **WICHTIG:** Klicke regelmäßig auf "Fortschritt herunterladen", um deine Arbeit auf deinem Computer zu sichern! Dein Text wird nicht automatisch online gespeichert.
+            </div>
+
+            <div class="text-editor-container">
+                <div>
+                    <h3>Checkliste zur Überarbeitung</h3>
+                    <div class="checklist">
+                        <ul>
+                            <li><input type="checkbox" id="check1"><label for="check1"><strong>Sachlichkeit:</strong> Habe ich alle persönlichen Meinungen ("ich finde...", "meiner Meinung nach...") entfernt?</label></li>
+                            <li><input type="checkbox" id="check2"><label for="check2"><strong>Emotionen:</strong> Habe ich wertende Adjektive (z.B. "toll", "schrecklich", "langweilig", "super") durch neutrale Wörter ersetzt?</label></li>
+                            <li><input type="checkbox" id="check3"><label for="check3"><strong>Präzision:</strong> Bin ich genau? (z.B. statt "ein paar Leute" -> "fünf Personen"; statt "schnell" -> "mit 80 km/h").</label></li>
+                            <li><input type="checkbox" id="check4"><label for="check4"><strong>Aufbau:</strong> Ist der Text logisch gegliedert (z.B. Einleitung, Hauptteil, Schluss)? Sind Absätze sinnvoll gesetzt?</label></li>
+                            <li><input type="checkbox" id="check5"><label for="check5"><strong>Wortwahl:</strong> Verwende ich treffende Verben (statt "machen" -> "herstellen") und Nomen (Fachbegriffe, wenn nötig)?</label></li>
+                            <li><input type="checkbox" id="check6"><label for="check6"><strong>Satzbau:</strong> Sind meine Sätze klar und verständlich? Habe ich zu lange Schachtelsätze vermieden?</label></li>
+                            <li><input type="checkbox" id="check7"><label for="check7"><strong>Zeitform:</strong> Ist die Zeitform einheitlich und passend (z.B. Präteritum für einen Bericht, Präsens für eine Beschreibung)?</label></li>
+                            <li><input type="checkbox" id="check8"><label for="check8"><strong>W-Fragen (für Berichte):</strong> Werden die wichtigsten W-Fragen (Wer, Was, Wann, Wo, Wie, Warum) am Anfang geklärt?</label></li>
+                            <li><input type="checkbox" id="check9"><label for="check9"><strong>Rechtschreibung/Grammatik:</strong> Ist alles auf Fehler geprüft?</label></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <h3>Dein Entwurf (Vorher)</h3>
+                    <textarea id="text-before" placeholder="Füge hier deinen ersten Textentwurf ein..."></textarea>
+                    
+                    <h3>Deine Verbesserung (Nachher)</h3>
+                    <textarea id="text-after" placeholder="Überarbeite deinen Text hier mithilfe der Checkliste..."></textarea>
+                </div>
+            </div>
+
+            <div class="export-buttons">
+                <h3>Speichern & Exportieren</h3>
+                <button id="btn-download">💾 Fortschritt herunterladen (.txt)</button>
+                <a id="btn-email" class="button-link" href="#">📧 An E-Mail anhängen (Vorschau)</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- Globale Variablen ---
+        let currentGrade = null;
+
+        // --- Tab-Navigation ---
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = button.getAttribute('data-tab');
+
+                // Buttons
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                // Inhalte
+                tabContents.forEach(content => {
+                    if (content.id === targetTab) {
+                        content.classList.add('active');
+                    } else {
+                        content.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // --- Klassenstufen-Auswahl ---
+        const gradeButtons = document.querySelectorAll('.grade-btn');
+        const gradeDisplay = document.getElementById('current-grade-display');
+
+        gradeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                currentGrade = button.getAttribute('data-grade');
+                
+                // Visuelles Feedback
+                gradeButtons.forEach(btn => btn.classList.remove('selected'));
+                button.classList.add('selected');
+                
+                gradeDisplay.textContent = `Du bearbeitest die Aufgaben für die ${currentGrade}. Klasse.`;
+                
+                // Hier könnte man Logik hinzufügen, um Übungen basierend auf "currentGrade" zu laden/filtern
+            });
+        });
+
+        // --- Übungs-Logik ---
+
+        // Übung 1: Sachlicher Ausdruck
+        function checkDrill1() {
+            const answer = document.querySelector('input[name="q1"]:checked');
+            const feedback = document.getElementById('feedback-q1');
+            
+            if (!answer) {
+                feedback.textContent = "Bitte wähle eine Antwort aus.";
+                feedback.className = "feedback wrong";
+                return;
+            }
+
+            if (answer.value === 'correct') {
+                feedback.textContent = "Richtig! Dieser Satz ist neutral, präzise und enthält keine Emotionen.";
+                feedback.className = "feedback correct";
+            } else {
+                feedback.textContent = "Leider falsch. Dein gewählter Satz enthält entweder eine starke persönliche Wertung ('mies', 'arme Frau') oder eine Vermutung ('Ich glaube').";
+                feedback.className = "feedback wrong";
+            }
+        }
+
+        // Übung 2: Sätze markieren
+        const clickableSpans = document.querySelectorAll('#drill-2-text span');
+        clickableSpans.forEach(span => {
+            span.addEventListener('click', () => {
+                span.classList.toggle('marked');
+            });
+        });
+
+        function checkDrill2() {
+            const feedback = document.getElementById('feedback-q2');
+            let correctMarks = 0;
+            let wrongMarks = 0;
+            const totalCorrect = 3;
+
+            clickableSpans.forEach(span => {
+                if (span.classList.contains('marked')) {
+                    correctMarks++;
+                }
+            });
+
+            // (In einer echten App wäre die Prüfung komplexer, um auch FALSCH markierte Sätze zu finden)
+            if (correctMarks === totalCorrect) {
+                feedback.textContent = "Super! Du hast alle drei unsachlichen Stellen gefunden.";
+                feedback.className = "feedback correct";
+            } else if (correctMarks > 0) {
+                feedback.textContent = `Du hast ${correctMarks} von ${totalCorrect} Stellen gefunden. Schau nochmal genau hin!`;
+                feedback.className = "feedback wrong";
+            } else {
+                feedback.textContent = "Du hast noch keine Stellen markiert. Klicke auf die Sätze, die du für unsachlich hältst.";
+                feedback.className = "feedback wrong";
+            }
+        }
+
+        // Übung 3: Überschriften
+        function checkDrill3() {
+            const answer = document.querySelector('input[name="q3"]:checked');
+            const feedback = document.getElementById('feedback-q3');
+            
+            if (!answer) {
+                feedback.textContent = "Bitte wähle eine Antwort aus.";
+                feedback.className = "feedback wrong";
+                return;
+            }
+
+            if (answer.value === 'correct') {
+                feedback.textContent = "Genau richtig! Diese Überschrift nennt die Fakten (Was? Wo?) und ist neutral.";
+                feedback.className = "feedback correct";
+            } else {
+                feedback.textContent = "Nicht ganz. Die anderen Überschriften nutzen entweder stark wertende Sprache ('Bester Ort', 'Langweiliger Bau') oder Ausrufezeichen, was für einen Sachtext untypisch ist.";
+                feedback.className = "feedback wrong";
+            }
+        }
+
+        // --- Export-Funktionen ---
+
+        // 1. Download als .txt
+        const downloadBtn = document.getElementById('btn-download');
+        const textBefore = document.getElementById('text-before');
+        const textAfter = document.getElementById('text-after');
+
+        downloadBtn.addEventListener('click', () => {
+            const beforeContent = textBefore.value;
+            const afterContent = textAfter.value;
+
+            const fullText = `SACHTEXT-ÜBERARBEITUNG\n\n` +
+                             `====================\n` +
+                             `DEIN ENTWURF (VORHER)\n` +
+                             `====================\n\n` +
+                             `${beforeContent}\n\n` +
+                             `====================\n` +
+                             `DEINE VERBESSERUNG (NACHHER)\n` +
+                             `====================\n\n` +
+                             `${afterContent}`;
+            
+            const blob = new Blob([fullText], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sachtext_ueberarbeitung.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        // 2. Per E-Mail senden (öffnet lokales E-Mail-Programm)
+        const emailBtn = document.getElementById('btn-email');
+        emailBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Verhindert, dass der Link sofort folgt
+            
+            const beforeContent = textBefore.value;
+            const afterContent = textAfter.value;
+
+            if (!beforeContent && !afterContent) {
+                alert("Bitte fülle erst die Textfelder aus, bevor du sie per E-Mail sendest.");
+                return;
+            }
+
+            const subject = "Meine Sachtext-Überarbeitung";
+            const body = `Hallo,\n\nhier ist meine Überarbeitung meines Sachtextes:\n\n` +
+                         `--------------------\n` +
+                         `ENTWURF (VORHER):\n` +
+                         `--------------------\n` +
+                         `${beforeContent}\n\n` +
+                         `--------------------\n` +
+                         `VERBESSERUNG (NACHHER):\n` +
+                         `--------------------\n` +
+                         `${afterContent}`;
+            
+            // Wichtig: Ersetze 'deine-email@schule.de' mit der E-Mail-Adresse des Lehrers
+            const mailtoLink = `mailto:deine-email@schule.de?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+            // Überprüft, ob der Link zu lang wird (Browser haben Limits)
+            if (mailtoLink.length > 2000) {
+                alert("Dein Text ist zu lang für einen E-Mail-Link! Bitte benutze stattdessen den 'Herunterladen'-Button und hänge die .txt-Datei manuell an eine E-Mail an.");
+            } else {
+                window.location.href = mailtoLink;
+            }
+        });
+
+    </script>
+</body>
+</html>
