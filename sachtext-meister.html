@@ -208,7 +208,7 @@
             background: white;
             border: 2px solid #667eea;
             border-radius: 10px;
-            cursor: move;
+            cursor: pointer;
             margin: 10px 0;
             user-select: none;
             transition: all 0.3s;
@@ -217,6 +217,11 @@
         .draggable:hover {
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             transform: translateY(-2px);
+            background: #f8f9fa;
+        }
+
+        .draggable:active {
+            transform: scale(0.98);
         }
 
         .draggable.dragging {
@@ -224,18 +229,33 @@
         }
 
         .drop-zone {
-            min-height: 60px;
-            padding: 15px;
+            min-height: 100px;
+            padding: 20px;
             background: #f8f9fa;
-            border: 2px dashed #667eea;
+            border: 3px dashed #667eea;
             border-radius: 10px;
             margin: 15px 0;
             transition: all 0.3s;
+            position: relative;
         }
 
         .drop-zone.drag-over {
             background: #e3e7ff;
             border-color: #4facfe;
+            border-style: solid;
+        }
+
+        .drop-zone:empty::after {
+            content: "Klicke oder ziehe Bausteine hierher";
+            display: block;
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
         }
 
         .drop-zone-label {
@@ -960,8 +980,15 @@
                 `;
             });
 
-            html += `<div class="button-group">
+            html += `
+            <div style="text-align: center; padding: 15px; background: #e3e7ff; border-radius: 10px; margin: 15px 0;">
+                <span id="tagCounter" style="font-size: 1.1em; font-weight: bold; color: #667eea;">
+                    Markiert: 0/${data.sentences.length}
+                </span>
+            </div>
+            <div class="button-group">
                 <button class="btn btn-success" onclick="checkFaktenjäger()">Antworten prüfen</button>
+                <button class="btn btn-secondary" onclick="skipExercise()">Überspringen</button>
             </div>`;
 
             document.getElementById('exerciseContent').innerHTML = html;
@@ -974,11 +1001,30 @@
             userTags[idx] = tag;
             const elem = document.getElementById(`sentence-${idx}`);
             elem.className = 'tag-sentence tagged-' + tag;
+            
+            // Update counter
+            const counter = document.getElementById('tagCounter');
+            if (counter) {
+                const total = currentExerciseData.sentences.length;
+                const tagged = Object.keys(userTags).length;
+                counter.textContent = `Markiert: ${tagged}/${total}`;
+                
+                if (tagged === total) {
+                    counter.style.color = '#28a745';
+                    counter.textContent += ' ✓ Bereit zum Prüfen!';
+                }
+            }
         }
 
         function checkFaktenjäger() {
             let correct = 0;
             let total = currentExerciseData.sentences.length;
+            let tagged = Object.keys(userTags).length;
+
+            if (tagged < total) {
+                showFeedback('error', `⚠️ Bitte markiere alle ${total} Sätze, bevor du prüfst! (${tagged}/${total} markiert)`);
+                return;
+            }
 
             currentExerciseData.sentences.forEach((sent, idx) => {
                 if (userTags[idx] === sent.type) {
@@ -992,16 +1038,24 @@
                 const points = currentGrade * 10;
                 addPoints(points);
                 showFeedback('success', `🎉 Perfekt! Alle ${total} Sätze richtig markiert! +${points} Punkte`);
-            } else {
-                showFeedback('error', `Du hast ${correct} von ${total} Sätzen richtig markiert. Versuche es noch einmal!`);
-            }
-
-            userTags = {};
-            setTimeout(() => {
-                if (correct === total) {
+                userTags = {};
+                setTimeout(() => {
                     nextQuestion('faktenjäger');
-                }
-            }, 2000);
+                }, 2500);
+            } else {
+                showFeedback('error', `Du hast ${correct} von ${total} Sätzen richtig markiert. Versuche es noch einmal oder gehe weiter!`);
+                // Add retry and next buttons - DON'T clear tags so they can adjust
+                setTimeout(() => {
+                    const existing = document.querySelector('.button-group');
+                    if (existing) {
+                        existing.innerHTML = `
+                            <button class="btn btn-success" onclick="checkFaktenjäger()">Antworten prüfen</button>
+                            <button class="btn btn-primary" onclick="userTags = {}; nextQuestion('faktenjäger')">Nächste Frage</button>
+                            <button class="btn btn-secondary" onclick="userTags = {}; skipExercise()">Überspringen</button>
+                        `;
+                    }
+                }, 1000);
+            }
         }
 
         // Satz-Chirurgie Exercise
@@ -1048,17 +1102,22 @@
                 const points = currentGrade * 10;
                 addPoints(points);
                 showFeedback('success', `✅ Richtig! ${q.options[selected].explanation} +${points} Punkte`);
+                setTimeout(() => {
+                    nextQuestion('satzChirurgie');
+                }, 3000);
             } else {
                 showFeedback('error', `❌ Leider falsch. ${q.options[selected].explanation}`);
+                // Add a "Next Question" button after wrong answer
+                setTimeout(() => {
+                    const btnGroup = document.createElement('div');
+                    btnGroup.className = 'button-group';
+                    btnGroup.innerHTML = `
+                        <button class="btn btn-primary" onclick="nextQuestion('satzChirurgie')">Nächste Frage</button>
+                        <button class="btn btn-secondary" onclick="startSatzChirurgie()">Noch einmal versuchen</button>
+                    `;
+                    document.getElementById('exerciseContent').appendChild(btnGroup);
+                }, 1000);
             }
-
-            setTimeout(() => {
-                if (q.options[selected].correct) {
-                    nextQuestion('satzChirurgie');
-                } else {
-                    startSatzChirurgie();
-                }
-            }, 3000);
         }
 
         // Sachtext-Studio Exercise
@@ -1070,6 +1129,7 @@
                 <div class="question-box">
                     <h3>🎨 Sachtext-Studio: ${data.title}</h3>
                     <p class="question-text">Ziehe die Textbausteine in die richtige Reihenfolge, um einen guten Sachtext zu erstellen!</p>
+                    <p style="color: #667eea; font-size: 0.9em;">💡 <strong>Tipp:</strong> Klicke auf Bausteine, um sie hinzuzufügen. Doppelklicke, um sie zu entfernen!</p>
                 </div>
                 
                 <div id="dropZone" class="drop-zone"></div>
@@ -1090,6 +1150,7 @@
                 <div class="button-group">
                     <button class="btn btn-success" onclick="checkSachtextStudio()">Anordnung prüfen</button>
                     <button class="btn btn-secondary" onclick="startSachtextStudio()">Neu mischen</button>
+                    <button class="btn btn-secondary" onclick="skipExercise()">Überspringen</button>
                 </div>
             `;
 
@@ -1103,32 +1164,57 @@
         function initDragAndDrop() {
             const draggables = document.querySelectorAll('.draggable');
             const dropZone = document.getElementById('dropZone');
+            let draggedElement = null;
 
             draggables.forEach(draggable => {
-                draggable.addEventListener('dragstart', () => {
+                draggable.addEventListener('dragstart', (e) => {
+                    draggedElement = draggable;
                     draggable.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/html', draggable.innerHTML);
                 });
 
                 draggable.addEventListener('dragend', () => {
                     draggable.classList.remove('dragging');
                 });
+
+                // Add click-to-move as alternative
+                draggable.addEventListener('click', () => {
+                    if (!draggable.parentElement.id || draggable.parentElement.id !== 'dropZone') {
+                        dropZone.appendChild(draggable);
+                    }
+                });
+
+                // Double-click to remove from drop zone
+                draggable.addEventListener('dblclick', () => {
+                    if (draggable.parentElement.id === 'dropZone') {
+                        // Move back to available pieces area
+                        const container = draggable.parentElement.parentElement.children[2];
+                        container.appendChild(draggable);
+                    }
+                });
             });
 
             dropZone.addEventListener('dragover', e => {
                 e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
                 dropZone.classList.add('drag-over');
             });
 
-            dropZone.addEventListener('dragleave', () => {
-                dropZone.classList.remove('drag-over');
+            dropZone.addEventListener('dragleave', (e) => {
+                if (e.target === dropZone) {
+                    dropZone.classList.remove('drag-over');
+                }
             });
 
             dropZone.addEventListener('drop', e => {
                 e.preventDefault();
+                e.stopPropagation();
                 dropZone.classList.remove('drag-over');
-                const dragging = document.querySelector('.dragging');
-                if (dragging) {
-                    dropZone.appendChild(dragging);
+                
+                if (draggedElement) {
+                    dropZone.appendChild(draggedElement);
+                    draggedElement = null;
                 }
             });
         }
@@ -1227,6 +1313,7 @@
                 <div class="button-group">
                     <button class="btn btn-success" onclick="checkBausteinGenerator()">Text prüfen</button>
                     <button class="btn btn-secondary" onclick="clearText()">Text löschen</button>
+                    <button class="btn btn-secondary" onclick="skipExercise()">Überspringen</button>
                 </div>
             `;
 
@@ -1358,20 +1445,37 @@
                 const points = currentGrade * 10;
                 addPoints(points);
                 showFeedback('success', `✅ Richtig! ${q.explanation} +${points} Punkte`);
+                setTimeout(() => {
+                    nextQuestion('konnektorenTraining');
+                }, 3000);
             } else {
                 showFeedback('error', `❌ Leider falsch. ${q.explanation}`);
+                // Add a "Next Question" button after wrong answer
+                setTimeout(() => {
+                    const btnGroup = document.createElement('div');
+                    btnGroup.className = 'button-group';
+                    btnGroup.innerHTML = `
+                        <button class="btn btn-primary" onclick="nextQuestion('konnektorenTraining')">Nächste Frage</button>
+                        <button class="btn btn-secondary" onclick="startKonnektorenTraining()">Noch einmal versuchen</button>
+                    `;
+                    document.getElementById('exerciseContent').appendChild(btnGroup);
+                }, 1000);
             }
-
-            setTimeout(() => {
-                if (isCorrect) {
-                    nextQuestion('konnektorenTraining');
-                } else {
-                    startKonnektorenTraining();
-                }
-            }, 3000);
         }
 
         // Exercise Management
+        function skipExercise() {
+            if (confirm('Möchtest du diese Übung überspringen?')) {
+                if (currentExercise === 'sachtextStudio' || currentExercise === 'bausteinGenerator') {
+                    exercisesCompleted++;
+                    updateStats();
+                    showCompletionScreen();
+                } else {
+                    nextQuestion(currentExercise);
+                }
+            }
+        }
+
         function startExercise(type) {
             currentExercise = type;
             currentQuestion = 0;
