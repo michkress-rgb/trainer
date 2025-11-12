@@ -607,30 +607,46 @@
 
         // Misspell a word
         function misspellWord(word) {
-            const letters = word.split('');
-            const changes = Math.floor(Math.random() * 2) + 2;
+            let misspelled = word;
+            let attempts = 0;
+            const maxAttempts = 10;
             
-            for (let i = 0; i < changes && letters.length > 2; i++) {
-                const action = Math.floor(Math.random() * 3);
-                const pos = Math.floor(Math.random() * letters.length);
+            // Keep trying until we get a different word
+            while (misspelled === word && attempts < maxAttempts) {
+                const letters = word.split('');
+                // Only remove or change letters, don't add (to keep length same or shorter)
+                const changes = Math.floor(Math.random() * 2) + 2;
                 
-                if (action === 0 && letters.length > 3) {
-                    letters.splice(pos, 1);
-                } else if (action === 1) {
-                    const randomLetter = String.fromCharCode(97 + Math.floor(Math.random() * 26));
-                    letters[pos] = randomLetter;
-                } else {
-                    const randomLetter = String.fromCharCode(97 + Math.floor(Math.random() * 26));
-                    letters.splice(pos, 0, randomLetter);
+                for (let i = 0; i < changes && letters.length > 2; i++) {
+                    const action = Math.floor(Math.random() * 2); // 0 = remove, 1 = change
+                    const pos = Math.floor(Math.random() * letters.length);
+                    
+                    if (action === 0 && letters.length > 3) {
+                        // Remove a letter
+                        letters.splice(pos, 1);
+                    } else {
+                        // Change a letter to a different one
+                        const originalLetter = letters[pos];
+                        let randomLetter;
+                        do {
+                            randomLetter = String.fromCharCode(97 + Math.floor(Math.random() * 26));
+                        } while (randomLetter === originalLetter);
+                        letters[pos] = randomLetter;
+                    }
                 }
+                
+                misspelled = letters.join('');
+                attempts++;
             }
             
-            return letters.join('');
+            return misspelled;
         }
 
         // Generate letter bank
         function generateLetterBank(correctWord, misspelled) {
-            const needed = correctWord.split('').filter(l => !misspelled.split('').includes(l));
+            // Start with all letters from the correct word
+            const correctLetters = correctWord.split('');
+            // Add some extra random letters to make it challenging
             const extra = [];
             const numExtra = Math.min(8, Math.floor(correctWord.length * 0.5));
             
@@ -638,7 +654,8 @@
                 extra.push(String.fromCharCode(97 + Math.floor(Math.random() * 26)));
             }
             
-            const bank = [...misspelled.split(''), ...needed, ...extra];
+            // Combine correct letters with extras and shuffle
+            const bank = [...correctLetters, ...extra];
             return bank.sort(() => Math.random() - 0.5);
         }
 
@@ -675,7 +692,8 @@
             gameState.currentWordIndex = wordIndex;
             gameState.currentWord = WORDS[wordIndex];
             gameState.misspelledWord = misspellWord(gameState.currentWord);
-            gameState.userAnswer = gameState.misspelledWord.split('');
+            // Initialize userAnswer with empty slots equal to correct word length
+            gameState.userAnswer = new Array(gameState.currentWord.length).fill('');
             gameState.letterBank = generateLetterBank(gameState.currentWord, gameState.misspelledWord);
             gameState.usedLetters = [];
             
