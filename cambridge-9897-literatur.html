@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambridge 9897 Literaturvorbereitung</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+        }
+        .work-button {
+            transition: all 0.3s ease;
+        }
+        .work-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-indigo-900 mb-2">
+                Cambridge 9897 Literaturvorbereitung
+            </h1>
+            <p class="text-gray-700">Prüfungszeitraum 2025-2027 • Klasse 11-12</p>
+        </header>
+
+        <!-- Work Selection -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">Wähle ein Werk</h2>
+            <div id="workSelection" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Tabs and Content -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div id="tabButtons" class="flex border-b overflow-x-auto">
+                <!-- Will be populated by JavaScript -->
+            </div>
+
+            <div class="p-6">
+                <div id="tabContent">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center mt-8 text-gray-600">
+            <p>Cambridge International AS & A Level German (9897)</p>
+            <p class="text-sm">Für Prüfungen ab 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        // Data
+        const works = {
+            trafikant: {
+                title: 'Der Trafikant',
+                author: 'Robert Seethaler',
+                section: 'Section A',
+                year: '2012',
+                video: 'https://www.youtube.com/embed/c0l3EhZECes',
+                
+                handlung: {
+                    kurz: 'Franz Huchel, ein 17-jähriger Junge aus dem Salzkammergut, muss nach dem Tod seines Stiefvaters 1937 nach Wien ziehen. Dort arbeitet er in der Trafik von Otto Trsnjek und erlebt die politischen Umwälzungen des Anschlusses Österreichs an Nazi-Deutschland. Franz verliebt sich in die ältere böhmische Artistin Anezka und freundet sich mit Sigmund Freud an.',
+                    
+                    kapitel: [
+                        '1. Abschied vom Salzkammergut - Franz verlässt seine Mutter und die idyllische Heimat',
+                        '2. Ankunft in Wien - Franz beginnt seine Lehre bei Otto Trsnjek',
+                        '3. Begegnung mit Freud - Franz trifft den berühmten Psychoanalytiker in der Trafik',
+                        '4. Erste Liebe - Franz verliebt sich in Anezka, die Artistin',
+                        '5. Politische Spannungen - Die NS-Bewegung wird spürbar',
+                        '6. Der Anschluss - Österreich wird Teil Nazi-Deutschlands (März 1938)',
+                        '7. Verfolgung und Widerstand - Juden werden verfolgt, Otto widersetzt sich',
+                        '8. Freuds Flucht - Sigmund Freud muss nach London emigrieren',
+                        '9. Ottos Verhaftung - Die Gestapo verhaftet Otto Trsnjek',
+                        '10. Tragisches Ende - Franz findet Otto tot, wird selbst eingezogen'
+                    ]
+                },
+
+                charaktere: [
+                    {
+                        name: 'Franz Huchel',
+                        rolle: 'Protagonist',
+                        eigenschaften: 'Naiv, sensibel, mutig, verliebt, lernbereit, loyal',
+                        entwicklung: 'Franz entwickelt sich vom unschuldigen Landjungen zum politisch bewussten jungen Mann. Durch seine Erfahrungen in Wien - die Liebe zu Anezka, die Freundschaft mit Freud und der politische Terror - verliert er seine Unschuld. Er lernt Verantwortung zu übernehmen und zeigt am Ende Zivilcourage.',
+                        zitate: [
+                            '"Ich weiß nicht, was ich tun soll. Aber ich muss etwas tun."',
+                            '"Die Liebe ist wie ein Krieg. Man weiß nie, wann man gewinnt oder verliert."'
+                        ]
+                    },
+                    {
+                        name: 'Otto Trsnjek',
+                        rolle: 'Mentor und Vaterfigur',
+                        eigenschaften: 'Grimmig, herzensgut, mutig, widerständig, erfahren, eigensinnig',
+                        entwicklung: 'Otto ist von Anfang an eine starke, unerschütterliche Persönlichkeit. Er weigert sich, sich den Nazis anzupassen, was ihn sein Leben kostet. Seine Standhaftigkeit macht ihn zu einem moralischen Vorbild.',
+                        zitate: [
+                            '"Ein Trafikant beugt sich nicht!"',
+                            '"Die können mich mal kreuzweise!"'
+                        ]
+                    },
+                    {
+                        name: 'Anezka',
+                        rolle: 'Geliebte',
+                        eigenschaften: 'Rätselhaft, unabhängig, sinnlich, distanziert, künstlerisch',
+                        entwicklung: 'Anezka bleibt für Franz größtenteils ein Mysterium. Sie verkörpert die unerreichbare Liebe und verschwindet aus seinem Leben, ohne dass ihre Geschichte vollständig aufgelöst wird.',
+                        zitate: [
+                            '"Du bist noch ein Kind, Franz."',
+                            '"Die Liebe ist wie Nebel - man kann sie nicht festhalten."'
+                        ]
+                    },
+                    {
+                        name: 'Sigmund Freud',
+                        rolle: 'Historische Figur, Mentor',
+                        eigenschaften: 'Weise, humorvoll, gebrechlich, gelassen, analytisch',
+                        entwicklung: 'Freud erscheint als alter, kranker Mann kurz vor seiner Emigration. Er gibt Franz Ratschläge über Liebe und Leben und repräsentiert die Kultur und Geistigkeit, die von den Nazis zerstört wird.',
+                        zitate: [
+                            '"Die Liebe ist die beste Form von Wahnsinn."',
+                            '"Man kann vor vielem davonlaufen, aber nicht vor sich selbst."'
+                        ]
+                    }
+                ],
+
+                themen: [
+                    {
+                        thema: 'Erwachsenwerden / Coming-of-Age',
+                        analyse: 'Franz\' Reise von der Unschuld zur Erfahrung ist das zentrale Bildungsthema. Er verliert seine naive Weltsicht durch Liebe, Verlust und politische Gewalt. Die Trafik wird zum Mikrokosmos seiner Entwicklung.',
+                        textstellen: ['Abschied von der Mutter', 'Erste sexuelle Erfahrungen', 'Übernahme von Verantwortung', 'Konfrontation mit dem Tod']
+                    },
+                    {
+                        thema: 'Faschismus und politische Gewalt',
+                        analyse: 'Der Roman zeigt den schleichenden Prozess der nationalsozialistischen Machtübernahme aus der Perspektive einfacher Menschen. Die Trafik wird zum Symbol des Widerstands gegen die Gleichschaltung.',
+                        textstellen: ['Anschluss 1938', 'Judenverfolgung', 'Bücherverbrennung', 'Ottos Verhaftung']
+                    },
+                    {
+                        thema: 'Liebe und Sexualität',
+                        analyse: 'Franz\' erste Liebe zu Anezka ist obsessiv, schmerzhaft und lehrreich. Die Liebe wird als irrationale Kraft dargestellt, die sowohl beglückt als auch quält. Freud kommentiert diese Erfahrung psychoanalytisch.',
+                        textstellen: ['Begegnung mit Anezka', 'Liebeskummer', 'Freuds Ratschläge', 'Unerwiderte Sehnsucht']
+                    },
+                    {
+                        thema: 'Freundschaft und Mentorschaft',
+                        analyse: 'Die Beziehungen zwischen Franz, Otto und Freud zeigen verschiedene Formen männlicher Bindung. Otto ist die Vaterfigur, Freud der intellektuelle Mentor. Beide prägen Franz\' Entwicklung entscheidend.',
+                        textstellen: ['Lehrverhältnis', 'Gespräche mit Freud', 'Ottos Fürsorge', 'Gemeinsamer Widerstand']
+                    },
+                    {
+                        thema: 'Stadt vs. Land',
+                        analyse: 'Der Gegensatz zwischen der idyllischen Heimat am See und dem bedrohlichen Wien symbolisiert den Verlust der Unschuld. Die Stadt ist Ort der Bildung, aber auch der Gefahr und des Verlusts.',
+                        textstellen: ['Beschreibung des Salzkammerguts', 'Wiener Straßen', 'Sehnsucht nach Heimat', 'Unmögliche Rückkehr']
+                    },
+                    {
+                        thema: 'Tod und Vergänglichkeit',
+                        analyse: 'Der Roman ist durchzogen von Tod: der Stiefvater, die Ermordung der Juden, Ottos Tod, Freuds nahes Ende. Der Tod ist allgegenwärtig und markiert das Ende einer Epoche.',
+                        textstellen: ['Tod des Stiefvaters', 'Freuds Krankheit', 'Ottos Ermordung', 'Kriegsbeginn']
+                    }
+                ],
+
+                essayFragen: [
+                    {
+                        frage: '„Der Trafikant zeigt Franz Huchels Entwicklung vom naiven Jungen zum verantwortungsbewussten jungen Mann." Diskutieren Sie diese Aussage mit Bezug auf den Roman.',
+                        schwerpunkte: ['Coming-of-Age Thema', 'Charakterentwicklung', 'Schlüsselszenen', 'Symbolik der Trafik', 'Historischer Kontext'],
+                        struktur: 'Einleitung: These aufstellen | Hauptteil: Anfangszustand, Wendepunkte, Endzustand analysieren | Schluss: Bewertung der Entwicklung'
+                    },
+                    {
+                        frage: 'Analysieren Sie die Rolle Otto Trsnjeks als Vaterfigur und Widerstandskämpfer im Roman.',
+                        schwerpunkte: ['Charakterisierung Ottos', 'Beziehung zu Franz', 'Politischer Widerstand', 'Symbolische Bedeutung', 'Tragik seines Schicksals'],
+                        struktur: 'Einleitung: Ottos Bedeutung | Hauptteil: Vaterfigur, Mentor, Widerständler analysieren | Schluss: Seine Rolle für Franz und die Gesamtaussage'
+                    },
+                    {
+                        frage: '„Die Liebesgeschichte zwischen Franz und Anezka ist zentral für das Verständnis des Romans." Nehmen Sie kritisch Stellung.',
+                        schwerpunkte: ['Analyse der Beziehung', 'Bedeutung für Franz\' Entwicklung', 'Freuds Kommentare', 'Symbolische Ebene', 'Alternative Lesarten'],
+                        struktur: 'Einleitung: These diskutieren | Hauptteil: Pro- und Contra-Argumente | Schluss: Eigene Position begründen'
+                    },
+                    {
+                        frage: 'Untersuchen Sie, wie Seethaler den historischen Kontext des Anschlusses 1938 in den Roman integriert.',
+                        schwerpunkte: ['Historische Ereignisse', 'Figurenperspektiven', 'Authentizität', 'Literarische Gestaltung', 'Politische Aussage'],
+                        struktur: 'Einleitung: Historischer Hintergrund | Hauptteil: Darstellungsformen analysieren | Schluss: Wirkung und Intention'
+                    },
+                    {
+                        frage: 'Welche Funktion hat die Figur Sigmund Freuds im Roman? Analysieren Sie mit Textbelegen.',
+                        schwerpunkte: ['Freuds Ratschläge', 'Symbolische Bedeutung', 'Historische Dimension', 'Beziehung zu Franz', 'Intellektueller Widerstand'],
+                        struktur: 'Einleitung: Freuds Rolle einordnen | Hauptteil: Verschiedene Funktionen analysieren | Schluss: Gesamtbedeutung würdigen'
+                    },
+                    {
+                        frage: '„Der Trafikant ist ein Roman über das Ende einer Epoche." Erörtern Sie diese These.',
+                        schwerpunkte: ['Untergang der Trafik', 'Historischer Umbruch', 'Verlust der Unschuld', 'Symbolik', 'Erzählperspektive'],
+                        struktur: 'Einleitung: These vorstellen | Hauptteil: Verschiedene "Enden" analysieren | Schluss: Gesamtbewertung'
+                    }
+                ]
+            },
+
+            clowns: {
+                title: 'Ansichten eines Clowns',
+                author: 'Heinrich Böll',
+                section: 'Section A',
+                year: '1963',
+                video: 'https://www.youtube.com/embed/KO5FNavrC3c',
+                
+                handlung: {
+                    kurz: 'Hans Schnier, ein 27-jähriger Clown, sitzt nach einem missglückten Auftritt in Bochum in seiner Bonner Wohnung und telefoniert mit verschiedenen Personen. Seine Geliebte Marie hat ihn verlassen, um den Katholiken Züpfner zu heiraten. In Rückblenden wird Hans\' Leben erzählt: seine wohlhabende Familie, die katholische Erziehung Maries, ihr Zusammenleben und die Konflikte um Religion und Ehe.',
+                    
+                    kapitel: [
+                        'Der Roman hat keine Kapitel, sondern ist ein durchgehender innerer Monolog über etwa drei Stunden. Die Handlung gliedert sich in:',
+                        '1. Ankunft in Bonn - Hans kommt verletzt und verzweifelt in seiner Wohnung an',
+                        '2. Telefonanrufe - Hans ruft verschiedene Menschen aus seinem Leben an',
+                        '3. Rückblenden - Erinnerungen an Marie, seine Familie, seine Karriere',
+                        '4. Religiöse Konflikte - Die Auseinandersetzung mit dem Katholizismus',
+                        '5. Soziale Kritik - Kritik an der westdeutschen Gesellschaft der 1960er Jahre',
+                        '6. Verzweiflung - Hans\' körperlicher und seelischer Verfall',
+                        '7. Finale - Hans geht als Straßenmusiker zum Bahnhof'
+                    ]
+                },
+
+                charaktere: [
+                    {
+                        name: 'Hans Schnier',
+                        rolle: 'Ich-Erzähler und Protagonist',
+                        eigenschaften: 'Sensibel, moralisch, kompromisslos, selbstzerstörerisch, künstlerisch begabt, sozial kritisch',
+                        entwicklung: 'Hans durchlebt keine klassische Entwicklung, sondern eine Abwärtsspirale. Seine Weigerung, Kompromisse einzugehen - besonders in religiösen Fragen - führt zum Verlust Maries und zum beruflichen wie persönlichen Niedergang. Am Ende sitzt er als Bettler am Bahnhof.',
+                        zitate: [
+                            '"Ich bin ein Clown [...] und sammle Augenblicke."',
+                            '"Nichts ist schwerer zu ertragen als eine Reihe von guten Tagen."',
+                            '"Ich hasse diese verdammte Heuchelei."'
+                        ]
+                    },
+                    {
+                        name: 'Marie Derkum',
+                        rolle: 'Verlorene Geliebte',
+                        eigenschaften: 'Gläubig, gewissenhaft, zerrissen, anpassungsfähig, moralisch',
+                        entwicklung: 'Marie verlässt Hans, weil er sich weigert, katholisch zu heiraten. Sie heiratet Züpfner standesamtlich und kirchlich. Ihre Entscheidung zeigt den Konflikt zwischen Liebe und religiöser Überzeugung.',
+                        zitate: [
+                            '"Ich kann nicht länger in Sünde leben."',
+                            '"Du verstehst nicht, was der Glaube bedeutet."'
+                        ]
+                    },
+                    {
+                        name: 'Die Mutter',
+                        rolle: 'Repräsentantin der heuchlerischen Gesellschaft',
+                        eigenschaften: 'Opportunistisch, herzlos, gesellschaftsbewusst, selbstgerecht',
+                        entwicklung: 'Hans\' Mutter war im Nationalsozialismus aktiv und ist nun in christlichen Organisationen tätig - ein Symbol für die Verdrängung der Vergangenheit und gesellschaftliche Heuchelei.',
+                        zitate: [
+                            '"Du musst deine Pflicht tun."',
+                            '"Die Ehre der Familie..."'
+                        ]
+                    },
+                    {
+                        name: 'Henriette (Schwester)',
+                        rolle: 'Opfer des Krieges',
+                        eigenschaften: 'Jung, idealistisch, manipuliert',
+                        entwicklung: 'Henriette wird von der Mutter mit NS-Propaganda beeinflusst und stirbt sinnlos in den letzten Kriegstagen. Ihr Tod belastet Hans und symbolisiert die Schuld der Elterngeneration.',
+                        zitate: []
+                    },
+                    {
+                        name: 'Verschiedene Katholiken (Sommerwild, Kinkel, Blothert, Züpfner)',
+                        rolle: 'Vertreter der katholischen Kreise',
+                        eigenschaften: 'Scheinheilig, selbstgerecht, angepasst, theoretisch',
+                        entwicklung: 'Diese Figuren bilden den "Kreis" der katholischen Intellektuellen, die Hans als Heuchler empfindet. Sie predigen Moral, handeln aber unmoralisch (z.B. durch die Akzeptanz von Maries Ehe mit Züpfner).',
+                        zitate: []
+                    }
+                ],
+
+                themen: [
+                    {
+                        thema: 'Religion und Heuchelei',
+                        analyse: 'Bölls Hauptkritik richtet sich gegen die katholische Kirche und ihre Vertreter in der BRD. Hans sieht sich als moralischer Mensch, der ohne kirchliche Ehe mit Marie zusammenlebt, während die "gläubigen" Katholiken heuchlerisch handeln. Die Forderung nach einer kirchlichen Ehe zerstört Hans\' Beziehung.',
+                        textstellen: ['Gespräche über Ehe und Sakramente', 'Kritik am "Kreis"', 'Maries religiöse Skrupel', 'Hans\' eigene Moralvorstellungen']
+                    },
+                    {
+                        thema: 'Vergangenheitsbewältigung',
+                        analyse: 'Der Roman kritisiert die mangelnde Auseinandersetzung der BRD mit der NS-Vergangenheit. Hans\' Mutter, eine ehemalige NS-Aktivistin, ist nun in christlichen Organisationen tätig. Henriettes Tod steht für die Schuld der Kriegsgeneration.',
+                        textstellen: ['Mutter im NS-Regime', 'Henriettes Tod', 'Verdrängung der Schuld', 'Kontinuitäten nach 1945']
+                    },
+                    {
+                        thema: 'Künstlertum und Gesellschaft',
+                        analyse: 'Als Clown steht Hans außerhalb der bürgerlichen Gesellschaft. Seine Kunst ist ehrlich und entlarvend, was ihn zum Außenseiter macht. Der Gegensatz zwischen künstlerischer Integrität und gesellschaftlicher Anpassung ist zentral.',
+                        textstellen: ['Beschreibung seiner Pantomimen', 'Beruflicher Niedergang', 'Kunst als Wahrheit', 'Ablehnung der Bourgeoisie']
+                    },
+                    {
+                        thema: 'Liebe und Sexualität',
+                        analyse: 'Hans und Maries Beziehung scheitert an religiösen Dogmen. Böll kritisiert die kirchliche Sexualmoral, die echte Liebe der institutionellen Form unterordnet. Hans empfindet ihre "wilde Ehe" als moralischer als Maries neue kirchliche Ehe.',
+                        textstellen: ['Erinnerungen an Marie', 'Erste Begegnung', 'Sexualität ohne Ehe', 'Maries Gewissenskonflikt']
+                    },
+                    {
+                        thema: 'Einsamkeit und Entfremdung',
+                        analyse: 'Hans ist radikal einsam. Seine Telefonanrufe führen zu nichts, niemand hilft ihm wirklich. Die moderne Gesellschaft ist von Isolation und Kommunikationslosigkeit geprägt.',
+                        textstellen: ['Vergebliche Telefonate', 'Körperliche Isolation', 'Fehlende echte Beziehungen', 'Finale Einsamkeit am Bahnhof']
+                    },
+                    {
+                        thema: 'Soziale Ungerechtigkeit',
+                        analyse: 'Böll kritisiert die Klassengesellschaft der BRD. Hans stammt aus wohlhabendem Haus, lebt aber als verarmter Künstler. Die reiche Familie ist moralisch bankrott, während Hans trotz Armut integer bleibt.',
+                        textstellen: ['Schnier-Vermögen', 'Hans\' Armut', 'Gesellschaftliche Doppelmoral', 'Klassengegensätze']
+                    }
+                ],
+
+                essayFragen: [
+                    {
+                        frage: 'Analysieren Sie Hans Schniers Kritik an der katholischen Kirche und ihren Vertretern. Ist seine Kritik berechtigt?',
+                        schwerpunkte: ['Religiöse Heuchelei', 'Darstellung katholischer Figuren', 'Sakramentenfrage', 'Bölls eigene Position', 'Zeitgeschichtlicher Kontext'],
+                        struktur: 'Einleitung: Religionskritik als Hauptthema | Hauptteil: Kritikpunkte analysieren, bewerten | Schluss: Gesamteinschätzung'
+                    },
+                    {
+                        frage: '„Ansichten eines Clowns ist ein Roman über die Unfähigkeit der deutschen Gesellschaft, mit ihrer Vergangenheit umzugehen." Diskutieren Sie.',
+                        schwerpunkte: ['NS-Vergangenheit', 'Mutterfigur', 'Henriettes Tod', 'Kontinuitäten', 'BRD-Gesellschaft der 1960er'],
+                        struktur: 'Einleitung: These vorstellen | Hauptteil: Vergangenheitsdarstellung analysieren | Schluss: Bewertung'
+                    },
+                    {
+                        frage: 'Untersuchen Sie die Erzählstruktur des Romans. Welche Wirkung hat der innere Monolog?',
+                        schwerpunkte: ['Ich-Erzählung', 'Zeitstruktur', 'Rückblenden', 'Stream of Consciousness', 'Subjektivität', 'Leserführung'],
+                        struktur: 'Einleitung: Formale Besonderheiten | Hauptteil: Erzähltechniken und ihre Funktion | Schluss: Wirkung und Intention'
+                    },
+                    {
+                        frage: 'Charakterisieren Sie das Verhältnis zwischen Hans und Marie. Warum scheitert ihre Beziehung?',
+                        schwerpunkte: ['Liebesbeziehung', 'Religiöser Konflikt', 'Charakterunterschiede', 'Gesellschaftlicher Druck', 'Schuldfrage'],
+                        struktur: 'Einleitung: Beziehung vorstellen | Hauptteil: Entwicklung und Scheitern analysieren | Schluss: Bewertung'
+                    },
+                    {
+                        frage: 'Welche Bedeutung hat das Clown-Sein für Hans Schnier? Analysieren Sie die Symbolik.',
+                        schwerpunkte: ['Künstlerrolle', 'Außenseitertum', 'Wahrheit und Maske', 'Gesellschaftskritik', 'Berufliche Identität'],
+                        struktur: 'Einleitung: Clown als Lebensform | Hauptteil: Verschiedene Dimensionen analysieren | Schluss: Symbolische Bedeutung'
+                    },
+                    {
+                        frage: '„Der Roman zeigt den totalen Zusammenbruch eines Menschen." Erörtern Sie Hans Schniers Niedergang.',
+                        schwerpunkte: ['Körperlicher Verfall', 'Seelische Krise', 'Soziale Isolation', 'Berufliches Scheitern', 'Finale Szene'],
+                        struktur: 'Einleitung: Ausgangslage und Ende | Hauptteil: Stadien des Niedergangs | Schluss: Ursachen und Bedeutung'
+                    }
+                ]
+            },
+
+            sonnenallee: {
+                title: 'Am kürzeren Ende der Sonnenallee',
+                author: 'Thomas Brussig',
+                section: 'Section A',
+                year: '1999',
+                video: 'https://www.youtube.com/embed/2p6MMgBZ3gk',
+                
+                handlung: {
+                    kurz: 'Die Novelle erzählt von Jugendlichen im Ostberlin der 1970er und 1980er Jahre, die in der Sonnenallee nahe der Berliner Mauer leben. Protagonist Micha ist in Miriam verliebt, muss aber mit der Überwachung durch die Stasi, den Schikanen an der Grenze und den Absurditäten des DDR-Alltags umgehen. Trotz der politischen Repression erleben die Jugendlichen eine lebendige, humorvolle Zeit voller Musik, Freundschaft und erster Liebe.',
+                    
+                    kapitel: [
+                        '1. Die kürzeste Straße - Einführung in die Sonnenallee und ihre Bewohner',
+                        '2. Micha und Miriam - Michas Verliebtheit in das unerreichbare Mädchen',
+                        '3. Westmusik und ABV - Der Kampf um westliche Schallplatten',
+                        '4. Grenzkontrolle - Absurde Schikanen am Grenzübergang',
+                        '5. Die Stasi-Akte - Herr Kuppisch wird von der Stasi beobachtet',
+                        '6. Die Disco - Jugendkultur trotz oder wegen der DDR',
+                        '7. Der Brief - Michas verlorener Liebesbrief',
+                        '8. Wuschel und Mario - Freundschaften und Rivalitäten',
+                        '9. Die Familie - Leben in der DDR-Normalität',
+                        '10. Happy End - Trotz allem ein positiver Ausgang'
+                    ]
+                },
+
+                charaktere: [
+                    {
+                        name: 'Michael "Micha" Kuppisch',
+                        rolle: 'Protagonist und Ich-Erzähler',
+                        eigenschaften: 'Verträumt, verliebt, anpassungsfähig, optimistisch, loyal, unpolitisch',
+                        entwicklung: 'Micha durchlebt eine typische Jugend mit Liebeskummer, Freundschaften und kleinen Rebellionen. Seine Entwicklung zeigt, dass auch in der DDR normale Teenagerprobleme wichtiger sein konnten als Politik.',
+                        zitate: [
+                            '"Das war das Schöne am kurzen Ende der Sonnenallee: Man konnte sich mit dem Rest der Welt verbunden fühlen."',
+                            '"Miriam war das schönste Mädchen von ganz Ostberlin und Westberlin sowieso."'
+                        ]
+                    },
+                    {
+                        name: 'Miriam',
+                        rolle: 'Objekt der Begierde',
+                        eigenschaften: 'Schön, rätselhaft, unnahbar, selbstbewusst',
+                        entwicklung: 'Miriam bleibt größtenteils eine Projektionsfläche für Michas Gefühle. Am Ende zeigt sich, dass sie durchaus Interesse an ihm hat.',
+                        zitate: []
+                    },
+                    {
+                        name: 'Mario',
+                        rolle: 'Bester Freund',
+                        eigenschaften: 'Lebenslustig, westorientiert, rebellisch, musikbegeistert',
+                        entwicklung: 'Mario repräsentiert die westorientierte DDR-Jugend, die von westlicher Musik und Kultur fasziniert ist.',
+                        zitate: []
+                    },
+                    {
+                        name: 'Wuschel',
+                        rolle: 'Freund und Konkurrent',
+                        eigenschaften: 'Selbstbewusst, angeberisch, erfolgreich bei Mädchen',
+                        entwicklung: 'Wuschel ist Michas Rivale um Miriam, aber auch sein Freund. Er verkörpert den "coolen" Typen.',
+                        zitate: []
+                    },
+                    {
+                        name: 'Herr Kuppisch (Vater)',
+                        rolle: 'Michas Vater',
+                        eigenschaften: 'Gutmütig, unpolitisch, resigniert, ironisch',
+                        entwicklung: 'Der Vater repräsentiert die ältere Generation, die sich mit dem System arrangiert hat, ohne es gut zu finden.',
+                        zitate: []
+                    },
+                    {
+                        name: 'ABV Horkefeld',
+                        rolle: 'Abschnittsbevollmächtigter (Polizist)',
+                        eigenschaften: 'Pflichtbewusst, kleinlich, aber nicht böswillig',
+                        entwicklung: 'Horkefeld steht für die DDR-Autorität, wird aber humorvoll und ohne Dämonisierung dargestellt.',
+                        zitate: []
+                    }
+                ],
+
+                themen: [
+                    {
+                        thema: 'Ostalgie und DDR-Alltag',
+                        analyse: 'Brussig zeigt die DDR nicht als Unterdrückungsstaat, sondern als Ort normalen Lebens. Die Ostalgie ist bewusst gestaltet: Es wird eine positive Erinnerungskultur geschaffen, ohne die Probleme zu verleugnen.',
+                        textstellen: ['Beschreibung des Alltags', 'Positive Erinnerungen', 'Humorvolle Darstellung', 'Normalität trotz System']
+                    },
+                    {
+                        thema: 'Jugend und erste Liebe',
+                        analyse: 'Im Zentrum steht die universelle Erfahrung des Erwachsenwerdens. Michas Liebeskummer und Freundschaften sind wichtiger als Politik - eine bewusste Entpolitisierung.',
+                        textstellen: ['Michas Verliebtheit', 'Jugendkultur', 'Disco-Szenen', 'Freundschaften']
+                    },
+                    {
+                        thema: 'Die Mauer und Grenze',
+                        analyse: 'Die Grenze ist omnipräsent, aber wird ironisiert und verharmlost. Die absurden Kontrollen werden komisch dargestellt. Kritik wird durch Humor entschärft.',
+                        textstellen: ['Grenzkontrolle', 'Schikanen', 'Geteilte Stadt', 'Leben im Schatten der Mauer']
+                    },
+                    {
+                        thema: 'Westkultur und Musik',
+                        analyse: 'Westliche Musik (Rolling Stones, etc.) ist für die Jugendlichen erstrebenswert und Symbol der Freiheit. Die DDR-Oberfläche ist langweilig, der Westen glamourös.',
+                        textstellen: ['Schallplatten', 'Westradio', 'Musikkultur', 'Rebellion durch Konsum']
+                    },
+                    {
+                        thema: 'Anpassung und kleiner Widerstand',
+                        analyse: 'Die Figuren rebellieren nicht offen, sondern passen sich an und finden Nischen. Kleiner Ungehorsam (Westmusik, Unangepasstheit) ist die Form des Widerstands.',
+                        textstellen: ['Umgang mit Autorität', 'Verbotene Musik', 'Arrangement', 'Nischenkultur']
+                    },
+                    {
+                        thema: 'Humor und Ironie',
+                        analyse: 'Der Roman ist durchgehend humorvoll. Die DDR wird nicht dämonisiert, sondern ironisiert. Brussig nutzt Humor als Mittel der Vergangenheitsbewältigung.',
+                        textstellen: ['Komische Situationen', 'Absurde Bürokratie', 'Wortspiele', 'Groteske Figuren']
+                    }
+                ],
+
+                essayFragen: [
+                    {
+                        frage: '„Am kürzeren Ende der Sonnenallee ist ein ostalgischer Roman, der die DDR verharmlost." Nehmen Sie kritisch Stellung.',
+                        schwerpunkte: ['Ostalgie-Begriff', 'Darstellung der DDR', 'Humor vs. Verharmlosung', 'Historische Verantwortung', 'Erzählintention'],
+                        struktur: 'Einleitung: Ostalgie-Debatte | Hauptteil: Analysieren ob Verharmlosung oder differenzierte Darstellung | Schluss: Eigene Position'
+                    },
+                    {
+                        frage: 'Analysieren Sie die Rolle der Musik und westlichen Kultur im Roman.',
+                        schwerpunkte: ['Westmusik', 'Kulturelle Identität', 'Rebellion', 'Generationskonflikt', 'Symbolik'],
+                        struktur: 'Einleitung: Musik als Leitmotiv | Hauptteil: Bedeutungsebenen analysieren | Schluss: Funktion im Roman'
+                    },
+                    {
+                        frage: 'Untersuchen Sie die Erzählperspektive und ihren Einfluss auf die Darstellung der DDR.',
+                        schwerpunkte: ['Ich-Erzählung', 'Michas Sicht', 'Subjektivität', 'Humor', 'Zeitliche Distanz', 'Erinnerung'],
+                        struktur: 'Einleitung: Erzählform | Hauptteil: Perspektive und Wirkung | Schluss: Konsequenzen für DDR-Bild'
+                    },
+                    {
+                        frage: 'Charakterisieren Sie Micha Kuppisch. Ist er ein typischer DDR-Jugendlicher?',
+                        schwerpunkte: ['Charakterisierung', 'Verhalten', 'Einstellungen', 'Vergleich mit Realität', 'Repräsentativität'],
+                        struktur: 'Einleitung: Micha vorstellen | Hauptteil: Charakteranalyse | Schluss: Typische vs. individuelle Züge'
+                    },
+                    {
+                        frage: 'Welche Funktion hat der Humor im Roman? Analysieren Sie konkrete Beispiele.',
+                        schwerpunkte: ['Humor-Techniken', 'Ironie', 'Satire', 'Groteske', 'Wirkung', 'Kritikpotenzial'],
+                        struktur: 'Einleitung: Humor als Stilmittel | Hauptteil: Analyse verschiedener humoristischer Strategien | Schluss: Gesamtfunktion'
+                    },
+                    {
+                        frage: '„Der Roman zeigt, dass Jugendliche überall ähnliche Probleme haben - unabhängig vom politischen System." Diskutieren Sie.',
+                        schwerpunkte: ['Universelle Themen', 'Coming-of-Age', 'Politik vs. Privatleben', 'Entpolitisierung', 'Normalisierung'],
+                        struktur: 'Einleitung: These vorstellen | Hauptteil: Universelles vs. DDR-Spezifisches | Schluss: Bewertung'
+                    }
+                ]
+            },
+
+            fallada: {
+                title: 'Kleiner Mann – was nun?',
+                author: 'Hans Fallada',
+                section: 'Section B',
+                year: '1932',
+                video: 'https://www.youtube.com/embed/kqw1RfpNjKk',
+                audiobook: 'https://www.youtube.com/embed/U_DAuHDPl9c',
+                
+                handlung: {
+                    kurz: 'Johannes "Jachmann" Pinneberg und seine schwangere Verlobte Emma "Lämmchen" Mörschel müssen in der Weltwirtschaftskrise (1930-32) ums Überleben kämpfen. Sie heiraten, Pinneberg verliert mehrere Jobs, sie müssen aus ihrer Wohnung ausziehen. Trotz aller Schwierigkeiten hält das Paar zusammen. Am Ende leben sie in einer Laube, Pinneberg ist arbeitslos, aber sie bewahren ihre Würde und Liebe.',
+                    
+                    kapitel: [
+                        'Der Roman ist in drei Teile gegliedert:',
+                        'ERSTER TEIL: EINE KLEINE STADT',
+                        '- Pinneberg erfährt, dass Lämmchen schwanger ist',
+                        '- Sie heiraten und ziehen nach Berlin',
+                        '- Leben in Ducherow, kleine Stadt',
+                        'ZWEITER TEIL: DIE GROSSE STADT',
+                        '- Umzug nach Berlin',
+                        '- Pinneberg arbeitet bei Mandel (Herrenmode)',
+                        '- Geburt des Sohnes "Murkel"',
+                        '- Erste finanzielle Probleme',
+                        'DRITTER TEIL: ARBEITSLOS',
+                        '- Pinneberg verliert seine Stelle',
+                        '- Verzweifelte Jobsuche',
+                        '- Umzug in die Laube',
+                        '- Demütigung, Armut, aber Zusammenhalt'
+                    ]
+                },
+
+                charaktere: [
+                    {
+                        name: 'Johannes Pinneberg "Jachmann"',
+                        rolle: 'Protagonist',
+                        eigenschaften: 'Ängstlich, pflichtbewusst, liebesvoll, selbstzweifelnd, anständig, schwach',
+                        entwicklung: 'Pinneberg beginnt als unsicherer junger Mann, der versucht, den gesellschaftlichen Erwartungen zu entsprechen. Durch den sozialen Abstieg wird er zunehmend verzweifelt und verliert sein Selbstwertgefühl. Am Ende ist er gebrochen, aber seine Liebe zu Lämmchen und Murkel bleibt.',
+                        zitate: [
+                            '"Kleiner Mann - was nun?"',
+                            '"Ich bin doch anständig geblieben."',
+                            '"Lämmchen, Lämmchen, was soll nur werden?"'
+                        ]
+                    },
+                    {
+                        name: 'Emma Pinneberg "Lämmchen" (geb. Mörschel)',
+                        rolle: 'Ehefrau und moralische Stütze',
+                        eigenschaften: 'Praktisch, optimistisch, liebevoll, stark, tüchtig, klug',
+                        entwicklung: 'Lämmchen ist die Heldin des Romans. Sie bleibt auch in der Not optimistisch, organisiert den Haushalt, gibt Pinneberg Halt. Sie entwickelt sich von der naiven jungen Frau zur reifen, starken Mutter.',
+                        zitate: [
+                            '"Junge, Junge, das wird schon wieder."',
+                            '"Wir haben doch einander."',
+                            '"Das Geld reicht, wenn man es sich einteilt."'
+                        ]
+                    },
+                    {
+                        name: 'Murkel (Sohn)',
+                        rolle: 'Baby',
+                        eigenschaften: 'Unschuldig, Symbol der Hoffnung',
+                        entwicklung: 'Murkel ist die Zukunft, für die die Eltern kämpfen. Seine Existenz gibt Sinn und Motivation.',
+                        zitate: []
+                    },
+                    {
+                        name: 'Mutter Mörschel',
+                        rolle: 'Schwiegermutter',
+                        eigenschaften: 'Geizig, herrisch, lieblos, kleinbürgerlich',
+                        entwicklung: 'Sie repräsentiert die kleinbürgerliche Kälte. Sie hilft nicht, kritisiert nur.',
+                        zitate: []
+                    },
+                    {
+                        name: 'Heilbutt',
+                        rolle: 'Freund und Kollege',
+                        eigenschaften: 'Zynisch, lebenserfahren, pragmatisch',
+                        entwicklung: 'Heilbutt gibt Pinneberg Tipps, zeigt aber auch, wie man in dieser Gesellschaft opportunistisch sein muss.',
+                        zitate: []
+                    },
+                    {
+                        name: 'Herr Lehmann',
+                        rolle: 'Kollege',
+                        eigenschaften: 'Neidisch, kleinlich, feindlich',
+                        entwicklung: 'Lehmann intrigiert gegen Pinneberg und trägt zu dessen Entlassung bei.',
+                        zitate: []
+                    }
+                ],
+
+                themen: [
+                    {
+                        thema: 'Weltwirtschaftskrise und Arbeitslosigkeit',
+                        analyse: 'Der Roman ist ein Dokument der Wirtschaftskrise am Ende der Weimarer Republik. Massenarbeitslosigkeit, Inflation und soziale Not sind allgegenwärtig. Fallada zeigt die Auswirkungen auf den "kleinen Mann".',
+                        textstellen: ['Entlassungen', 'Jobsuche', 'Finanzielle Not', 'Arbeitslosenunterstützung', 'Soziale Degradierung']
+                    },
+                    {
+                        thema: 'Liebe und Ehe',
+                        analyse: 'Die Beziehung zwischen Pinneberg und Lämmchen ist das emotionale Zentrum. Ihre Liebe wird durch die Krise geprüft, hält aber stand. Die Ehe gibt Halt in einer feindlichen Welt.',
+                        textstellen: ['Heirat', 'Alltag', 'Gegenseitige Unterstützung', 'Intimität trotz Armut', 'Finale Szene']
+                    },
+                    {
+                        thema: 'Kleinbürgertum und Klassengesellschaft',
+                        analyse: 'Pinneberg gehört zum unteren Mittelstand und kämpft gegen den sozialen Abstieg. Der Roman zeigt die Klassenunterschiede, Standesdünkel und die Angst vor dem Proletariat.',
+                        textstellen: ['Kleidung als Status', 'Wohnverhältnisse', 'Arbeitswelt', 'Soziale Ausgrenzung', 'Demütigungen']
+                    },
+                    {
+                        thema: 'Würde und Anstand',
+                        analyse: 'Trotz aller Not versucht Pinneberg, anständig zu bleiben. Er lehnt Kriminalität ab, zahlt seine Schulden. Seine Würde ist alles, was ihm bleibt.',
+                        textstellen: ['Moral trotz Not', 'Ablehnung von Diebstahl', 'Scham', 'Finale Erkenntnis']
+                    },
+                    {
+                        thema: 'Die Neue Sachlichkeit',
+                        analyse: 'Der Roman ist stilistisch der Neuen Sachlichkeit verpflichtet: nüchterne Sprache, präzise Alltagsbeobachtung, kein Pathos. Die Realität wird dokumentarisch festgehalten.',
+                        textstellen: ['Sachliche Beschreibungen', 'Detaillierte Budgetpläne', 'Nüchterne Sprache', 'Alltagsrealismus']
+                    },
+                    {
+                        thema: 'Berlin als Stadt der Kontraste',
+                        analyse: 'Berlin wird als Ort extremer Gegensätze dargestellt: Luxus und Elend, Hoffnung und Verzweiflung. Die Großstadt ist gleichzeitig faszinierend und bedrohlich.',
+                        textstellen: ['Beschreibung Berlins', 'Kaufhaus Mandel', 'Armenviertel', 'Stadtlandschaften']
+                    }
+                ],
+
+                essayFragen: [
+                    {
+                        frage: 'Analysieren Sie die Beziehung zwischen Pinneberg und Lämmchen. Warum hält ihre Ehe stand?',
+                        schwerpunkte: ['Charaktere', 'Liebesbeziehung', 'Arbeitsteilung', 'Gegenseitige Stütze', 'Krisenbewältigung'],
+                        struktur: 'Einleitung: Bedeutung der Ehe | Hauptteil: Entwicklung der Beziehung | Schluss: Gründe für Stabilität'
+                    },
+                    {
+                        frage: '„Kleiner Mann - was nun? ist ein sozialkritischer Roman über die Weltwirtschaftskrise." Diskutieren Sie.',
+                        schwerpunkte: ['Historischer Kontext', 'Soziale Probleme', 'Kritik', 'Darstellungsform', 'Politische Dimension'],
+                        struktur: 'Einleitung: Roman und Krise | Hauptteil: Sozialkritische Elemente | Schluss: Bewertung der Kritik'
+                    },
+                    {
+                        frage: 'Untersuchen Sie die Darstellung Berlins im Roman. Welche Funktion hat die Großstadt?',
+                        schwerpunkte: ['Stadtbeschreibungen', 'Kontraste', 'Symbolik', 'Soziale Räume', 'Moderne'],
+                        struktur: 'Einleitung: Berlin als Schauplatz | Hauptteil: Verschiedene Aspekte der Stadt | Schluss: Bedeutung für Gesamtaussage'
+                    },
+                    {
+                        frage: 'Charakterisieren Sie Pinneberg. Ist er ein Held oder ein Versager?',
+                        schwerpunkte: ['Charaktereigenschaften', 'Verhalten in Krise', 'Moral', 'Schwächen', 'Bewertung'],
+                        struktur: 'Einleitung: Pinneberg als Protagonist | Hauptteil: Analyse mit Pro/Contra | Schluss: Differenzierte Bewertung'
+                    },
+                    {
+                        frage: 'Analysieren Sie den Stil des Romans. Welche Merkmale der Neuen Sachlichkeit finden sich?',
+                        schwerpunkte: ['Sprache', 'Erzählweise', 'Sachlichkeit', 'Detailgenauigkeit', 'Zeitbezug', 'Wirkung'],
+                        struktur: 'Einleitung: Neue Sachlichkeit definieren | Hauptteil: Stilmerkmale nachweisen | Schluss: Funktion des Stils'
+                    },
+                    {
+                        frage: '„Der Roman endet hoffnungsvoll trotz aller Tragik." Nehmen Sie Stellung.',
+                        schwerpunkte: ['Finale Szene', 'Entwicklung', 'Hoffnungselemente', 'Tragische Aspekte', 'Interpretation'],
+                        struktur: 'Einleitung: Ambivalenz des Endes | Hauptteil: Hoffnung vs. Tragik analysieren | Schluss: Eigene Position'
+                    }
+                ]
+            },
+
+            selam: {
+                title: 'Selam Berlin',
+                author: 'Yade Kara',
+                section: 'Section B',
+                year: '2003',
+                
+                handlung: {
+                    kurz: 'Hasan Kazan, ein 19-jähriger Deutsch-Türke, arbeitet als Taxifahrer in Berlin und versucht, seine Identität zwischen türkischer Herkunft und deutscher Gegenwart zu finden. Der Roman ist ein innerer Monolog während einer Taxifahrt durch Berlin. Hasan reflektiert über seine Familie, Liebe, Religion, Heimat und Zugehörigkeit. Der Text ist experimentell, sprachspielerisch und mehrsprachig.',
+                    
+                    kapitel: [
+                        'Der Roman hat keine traditionellen Kapitel, sondern besteht aus einem durchgehenden Bewusstseinsstrom. Die Struktur folgt der Taxifahrt durch Berlin:',
+                        '1. Start der Fahrt - Hasan nimmt einen Fahrgast auf',
+                        '2. Straßen Berlins - Verschiedene Stadtteile und Erinnerungen',
+                        '3. Familie - Gedanken an Eltern, Geschwister, türkische Verwandtschaft',
+                        '4. Valerie - Gedanken an die deutsche Freundin',
+                        '5. Religion und Tradition - Islam, Moschee, türkische Kultur',
+                        '6. Identitätsfragen - Bin ich Deutscher? Türke? Beides?',
+                        '7. Sprache - Deutsch, Türkisch, Mischungen',
+                        '8. Berlin - Die Stadt als Heimat und Fremde zugleich',
+                        '9. Philosophische Gedanken - Über Leben, Liebe, Zugehörigkeit',
+                        '10. Ende der Fahrt - Offener Schluss'
+                    ]
+                },
+
+                charaktere: [
+                    {
+                        name: 'Hasan Kazan',
+                        rolle: 'Ich-Erzähler und Protagonist',
+                        eigenschaften: 'Zerrissen, reflektiert, sprachbegabt, humorvoll, suchend, intelligent, rebellisch',
+                        entwicklung: 'Hasan durchlebt keine lineare Entwicklung, sondern einen Prozess der Selbstreflexion. Er sucht seine Identität zwischen zwei Kulturen und findet keine eindeutige Antwort - was gerade die Aussage ist.',
+                        zitate: [
+                            '"Selam Berlin, wie geht\'s, wie steht\'s?"',
+                            '"Ich bin ein Kartoffel-Türke. Oder ein Türken-Deutscher. Oder beides. Oder keins."',
+                            '"Heimat ist da, wo man die Sprache spricht. Aber welche?"'
+                        ]
+                    },
+                    {
+                        name: 'Valerie',
+                        rolle: 'Deutsche Freundin',
+                        eigenschaften: 'Emanzipiert, westlich, liebesvoll, anders',
+                        entwicklung: 'Valerie repräsentiert die deutsche, westliche Welt. Die Beziehung zu ihr ist kompliziert, weil kulturelle Unterschiede existieren.',
+                        zitate: []
+                    },
+                    {
+                        name: 'Die Familie',
+                        rolle: 'Türkische Eltern und Geschwister',
+                        eigenschaften: 'Traditionell, liebevoll, erwartungsvoll, konservativ',
+                        entwicklung: 'Die Familie steht für die türkische Tradition und Herkunft. Sie haben Erwartungen an Hasan, die mit seiner deutschen Realität kollidieren.',
+                        zitate: []
+                    },
+                    {
+                        name: 'Taxi-Fahrgäste',
+                        rolle: 'Verschiedene Berliner',
+                        eigenschaften: 'Divers, repräsentativ für Berlin',
+                        entwicklung: 'Die Fahrgäste zeigen die Vielfalt Berlins und lösen Hasans Reflexionen aus.',
+                        zitate: []
+                    }
+                ],
+
+                themen: [
+                    {
+                        thema: 'Identität und Hybridität',
+                        analyse: 'Das Hauptthema ist die Suche nach Identität zwischen zwei Kulturen. Hasan ist weder nur Türke noch nur Deutscher, sondern beides und keins. Die Hybrididentität wird nicht als Problem, sondern als Bereicherung und Normalität dargestellt.',
+                        textstellen: ['Selbstbezeichnungen', 'Kulturelle Konflikte', 'Zugehörigkeitsfragen', 'Identitätssuche']
+                    },
+                    {
+                        thema: 'Sprache und Mehrsprachigkeit',
+                        analyse: 'Der Roman ist mehrsprachig (Deutsch, Türkisch, Englisch) und experimentiert mit Sprache. Sprachwechsel, Neuschöpfungen und Sprachspiele zeigen die multiple Identität. Sprache wird zum Medium der Identitätskonstruktion.',
+                        textstellen: ['Türkische Einschübe', 'Wortspiele', 'Code-Switching', 'Sprachreflexionen']
+                    },
+                    {
+                        thema: 'Berlin als transkultureller Raum',
+                        analyse: 'Berlin ist nicht nur Schauplatz, sondern selbst eine Figur. Die Stadt ist multikulturell, hybrid, postmodern. Sie bietet Raum für verschiedene Identitäten.',
+                        textstellen: ['Stadtrundfahrt', 'Verschiedene Viertel', 'Multikulti', 'Urbane Vielfalt']
+                    },
+                    {
+                        thema: 'Migration und Heimat',
+                        analyse: 'Was ist Heimat? Türkei oder Deutschland? Hasan findet keine eindeutige Antwort. Heimat wird zu einem flexiblen, subjektiven Konzept.',
+                        textstellen: ['Erinnerungen an Türkei', 'Leben in Deutschland', 'Heimatbegriff', 'Zwischen den Welten']
+                    },
+                    {
+                        thema: 'Religion und Tradition',
+                        analyse: 'Der Islam spielt eine Rolle, aber Hasan ist kein streng gläubiger Muslim. Er hinterfragt Traditionen, ohne sie ganz abzulehnen. Religion ist Teil seiner Identität, aber nicht dominant.',
+                        textstellen: ['Moschee', 'Ramadan', 'Religiöse Reflexionen', 'Tradition vs. Moderne']
+                    },
+                    {
+                        thema: 'Liebe und Beziehungen',
+                        analyse: 'Die Liebe zwischen Hasan und Valerie zeigt interkulturelle Herausforderungen. Gleichzeitig ist Liebe universell und überwindet Grenzen.',
+                        textstellen: ['Beziehung zu Valerie', 'Kulturelle Unterschiede', 'Intimität', 'Verständigung']
+                    },
+                    {
+                        thema: 'Experimentelle Form',
+                        analyse: 'Der Roman bricht mit Konventionen: kein Plot, kein lineares Erzählen, Bewusstseinsstrom, Mehrsprachigkeit. Die Form spiegelt die hybride Identität.',
+                        textstellen: ['Formale Experimente', 'Stream of Consciousness', 'Fragmentarität', 'Sprachspiel']
+                    }
+                ],
+
+                essayFragen: [
+                    {
+                        frage: 'Analysieren Sie Hasans Identitätssuche. Findet er eine Antwort auf die Frage "Wer bin ich?"',
+                        schwerpunkte: ['Identitätskrise', 'Hybridität', 'Kulturelle Konflikte', 'Selbstdefinition', 'Offenheit'],
+                        struktur: 'Einleitung: Identität als Thema | Hauptteil: Hasans Suche analysieren | Schluss: Bewertung der "Lösung"'
+                    },
+                    {
+                        frage: 'Untersuchen Sie die Rolle der Sprache im Roman. Welche Funktion hat die Mehrsprachigkeit?',
+                        schwerpunkte: ['Sprachwechsel', 'Sprachspiele', 'Identität durch Sprache', 'Experimentelle Form', 'Code-Switching'],
+                        struktur: 'Einleitung: Sprache als Thema | Hauptteil: Verschiedene sprachliche Aspekte | Schluss: Funktion für Gesamtaussage'
+                    },
+                    {
+                        frage: '„Selam Berlin ist ein postmoderner Roman." Diskutieren Sie diese Aussage.',
+                        schwerpunkte: ['Postmoderne Merkmale', 'Form', 'Inhalt', 'Fragmentarität', 'Ironie', 'Metafiktion'],
+                        struktur: 'Einleitung: Postmoderne definieren | Hauptteil: Merkmale nachweisen | Schluss: Bewertung'
+                    },
+                    {
+                        frage: 'Welche Bedeutung hat Berlin im Roman? Analysieren Sie die Stadtdarstellung.',
+                        schwerpunkte: ['Berlin als Raum', 'Multikulturalität', 'Symbolik', 'Taxi als Perspektive', 'Urbanität'],
+                        struktur: 'Einleitung: Stadt als Thema | Hauptteil: Verschiedene Aspekte Berlins | Schluss: Funktion der Stadt'
+                    },
+                    {
+                        frage: 'Charakterisieren Sie Hasan Kazan. Ist er eine typische Figur der Migrationsliteratur?',
+                        schwerpunkte: ['Charakterisierung', 'Vergleich mit anderen Werken', 'Klischees vs. Individualität', 'Repräsentation'],
+                        struktur: 'Einleitung: Hasan vorstellen | Hauptteil: Analyse und Vergleich | Schluss: Typisch oder individuell?'
+                    },
+                    {
+                        frage: 'Analysieren Sie die Erzählform des Romans. Welche Wirkung hat der innere Monolog?',
+                        schwerpunkte: ['Stream of Consciousness', 'Ich-Erzählung', 'Subjektivität', 'Unmittelbarkeit', 'Authentizität'],
+                        struktur: 'Einleitung: Erzählform | Hauptteil: Analyse der Technik | Schluss: Wirkung und Funktion'
+                    }
+                ]
+            },
+
+            terror: {
+                title: 'Terror – Ein Theaterstück und eine Rede',
+                author: 'Ferdinand von Schirach',
+                section: 'Section B',
+                year: '2015',
+                video: 'https://www.youtube.com/embed/rPRwu3J3-Ng',
+                
+                handlung: {
+                    kurz: 'Major Lars Koch schießt auf Befehl seines Gewissens ein entführtes Passagierflugzeug ab, um zu verhindern, dass es in ein vollbesetztes Fußballstadion stürzt. 164 Menschen im Flugzeug sterben, 70.000 im Stadion werden gerettet. Koch wird vor Gericht gestellt wegen Mordes in 164 Fällen. Das Stück ist als Gerichtsverhandlung gestaltet. Am Ende stimmt das Publikum ab: Schuldig oder nicht schuldig?',
+                    
+                    kapitel: [
+                        'Das Theaterstück folgt der Struktur einer Gerichtsverhandlung:',
+                        '1. Eröffnung - Die Anklage wird verlesen',
+                        '2. Zeugenbefragung - Verschiedene Zeugen sagen aus',
+                        '3. Sachverständige - Experten äußern sich',
+                        '4. Plädoyer der Staatsanwaltschaft - Koch ist schuldig',
+                        '5. Plädoyer der Verteidigung - Koch ist unschuldig',
+                        '6. Letztes Wort des Angeklagten - Koch erklärt seine Tat',
+                        '7. Urteil - Das Publikum stimmt ab',
+                        '',
+                        'Die Rede "Terror – Über Moral und Recht" ergänzt das Stück mit philosophischen und juristischen Überlegungen zu den Fragen des Stücks.'
+                    ]
+                },
+
+                charaktere: [
+                    {
+                        name: 'Lars Koch',
+                        rolle: 'Angeklagter, Kampfpilot',
+                        eigenschaften: 'Mutig, pflichtbewusst, gewissenhaft, zerrissen, integer',
+                        entwicklung: 'Koch hat keine Entwicklung im klassischen Sinne. Er steht zu seiner Tat und bereut sie nicht. Seine moralische Integrität steht im Konflikt mit dem Gesetz.',
+                        zitate: [
+                            '"Ich habe 164 Menschen getötet, um 70.000 zu retten."',
+                            '"Ich würde es wieder tun."',
+                            '"Ich konnte nicht anders."'
+                        ]
+                    },
+                    {
+                        name: 'Staatsanwalt',
+                        rolle: 'Anklagevertreter',
+                        eigenschaften: 'Prinzipientreu, juristisch korrekt, hart, überzeugend',
+                        entwicklung: 'Der Staatsanwalt vertritt das Gesetz. Er argumentiert, dass Koch schuldig ist, unabhängig von seinen Motiven. Die Menschenwürde ist unantastbar.',
+                        zitate: [
+                            '"Das Grundgesetz schützt jedes Leben gleich."',
+                            '"Die Menschenwürde ist unantastbar - auch die der 164 Passagiere."'
+                        ]
+                    },
+                    {
+                        name: 'Verteidiger',
+                        rolle: 'Verteidiger Kochs',
+                        eigenschaften: 'Empathisch, moralisch argumentierend, überzeugend',
+                        entwicklung: 'Der Verteidiger argumentiert, dass Koch moralisch richtig gehandelt hat. Das positive Recht muss manchmal hinter der Moral zurückstehen.',
+                        zitate: [
+                            '"Was wäre gewesen, wenn er nichts getan hätte?"',
+                            '"Koch hat das einzig Richtige getan."'
+                        ]
+                    },
+                    {
+                        name: 'Richter',
+                        rolle: 'Vorsitzender',
+                        eigenschaften: 'Neutral, sachlich, fair',
+                        entwicklung: 'Der Richter leitet die Verhandlung neutral und gibt am Ende dem Publikum die Entscheidung.',
+                        zitate: []
+                    },
+                    {
+                        name: 'Zeugen und Sachverständige',
+                        rolle: 'Verschiedene Perspektiven',
+                        eigenschaften: 'Divers',
+                        entwicklung: 'Die Zeugen repräsentieren verschiedene Sichtweisen: Angehörige, Militär, Ethiker, Juristen.',
+                        zitate: []
+                    }
+                ],
+
+                themen: [
+                    {
+                        thema: 'Rechtsstaat vs. Moral',
+                        analyse: 'Das zentrale Thema ist der Konflikt zwischen positivem Recht und moralischem Handeln. Koch verletzt das Gesetz (Menschenwürde, kein Abwägen von Leben), handelt aber nach vielen moralisch richtig. Das Stück fragt: Was wiegt schwerer?',
+                        textstellen: ['Plädoyers', 'Grundgesetzartikel', 'Kochs Rechtfertigung', 'Philosophische Argumente']
+                    },
+                    {
+                        thema: 'Menschenwürde (Art. 1 GG)',
+                        analyse: 'Die Unantastbarkeit der Menschenwürde ist der Kern der deutschen Verfassung. Darf man Menschen als Mittel nutzen (Passagiere opfern, um andere zu retten)? Die kantische Ethik verbietet dies.',
+                        textstellen: ['Staatsanwalt zu Art. 1 GG', 'Kant-Bezüge', 'Würde der Passagiere', 'Instrumentalisierung']
+                    },
+                    {
+                        thema: 'Utilitarismus vs. Deontologie',
+                        analyse: 'Das Stück inszeniert den philosophischen Konflikt zwischen Folgenethik (Utilitarismus: größtes Glück der größten Zahl) und Pflichtethik (Deontologie: bestimmte Handlungen sind immer falsch).',
+                        textstellen: ['70.000 vs. 164', 'Zahlenargumente', 'Prinzipienargumente', 'Philosophische Diskussion']
+                    },
+                    {
+                        thema: 'Gewissen und Verantwortung',
+                        analyse: 'Koch handelt nach seinem Gewissen. Das Stück fragt: Gibt es eine Pflicht, dem Gewissen zu folgen, auch gegen das Gesetz? Wer trägt Verantwortung in solchen Situationen?',
+                        textstellen: ['Kochs Gewissensentscheidung', 'Verantwortungsethik', 'Moralischer Konflikt']
+                    },
+                    {
+                        thema: 'Terrorismus und Sicherheit',
+                        analyse: 'Der Hintergrund ist der internationale Terrorismus und die Frage, wie weit ein Staat gehen darf, um seine Bürger zu schützen. Darf man Grundrechte einschränken für Sicherheit?',
+                        textstellen: ['Entführungsszenario', 'Staatsschutz', 'Freiheit vs. Sicherheit']
+                    },
+                    {
+                        thema: 'Demokratie und Partizipation',
+                        analyse: 'Das Publikum wird zum Geschworenengericht. Das Stück aktiviert die Zuschauer und macht sie zu Teilnehmern. Es gibt keine autoritative Antwort - jeder muss selbst entscheiden.',
+                        textstellen: ['Abstimmung', 'Publikumsbeteiligung', 'Offenes Ende']
+                    },
+                    {
+                        thema: 'Die Rede als Ergänzung',
+                        analyse: 'Die Rede vertieft die Themen philosophisch und juristisch. Schirach diskutiert historische Beispiele, philosophische Positionen und rechtliche Argumente. Die Rede ist essayistisch und reflektiert.',
+                        textstellen: ['Rede-Passagen', 'Philosophische Bezüge', 'Historische Beispiele']
+                    }
+                ],
+
+                essayFragen: [
+                    {
+                        frage: 'Ist Lars Koch schuldig oder unschuldig? Begründen Sie Ihre Position mit Argumenten aus dem Stück.',
+                        schwerpunkte: ['Juristische Argumente', 'Moralische Argumente', 'Grundgesetz', 'Abwägung', 'Eigene Position'],
+                        struktur: 'Einleitung: Die Frage vorstellen | Hauptteil: Pro und Contra systematisch darstellen | Schluss: Eigene begründete Position'
+                    },
+                    {
+                        frage: 'Analysieren Sie den Konflikt zwischen Recht und Moral im Stück. Gibt es eine Lösung?',
+                        schwerpunkte: ['Rechtsstaat', 'Moralphilosophie', 'Gewissen', 'Unauflösbarkeit', 'Verschiedene Ethiken'],
+                        struktur: 'Einleitung: Konflikt benennen | Hauptteil: Verschiedene Positionen analysieren | Schluss: Bewertung'
+                    },
+                    {
+                        frage: 'Welche Funktion hat die Publikumsabstimmung? Analysieren Sie die Dramaturgie des Stücks.',
+                        schwerpunkte: ['Theaterform', 'Partizipation', 'Wirkung', 'Gerichtsverhandlung als Form', 'Offenheit'],
+                        struktur: 'Einleitung: Besondere Form | Hauptteil: Analyse der dramaturgischen Mittel | Schluss: Wirkung und Intention'
+                    },
+                    {
+                        frage: 'Diskutieren Sie die Bedeutung der Menschenwürde (Art. 1 GG) im Kontext des Stücks.',
+                        schwerpunkte: ['Grundgesetz', 'Unantastbarkeit', 'Instrumentalisierung', 'Kant', 'Staatsanwalts Argument'],
+                        struktur: 'Einleitung: Menschenwürde als Prinzip | Hauptteil: Anwendung auf Kochs Fall | Schluss: Konsequenzen'
+                    },
+                    {
+                        frage: 'Vergleichen Sie utilitaristische und deontologische Argumente im Stück. Welche überzeugen mehr?',
+                        schwerpunkte: ['Folgenethik', 'Pflichtethik', 'Philosophische Grundlagen', 'Anwendung', 'Kritik'],
+                        struktur: 'Einleitung: Ethiken vorstellen | Hauptteil: Vergleich | Schluss: Eigene Bewertung'
+                    },
+                    {
+                        frage: 'Analysieren Sie die Funktion der Rede "Terror – Über Moral und Recht" in Bezug auf das Theaterstück.',
+                        schwerpunkte: ['Rede-Inhalt', 'Verhältnis zum Stück', 'Vertiefung', 'Philosophische Argumente', 'Funktion'],
+                        struktur: 'Einleitung: Rede vorstellen | Hauptteil: Analyse der Funktion | Schluss: Verhältnis Rede-Stück bewerten'
+                    }
+                ]
+            }
+        };
+
+        // State
+        let currentWork = 'trafikant';
+        let currentTab = 'overview';
+        let essayText = '';
+        let selectedQuestion = '';
+
+        // Initialize
+        function init() {
+            renderWorkSelection();
+            renderTabs();
+            renderContent();
+        }
+
+        function renderWorkSelection() {
+            const container = document.getElementById('workSelection');
+            let html = '';
+            
+            // Section A
+            html += '<div class="col-span-full border-b pb-2 mb-2"><h3 class="font-bold text-indigo-700">Section A</h3></div>';
+            Object.entries(works).filter(([_, w]) => w.section === 'Section A').forEach(([key, work]) => {
+                html += `
+                    <button onclick="selectWork('${key}')" class="work-button p-4 rounded-lg border-2 transition-all ${
+                        currentWork === key ? 'border-indigo-600 bg-indigo-50' : 'border-gray-200 hover:border-indigo-300'
+                    }">
+                        <div class="text-left">
+                            <div class="font-bold text-gray-900">${work.title}</div>
+                            <div class="text-sm text-gray-600">${work.author} (${work.year})</div>
+                        </div>
+                    </button>
+                `;
+            });
+            
+            // Section B
+            html += '<div class="col-span-full border-b pb-2 mb-2 mt-4"><h3 class="font-bold text-indigo-700">Section B</h3></div>';
+            Object.entries(works).filter(([_, w]) => w.section === 'Section B').forEach(([key, work]) => {
+                html += `
+                    <button onclick="selectWork('${key}')" class="work-button p-4 rounded-lg border-2 transition-all ${
+                        currentWork === key ? 'border-indigo-600 bg-indigo-50' : 'border-gray-200 hover:border-indigo-300'
+                    }">
+                        <div class="text-left">
+                            <div class="font-bold text-gray-900">${work.title}</div>
+                            <div class="text-sm text-gray-600">${work.author} (${work.year})</div>
+                        </div>
+                    </button>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function renderTabs() {
+            const container = document.getElementById('tabButtons');
+            const tabs = [
+                { id: 'overview', label: 'Überblick', icon: '📚' },
+                { id: 'plot', label: 'Handlung', icon: '📖' },
+                { id: 'characters', label: 'Charaktere', icon: '👥' },
+                { id: 'themes', label: 'Themen', icon: '💡' },
+                { id: 'essays', label: 'Aufsätze', icon: '📝' }
+            ];
+            
+            let html = '';
+            tabs.forEach(tab => {
+                html += `
+                    <button onclick="selectTab('${tab.id}')" class="tab-button flex items-center gap-2 px-6 py-4 font-medium transition-colors whitespace-nowrap ${
+                        currentTab === tab.id ? 'bg-indigo-600 text-white' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                    }">
+                        <span>${tab.icon}</span>
+                        ${tab.label}
+                    </button>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function renderContent() {
+            const container = document.getElementById('tabContent');
+            const work = works[currentWork];
+            
+            if (currentTab === 'overview') {
+                container.innerHTML = renderOverview(work);
+            } else if (currentTab === 'plot') {
+                container.innerHTML = renderPlot(work);
+            } else if (currentTab === 'characters') {
+                container.innerHTML = renderCharacters(work);
+            } else if (currentTab === 'themes') {
+                container.innerHTML = renderThemes(work);
+            } else if (currentTab === 'essays') {
+                container.innerHTML = renderEssays(work);
+            }
+        }
+
+        function renderOverview(work) {
+            let html = `
+                <div class="space-y-6">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-900 mb-2">${work.title}</h2>
+                        <p class="text-xl text-gray-600 mb-4">${work.author} (${work.year})</p>
+                        <span class="inline-block px-4 py-2 bg-indigo-100 text-indigo-800 rounded-full font-medium">
+                            ${work.section}
+                        </span>
+                    </div>
+                    
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h3 class="font-bold text-gray-900 mb-2">Kurze Zusammenfassung</h3>
+                        <p class="text-gray-700">${work.handlung.kurz}</p>
+                    </div>
+            `;
+            
+            if (work.video) {
+                html += `
+                    <div>
+                        <h3 class="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                            🎥 Video-Ressourcen
+                        </h3>
+                        <div class="aspect-video bg-black rounded-lg overflow-hidden">
+                            <iframe
+                                width="100%"
+                                height="100%"
+                                src="${work.video}"
+                                title="YouTube video"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                            ></iframe>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (work.audiobook) {
+                html += `
+                    <div>
+                        <h3 class="font-bold text-gray-900 mb-3">Hörbuch</h3>
+                        <div class="aspect-video bg-black rounded-lg overflow-hidden">
+                            <iframe
+                                width="100%"
+                                height="100%"
+                                src="${work.audiobook}"
+                                title="YouTube audiobook"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                            ></iframe>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            html += `
+                    <button onclick="downloadNotes()" class="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                        ⬇️ Alle Notizen herunterladen
+                    </button>
+                </div>
+            `;
+            
+            return html;
+        }
+
+        function renderPlot(work) {
+            let html = `
+                <div class="space-y-4">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Handlung</h2>
+                    <div class="bg-blue-50 p-4 rounded-lg mb-6">
+                        <p class="text-gray-700">${work.handlung.kurz}</p>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Kapitel / Struktur</h3>
+                    <div class="space-y-2">
+            `;
+            
+            work.handlung.kapitel.forEach(kapitel => {
+                html += `
+                    <div class="p-3 bg-gray-50 rounded-lg border-l-4 border-indigo-600">
+                        <p class="text-gray-800">${kapitel}</p>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            return html;
+        }
+
+        function renderCharacters(work) {
+            let html = `
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Charaktere</h2>
+            `;
+            
+            work.charaktere.forEach(char => {
+                html += `
+                    <div class="border rounded-lg p-5 bg-gray-50">
+                        <h3 class="text-xl font-bold text-indigo-900 mb-2">${char.name}</h3>
+                        <p class="text-sm text-gray-600 mb-3 italic">${char.rolle}</p>
+                        <div class="space-y-3">
+                            <div>
+                                <span class="font-semibold text-gray-900">Eigenschaften: </span>
+                                <span class="text-gray-700">${char.eigenschaften}</span>
+                            </div>
+                            <div>
+                                <span class="font-semibold text-gray-900">Entwicklung: </span>
+                                <span class="text-gray-700">${char.entwicklung}</span>
+                            </div>
+                `;
+                
+                if (char.zitate && char.zitate.length > 0) {
+                    html += `
+                            <div>
+                                <span class="font-semibold text-gray-900">Wichtige Zitate:</span>
+                                <ul class="mt-2 space-y-1">
+                    `;
+                    char.zitate.forEach(zitat => {
+                        html += `<li class="text-gray-700 italic ml-4">„${zitat}"</li>`;
+                    });
+                    html += `
+                                </ul>
+                            </div>
+                    `;
+                }
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                </div>
+            `;
+            
+            return html;
+        }
+
+        function renderThemes(work) {
+            let html = `
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Themen</h2>
+            `;
+            
+            work.themen.forEach(theme => {
+                html += `
+                    <div class="border rounded-lg p-5 bg-gradient-to-r from-indigo-50 to-blue-50">
+                        <h3 class="text-xl font-bold text-indigo-900 mb-3">${theme.thema}</h3>
+                        <p class="text-gray-700 mb-3">${theme.analyse}</p>
+                        <div class="bg-white p-3 rounded">
+                            <span class="font-semibold text-gray-900">Relevante Textstellen: </span>
+                            <span class="text-gray-600">${theme.textstellen.join(', ')}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                </div>
+            `;
+            
+            return html;
+        }
+
+        function renderEssays(work) {
+            let html = `
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                        Musteraufsatzfragen (Cambridge-Stil)
+                    </h2>
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                        <p class="text-sm text-gray-700">
+                            <strong>Hinweis:</strong> Diese Fragen orientieren sich am Stil der Cambridge 
+                            International Specimen Papers. Beantworte sie in vollständigen Aufsätzen mit 
+                            Einleitung, Hauptteil und Schluss. Verwende Textbelege und analysiere kritisch.
+                        </p>
+                    </div>
+            `;
+            
+            work.essayFragen.forEach((frage, idx) => {
+                html += `
+                    <div class="border rounded-lg p-5 bg-white shadow">
+                        <h3 class="text-lg font-bold text-gray-900 mb-3">Frage ${idx + 1}</h3>
+                        <p class="text-gray-800 mb-4 italic">"${frage.frage}"</p>
+                        
+                        <div class="bg-gray-50 p-4 rounded mb-4">
+                            <p class="font-semibold text-gray-900 mb-2">Schwerpunkte:</p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                `;
+                
+                frage.schwerpunkte.forEach(punkt => {
+                    html += `<li>${punkt}</li>`;
+                });
+                
+                html += `
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-indigo-50 p-4 rounded">
+                            <p class="font-semibold text-gray-900 mb-2">Empfohlene Struktur:</p>
+                            <p class="text-gray-700">${frage.struktur}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    <div class="border-t pt-6 mt-8">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Aufsatz schreiben</h3>
+                        <p class="text-gray-600 mb-4">
+                            Wähle eine Frage aus, schreibe deinen Aufsatz hier und lade ihn herunter, 
+                            um ihn deinem Lehrer zur Bewertung zu schicken.
+                        </p>
+                        
+                        <select id="questionSelect" onchange="handleQuestionChange()" class="w-full p-3 border rounded-lg mb-4">
+                            <option value="">-- Wähle eine Frage --</option>
+            `;
+            
+            work.essayFragen.forEach((frage, idx) => {
+                html += `
+                    <option value="${idx}">Frage ${idx + 1}: ${frage.frage.substring(0, 80)}...</option>
+                `;
+            });
+            
+            html += `
+                        </select>
+
+                        <textarea 
+                            id="essayTextarea"
+                            placeholder="Schreibe hier deinen Aufsatz..."
+                            class="w-full h-96 p-4 border rounded-lg font-mono"
+                            disabled
+                        ></textarea>
+
+                        <button
+                            id="downloadEssayBtn"
+                            onclick="downloadEssay()"
+                            disabled
+                            class="mt-4 flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        >
+                            ⬇️ Aufsatz herunterladen
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return html;
+        }
+
+        // Event handlers
+        function selectWork(workKey) {
+            currentWork = workKey;
+            currentTab = 'overview';
+            essayText = '';
+            selectedQuestion = '';
+            renderWorkSelection();
+            renderTabs();
+            renderContent();
+        }
+
+        function selectTab(tabId) {
+            currentTab = tabId;
+            renderTabs();
+            renderContent();
+        }
+
+        function handleQuestionChange() {
+            const select = document.getElementById('questionSelect');
+            const textarea = document.getElementById('essayTextarea');
+            const btn = document.getElementById('downloadEssayBtn');
+            
+            if (select.value) {
+                selectedQuestion = works[currentWork].essayFragen[select.value].frage;
+                textarea.disabled = false;
+                textarea.value = essayText;
+                textarea.addEventListener('input', (e) => {
+                    essayText = e.target.value;
+                    btn.disabled = !essayText;
+                });
+                btn.disabled = !essayText;
+            } else {
+                selectedQuestion = '';
+                textarea.disabled = true;
+                textarea.value = '';
+                btn.disabled = true;
+            }
+        }
+
+        function downloadNotes() {
+            const work = works[currentWork];
+            let content = `${work.title} von ${work.author}\n`;
+            content += `Cambridge 9897 - ${work.section}\n\n`;
+            content += `========== HANDLUNG ==========\n\n`;
+            content += work.handlung.kurz + '\n\n';
+            if (work.handlung.kapitel) {
+                content += work.handlung.kapitel.join('\n') + '\n\n';
+            }
+            content += `\n========== CHARAKTERE ==========\n\n`;
+            work.charaktere.forEach(char => {
+                content += `${char.name} (${char.rolle})\n`;
+                content += `Eigenschaften: ${char.eigenschaften}\n`;
+                content += `Entwicklung: ${char.entwicklung}\n`;
+                if (char.zitate && char.zitate.length > 0) {
+                    content += `Zitate:\n${char.zitate.map(z => `  - ${z}`).join('\n')}\n`;
+                }
+                content += '\n';
+            });
+            content += `\n========== THEMEN ==========\n\n`;
+            work.themen.forEach(theme => {
+                content += `${theme.thema}\n`;
+                content += `${theme.analyse}\n`;
+                content += `Textstellen: ${theme.textstellen.join(', ')}\n\n`;
+            });
+
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentWork}-notizen.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadEssay() {
+            const work = works[currentWork];
+            const content = `${work.title} - Aufsatzantwort\n\nFrage: ${selectedQuestion}\n\n${essayText}`;
+            
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentWork}-aufsatz.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
