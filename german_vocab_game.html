@@ -695,6 +695,9 @@
                 <div style="margin-bottom: 20px;">
                     <span style="font-size: 1.2em; color: #667eea; font-weight: bold;">Card <span id="cardNumber">1</span> of <span id="totalCards">0</span></span>
                 </div>
+                <div style="margin-bottom: 15px; padding: 10px; background: #fff3cd; border-radius: 10px; border: 2px solid #ffc107;">
+                    <span style="color: #856404; font-weight: bold;">👆 Click the card below to flip it and see the answer!</span>
+                </div>
                 <div class="flashcard" id="flashcard" onclick="flipCard()">
                     <div class="flashcard-inner" id="flashcardInner">
                         <div class="flashcard-front">
@@ -706,7 +709,7 @@
                     </div>
                 </div>
                 <div style="margin-top: 30px;">
-                    <p style="color: #666; margin-bottom: 20px;">Click card to flip • Rate your knowledge:</p>
+                    <p style="color: #666; margin-bottom: 20px; font-weight: bold;">Rate your knowledge:</p>
                     <div class="button-group">
                         <button class="btn" style="background: #dc3545; color: white;" onclick="rateCard('wrong')">❌ Don't Know</button>
                         <button class="btn" style="background: #ffc107; color: white;" onclick="rateCard('hard')">😓 Hard</button>
@@ -1318,14 +1321,28 @@
 
         function flipCard() {
             const inner = document.getElementById('flashcardInner');
-            inner.classList.toggle('flipped');
-            gameState.cardFlipped = !gameState.cardFlipped;
+            const isFlipped = inner.classList.contains('flipped');
+            
+            if (isFlipped) {
+                inner.classList.remove('flipped');
+                gameState.cardFlipped = false;
+            } else {
+                inner.classList.add('flipped');
+                gameState.cardFlipped = true;
+            }
+            
+            console.log('Card flipped:', gameState.cardFlipped);
         }
 
         function rateCard(rating) {
+            console.log('rateCard called with:', rating);
+            console.log('Card flipped:', gameState.cardFlipped);
+            
             if (!gameState.cardFlipped) {
-                document.getElementById('flashFeedback').className = 'feedback incorrect';
-                document.getElementById('flashFeedback').textContent = '⚠️ Flip the card first to see the answer!';
+                const feedback = document.getElementById('flashFeedback');
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = '⚠️ Flip the card first to see the answer!';
+                feedback.style.display = 'block';
                 return;
             }
 
@@ -1353,12 +1370,15 @@
             if (gameState.streak >= 10) unlockBadge('streak10');
             if (gameState.streak >= 20) unlockBadge('streak20');
             
-            document.getElementById('flashFeedback').className = 'feedback correct';
-            document.getElementById('flashFeedback').textContent = message;
+            const feedback = document.getElementById('flashFeedback');
+            feedback.className = 'feedback correct';
+            feedback.textContent = message;
+            feedback.style.display = 'block';
             
             gameState.currentCardIndex++;
             setTimeout(() => showCard(), 1500);
             
+            updateStats();
             saveGameState();
         }
 
