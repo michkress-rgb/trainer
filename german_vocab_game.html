@@ -556,12 +556,68 @@
                 opacity: 0;
             }
         }
+
+        .flashcard {
+            width: 100%;
+            height: 400px;
+            perspective: 1000px;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard-inner.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            font-size: 2em;
+            font-weight: bold;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            transform: rotateY(180deg);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1 class="title">🎮 German Vocabulary Quest</h1>
+            
+            <div style="text-align: center; margin: 15px 0;">
+                <select id="listSelector" onchange="changeVocabList()" style="padding: 10px 20px; font-size: 1.1em; border-radius: 10px; border: 2px solid #667eea; background: white; color: #667eea; cursor: pointer; font-weight: bold;">
+                    <option value="list8">📚 List 8 - Home & Living</option>
+                    <option value="list9">📚 List 9 - Room & Furniture</option>
+                </select>
+            </div>
+            
             <div class="stats-bar">
                 <div class="stat-box">
                     <div class="stat-label">Level</div>
@@ -592,6 +648,9 @@
             </button>
             <button class="game-mode-btn" onclick="selectGameMode('spell', this)">
                 ✏️ Spelling Quest<br><small>Build the words</small>
+            </button>
+            <button class="game-mode-btn" onclick="selectGameMode('flashcard', this)">
+                🃏 Flashcard Flip<br><small>Test your memory</small>
             </button>
         </div>
 
@@ -626,6 +685,37 @@
                 <div class="feedback" id="spellFeedback"></div>
             </div>
         </div>
+
+        <div class="game-area" id="flashcardGame">
+            <div class="direction-toggle">
+                <button class="toggle-btn active" onclick="setFlashDirection('de-en', this)">🇩🇪 German → English</button>
+                <button class="toggle-btn" onclick="setFlashDirection('en-de', this)">🇬🇧 English → German</button>
+            </div>
+            <div style="max-width: 700px; margin: 0 auto; text-align: center;">
+                <div style="margin-bottom: 20px;">
+                    <span style="font-size: 1.2em; color: #667eea; font-weight: bold;">Card <span id="cardNumber">1</span> of <span id="totalCards">0</span></span>
+                </div>
+                <div class="flashcard" id="flashcard" onclick="flipCard()">
+                    <div class="flashcard-inner" id="flashcardInner">
+                        <div class="flashcard-front">
+                            <div id="flashFront"></div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div id="flashBack"></div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 30px;">
+                    <p style="color: #666; margin-bottom: 20px;">Click card to flip • Rate your knowledge:</p>
+                    <div class="button-group">
+                        <button class="btn" style="background: #dc3545; color: white;" onclick="rateCard('wrong')">❌ Don't Know</button>
+                        <button class="btn" style="background: #ffc107; color: white;" onclick="rateCard('hard')">😓 Hard</button>
+                        <button class="btn" style="background: #28a745; color: white;" onclick="rateCard('good')">✅ Got It!</button>
+                    </div>
+                </div>
+                <div class="feedback" id="flashFeedback"></div>
+            </div>
+        </div>
     </div>
 
     <div class="overlay" id="overlay"></div>
@@ -636,43 +726,77 @@
     </div>
 
     <script>
-        const vocabulary = [
-            {de: "etwas tun wollen", en: "want to do something"},
-            {de: "etwas (haben) wollen", en: "want something"},
-            {de: "wollen", en: "want"},
-            {de: "der Baum die Tour, die Reise, der Rundgang / die Rundfahrt", en: "tree"},
-            {de: "die oberste Etage", en: "top floor"},
-            {de: "die Spitze, das obere Ende", en: "top"},
-            {de: "erzählen, sagen", en: "tell"},
-            {de: "besondere", en: "special"},
-            {de: "der Schuh", en: "shoe"},
-            {de: "ziemlich, ganz", en: "quite"},
-            {de: "passiv", en: "passive"},
-            {de: "die Eidechse", en: "lizard"},
-            {de: "das Wohnzimmer", en: "living room"},
-            {de: "leben, wohnen", en: "live"},
-            {de: "die Lampe", en: "lamp"},
-            {de: "die Küche", en: "kitchen"},
-            {de: "interessant", en: "interesting"},
-            {de: "er/sie/es hat", en: "he/she/it has"},
-            {de: "das Erdgeschoss", en: "ground floor"},
-            {de: "der (Erd-) Boden", en: "ground"},
-            {de: "der Garten", en: "garden"},
-            {de: "die Garage", en: "garage"},
-            {de: "die Etage, der Stock, das Stockwerk; der Fußboden", en: "floor"},
-            {de: "die Wohnung", en: "the flat"},
-            {de: "schnell", en: "fast"},
-            {de: "jede", en: "each"},
-            {de: "träumen", en: "dream"},
-            {de: "der Traum", en: "dream"},
-            {de: "das Esszimmer", en: "dining room"},
-            {de: "niedlich, süß", en: "cute"},
-            {de: "das Schlafzimmer", en: "bedroom"},
-            {de: "das Bad", en: "bathroom"},
-            {de: "der Balkon", en: "balcony"},
-            {de: "aktiv", en: "active"},
-            {de: "ein Rundgang / eine Rundfahrt/ eine Reise durch Brighton", en: "a tour of Brighton"}
-        ];
+        const vocabularyLists = {
+            list8: [
+                {de: "etwas tun wollen", en: "want to do something"},
+                {de: "etwas (haben) wollen", en: "want something"},
+                {de: "wollen", en: "want"},
+                {de: "der Baum", en: "tree"},
+                {de: "die Tour, die Reise, der Rundgang / die Rundfahrt", en: "tour / trip / round trip"},
+                {de: "die oberste Etage", en: "top floor"},
+                {de: "die Spitze, das obere Ende", en: "top"},
+                {de: "erzählen, sagen", en: "tell"},
+                {de: "besondere", en: "special"},
+                {de: "der Schuh", en: "shoe"},
+                {de: "ziemlich, ganz", en: "quite"},
+                {de: "passiv", en: "passive"},
+                {de: "die Eidechse", en: "lizard"},
+                {de: "das Wohnzimmer", en: "living room"},
+                {de: "leben, wohnen", en: "live"},
+                {de: "die Lampe", en: "lamp"},
+                {de: "die Küche", en: "kitchen"},
+                {de: "interessant", en: "interesting"},
+                {de: "er/sie/es hat", en: "he/she/it has"},
+                {de: "das Erdgeschoss", en: "ground floor"},
+                {de: "der (Erd-) Boden", en: "ground"},
+                {de: "der Garten", en: "garden"},
+                {de: "die Garage", en: "garage"},
+                {de: "die Etage, der Stock, das Stockwerk; der Fußboden", en: "floor"},
+                {de: "die Wohnung", en: "the flat"},
+                {de: "schnell", en: "fast"},
+                {de: "jede", en: "each"},
+                {de: "träumen", en: "dream (verb)"},
+                {de: "der Traum", en: "dream (noun)"},
+                {de: "das Esszimmer", en: "dining room"},
+                {de: "niedlich, süß", en: "cute"},
+                {de: "das Schlafzimmer", en: "bedroom"},
+                {de: "das Bad", en: "bathroom"},
+                {de: "der Balkon", en: "balcony"},
+                {de: "aktiv", en: "active"},
+                {de: "ein Rundgang / eine Rundfahrt/ eine Reise durch Brighton", en: "a tour of Brighton"}
+            ],
+            list9: [
+                {de: "der Kleiderschrank", en: "wardrobe"},
+                {de: "die Wand, die Mauer", en: "wall"},
+                {de: "unter", en: "under"},
+                {de: "aufräumen", en: "tidy (verb)"},
+                {de: "ordentlich", en: "tidy (adj)"},
+                {de: "der Tisch", en: "table"},
+                {de: "die Bonbons, die Süßigkeiten", en: "sweets"},
+                {de: "süß", en: "sweet"},
+                {de: "das Regal, die Regale", en: "shelf, pl shelves"},
+                {de: "der Roboter", en: "robot"},
+                {de: "die Person", en: "person"},
+                {de: "an der Wand; an die Wand", en: "on the wall"},
+                {de: "neben", en: "next to"},
+                {de: "mein/ein eigenes Zimmer", en: "my own room"},
+                {de: "der Spiegel", en: "mirror"},
+                {de: "sein Terrarium / ihr Terrarium", en: "its terrarium"},
+                {de: "vor", en: "in front of"},
+                {de: "ins Bett gehen", en: "go to bed"},
+                {de: "die Tür", en: "door"},
+                {de: "Hast du ein eigenes Zimmer?", en: "Do you have your own room?"},
+                {de: "das Kissen", en: "cushion"},
+                {de: "die Kleidung, die Kleidungsstücke", en: "clothes"},
+                {de: "die Schokolade", en: "chocolate"},
+                {de: "hinter", en: "behind"},
+                {de: "das Bett", en: "bed"},
+                {de: "der Stuhl", en: "chair"},
+                {de: "Ihre gesamte Kleidung ist schwarz.", en: "All her clothes are black."}
+            ]
+        };
+
+        let vocabulary = vocabularyLists.list8; // Default to list 8
 
         let gameState = {
             level: 1,
@@ -681,19 +805,27 @@
             streak: 0,
             direction: 'de-en',
             spellDirection: 'de-en',
+            flashDirection: 'de-en',
             currentMatches: [],
             userMatches: {},
             currentSpellWord: null,
             userAnswer: [],
+            flashcardDeck: [],
+            currentCardIndex: 0,
+            cardFlipped: false,
             badges: {
                 firstMatch: false,
                 perfectRound: false,
                 streak5: false,
                 streak10: false,
+                streak20: false,
                 level5: false,
                 level10: false,
                 master: false,
-                speedster: false
+                speedster: false,
+                flashMaster: false,
+                polyglot: false,
+                dedication: false
             }
         };
 
@@ -721,6 +853,9 @@
             } else if (mode === 'spell') {
                 document.getElementById('spellGame').classList.add('active');
                 nextSpellingWord();
+            } else if (mode === 'flashcard') {
+                document.getElementById('flashcardGame').classList.add('active');
+                initFlashcards();
             }
         }
 
@@ -755,24 +890,26 @@
             const area = document.getElementById('matchGameArea');
             const isDeToEn = gameState.direction === 'de-en';
             
-            const leftWords = gameState.currentMatches.map((w, i) => ({
-                word: isDeToEn ? w.de : w.en,
+            // Words to drag from (right side)
+            const draggableWords = gameState.currentMatches.map((w, i) => ({
+                word: isDeToEn ? w.en : w.de,
+                correctMatch: isDeToEn ? w.de : w.en,
                 index: i
             }));
-            const rightWords = [...gameState.currentMatches]
+            
+            // Drop targets (left side, scrambled)
+            const dropTargets = [...gameState.currentMatches]
                 .sort(() => Math.random() - 0.5)
                 .map((w, i) => ({
-                    word: isDeToEn ? w.en : w.de,
-                    correctMatch: isDeToEn ? w.de : w.en,
+                    word: isDeToEn ? w.de : w.en,
                     index: i
                 }));
             
             area.innerHTML = `
                 <div class="column">
                     <div class="column-title">${isDeToEn ? '🇩🇪 German' : '🇬🇧 English'}</div>
-                    ${rightWords.map((item, i) => `
+                    ${dropTargets.map((item, i) => `
                         <div class="drop-zone" 
-                             data-correct="${item.correctMatch}" 
                              data-target="${item.word}"
                              ondrop="drop(event)" 
                              ondragover="allowDrop(event)" 
@@ -782,11 +919,12 @@
                     `).join('')}
                 </div>
                 <div class="column">
-                    <div class="column-title">${isDeToEn ? '🇬🇧 English' : '🇩🇪 German'} (Drag these)</div>
-                    ${leftWords.map((item, i) => `
+                    <div class="column-title">${isDeToEn ? '🇬🇧 English' : '🇩🇪 German'} <small>← Drag these</small></div>
+                    ${draggableWords.map((item, i) => `
                         <div class="word-item" 
                              draggable="true" 
-                             data-word="${item.word}" 
+                             data-word="${item.word}"
+                             data-correct="${item.correctMatch}"
                              data-index="${item.index}" 
                              ondragstart="dragStart(event)">
                             ${item.word}
@@ -795,12 +933,15 @@
                 </div>
             `;
             
+            gameState.userMatches = {};
             document.getElementById('matchFeedback').style.display = 'none';
         }
 
         function dragStart(e) {
             const word = e.target.dataset.word;
+            const correct = e.target.dataset.correct;
             e.dataTransfer.setData('word', word);
+            e.dataTransfer.setData('correct', correct);
             e.target.classList.add('dragging');
         }
 
@@ -818,22 +959,25 @@
             e.target.classList.remove('drag-over');
             
             const draggedWord = e.dataTransfer.getData('word');
+            const correctAnswer = e.dataTransfer.getData('correct');
             const draggedElement = document.querySelector(`.word-item[data-word="${draggedWord}"]`);
             const dropZone = e.target.closest('.drop-zone');
             
-            if (dropZone && draggedElement) {
-                // Store the match
+            if (dropZone && draggedElement && !dropZone.classList.contains('filled')) {
                 const targetWord = dropZone.dataset.target;
+                
+                // Store the match
                 gameState.userMatches[targetWord] = draggedWord;
                 
                 // Visual feedback
+                dropZone.classList.add('filled');
                 dropZone.style.background = 'linear-gradient(135deg, #e0e7ff, #f0e7ff)';
                 dropZone.style.borderColor = '#667eea';
                 dropZone.style.borderStyle = 'solid';
                 dropZone.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                        <span style="color: #999; text-decoration: line-through;">${targetWord}</span>
-                        <span style="color: #667eea; font-weight: bold;">→ ${draggedWord}</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 10px;">
+                        <span style="color: #666;">${targetWord}</span>
+                        <span style="color: #667eea; font-weight: bold;">= ${draggedWord}</span>
                     </div>
                 `;
                 
@@ -854,15 +998,23 @@
             
             document.querySelectorAll('.drop-zone').forEach(zone => {
                 const targetWord = zone.dataset.target;
-                const correctMatch = zone.dataset.correct;
-                const userMatch = gameState.userMatches[targetWord];
+                const userAnswer = gameState.userMatches[targetWord];
                 
-                if (userMatch) {
+                if (userAnswer) {
                     total++;
-                    if (userMatch === correctMatch) {
+                    
+                    // Find the correct answer for this target
+                    const isDeToEn = gameState.direction === 'de-en';
+                    const pair = gameState.currentMatches.find(p => 
+                        (isDeToEn ? p.de : p.en) === targetWord
+                    );
+                    const correctAnswer = pair ? (isDeToEn ? pair.en : pair.de) : null;
+                    
+                    if (userAnswer === correctAnswer) {
                         correct++;
                         zone.style.background = '#d4edda';
                         zone.style.borderColor = '#28a745';
+                        zone.classList.remove('incorrect');
                         createSparkles(zone);
                     } else {
                         zone.style.background = '#f8d7da';
@@ -892,6 +1044,9 @@
                 }
                 if (gameState.streak >= 10) {
                     unlockBadge('streak10');
+                }
+                if (gameState.streak >= 20) {
+                    unlockBadge('streak20');
                 }
             } else if (total === 0) {
                 feedback.className = 'feedback incorrect';
@@ -1005,6 +1160,11 @@
             gameState.xp += amount;
             gameState.score += amount;
             
+            // Check for dedication badge
+            if (gameState.score >= 1000) {
+                unlockBadge('dedication');
+            }
+            
             const xpNeeded = 100 * gameState.level;
             
             if (gameState.xp >= xpNeeded) {
@@ -1041,10 +1201,14 @@
                 {id: 'perfectRound', emoji: '💯', name: 'Perfect!', desc: 'Get all matches correct'},
                 {id: 'streak5', emoji: '🔥', name: 'Hot Streak', desc: 'Get 5 in a row correct'},
                 {id: 'streak10', emoji: '⚡', name: 'Unstoppable', desc: 'Get 10 in a row correct'},
+                {id: 'streak20', emoji: '💥', name: 'Legendary', desc: 'Get 20 in a row correct'},
                 {id: 'level5', emoji: '⭐', name: 'Rising Star', desc: 'Reach level 5'},
                 {id: 'level10', emoji: '🌟', name: 'Superstar', desc: 'Reach level 10'},
                 {id: 'master', emoji: '👑', name: 'Master', desc: 'Reach level 20'},
-                {id: 'speedster', emoji: '🚀', name: 'Speedster', desc: 'Complete a round in under 30 seconds'}
+                {id: 'speedster', emoji: '🚀', name: 'Speedster', desc: 'Complete a round quickly'},
+                {id: 'flashMaster', emoji: '🃏', name: 'Flash Master', desc: 'Complete all flashcards'},
+                {id: 'polyglot', emoji: '🌍', name: 'Polyglot', desc: 'Practice both directions'},
+                {id: 'dedication', emoji: '🏆', name: 'Dedicated', desc: 'Score 1000+ points'}
             ];
             
             const display = document.getElementById('badgeDisplay');
@@ -1064,10 +1228,14 @@
                 perfectRound: 'linear-gradient(135deg, #f093fb, #f5576c)',
                 streak5: 'linear-gradient(135deg, #fa709a, #fee140)',
                 streak10: 'linear-gradient(135deg, #30cfd0, #330867)',
+                streak20: 'linear-gradient(135deg, #ff0844, #ffb199)',
                 level5: 'linear-gradient(135deg, #a8edea, #fed6e3)',
                 level10: 'linear-gradient(135deg, #ffecd2, #fcb69f)',
                 master: 'linear-gradient(135deg, #ff9a56, #ff6a00)',
-                speedster: 'linear-gradient(135deg, #96fbc4, #f9f586)'
+                speedster: 'linear-gradient(135deg, #96fbc4, #f9f586)',
+                flashMaster: 'linear-gradient(135deg, #4facfe, #00f2fe)',
+                polyglot: 'linear-gradient(135deg, #43e97b, #38f9d7)',
+                dedication: 'linear-gradient(135deg, #fa709a, #fee140)'
             };
             return colors[id] || '#ddd';
         }
@@ -1095,6 +1263,103 @@
         function closeCelebration() {
             document.getElementById('celebration').classList.remove('show');
             document.getElementById('overlay').classList.remove('show');
+        }
+
+        function changeVocabList() {
+            const selector = document.getElementById('listSelector');
+            vocabulary = vocabularyLists[selector.value];
+            
+            // Reset current games
+            newMatchRound();
+            nextSpellingWord();
+            initFlashcards();
+        }
+
+        function setFlashDirection(dir, clickedBtn) {
+            gameState.flashDirection = dir;
+            document.querySelectorAll('#flashcardGame .toggle-btn').forEach(btn => btn.classList.remove('active'));
+            if (clickedBtn) {
+                clickedBtn.classList.add('active');
+            }
+            initFlashcards();
+        }
+
+        function initFlashcards() {
+            gameState.flashcardDeck = [...vocabulary].sort(() => Math.random() - 0.5);
+            gameState.currentCardIndex = 0;
+            gameState.cardFlipped = false;
+            document.getElementById('totalCards').textContent = gameState.flashcardDeck.length;
+            showCard();
+        }
+
+        function showCard() {
+            if (gameState.currentCardIndex >= gameState.flashcardDeck.length) {
+                document.getElementById('flashFeedback').className = 'feedback correct';
+                document.getElementById('flashFeedback').textContent = '🎉 You completed all cards! +100 XP';
+                addXP(100);
+                createConfetti();
+                unlockBadge('flashMaster');
+                setTimeout(() => initFlashcards(), 3000);
+                return;
+            }
+
+            const card = gameState.flashcardDeck[gameState.currentCardIndex];
+            const isDeToEn = gameState.flashDirection === 'de-en';
+            
+            document.getElementById('flashFront').textContent = isDeToEn ? card.de : card.en;
+            document.getElementById('flashBack').textContent = isDeToEn ? card.en : card.de;
+            document.getElementById('cardNumber').textContent = gameState.currentCardIndex + 1;
+            
+            // Reset flip
+            document.getElementById('flashcardInner').classList.remove('flipped');
+            gameState.cardFlipped = false;
+            document.getElementById('flashFeedback').style.display = 'none';
+        }
+
+        function flipCard() {
+            const inner = document.getElementById('flashcardInner');
+            inner.classList.toggle('flipped');
+            gameState.cardFlipped = !gameState.cardFlipped;
+        }
+
+        function rateCard(rating) {
+            if (!gameState.cardFlipped) {
+                document.getElementById('flashFeedback').className = 'feedback incorrect';
+                document.getElementById('flashFeedback').textContent = '⚠️ Flip the card first to see the answer!';
+                return;
+            }
+
+            let xpGain = 0;
+            let message = '';
+            
+            if (rating === 'wrong') {
+                xpGain = 5;
+                message = '📚 Keep practicing! +5 XP';
+                gameState.streak = 0;
+            } else if (rating === 'hard') {
+                xpGain = 10;
+                message = '💪 Good effort! +10 XP';
+                gameState.streak++;
+            } else if (rating === 'good') {
+                xpGain = 15;
+                message = '✨ Excellent! +15 XP';
+                gameState.streak++;
+                createSparkles(document.getElementById('flashcard'));
+            }
+            
+            addXP(xpGain);
+            
+            if (gameState.streak >= 5) unlockBadge('streak5');
+            if (gameState.streak >= 10) unlockBadge('streak10');
+            if (gameState.streak >= 20) unlockBadge('streak20');
+            
+            document.getElementById('flashFeedback').className = 'feedback correct';
+            document.getElementById('flashFeedback').textContent = message;
+            
+            gameState.currentCardIndex++;
+            setTimeout(() => showCard(), 1500);
+            
+            saveGameState();
         }
 
         function saveGameState() {
