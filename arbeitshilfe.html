@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Arbeitshilfe Deutsch – Klassenarbeit 4/5</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #E3F2FD 0%, #C8E6C9 50%, #FFF9C4 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 24px 24px 32px;
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.12);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #1E88E5;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #455A64;
+            font-size: 0.95rem;
+        }
+
+        .top-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #E0E0E0;
+            padding-bottom: 12px;
+        }
+
+        .name-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .name-section label {
+            font-weight: 600;
+            color: #37474F;
+        }
+
+        .name-section input {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #B0BEC5;
+            min-width: 200px;
+        }
+
+        .grade-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .grade-btn {
+            border: none;
+            border-radius: 20px;
+            padding: 6px 16px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #E3F2FD;
+            color: #1E88E5;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .grade-btn.active {
+            background: #1E88E5;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .grade-btn:hover {
+            filter: brightness(1.05);
+        }
+
+        .greeting {
+            font-size: 0.95rem;
+            color: #455A64;
+        }
+
+        .layout {
+            display: grid;
+            gap: 16px;
+        }
+
+        @media (min-width: 900px) {
+            .layout {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        .skill-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .skill-tab {
+            border-radius: 18px;
+            border: none;
+            padding: 6px 14px;
+            cursor: pointer;
+            background: #ECEFF1;
+            color: #37474F;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .skill-tab.active {
+            background: #43A047;
+            color: #ffffff;
+        }
+
+        .skills-container {
+            border-radius: 16px;
+            background: #FAFAFA;
+            padding: 14px;
+            border: 1px solid #E0E0E0;
+        }
+
+        .skill-section {
+            display: none;
+        }
+
+        .skill-section.active {
+            display: block;
+        }
+
+        .skill-section h2 {
+            margin-bottom: 6px;
+            font-size: 1.2rem;
+            color: #2E7D32;
+        }
+
+        .skill-hint {
+            font-size: 0.85rem;
+            color: #546E7A;
+            margin-bottom: 10px;
+        }
+
+        .task-list {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 10px;
+        }
+
+        @media (min-width: 700px) {
+            .task-list {
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            }
+        }
+
+        .task-card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 10px 12px;
+            border: 1px solid #E0E0E0;
+        }
+
+        .task-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #37474F;
+        }
+
+        .task-body {
+            font-size: 0.9rem;
+            color: #455A64;
+        }
+
+        .task-body p {
+            margin-bottom: 4px;
+        }
+
+        .task-body ol,
+        .task-body ul {
+            padding-left: 18px;
+            margin-bottom: 4px;
+        }
+
+        .small-text {
+            font-size: 0.8rem;
+            color: #78909C;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 4px 6px;
+            margin-top: 4px;
+            margin-bottom: 4px;
+            border-radius: 6px;
+            border: 1px solid #CFD8DC;
+            font-size: 0.9rem;
+        }
+
+        .quiz-button {
+            margin-top: 4px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            background: #1E88E5;
+            color: #ffffff;
+            font-size: 0.8rem;
+        }
+
+        .quiz-result {
+            margin-top: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .correct {
+            color: #2E7D32;
+        }
+
+        .incorrect {
+            color: #C62828;
+        }
+
+        .badge-panel {
+            background: #F3E5F5;
+            border-radius: 16px;
+            padding: 10px 12px;
+            border: 1px solid #D1C4E9;
+        }
+
+        .badge-panel h3 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+            color: #6A1B9A;
+        }
+
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .badge {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 6px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            border: 1px dashed #B39DDB;
+            min-width: 90px;
+            text-align: center;
+        }
+
+        .badge.locked {
+            background: #F5F5F5;
+            color: #9E9E9E;
+        }
+
+        .badge.unlocked {
+            background: #D1C4E9;
+            color: #4A148C;
+            border-style: solid;
+        }
+
+        .badge-name {
+            font-weight: 600;
+        }
+
+        .badge-grade {
+            font-size: 0.7rem;
+        }
+
+        .badge-controls {
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .badge-unlock-btn {
+            border-radius: 14px;
+            padding: 4px 10px;
+            border: none;
+            cursor: pointer;
+            background: #8E24AA;
+            color: #ffffff;
+            font-size: 0.8rem;
+        }
+
+        .badge-info {
+            font-size: 0.8rem;
+            color: #5E35B1;
+        }
+
+        .badge-message {
+            margin-top: 6px;
+            font-size: 0.85rem;
+            color: #4A148C;
+            font-weight: 600;
+        }
+
+        .bonus-section {
+            margin-top: 10px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px dashed #FFB300;
+            background: #FFF8E1;
+            font-size: 0.88rem;
+        }
+
+        .bonus-locked-hint {
+            font-size: 0.8rem;
+            color: #F57C00;
+        }
+
+        .badge-unlock-btn[disabled] {
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        .radio-group label {
+            display: block;
+            font-size: 0.88rem;
+            margin-bottom: 2px;
+        }
+
+        .checkbox-inline {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.85rem;
+        }
+
+        .section-note {
+            font-size: 0.78rem;
+            color: #607D8B;
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Arbeitshilfe Deutsch</h1>
+    <div class="subtitle">
+        Vorbereitung auf die Klassenarbeit – getrennte Aufgaben für Klasse 4 und 5<br>
+        Bereiche: Lesen, Schreiben, Hören, Verstehen, Grammatik, Wortschatz
+    </div>
+
+    <div class="top-bar">
+        <div class="name-section">
+            <label for="studentName">Name:</label>
+            <input id="studentName" type="text" placeholder="Bitte Namen eingeben">
+            <span class="greeting" id="greeting"></span>
+        </div>
+        <div class="grade-buttons">
+            <button class="grade-btn active" data-grade="4">Klasse 4</button>
+            <button class="grade-btn" data-grade="5">Klasse 5</button>
+        </div>
+    </div>
+
+    <div class="layout">
+        <div>
+            <div class="skills-container">
+                <div class="skill-tabs">
+                    <button class="skill-tab active" data-skill="lesen">Lesen</button>
+                    <button class="skill-tab" data-skill="schreiben">Schreiben</button>
+                    <button class="skill-tab" data-skill="hoeren">Hören</button>
+                    <button class="skill-tab" data-skill="verstehen">Verstehen</button>
+                    <button class="skill-tab" data-skill="grammatik">Grammatik</button>
+                    <button class="skill-tab" data-skill="wortschatz">Wortschatz</button>
+                </div>
+
+                <!-- Klasse 4 Inhalte -->
+                <div id="grade4Content">
+                    <!-- Lesen -->
+                    <section class="skill-section active" data-skill-section="lesen">
+                        <h2>Lesen – Klasse 4</h2>
+                        <div class="skill-hint">
+                            Lies aufmerksam. Markiere im Heft wichtige Wörter, schreibe dir Fragen auf und kontrolliere mit den Aufgaben.
+                        </div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Kurztext zum Thema Unterwegs</div>
+                                <div class="task-body">
+                                    <p><strong>Text:</strong></p>
+                                    <p>
+                                        Anna und Lukas fahren mit ihren Eltern in die Stadt. Zuerst gehen sie über die Straße und
+                                        achten auf den Zebrastreifen. Danach schauen sie auf den Stadtplan, weil sie den Bahnhof suchen.
+                                        Später gehen sie über eine Brücke und sehen viele Fahrräder in der Fußgängerzone.
+                                    </p>
+                                    <p><strong>Aufgaben:</strong></p>
+                                    <ol>
+                                        <li>Wo wollen Anna und Lukas hin?</li>
+                                        <li>Welche Verkehrsmittel oder Orte kommen im Text vor? Schreibe eine Liste.</li>
+                                        <li>Unterstreiche alle Zeitwörter (zuerst, danach, später, am Ende) im Text.</li>
+                                    </ol>
+                                    <p class="small-text">Antworten im Heft notieren.</p>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">2. Leseverstehen mit Auswahlfragen</div>
+                                <div class="task-body">
+                                    <p>Lies den Text aus Aufgabe 1 noch einmal und wähle die richtigen Antworten aus.</p>
+                                    <div class="quiz" data-quiz-id="lesen4_auswahl">
+                                        <div class="radio-group">
+                                            <p>1. Was suchen Anna und Lukas?</p>
+                                            <label><input type="radio" name="lesen4_1" value="a"> die Brücke</label>
+                                            <label><input type="radio" name="lesen4_1" value="b"> den Bahnhof</label>
+                                            <label><input type="radio" name="lesen4_1" value="c"> die Kreuzung</label>
+                                        </div>
+                                        <div class="radio-group">
+                                            <p>2. Wo sehen sie viele Fahrräder?</p>
+                                            <label><input type="radio" name="lesen4_2" value="a"> an der Kreuzung</label>
+                                            <label><input type="radio" name="lesen4_2" value="b"> im Bahnhof</label>
+                                            <label><input type="radio" name="lesen4_2" value="c"> in der Fußgängerzone</label>
+                                        </div>
+                                        <button class="quiz-button" type="button">Auswerten</button>
+                                        <div class="quiz-result" data-result></div>
+                                    </div>
+                                    <p class="small-text">Tipp: Begründe deine Wahl im Heft.</p>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">3. Textstruktur erkennen</div>
+                                <div class="task-body">
+                                    <p>Suche in einem Text aus deinem Lesebuch oder aus „Der lange Winter“:</p>
+                                    <ul>
+                                        <li>drei Sätze mit einem Zeitwort am Anfang (zuerst, danach, später, am Ende)</li>
+                                        <li>zwei Sätze mit weil oder obwohl</li>
+                                    </ul>
+                                    <p>Schreibe die Sätze in dein Heft und markiere das Zeitwort bzw. den Konnektor.</p>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">4. Schwieriger Lesetext</div>
+                                <div class="task-body">
+                                    <p>Suche selbstständig eine Seite aus „Der lange Winter“, die du anspruchsvoll findest.</p>
+                                    <ol>
+                                        <li>Lies die Seite zweimal.</li>
+                                        <li>Erkläre in drei Sätzen, was auf dieser Seite passiert.</li>
+                                        <li>Schreibe zwei Fragen zum Text, die deine Mitschüler beantworten sollen.</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Schreiben -->
+                    <section class="skill-section" data-skill-section="schreiben">
+                        <h2>Schreiben – Klasse 4</h2>
+                        <div class="skill-hint">
+                            Formuliere vollständige Sätze, nutze Konnektoren und achte auf Groß- und Kleinschreibung.
+                        </div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Wegbeschreibung</div>
+                                <div class="task-body">
+                                    <p>Schreibe eine Wegbeschreibung von deiner Wohnung zur Schule.</p>
+                                    <ul>
+                                        <li>Nutze mindestens vier Konnektoren: zuerst, danach, später, am Ende.</li>
+                                        <li>Verwende passende Wörter aus dem Wortfeld <em>Unterwegs</em> (Straße, Kreuzung, Brücke, Zebrastreifen).</li>
+                                        <li>Mindestens 8 Sätze.</li>
+                                    </ul>
+                                    <p class="small-text">Im Heft schreiben und danach laut vorlesen.</p>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">2. kleines Abenteuer</div>
+                                <div class="task-body">
+                                    <p>Erfinde ein kurzes Abenteuer mit dem Fahrrad.</p>
+                                    <ul>
+                                        <li>Schreibe in der 1. Person (ich).</li>
+                                        <li>Benutze mindestens drei starke Verben im Präteritum (ging, fuhr, sah, las, nahm, begann).</li>
+                                        <li>Markiere die Verben im Heft farbig.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">3. Kontrollliste Schreiben</div>
+                                <div class="task-body">
+                                    <p>Hake für deinen Text ab:</p>
+                                    <ul>
+                                        <li class="checkbox-inline"><input type="checkbox"> Ich habe Großschreibung am Satzanfang beachtet.</li>
+                                        <li class="checkbox-inline"><input type="checkbox"> Ich habe Nomen großgeschrieben.</li>
+                                        <li class="checkbox-inline"><input type="checkbox"> Ich habe Konnektoren verwendet.</li>
+                                        <li class="checkbox-inline"><input type="checkbox"> Ich habe den Text noch einmal durchgelesen.</li>
+                                    </ul>
+                                    <p class="small-text">Zeige deine Checkliste der Lehrperson.</p>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">4. Bildgeschichte</div>
+                                <div class="task-body">
+                                    <p>Suche oder zeichne vier Bilder zu einem kurzen Abenteuer (Unterwegs in der Stadt).</p>
+                                    <ol>
+                                        <li>Nummeriere die Bilder (1–4).</li>
+                                        <li>Schreibe zu jedem Bild ein bis zwei Sätze und verwende Zeitwörter (zuerst, danach, später, am Ende).</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Hören -->
+                    <section class="skill-section" data-skill-section="hoeren">
+                        <h2>Hören – Klasse 4</h2>
+                        <div class="skill-hint">
+                            Hier brauchst du eine zweite Person, die dir vorliest (Lehrperson, Mitschüler, Eltern).
+                        </div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Ansage verstehen</div>
+                                <div class="task-body">
+                                    <p>Bitte eine Person, dir eine erfundene Durchsage vom Bahnhof vorzulesen (z. B. Verspätung, Gleiswechsel).</p>
+                                    <ol>
+                                        <li>Höre ohne Notizen.</li>
+                                        <li>Höre ein zweites Mal und notiere Stichwörter: Zug, Uhrzeit, Gleis, Grund.</li>
+                                        <li>Formuliere danach zwei ganze Sätze, was passiert.</li>
+                                    </ol>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">2. Hörprotokoll zu „Der lange Winter“</div>
+                                <div class="task-body">
+                                    <p>Lass dir eine Seite aus „Der lange Winter“ vorlesen.</p>
+                                    <ul>
+                                        <li>Notiere drei wichtige Wörter, die du gehört hast.</li>
+                                        <li>Schreibe in ein bis zwei Sätzen, was in dem Abschnitt passiert.</li>
+                                        <li>Markiere ein Wort, das du schwierig fandest, und kläre seine Bedeutung.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">3. Hörminuten sammeln</div>
+                                <div class="task-body">
+                                    <p>Höre dir zu Hause oder in der Schule einen deutschen Hörtext an (z. B. kurze Kindersendung).</p>
+                                    <ul>
+                                        <li>Notiere Titel, Dauer und Thema.</li>
+                                        <li>Schreibe drei Fragen, die du zur Sendung hast.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">4. Diktat üben</div>
+                                <div class="task-body">
+                                    <p>Bitte jemanden, dir fünf Sätze zum Thema Unterwegs zu diktieren.</p>
+                                    <ul>
+                                        <li>Schreibe die Sätze möglichst fehlerfrei.</li>
+                                        <li>Markiere danach alle Verben.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Verstehen -->
+                    <section class="skill-section" data-skill-section="verstehen">
+                        <h2>Verstehen – Klasse 4</h2>
+                        <div class="skill-hint">
+                            Hier geht es darum, Inhalte zu erfassen und in eigenen Worten zu erklären.
+                        </div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Fragen an einen Text</div>
+                                <div class="task-body">
+                                    <p>Wähle einen kurzen Text aus dem Lesebuch.</p>
+                                    <ul>
+                                        <li>Formuliere fünf W-Fragen (Wer? Wo? Wann? Was? Warum?).</li>
+                                        <li>Beantworte deine eigenen Fragen schriftlich.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">2. Hauptperson beschreiben</div>
+                                <div class="task-body">
+                                    <p>Wähle eine Figur aus „Der lange Winter“.</p>
+                                    <ul>
+                                        <li>Beschreibe in 5–7 Sätzen, wie diese Person ist.</li>
+                                        <li>Nutze Adjektive und steigere mindestens zwei davon (z. B. jung, jünger, am jüngsten).</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">3. Ursache und Folge</div>
+                                <div class="task-body">
+                                    <p>Denke an eine Szene, in der etwas schiefgeht (z. B. jemand verpasst den Zug).</p>
+                                    <ol>
+                                        <li>Schreibe den Satz: „Weil …, …“</li>
+                                        <li>Schreibe den Satz: „…, deshalb …“</li>
+                                    </ol>
+                                    <p class="small-text">So übst du Ursache und Folge zu verbinden.</p>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">4. Zusammenfassung üben</div>
+                                <div class="task-body">
+                                    <p>Fasse einen Abschnitt aus „Der lange Winter“ in höchstens fünf Sätzen zusammen.</p>
+                                    <p>Kontrollfrage: Könnte jemand, der das Buch nicht kennt, verstehen, worum es geht?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Grammatik -->
+                    <section class="skill-section" data-skill-section="grammatik">
+                        <h2>Grammatik – Klasse 4</h2>
+                        <div class="skill-hint">
+                            Fokus: starke Verben im Präteritum, Steigerung von Adjektiven, Konnektoren.
+                        </div>
+                        <p class="section-note">Einige Aufgaben haben eine automatische Auswertung.</p>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. starke Verben im Präteritum</div>
+                                <div class="task-body">
+                                    <p>Setze die richtige Präteritumform ein.</p>
+                                    <div class="quiz" data-quiz-id="gram4_verben">
+                                        <p>a) Gestern <input class="text-input" data-answer="ging" placeholder="Verb"> ich zu Fuß zur Schule.</p>
+                                        <p>b) Letzte Woche <input class="text-input" data-answer="fuhr" placeholder="Verb"> meine Familie in die Stadt.</p>
+                                        <p>c) Am Abend <input class="text-input" data-answer="las" placeholder="Verb"> ich ein spannendes Buch.</p>
+                                        <p>d) Im Museum <input class="text-input" data-answer="sah" placeholder="Verb"> ich viele Bilder.</p>
+                                        <p>e) In der Pause <input class="text-input" data-answer="nahm" placeholder="Verb"> ich mein Brot aus der Tasche.</p>
+                                        <button class="quiz-button" type="button">Auswerten</button>
+                                        <div class="quiz-result" data-result></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">2. Adjektive steigern</div>
+                                <div class="task-body">
+                                    <p>Schreibe zu jedem Adjektiv die Steigerungsreihe.</p>
+                                    <ul>
+                                        <li>hell – <input class="text-input" data-answer="heller"> – <input class="text-input" data-answer="am hellsten"></li>
+                                        <li>laut – <input class="text-input" data-answer="lauter"> – <input class="text-input" data-answer="am lautesten"></li>
+                                        <li>jung – <input class="text-input" data-answer="jünger"> – <input class="text-input" data-answer="am jüngsten"></li>
+                                    </ul>
+                                    <button class="quiz-button" type="button" data-quiz-id="gram4_adj">Auswerten</button>
+                                    <div class="quiz-result" data-result-id="gram4_adj_result"></div>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">3. Konnektoren üben</div>
+                                <div class="task-body">
+                                    <p>Ergänze die Sätze mit einem passenden Konnektor: <em>weil, obwohl, während, bevor, nachdem</em>.</p>
+                                    <p class="small-text">Im Heft lösen, dann mit der Lehrperson kontrollieren.</p>
+                                    <ol>
+                                        <li>…, ich müde war, ging ich früh schlafen.</li>
+                                        <li>…, wir gegessen hatten, räumten wir den Tisch ab.</li>
+                                        <li>…, ich krank war, ging ich zur Schule.</li>
+                                        <li>…, ich die Straße überquere, schaue ich nach rechts und links.</li>
+                                        <li>…, ich auf den Bus warte, lese ich ein Buch.</li>
+                                    </ol>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">4. Satzarten</div>
+                                <div class="task-body">
+                                    <p>Erfinde je zwei Beispiele für:</p>
+                                    <ul>
+                                        <li>Aussagesatz</li>
+                                        <li>Fragesatz</li>
+                                        <li>Ausrufesatz</li>
+                                    </ul>
+                                    <p>Markiere das Satzschlusszeichen deutlich.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bonus-section" data-required-badge="4_grammatik">
+                            <p><strong>Bonusaufgabe (freigeschaltet mit Abzeichen Grammatik Klasse 4)</strong></p>
+                            <p>Schreibe einen kurzen Text (mindestens zehn Sätze), in dem du:</p>
+                            <ul>
+                                <li>mindestens fünf starke Verben im Präteritum verwendest,</li>
+                                <li>drei Konnektoren (z. B. weil, obwohl, nachdem) nutzt,</li>
+                                <li>zwei gesteigerte Adjektive einbaust.</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- Wortschatz -->
+                    <section class="skill-section" data-skill-section="wortschatz">
+                        <h2>Wortschatz – Klasse 4</h2>
+                        <div class="skill-hint">
+                            Schwerpunkt: Unterwegs und Abenteuer, Orte in der Stadt, Verkehr.
+                        </div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Wortfelder sortieren</div>
+                                <div class="task-body">
+                                    <p>Ordne die Wörter in die passenden Gruppen und ergänze eigene Wörter.</p>
+                                    <p><strong>Wörter:</strong> die Straße, der Zebrastreifen, die Kreuzung, die Brücke, der Bahnhof, der Stadtplan, das Verkehrsschild, die Fußgängerzone, das Fahrrad, das Abenteuer</p>
+                                    <ul>
+                                        <li>Orte in der Stadt: …</li>
+                                        <li>Verkehr: …</li>
+                                        <li>Fortbewegung: …</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">2. Mini-Wortquiz</div>
+                                <div class="task-body">
+                                    <p>Wähle die passende Erklärung.</p>
+                                    <div class="quiz" data-quiz-id="wort4_quiz">
+                                        <p>1. Was ist ein Zebrastreifen?</p>
+                                        <select class="text-input" data-answer="b">
+                                            <option value="">Bitte wählen</option>
+                                            <option value="a">ein Schild mit einer Zahl</option>
+                                            <option value="b">eine markierte Stelle zum Überqueren der Straße</option>
+                                            <option value="c">ein Plan von der Stadt</option>
+                                        </select>
+
+                                        <p>2. Wofür benutzt man einen Stadtplan?</p>
+                                        <select class="text-input" data-answer="c">
+                                            <option value="">Bitte wählen</option>
+                                            <option value="a">zum Bezahlen</option>
+                                            <option value="b">als Verkehrsschild</option>
+                                            <option value="c">um Wege und Straßen zu finden</option>
+                                        </select>
+
+                                        <button class="quiz-button" type="button">Auswerten</button>
+                                        <div class="quiz-result" data-result></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">3. Wortschatzkarte</div>
+                                <div class="task-body">
+                                    <p>Erstelle auf einem Blatt eine Wortschatzkarte „Abenteuer in der Stadt“.</p>
+                                    <ul>
+                                        <li>Schreibe in die Mitte: Abenteuer.</li>
+                                        <li>Darum herum: Orte, Personen, Gefühle, Dinge, Verben.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">4. Synonyme finden</div>
+                                <div class="task-body">
+                                    <p>Finde zu diesen Wörtern möglichst viele ähnliche Wörter:</p>
+                                    <ul>
+                                        <li>groß</li>
+                                        <li>laut</li>
+                                        <li>gut</li>
+                                        <li>schnell</li>
+                                    </ul>
+                                    <p>Schreibe deine Liste im Heft auf.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Klasse 5 Inhalte -->
+                <div id="grade5Content" style="display:none;">
+                    <!-- Lesen -->
+                    <section class="skill-section active" data-skill-section="lesen">
+                        <h2>Lesen – Klasse 5</h2>
+                        <div class="skill-hint">
+                            Anspruchsvollere Texte, genaues Lesen und Nachdenken über Gefühle und Erlebnisse.
+                        </div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Erlebnisbericht verstehen</div>
+                                <div class="task-body">
+                                    <p>Suche im Cornelsen-Buch einen Erlebnisbericht, den ihr im Unterricht gelesen habt.</p>
+                                    <ol>
+                                        <li>Markiere Stellen, an denen Gefühle beschrieben werden (Angst, Freude, Mut, Hoffnung).</li>
+                                        <li>Schreibe in 5–7 Sätzen eine Inhaltsangabe des Textes.</li>
+                                        <li>Formuliere zwei eigene Sätze mit „obwohl“ und „trotzdem“ zu dem Erlebnis.</li>
+                                    </ol>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">2. Multiple-Choice-Verstehen</div>
+                                <div class="task-body">
+                                    <p>Stelle dir folgenden kurzen Text vor (oder verwende einen ähnlichen aus dem Buch):</p>
+                                    <p>
+                                        „Am Tag des Fußballturniers war ich sehr nervös. Zuerst dachte ich, wir würden bestimmt verlieren.
+                                        Doch als das Spiel begann, merkte ich, dass unsere Mannschaft ruhig und konzentriert spielte.
+                                        Am Ende gewann unser Team, und meine Angst verwandelte sich in große Freude.“
+                                    </p>
+                                    <div class="quiz" data-quiz-id="lesen5_auswahl">
+                                        <div class="radio-group">
+                                            <p>1. Wie fühlt sich die erzählende Person am Anfang?</p>
+                                            <label><input type="radio" name="lesen5_1" value="a"> mutig</label>
+                                            <label><input type="radio" name="lesen5_1" value="b"> nervös</label>
+                                            <label><input type="radio" name="lesen5_1" value="c"> gelangweilt</label>
+                                        </div>
+                                        <div class="radio-group">
+                                            <p>2. Was passiert mit der Angst am Ende?</p>
+                                            <label><input type="radio" name="lesen5_2" value="a"> sie bleibt gleich</label>
+                                            <label><input type="radio" name="lesen5_2" value="b"> sie wird stärker</label>
+                                            <label><input type="radio" name="lesen5_2" value="c"> sie verwandelt sich in Freude</label>
+                                        </div>
+                                        <button class="quiz-button" type="button">Auswerten</button>
+                                        <div class="quiz-result" data-result></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">3. Erzählperspektive erkennen</div>
+                                <div class="task-body">
+                                    <p>Wähle einen Text aus eurem Buch.</p>
+                                    <ul>
+                                        <li>Ist er in der 1. Person (ich) oder in der 3. Person (er/sie) erzählt?</li>
+                                        <li>Belege deine Antwort mit zwei Zitaten aus dem Text.</li>
+                                        <li>Überlege: Wie würde der Text wirken, wenn er in einer anderen Perspektive erzählt wäre?</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">4. Schwieriger Text mit Unterüberschriften</div>
+                                <div class="task-body">
+                                    <p>Suche einen etwas längeren Text (mindestens eine Seite) und strukturiere ihn mit eigenen Zwischenüberschriften.</p>
+                                    <p>So übst du, den Aufbau eines Textes genau zu verstehen.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Schreiben -->
+                    <section class="skill-section" data-skill-section="schreiben">
+                        <h2>Schreiben – Klasse 5</h2>
+                        <div class="skill-hint">
+                            Längere, klar strukturierte Texte mit Konnektoren und genauer Sprache.
+                        </div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Erlebnisaufsatz</div>
+                                <div class="task-body">
+                                    <p>Schreibe über ein Erlebnis, bei dem du starke Gefühle hattest (Angst, Freude, Mut, Hoffnung).</p>
+                                    <ul>
+                                        <li>Einleitung, Hauptteil, Schluss klar erkennbar.</li>
+                                        <li>Verwende mindestens fünf Konnektoren (obwohl, trotzdem, bevor, nachdem, während).</li>
+                                        <li>Markiere drei Stellen, an denen du deine Gefühle genauer beschreibst.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">2. Perspektivwechsel</div>
+                                <div class="task-body">
+                                    <p>Wähle ein Erlebnis aus dem Buch und schreibe es aus der Sicht einer anderen Figur neu.</p>
+                                    <ul>
+                                        <li>Verändere passende Stellen (Gefühle, Gedanken, Reaktionen).</li>
+                                        <li>Vergleiche deinen Text mit dem Original: Was ist anders?</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">3. Schreibplan erstellen</div>
+                                <div class="task-body">
+                                    <p>Erstelle vor dem Schreiben eines Textes einen Stichwortplan:</p>
+                                    <ul>
+                                        <li>Einleitung: Wer? Wann? Wo?</li>
+                                        <li>Hauptteil: wichtige Ereignisse der Reihe nach, Gefühle, Wendepunkt.</li>
+                                        <li>Schluss: Ergebnis, was du gelernt hast.</li>
+                                    </ul>
+                                    <p class="small-text">Nutze den Plan für deinen nächsten Text und hefte ihn ab.</p>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">4. Überarbeiten üben</div>
+                                <div class="task-body">
+                                    <p>Suche einen älteren Text von dir.</p>
+                                    <ul>
+                                        <li>Verbessere die Rechtschreibung.</li>
+                                        <li>Füge mindestens drei stärkere Verben ein (anstatt „machen“, „gehen“, „sagen“).</li>
+                                        <li>Ergänze zwei Konnektoren.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Hören -->
+                    <section class="skill-section" data-skill-section="hoeren">
+                        <h2>Hören – Klasse 5</h2>
+                        <div class="skill-hint">
+                            Unterschiedliche Hörtexte gezielt auswerten (Information und Gefühl).
+                        </div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Interview anhören</div>
+                                <div class="task-body">
+                                    <p>Bitte eine Person, ein kurzes Interview mit dir zu spielen (oder aus dem Buch vorzulesen).</p>
+                                    <ul>
+                                        <li>Höre aufmerksam zu und notiere Schlüsselwörter.</li>
+                                        <li>Formuliere danach drei Inhalte und zwei Gefühle, die du herausgehört hast.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">2. Notizen zu einem Hörtext</div>
+                                <div class="task-body">
+                                    <p>Höre einen kurzen Bericht oder eine Geschichte (z. B. aus einer Kinder-Radiosendung).</p>
+                                    <ul>
+                                        <li>Erstelle eine Tabelle mit: <em>Wer?</em>, <em>Wo?</em>, <em>Was passiert?</em>, <em>Wie fühlen sich die Personen?</em></li>
+                                        <li>Fülle die Tabelle während des Hörens aus.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">3. Diktat mit Konnektoren</div>
+                                <div class="task-body">
+                                    <p>Lass dir einen Text mit Konnektoren (obwohl, trotzdem, bevor, nachdem, während) diktieren.</p>
+                                    <ul>
+                                        <li>Schreibe den Text möglichst fehlerfrei.</li>
+                                        <li>Markiere danach alle Konnektoren und ergänze sie, falls du sie vergessen hast.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">4. Eigene Durchsage entwerfen</div>
+                                <div class="task-body">
+                                    <p>Schreibe eine Ansage (z. B. in der Schule oder in der Stadt) und lies sie einer anderen Person vor.</p>
+                                    <ul>
+                                        <li>Die andere Person schreibt mit, was sie verstanden hat.</li>
+                                        <li>Vergleicht anschließend Text und Mitschrift.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Verstehen -->
+                    <section class="skill-section" data-skill-section="verstehen">
+                        <h2>Verstehen – Klasse 5</h2>
+                        <div class="skill-hint">
+                            Texte und Situationen genauer deuten, nicht nur „Was passiert?“, sondern auch „Warum?“.
+                        </div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Gefühle begründen</div>
+                                <div class="task-body">
+                                    <p>Wähle eine Szene aus dem Cornelsen-Buch.</p>
+                                    <ul>
+                                        <li>Wie fühlt sich die Hauptperson am Anfang, in der Mitte, am Ende?</li>
+                                        <li>Begründe jede Gefühlsaussage mit einem Zitat.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">2. Ursache – Folge – Reaktion</div>
+                                <div class="task-body">
+                                    <p>Erstelle zu einer Szene ein Schema:</p>
+                                    <ul>
+                                        <li>Ursache: …</li>
+                                        <li>Folge: …</li>
+                                        <li>Reaktion der Personen: …</li>
+                                    </ul>
+                                    <p>Schreibe den Zusammenhang mit „weil“ und „deshalb“ auf.</p>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">3. Zwischen den Zeilen lesen</div>
+                                <div class="task-body">
+                                    <p>Suche eine Stelle, an der nicht direkt gesagt wird, was eine Figur denkt.</p>
+                                    <ul>
+                                        <li>Erkläre in eigenen Worten, was du glaubst, dass die Figur denkt oder fühlt.</li>
+                                        <li>Begründe mit Hinweisen aus dem Text.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">4. Zusammenfassung und Meinung</div>
+                                <div class="task-body">
+                                    <p>Fasse einen Text oder ein Kapitel kurz zusammen und ergänze:</p>
+                                    <ul>
+                                        <li>Was hat dir daran gefallen?</li>
+                                        <li>Was fandest du schwierig oder unlogisch?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Grammatik -->
+                    <section class="skill-section" data-skill-section="grammatik">
+                        <h2>Grammatik – Klasse 5</h2>
+                        <div class="skill-hint">
+                            Fokus: starke Verben, Konnektoren, Steigerung, Satzgefüge.
+                        </div>
+                        <p class="section-note">Einige Aufgaben sind automatisch auswertbar.</p>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. starke Verben im Präteritum – Fortgeschritten</div>
+                                <div class="task-body">
+                                    <div class="quiz" data-quiz-id="gram5_verben">
+                                        <p>a) Letztes Jahr <input class="text-input" data-answer="begann" placeholder="Verb"> ich mit einem neuen Hobby.</p>
+                                        <p>b) Beim Spiel <input class="text-input" data-answer="gewann" placeholder="Verb"> unsere Mannschaft.</p>
+                                        <p>c) Im letzten Spiel <input class="text-input" data-answer="verlor" placeholder="Verb"> mein Lieblingsverein.</p>
+                                        <p>d) Nach der Schule <input class="text-input" data-answer="traf" placeholder="Verb"> ich meine Freunde im Park.</p>
+                                        <button class="quiz-button" type="button">Auswerten</button>
+                                        <div class="quiz-result" data-result></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">2. Konnektoren einsetzen</div>
+                                <div class="task-body">
+                                    <p>Setze passende Konnektoren ein: obwohl, trotzdem, bevor, nachdem, während.</p>
+                                    <p class="small-text">Im Heft lösen – möglichst abwechslungsreich.</p>
+                                    <ol>
+                                        <li>…, ich müde war, ging ich zum Training.</li>
+                                        <li>…, wir gewonnen hatten, waren wir sehr stolz.</li>
+                                        <li>Ich war nervös, … ich ruhig weiter spielte.</li>
+                                        <li>…, ich auf meinen Einsatz wartete, beobachtete ich die anderen.</li>
+                                        <li>…, ich den Ball bekam, schoss ich sofort aufs Tor.</li>
+                                    </ol>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">3. Adjektive genau verwenden</div>
+                                <div class="task-body">
+                                    <p>Steigere die Adjektive und schreibe jeweils einen Beispielsatz im Kontext „Erlebnisse und Gefühle“.</p>
+                                    <ul>
+                                        <li><em>interessant</em> – interessanter – am interessantesten</li>
+                                        <li><em>wichtig</em> – wichtiger – am wichtigsten</li>
+                                        <li><em>freundlich</em> – freundlicher – am freundlichsten</li>
+                                        <li><em>ruhig</em> – ruhiger – am ruhigsten</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">4. Haupt- und Nebensätze</div>
+                                <div class="task-body">
+                                    <p>Schreibe zwei Satzpaare und verbinde sie mit einem Nebensatz:</p>
+                                    <ul>
+                                        <li>„Ich war nervös.“ + „Ich schrieb die Klassenarbeit.“</li>
+                                        <li>„Wir hatten Angst.“ + „Wir gingen trotzdem auf die Bühne.“</li>
+                                    </ul>
+                                    <p>Formuliere jeweils einen zusammengesetzten Satz mit einem geeigneten Konnektor.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bonus-section" data-required-badge="5_grammatik">
+                            <p><strong>Bonusaufgabe (freigeschaltet mit Abzeichen Grammatik Klasse 5)</strong></p>
+                            <p>Schreibe eine Doppelgeschichte in zwei Abschnitten:</p>
+                            <ul>
+                                <li>Perspektive 1: Erzähle dein Erlebnis.</li>
+                                <li>Perspektive 2: Erzähle dasselbe Erlebnis aus Sicht einer anderen Person.</li>
+                                <li>Nutze in beiden Abschnitten mindestens fünf Konnektoren und mehrere Nebensätze.</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- Wortschatz -->
+                    <section class="skill-section" data-skill-section="wortschatz">
+                        <h2>Wortschatz – Klasse 5</h2>
+                        <div class="skill-hint">
+                            Schwerpunkt: Erlebnisse und Gefühle, präzisere Wörter finden.
+                        </div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Gefühlswörter ordnen</div>
+                                <div class="task-body">
+                                    <p>Ordne die Wörter in passende Gruppen und ergänze eigene:</p>
+                                    <p><strong>Wörter:</strong> das Erlebnis, die Erinnerung, die Angst, die Freude, der Traum, der Mut, der Erfolg, die Hoffnung</p>
+                                    <ul>
+                                        <li>positive Gefühle: …</li>
+                                        <li>negative Gefühle: …</li>
+                                        <li>neutral / je nach Situation: …</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">2. Wortbedeutungen – Auswahl</div>
+                                <div class="task-body">
+                                    <div class="quiz" data-quiz-id="wort5_quiz">
+                                        <p>1. Was ist ein Erfolg?</p>
+                                        <select class="text-input" data-answer="b">
+                                            <option value="">Bitte wählen</option>
+                                            <option value="a">ein unangenehmes Erlebnis</option>
+                                            <option value="b">ein gutes Ergebnis nach Anstrengung</option>
+                                            <option value="c">ein sehr seltsamer Traum</option>
+                                        </select>
+
+                                        <p>2. Was bedeutet Hoffnung?</p>
+                                        <select class="text-input" data-answer="c">
+                                            <option value="">Bitte wählen</option>
+                                            <option value="a">starke Angst vor etwas</option>
+                                            <option value="b">ein altes Erlebnis, an das man denkt</option>
+                                            <option value="c">das Vertrauen, dass etwas gut ausgeht</option>
+                                        </select>
+
+                                        <button class="quiz-button" type="button">Auswerten</button>
+                                        <div class="quiz-result" data-result></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">3. präziser schreiben</div>
+                                <div class="task-body">
+                                    <p>Ersetze die einfachen Wörter durch passendere:</p>
+                                    <ul>
+                                        <li>„Ich war <em>nicht so gut</em> in Mathe.“ → …</li>
+                                        <li>„Ich hatte <em>Angst</em>.“ → …</li>
+                                        <li>„Es war ein <em>schönes</em> Erlebnis.“ → …</li>
+                                    </ul>
+                                    <p>Nutze Wörter aus dem Themenfeld oder eigene Ideen.</p>
+                                </div>
+                            </div>
+
+                            <div class="task-card">
+                                <div class="task-title">4. Wortfamilien bilden</div>
+                                <div class="task-body">
+                                    <p>Finde zu folgenden Wörtern passende Wortfamilien:</p>
+                                    <ul>
+                                        <li>erleben – Erlebnis – …</li>
+                                        <li>hoffen – Hoffnung – …</li>
+                                        <li>träumen – Traum – …</li>
+                                    </ul>
+                                    <p>Schreibe zu jeder Wortfamilie zwei Beispielsätze.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- Badge-Bereich -->
+        <aside>
+            <div class="badge-panel">
+                <h3>Abzeichen – Motivation</h3>
+                <p class="badge-info">
+                    Wenn du eine Kategorie gründlich bearbeitet hast, kannst du das passende Abzeichen freischalten.
+                    Manche Bonusaufgaben erscheinen erst mit einem Abzeichen.
+                </p>
+                <div id="badgeRows" class="badge-row"></div>
+                <div class="badge-controls">
+                    <button class="badge-unlock-btn" type="button" data-skill="lesen">Abzeichen Lesen freischalten</button>
+                    <button class="badge-unlock-btn" type="button" data-skill="schreiben">Abzeichen Schreiben freischalten</button>
+                    <button class="badge-unlock-btn" type="button" data-skill="hoeren">Abzeichen Hören freischalten</button>
+                    <button class="badge-unlock-btn" type="button" data-skill="verstehen">Abzeichen Verstehen freischalten</button>
+                    <button class="badge-unlock-btn" type="button" data-skill="grammatik">Abzeichen Grammatik freischalten</button>
+                    <button class="badge-unlock-btn" type="button" data-skill="wortschatz">Abzeichen Wortschatz freischalten</button>
+                </div>
+                <div id="badgeMessage" class="badge-message"></div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const nameInput = document.getElementById("studentName");
+        const greetingSpan = document.getElementById("greeting");
+        const gradeButtons = document.querySelectorAll(".grade-btn");
+        const skillTabs = document.querySelectorAll(".skill-tab");
+        const badgeRows = document.getElementById("badgeRows");
+        const badgeButtons = document.querySelectorAll(".badge-unlock-btn");
+        const badgeMessage = document.getElementById("badgeMessage");
+
+        const grade4Content = document.getElementById("grade4Content");
+        const grade5Content = document.getElementById("grade5Content");
+
+        const STORAGE_KEY = "arbeitshilfe_badges_v1";
+        const NAME_KEY = "arbeitshilfe_name_v1";
+
+        const ALL_BADGES = {
+            4: {
+                lesen: "Lesemeister/in 4",
+                schreiben: "Schreibprofi 4",
+                hoeren: "Hörprofi 4",
+                verstehen: "Versteh-Experte/in 4",
+                grammatik: "Grammatik-Profi 4",
+                wortschatz: "Wortschatz-Sammler/in 4"
+            },
+            5: {
+                lesen: "Lesemeister/in 5",
+                schreiben: "Schreibprofi 5",
+                hoeren: "Hörprofi 5",
+                verstehen: "Versteh-Experte/in 5",
+                grammatik: "Grammatik-Profi 5",
+                wortschatz: "Wortschatz-Sammler/in 5"
+            }
+        };
+
+        let currentGrade = 4;
+        let currentSkill = "lesen";
+        let badgesByStudent = {};
+        let currentName = "";
+
+        function loadStorage() {
+            const storedName = localStorage.getItem(NAME_KEY) || "";
+            const storedBadges = localStorage.getItem(STORAGE_KEY);
+            if (storedName) {
+                currentName = storedName;
+                nameInput.value = storedName;
+                greetingSpan.textContent = "Hallo, " + storedName + "!";
+            }
+            if (storedBadges) {
+                try {
+                    badgesByStudent = JSON.parse(storedBadges);
+                } catch (e) {
+                    badgesByStudent = {};
+                }
+            }
+            ensureStudentEntry();
+            renderBadges();
+            updateBonusVisibility();
+        }
+
+        function saveStorage() {
+            localStorage.setItem(NAME_KEY, currentName);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(badgesByStudent));
+        }
+
+        function ensureStudentEntry() {
+            if (!currentName) return;
+            if (!badgesByStudent[currentName]) {
+                badgesByStudent[currentName] = {
+                    4: {},
+                    5: {}
+                };
+            }
+            if (!badgesByStudent[currentName][4]) badgesByStudent[currentName][4] = {};
+            if (!badgesByStudent[currentName][5]) badgesByStudent[currentName][5] = {};
+        }
+
+        function getCurrentBadges() {
+            ensureStudentEntry();
+            if (!currentName) return {};
+            return badgesByStudent[currentName][currentGrade] || {};
+        }
+
+        function awardBadge(skill) {
+            if (!currentName) {
+                badgeMessage.textContent = "Bitte zuerst den Namen eingeben.";
+                return;
+            }
+            ensureStudentEntry();
+            const gradeBadges = badgesByStudent[currentName][currentGrade];
+            if (!gradeBadges[skill]) {
+                gradeBadges[skill] = true;
+                badgeMessage.textContent = "Neues Abzeichen: " + ALL_BADGES[currentGrade][skill] + " erhalten.";
+                saveStorage();
+                renderBadges();
+                updateBonusVisibility();
+            } else {
+                badgeMessage.textContent = "Dieses Abzeichen hast du bereits.";
+            }
+        }
+
+        function renderBadges() {
+            badgeRows.innerHTML = "";
+            const gradeBadges = getCurrentBadges();
+            const gradeData = ALL_BADGES[currentGrade];
+            Object.keys(gradeData).forEach(skill => {
+                const div = document.createElement("div");
+                div.className = "badge " + (gradeBadges[skill] ? "unlocked" : "locked");
+                const nameSpan = document.createElement("span");
+                nameSpan.className = "badge-name";
+                nameSpan.textContent = gradeData[skill];
+                const gradeSpan = document.createElement("span");
+                gradeSpan.className = "badge-grade";
+                gradeSpan.textContent = "Klasse " + currentGrade;
+                div.appendChild(nameSpan);
+                div.appendChild(gradeSpan);
+                badgeRows.appendChild(div);
+            });
+        }
+
+        function updateBonusVisibility() {
+            const gradeBadges = getCurrentBadges();
+            document.querySelectorAll(".bonus-section").forEach(section => {
+                const required = section.getAttribute("data-required-badge");
+                if (!required) return;
+                const [gStr, skill] = required.split("_");
+                const g = parseInt(gStr, 10);
+                if (g === currentGrade && gradeBadges[skill]) {
+                    section.style.display = "block";
+                } else if (g === currentGrade) {
+                    section.style.display = "none";
+                } else {
+                    section.style.display = "none";
+                }
+            });
+        }
+
+        nameInput.addEventListener("input", () => {
+            currentName = nameInput.value.trim();
+            if (currentName) {
+                greetingSpan.textContent = "Hallo, " + currentName + "!";
+            } else {
+                greetingSpan.textContent = "";
+            }
+            ensureStudentEntry();
+            saveStorage();
+            renderBadges();
+            updateBonusVisibility();
+        });
+
+        gradeButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const grade = parseInt(btn.getAttribute("data-grade"), 10);
+                if (grade === currentGrade) return;
+                currentGrade = grade;
+                gradeButtons.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+
+                if (grade === 4) {
+                    grade4Content.style.display = "";
+                    grade5Content.style.display = "none";
+                } else {
+                    grade4Content.style.display = "none";
+                    grade5Content.style.display = "";
+                }
+                // reset skill view to currentSkill
+                updateSkillSections();
+                renderBadges();
+                updateBonusVisibility();
+                badgeMessage.textContent = "";
+            });
+        });
+
+        skillTabs.forEach(tab => {
+            tab.addEventListener("click", () => {
+                const skill = tab.getAttribute("data-skill");
+                if (skill === currentSkill) return;
+                currentSkill = skill;
+                skillTabs.forEach(t => t.classList.remove("active"));
+                tab.classList.add("active");
+                updateSkillSections();
+            });
+        });
+
+        function updateSkillSections() {
+            const container = currentGrade === 4 ? grade4Content : grade5Content;
+            const sections = container.querySelectorAll(".skill-section");
+            sections.forEach(section => {
+                const skill = section.getAttribute("data-skill-section");
+                if (skill === currentSkill) {
+                    section.classList.add("active");
+                } else {
+                    section.classList.remove("active");
+                }
+            });
+        }
+
+        badgeButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const skill = btn.getAttribute("data-skill");
+                awardBadge(skill);
+            });
+        });
+
+        // Quiz-Logik (Textfelder mit data-answer und Radio/Select-Aufgaben)
+        function checkTextInputs(root) {
+            const inputs = root.querySelectorAll("input.text-input[data-answer], select.text-input[data-answer]");
+            let correct = 0;
+            let total = 0;
+            inputs.forEach(input => {
+                const expected = (input.getAttribute("data-answer") || "").trim();
+                const value = (input.value || "").trim();
+                if (!expected) return;
+                total++;
+                if (value.toLowerCase() === expected.toLowerCase()) {
+                    correct++;
+                    input.style.borderColor = "#2E7D32";
+                } else {
+                    input.style.borderColor = "#C62828";
+                }
+            });
+            return {correct, total};
+        }
+
+        function checkRadios(root, answers) {
+            let correct = 0;
+            let total = 0;
+            Object.keys(answers).forEach(name => {
+                const expected = answers[name];
+                const checked = root.querySelector("input[name='" + name + "']:checked");
+                if (!checked) {
+                    total++;
+                    return;
+                }
+                total++;
+                if (checked.value === expected) {
+                    correct++;
+                }
+            });
+            return {correct, total};
+        }
+
+        function attachQuizHandlers() {
+            // Quizzes mit data-quiz-id (Lesen, Grammatik, Wortschatz)
+            const quizBlocks = document.querySelectorAll(".quiz");
+            quizBlocks.forEach(block => {
+                const button = block.querySelector(".quiz-button");
+                if (!button) return;
+                const resultDiv = block.querySelector("[data-result]");
+                let quizId = block.getAttribute("data-quiz-id") || "";
+
+                button.addEventListener("click", () => {
+                    let correct = 0;
+                    let total = 0;
+
+                    // Text- / Select-Inputs
+                    const textResult = checkTextInputs(block);
+                    correct += textResult.correct;
+                    total += textResult.total;
+
+                    // Spezielle Radio-Quizzes
+                    if (quizId === "lesen4_auswahl") {
+                        const radioRes = checkRadios(block, {lesen4_1: "b", lesen4_2: "c"});
+                        correct += radioRes.correct;
+                        total += radioRes.total;
+                    } else if (quizId === "lesen5_auswahl") {
+                        const radioRes = checkRadios(block, {lesen5_1: "b", lesen5_2: "c"});
+                        correct += radioRes.correct;
+                        total += radioRes.total;
+                    } else if (quizId === "gram4_verben") {
+                        // schon über Textinputs
+                    } else if (quizId === "gram5_verben") {
+                        // schon über Textinputs
+                    } else if (quizId === "wort4_quiz" || quizId === "wort5_quiz") {
+                        // schon über Selectinputs
+                    }
+
+                    if (resultDiv) {
+                        if (total === 0) {
+                            resultDiv.textContent = "Keine auswertbaren Felder gefunden.";
+                            resultDiv.className = "quiz-result";
+                        } else {
+                            const percent = Math.round((correct / total) * 100);
+                            resultDiv.textContent = "Richtig: " + correct + " von " + total + " (" + percent + "%)";
+                            resultDiv.className = "quiz-result " + (percent >= 70 ? "correct" : "incorrect");
+                        }
+                    }
+                });
+            });
+
+            // Extra-Button für Adjektiv-Quiz Klasse 4
+            const adjButton = document.querySelector("button[data-quiz-id='gram4_adj']");
+            if (adjButton) {
+                adjButton.addEventListener("click", () => {
+                    const parent = adjButton.parentElement;
+                    const resultDiv = parent.querySelector("[data-result-id='gram4_adj_result']");
+                    const textResult = checkTextInputs(parent);
+                    const percent = textResult.total ? Math.round((textResult.correct / textResult.total) * 100) : 0;
+                    if (resultDiv) {
+                        resultDiv.textContent = "Richtig: " + textResult.correct + " von " + textResult.total + " (" + percent + "%)";
+                        resultDiv.className = "quiz-result " + (percent >= 70 ? "correct" : "incorrect");
+                    }
+                });
+            }
+        }
+
+        loadStorage();
+        attachQuizHandlers();
+    })();
+</script>
+</body>
+</html>
