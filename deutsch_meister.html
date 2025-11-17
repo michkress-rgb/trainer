@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Deutsch Meister - Klassenarbeit Vorbereitung 🎮</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', 'Comic Sans MS', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        /* Welcome Screen */
+        .welcome-screen {
+            background: white;
+            border-radius: 30px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.5s;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .welcome-screen.hidden { display: none; }
+        
+        .welcome-screen h1 {
+            font-size: 3.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+            animation: bounce 1s infinite alternate;
+        }
+        
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+        
+        .countdown-timer {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            font-size: 1.5em;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        
+        .welcome-screen input {
+            padding: 20px 30px;
+            font-size: 1.3em;
+            border: 3px solid #667eea;
+            border-radius: 25px;
+            width: 80%;
+            max-width: 400px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .grade-selector {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+        .grade-selector button {
+            padding: 20px 40px;
+            font-size: 1.5em;
+            border: 3px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .grade-selector button.selected {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .start-button {
+            padding: 25px 60px;
+            font-size: 1.5em;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        
+        .start-button:hover { transform: scale(1.1); }
+        
+        /* Game Screen */
+        .game-screen { display: none; }
+        .game-screen.active { display: block; animation: fadeIn 0.5s; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .player-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .stat-box:hover { transform: translateY(-5px); }
+        .stat-value { font-size: 2em; font-weight: bold; }
+        
+        /* Readiness Meter */
+        .readiness-section {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            padding: 20px;
+            border-radius: 20px;
+            margin: 20px 0;
+            border: 3px solid #ff9800;
+        }
+        
+        .readiness-title {
+            font-size: 1.5em;
+            color: #e65100;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .readiness-meter {
+            position: relative;
+            height: 40px;
+            background: #e0e0e0;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .readiness-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .readiness-status {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .skill-progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .skill-progress-item {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .skill-progress-bar {
+            width: 60px;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .skill-progress-fill {
+            height: 100%;
+            background: #4caf50;
+            transition: width 0.3s;
+        }
+        
+        /* Progress Bar */
+        .progress-bar-container {
+            background: #e0e0e0;
+            border-radius: 20px;
+            height: 30px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* Badges */
+        .badges-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .badge {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .badge:hover { transform: scale(1.15); }
+        .badge.locked { background: #ddd; opacity: 0.5; filter: grayscale(100%); }
+        .badge.unlocked { animation: badgePop 0.5s; }
+        
+        @keyframes badgePop {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+        
+        /* Game Modes */
+        .game-modes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .game-mode-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .game-mode-card:hover {
+            transform: translateY(-10px);
+            border-color: #667eea;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .game-mode-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+        
+        .game-mode-title {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        /* Drag and Drop */
+        .drag-drop-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+        
+        .draggable {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 15px;
+            cursor: grab;
+            margin: 10px;
+            display: inline-block;
+            font-weight: bold;
+            transition: all 0.3s;
+            user-select: none;
+        }
+        
+        .draggable:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .draggable.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+        
+        .drop-zone {
+            min-height: 60px;
+            background: #f0f0f0;
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .drop-zone.drag-over {
+            background: #e8eaf6;
+            border-color: #764ba2;
+            transform: scale(1.02);
+        }
+        
+        .drop-zone.correct {
+            background: #c8e6c9;
+            border-color: #4caf50;
+            border-style: solid;
+        }
+        
+        .drop-zone.incorrect {
+            background: #ffcdd2;
+            border-color: #f44336;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        /* Maze Game */
+        .maze-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+        
+        .maze-grid {
+            display: grid;
+            gap: 2px;
+            background: #333;
+            border: 3px solid #333;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        
+        .maze-cell {
+            aspect-ratio: 1;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .maze-cell.wall {
+            background: #333;
+            cursor: not-allowed;
+        }
+        
+        .maze-cell.path {
+            background: white;
+        }
+        
+        .maze-cell.player {
+            background: #667eea;
+            color: white;
+            font-size: 2em;
+        }
+        
+        .maze-cell.goal {
+            background: #ffd54f;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .maze-cell.visited {
+            background: #e8eaf6;
+        }
+        
+        .maze-cell.question {
+            background: #fff3e0;
+            cursor: pointer;
+        }
+        
+        .maze-cell.question:hover {
+            background: #ffe0b2;
+            transform: scale(1.05);
+        }
+        
+        /* Quiz Modal */
+        .quiz-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10002;
+        }
+        
+        .quiz-modal.show { display: flex; }
+        
+        .quiz-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .quiz-question {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .quiz-option {
+            padding: 15px 20px;
+            background: #f0f0f0;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1em;
+        }
+        
+        .quiz-option:hover {
+            background: #e8eaf6;
+            border-color: #667eea;
+        }
+        
+        .quiz-option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+        
+        .btn:hover { transform: scale(1.05); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #f44336, #e57373);
+        }
+        
+        /* Modals */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+        }
+        
+        .modal.show { display: flex; }
+        
+        .modal-content {
+            background: white;
+            padding: 50px;
+            border-radius: 30px;
+            text-align: center;
+            animation: bounceIn 0.5s;
+            max-width: 90%;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .modal-content h2 {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .modal-content .emoji {
+            font-size: 5em;
+            margin: 20px 0;
+        }
+        
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall 3s linear forwards;
+            z-index: 10000;
+        }
+        
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .welcome-screen h1 { font-size: 2em; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .game-modes { grid-template-columns: 1fr; }
+            .maze-grid { font-size: 0.8em; }
+        }
+        
+        /* Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 50px;
+        }
+        
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div class="welcome-screen" id="welcomeScreen">
+            <h1>🎮 Deutsch Meister 🎮</h1>
+            <p style="font-size: 1.3em; margin-bottom: 10px;">Werde zum Deutsch-Profi!</p>
+            
+            <div class="countdown-timer" id="countdownTimer">
+                ⏰ Noch X Tage bis zur Klassenarbeit!
+            </div>
+            
+            <input type="text" id="playerName" placeholder="Wie heißt du?" maxlength="20">
+            
+            <div class="grade-selector">
+                <button onclick="selectGrade(4)">Klasse 4 🎈</button>
+                <button onclick="selectGrade(5)">Klasse 5 🎪</button>
+            </div>
+            
+            <button class="start-button" onclick="startGame()">Abenteuer starten! 🚀</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="game-screen" id="gameScreen">
+            <div class="header">
+                <div class="player-info">
+                    <div class="player-avatar" id="playerAvatar">?</div>
+                    <div>
+                        <div style="font-size: 1.8em; color: #667eea; font-weight: bold;" id="displayName">Spieler</div>
+                        <div style="color: #666;">Klasse <span id="displayGrade">4</span></div>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div style="font-size: 0.9em; opacity: 0.9;">Level</div>
+                        <div class="stat-value" id="playerLevel">1</div>
+                    </div>
+                    <div class="stat-box">
+                        <div style="font-size: 0.9em; opacity: 0.9;">XP</div>
+                        <div class="stat-value"><span id="playerXP">0</span>/<span id="xpNeeded">100</span></div>
+                    </div>
+                    <div class="stat-box">
+                        <div style="font-size: 0.9em; opacity: 0.9;">Punkte</div>
+                        <div class="stat-value" id="playerScore">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div style="font-size: 0.9em; opacity: 0.9;">Streak 🔥</div>
+                        <div class="stat-value" id="playerStreak">0</div>
+                    </div>
+                </div>
+
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar" style="width: 0%">0%</div>
+                </div>
+
+                <!-- Readiness Meter -->
+                <div class="readiness-section">
+                    <div class="readiness-title">📊 Bereitschaft für die Klassenarbeit</div>
+                    <div class="readiness-meter">
+                        <div class="readiness-fill" id="readinessFill" style="width: 0%">0%</div>
+                    </div>
+                    <div class="readiness-status" id="readinessStatus">Fang an zu üben!</div>
+                    
+                    <div class="skill-progress-grid">
+                        <div class="skill-progress-item">
+                            <span>📖 Lesen</span>
+                            <div class="skill-progress-bar">
+                                <div class="skill-progress-fill" id="progress-lesen" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-progress-item">
+                            <span>✍️ Schreiben</span>
+                            <div class="skill-progress-bar">
+                                <div class="skill-progress-fill" id="progress-schreiben" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-progress-item">
+                            <span>👂 Hören</span>
+                            <div class="skill-progress-bar">
+                                <div class="skill-progress-fill" id="progress-hoeren" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-progress-item">
+                            <span>🧠 Verstehen</span>
+                            <div class="skill-progress-bar">
+                                <div class="skill-progress-fill" id="progress-verstehen" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-progress-item">
+                            <span>📝 Grammatik</span>
+                            <div class="skill-progress-bar">
+                                <div class="skill-progress-fill" id="progress-grammatik" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-progress-item">
+                            <span>💭 Wortschatz</span>
+                            <div class="skill-progress-bar">
+                                <div class="skill-progress-fill" id="progress-wortschatz" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="badges-container" id="badgesContainer"></div>
+            </div>
+
+            <!-- Game Mode Selection -->
+            <div class="game-modes">
+                <div class="game-mode-card" onclick="loadGame('dragdrop')">
+                    <div class="game-mode-icon">🎯</div>
+                    <div class="game-mode-title">Drag & Drop</div>
+                    <p>Ordne Wörter richtig zu!</p>
+                </div>
+                
+                <div class="game-mode-card" onclick="loadGame('maze')">
+                    <div class="game-mode-icon">🌀</div>
+                    <div class="game-mode-title">Labyrinth</div>
+                    <p>Finde den Weg durch Fragen!</p>
+                </div>
+                
+                <div class="game-mode-card" onclick="loadGame('grammar')">
+                    <div class="game-mode-icon">📝</div>
+                    <div class="game-mode-title">Grammatik-Quiz</div>
+                    <p>Teste dein Können!</p>
+                </div>
+                
+                <div class="game-mode-card" onclick="loadGame('vocab')">
+                    <div class="game-mode-icon">💭</div>
+                    <div class="game-mode-title">Wortschatz</div>
+                    <p>Erweitere deinen Wortschatz!</p>
+                </div>
+                
+                <div class="game-mode-card" onclick="loadGame('reading')">
+                    <div class="game-mode-icon">📖</div>
+                    <div class="game-mode-title">Lesen</div>
+                    <p>Verstehe Texte besser!</p>
+                </div>
+                
+                <div class="game-mode-card" onclick="loadGame('writing')">
+                    <div class="game-mode-icon">✍️</div>
+                    <div class="game-mode-title">Schreiben</div>
+                    <p>Verbessere deine Texte!</p>
+                </div>
+            </div>
+
+            <div id="gameContent"></div>
+        </div>
+    </div>
+
+    <!-- Quiz Modal for Maze -->
+    <div class="quiz-modal" id="quizModal">
+        <div class="quiz-content">
+            <h2 style="color: #667eea; margin-bottom: 20px;">Frage beantworten!</h2>
+            <div class="quiz-question" id="quizQuestion"></div>
+            <div class="quiz-options" id="quizOptions"></div>
+            <button class="btn" onclick="submitQuizAnswer()">Antworten</button>
+        </div>
+    </div>
+
+    <!-- Level Up Modal -->
+    <div class="modal" id="levelUpModal">
+        <div class="modal-content">
+            <div class="emoji">🎉</div>
+            <h2>Level Up!</h2>
+            <p style="font-size: 1.5em; margin: 20px 0;">Du bist jetzt <strong>Level <span id="newLevel">2</span></strong>!</p>
+            <button class="btn" onclick="closeModal('levelUpModal')">Weiter! 🚀</button>
+        </div>
+    </div>
+
+    <!-- Badge Modal -->
+    <div class="modal" id="badgeModal">
+        <div class="modal-content">
+            <div class="emoji" id="badgeEmoji">🏆</div>
+            <h2>Neues Abzeichen!</h2>
+            <p style="font-size: 1.3em; margin: 20px 0;" id="badgeName">Super gemacht!</p>
+            <button class="btn" onclick="closeModal('badgeModal')">Fantastisch! ✨</button>
+        </div>
+    </div>
+
+    <!-- Completion Modal -->
+    <div class="modal" id="completionModal">
+        <div class="modal-content">
+            <div class="emoji">🏆</div>
+            <h2>Geschafft!</h2>
+            <p style="font-size: 1.3em; margin: 20px 0;" id="completionMessage"></p>
+            <button class="btn" onclick="closeModal('completionModal')">Zurück</button>
+        </div>
+    </div>
+
+    <script>
+        // Calculate days until test
+        function calculateDaysUntil() {
+            const testDate = new Date('2025-11-24');
+            const today = new Date();
+            const diffTime = testDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays > 0 ? diffDays : 0;
+        }
+
+        document.getElementById('countdownTimer').textContent = 
+            `⏰ Noch ${calculateDaysUntil()} Tage bis zur Klassenarbeit!`;
+
+        // Badge definitions
+        const badges = [
+            { id: 'first', emoji: '🌟', name: 'Erster Schritt', desc: 'Erste Aufgabe', color: '#FFD700' },
+            { id: 'drag_master', emoji: '🎯', name: 'Drag-Meister', desc: 'Drag & Drop gemeistert', color: '#4CAF50' },
+            { id: 'maze_runner', emoji: '🌀', name: 'Labyrinth-Läufer', desc: 'Labyrinth geschafft', color: '#2196F3' },
+            { id: 'grammar', emoji: '📝', name: 'Grammatik-Guru', desc: 'Grammatik perfekt', color: '#9C27B0' },
+            { id: 'vocab', emoji: '💭', name: 'Wortschatz-Champion', desc: 'Wortschatz-Experte', color: '#FF5722' },
+            { id: 'reading', emoji: '📚', name: 'Lesemeister', desc: 'Alle Leseaufgaben', color: '#00BCD4' },
+            { id: 'writing', emoji: '✍️', name: 'Schreibprofi', desc: 'Alle Schreibaufgaben', color: '#E91E63' },
+            { id: 'streak', emoji: '🔥', name: 'Hot Streak', desc: '10 richtig hintereinander', color: '#FF9800' },
+            { id: 'level5', emoji: '⭐', name: 'Aufsteiger', desc: 'Level 5 erreicht', color: '#FFEB3B' },
+            { id: 'level10', emoji: '🌟', name: 'Superstar', desc: 'Level 10 erreicht', color: '#FFC107' },
+            { id: 'dedicated', emoji: '💪', name: 'Fleißig', desc: '100 Punkte erreicht', color: '#8BC34A' },
+            { id: 'overachiever', emoji: '🏆', name: 'Überflieger', desc: '500 Punkte erreicht', color: '#FDD835' },
+            { id: 'ready', emoji: '🎓', name: 'Bereit!', desc: '80% Bereitschaft erreicht', color: '#4CAF50' },
+        ];
+
+        // Game state
+        let gameState = {
+            playerName: '',
+            grade: 4,
+            level: 1,
+            xp: 0,
+            score: 0,
+            streak: 0,
+            completedActivities: {},
+            unlockedBadges: [],
+            skillProgress: {
+                lesen: 0,
+                schreiben: 0,
+                hoeren: 0,
+                verstehen: 0,
+                grammatik: 0,
+                wortschatz: 0
+            },
+            skillMax: {
+                lesen: 10,
+                schreiben: 10,
+                hoeren: 8,
+                verstehen: 8,
+                grammatik: 15,
+                wortschatz: 12
+            }
+        };
+
+        let selectedGrade = 4;
+        let currentMaze = null;
+        let currentQuizQuestion = null;
+
+        // Question banks for different skills
+        const questionBank = {
+            4: {
+                grammatik: [
+                    {
+                        q: 'Welches Wort ist ein Nomen?',
+                        options: ['schnell', 'Straße', 'fahren', 'schön'],
+                        correct: 1
+                    },
+                    {
+                        q: 'Wie lautet die Mehrzahl von "Auto"?',
+                        options: ['Autos', 'Autoen', 'Autosse', 'Aute'],
+                        correct: 0
+                    },
+                    {
+                        q: 'Welcher Satz ist richtig?',
+                        options: ['Ich fahre zur Schule.', 'Ich zur Schule fahre.', 'Fahre ich zur Schule.', 'Zur Schule ich fahre.'],
+                        correct: 0
+                    },
+                    {
+                        q: 'Was ist ein Verb?',
+                        options: ['Ein Namenwort', 'Ein Tunwort', 'Ein Wiewort', 'Ein Fürwort'],
+                        correct: 1
+                    },
+                    {
+                        q: 'Steigere "schnell"',
+                        options: ['schnell - schnellst', 'schnell - schneller - am schnellsten', 'schnell - mehr schnell', 'schnell - schnelle'],
+                        correct: 1
+                    }
+                ],
+                wortschatz: [
+                    {
+                        q: 'Was bedeutet "Zebrastreifen"?',
+                        options: ['Ein Tier im Zoo', 'Ein Übergang für Fußgänger', 'Eine Straße', 'Ein Verkehrsschild'],
+                        correct: 1
+                    },
+                    {
+                        q: 'Was ist ein Synonym für "schnell"?',
+                        options: ['langsam', 'rasant', 'groß', 'klein'],
+                        correct: 1
+                    },
+                    {
+                        q: 'Welches Wort gehört nicht zu "Unterwegs"?',
+                        options: ['Straße', 'Kreuzung', 'Kühlschrank', 'Bahnhof'],
+                        correct: 2
+                    }
+                ],
+                lesen: [
+                    {
+                        q: 'Was macht man beim Lesen zuerst?',
+                        options: ['Den Text abschreiben', 'Die Überschrift ansehen', 'Alle Wörter zählen', 'Den Text vorlesen'],
+                        correct: 1
+                    },
+                    {
+                        q: 'Wofür steht "W-Fragen"?',
+                        options: ['Wer, Was, Wann, Wo', 'Warum nicht', 'Wörterbuch', 'Wortschatz'],
+                        correct: 0
+                    }
+                ]
+            },
+            5: {
+                grammatik: [
+                    {
+                        q: 'Welcher Fall ist "den Hund"?',
+                        options: ['Nominativ', 'Akkusativ', 'Dativ', 'Genitiv'],
+                        correct: 1
+                    },
+                    {
+                        q: 'Bilde das Präteritum von "gehen"',
+                        options: ['gegangen', 'ging', 'gehte', 'geht'],
+                        correct: 1
+                    },
+                    {
+                        q: 'Was ist ein Nebensatz?',
+                        options: ['Ein kurzer Satz', 'Ein Satz mit Komma', 'Ein abhängiger Satz', 'Ein Fragesatz'],
+                        correct: 2
+                    },
+                    {
+                        q: 'Steigere "gut"',
+                        options: ['gut - guter - am gutsten', 'gut - besser - am besten', 'gut - mehr gut', 'gut - gutest'],
+                        correct: 1
+                    }
+                ],
+                wortschatz: [
+                    {
+                        q: 'Was ist ein Antonym zu "schnell"?',
+                        options: ['rasant', 'langsam', 'eilig', 'zügig'],
+                        correct: 1
+                    },
+                    {
+                        q: 'Erkläre "auf der Strecke bleiben"',
+                        options: ['Stehen bleiben', 'Zurückbleiben', 'Laufen', 'Fahren'],
+                        correct: 1
+                    }
+                ],
+                lesen: [
+                    {
+                        q: 'Was ist ein Hauptmerkmal einer Erzählung?',
+                        options: ['Hat keine Handlung', 'Hat Anfang-Mitte-Ende', 'Ist immer kurz', 'Hat keine Personen'],
+                        correct: 1
+                    }
+                ]
+            }
+        };
+
+        // Drag and drop challenges
+        const dragDropChallenges = {
+            4: [
+                {
+                    skill: 'grammatik',
+                    title: 'Nomen, Verben, Adjektive sortieren',
+                    items: ['Straße', 'fahren', 'schnell', 'Bahnhof', 'gehen', 'groß', 'Brücke', 'laufen', 'schön'],
+                    categories: ['Nomen', 'Verben', 'Adjektive'],
+                    correctAnswers: {
+                        'Nomen': ['Straße', 'Bahnhof', 'Brücke'],
+                        'Verben': ['fahren', 'gehen', 'laufen'],
+                        'Adjektive': ['schnell', 'groß', 'schön']
+                    }
+                },
+                {
+                    skill: 'wortschatz',
+                    title: 'Wortfeld "Unterwegs"',
+                    items: ['Zebrastreifen', 'Küche', 'Kreuzung', 'Tisch', 'Stadtplan', 'Bett', 'Brücke', 'Lampe'],
+                    categories: ['Gehört zu Unterwegs', 'Gehört nicht dazu'],
+                    correctAnswers: {
+                        'Gehört zu Unterwegs': ['Zebrastreifen', 'Kreuzung', 'Stadtplan', 'Brücke'],
+                        'Gehört nicht dazu': ['Küche', 'Tisch', 'Bett', 'Lampe']
+                    }
+                },
+                {
+                    skill: 'grammatik',
+                    title: 'Satzteile in die richtige Reihenfolge',
+                    items: ['Ich', 'fahre', 'zur', 'Schule'],
+                    categories: ['Satz bauen (linke nach rechts)'],
+                    correctAnswers: {
+                        'Satz bauen (linke nach rechts)': ['Ich', 'fahre', 'zur', 'Schule']
+                    },
+                    ordered: true
+                }
+            ],
+            5: [
+                {
+                    skill: 'grammatik',
+                    title: 'Hauptsatz oder Nebensatz?',
+                    items: ['Ich gehe zur Schule', 'weil es regnet', 'Laura fährt Rad', 'obwohl sie müde ist'],
+                    categories: ['Hauptsatz', 'Nebensatz'],
+                    correctAnswers: {
+                        'Hauptsatz': ['Ich gehe zur Schule', 'Laura fährt Rad'],
+                        'Nebensatz': ['weil es regnet', 'obwohl sie müde ist']
+                    }
+                },
+                {
+                    skill: 'wortschatz',
+                    title: 'Wortfamilie "fahren"',
+                    items: ['Fahrt', 'laufen', 'Fahrer', 'gehen', 'Fahrzeug', 'springen', 'fahrbar'],
+                    categories: ['Gehört zur Familie "fahren"', 'Gehört nicht dazu'],
+                    correctAnswers: {
+                        'Gehört zur Familie "fahren"': ['Fahrt', 'Fahrer', 'Fahrzeug', 'fahrbar'],
+                        'Gehört nicht dazu': ['laufen', 'gehen', 'springen']
+                    }
+                },
+                {
+                    skill: 'grammatik',
+                    title: 'Zeitformen zuordnen',
+                    items: ['ich gehe', 'ich ging', 'ich bin gegangen', 'ich werde gehen'],
+                    categories: ['Präsens', 'Präteritum', 'Perfekt', 'Futur'],
+                    correctAnswers: {
+                        'Präsens': ['ich gehe'],
+                        'Präteritum': ['ich ging'],
+                        'Perfekt': ['ich bin gegangen'],
+                        'Futur': ['ich werde gehen']
+                    }
+                }
+            ]
+        };
+
+        function selectGrade(grade) {
+            selectedGrade = grade;
+            document.querySelectorAll('.grade-selector button').forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+        }
+
+        function startGame() {
+            const name = document.getElementById('playerName').value.trim();
+            if (!name) {
+                alert('Bitte gib deinen Namen ein! 😊');
+                return;
+            }
+            
+            gameState.playerName = name;
+            gameState.grade = selectedGrade;
+            
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.add('active');
+            
+            document.getElementById('displayName').textContent = name;
+            document.getElementById('displayGrade').textContent = selectedGrade;
+            document.getElementById('playerAvatar').textContent = name[0].toUpperCase();
+            
+            initBadges();
+            loadGameState();
+            updateAllProgress();
+        }
+
+        function initBadges() {
+            const container = document.getElementById('badgesContainer');
+            container.innerHTML = '';
+            
+            badges.forEach(badge => {
+                const badgeEl = document.createElement('div');
+                badgeEl.className = 'badge ' + (gameState.unlockedBadges.includes(badge.id) ? 'unlocked' : 'locked');
+                badgeEl.style.background = badge.color;
+                badgeEl.innerHTML = badge.emoji;
+                badgeEl.title = badge.name + ': ' + badge.desc;
+                badgeEl.id = 'badge-' + badge.id;
+                container.appendChild(badgeEl);
+            });
+        }
+
+        function unlockBadge(badgeId) {
+            if (gameState.unlockedBadges.includes(badgeId)) return;
+            
+            gameState.unlockedBadges.push(badgeId);
+            const badgeEl = document.getElementById('badge-' + badgeId);
+            if (badgeEl) {
+                badgeEl.classList.remove('locked');
+                badgeEl.classList.add('unlocked');
+            }
+            
+            const badge = badges.find(b => b.id === badgeId);
+            if (badge) {
+                document.getElementById('badgeEmoji').textContent = badge.emoji;
+                document.getElementById('badgeName').textContent = badge.name;
+                document.getElementById('badgeModal').classList.add('show');
+                createConfetti();
+            }
+            
+            saveGameState();
+        }
+
+        function addXP(amount, skill = null) {
+            gameState.xp += amount;
+            gameState.score += amount;
+            
+            // Add skill progress
+            if (skill && gameState.skillProgress[skill] !== undefined) {
+                gameState.skillProgress[skill]++;
+                updateSkillProgress();
+            }
+            
+            const xpNeeded = gameState.level * 100;
+            
+            if (gameState.xp >= xpNeeded) {
+                gameState.xp -= xpNeeded;
+                gameState.level++;
+                
+                document.getElementById('newLevel').textContent = gameState.level;
+                document.getElementById('levelUpModal').classList.add('show');
+                createConfetti();
+                
+                if (gameState.level === 5) unlockBadge('level5');
+                if (gameState.level === 10) unlockBadge('level10');
+            }
+            
+            if (gameState.score >= 100) unlockBadge('dedicated');
+            if (gameState.score >= 500) unlockBadge('overachiever');
+            
+            updateStats();
+            updateReadiness();
+            saveGameState();
+        }
+
+        function updateStats() {
+            document.getElementById('playerLevel').textContent = gameState.level;
+            document.getElementById('playerXP').textContent = gameState.xp;
+            document.getElementById('xpNeeded').textContent = gameState.level * 100;
+            document.getElementById('playerScore').textContent = gameState.score;
+            document.getElementById('playerStreak').textContent = gameState.streak;
+            
+            const progress = (gameState.xp / (gameState.level * 100)) * 100;
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = Math.round(progress) + '%';
+        }
+
+        function updateSkillProgress() {
+            Object.keys(gameState.skillProgress).forEach(skill => {
+                const progressEl = document.getElementById('progress-' + skill);
+                if (progressEl) {
+                    const percentage = (gameState.skillProgress[skill] / gameState.skillMax[skill]) * 100;
+                    progressEl.style.width = Math.min(percentage, 100) + '%';
+                }
+            });
+        }
+
+        function updateReadiness() {
+            let totalProgress = 0;
+            let skillCount = 0;
+            
+            Object.keys(gameState.skillProgress).forEach(skill => {
+                const progress = gameState.skillProgress[skill] / gameState.skillMax[skill];
+                totalProgress += progress;
+                skillCount++;
+            });
+            
+            const readiness = (totalProgress / skillCount) * 100;
+            const readinessFill = document.getElementById('readinessFill');
+            const readinessStatus = document.getElementById('readinessStatus');
+            
+            readinessFill.style.width = readiness + '%';
+            readinessFill.textContent = Math.round(readiness) + '%';
+            
+            if (readiness < 30) {
+                readinessStatus.textContent = '🔴 Fang an zu üben!';
+                readinessStatus.style.color = '#f44336';
+            } else if (readiness < 60) {
+                readinessStatus.textContent = '🟡 Gut im Gang!';
+                readinessStatus.style.color = '#ff9800';
+            } else if (readiness < 80) {
+                readinessStatus.textContent = '🟢 Fast bereit!';
+                readinessStatus.style.color = '#4caf50';
+            } else {
+                readinessStatus.textContent = '🌟 Super vorbereitet!';
+                readinessStatus.style.color = '#1976d2';
+                if (!gameState.unlockedBadges.includes('ready')) {
+                    unlockBadge('ready');
+                }
+            }
+        }
+
+        function updateAllProgress() {
+            updateStats();
+            updateSkillProgress();
+            updateReadiness();
+        }
+
+        function loadGame(gameType) {
+            const gameContent = document.getElementById('gameContent');
+            
+            switch(gameType) {
+                case 'dragdrop':
+                    renderDragDropGame();
+                    break;
+                case 'maze':
+                    renderMazeGame();
+                    break;
+                case 'grammar':
+                    renderQuizGame('grammatik');
+                    break;
+                case 'vocab':
+                    renderQuizGame('wortschatz');
+                    break;
+                case 'reading':
+                    renderQuizGame('lesen');
+                    break;
+                case 'writing':
+                    renderWritingPrompts();
+                    break;
+            }
+        }
+
+        function renderDragDropGame() {
+            const challenges = dragDropChallenges[gameState.grade];
+            const challenge = challenges[Math.floor(Math.random() * challenges.length)];
+            
+            const gameContent = document.getElementById('gameContent');
+            gameContent.innerHTML = `
+                <div class="drag-drop-container">
+                    <h2 style="color: #667eea; margin-bottom: 20px;">${challenge.title}</h2>
+                    <p style="margin-bottom: 20px;">Ziehe die Wörter in die richtigen Kategorien!</p>
+                    
+                    <div style="background: #f0f0f0; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+                        <div id="dragItems" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            ${challenge.items.map((item, i) => `
+                                <div class="draggable" draggable="true" data-item="${item}" data-index="${i}">
+                                    ${item}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        ${challenge.categories.map(cat => `
+                            <div>
+                                <h3 style="color: #333; margin-bottom: 10px;">${cat}</h3>
+                                <div class="drop-zone" data-category="${cat}"></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn" onclick="checkDragDrop(${JSON.stringify(challenge).replace(/"/g, '&quot;')})">
+                            Überprüfen
+                        </button>
+                    </div>
+                    
+                    <div id="dragDropFeedback" style="margin-top: 20px; text-align: center;"></div>
+                </div>
+            `;
+            
+            setupDragAndDrop();
+        }
+
+        function setupDragAndDrop() {
+            const draggables = document.querySelectorAll('.draggable');
+            const dropZones = document.querySelectorAll('.drop-zone');
+            
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', () => {
+                    draggable.classList.add('dragging');
+                });
+                
+                draggable.addEventListener('dragend', () => {
+                    draggable.classList.remove('dragging');
+                });
+            });
+            
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('drag-over');
+                });
+                
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('drag-over');
+                });
+                
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    
+                    const dragging = document.querySelector('.dragging');
+                    if (dragging) {
+                        zone.appendChild(dragging);
+                    }
+                });
+            });
+        }
+
+        function checkDragDrop(challenge) {
+            const dropZones = document.querySelectorAll('.drop-zone');
+            let correct = 0;
+            let total = challenge.items.length;
+            
+            dropZones.forEach(zone => {
+                const category = zone.dataset.category;
+                const items = Array.from(zone.querySelectorAll('.draggable')).map(el => el.dataset.item);
+                const correctItems = challenge.correctAnswers[category] || [];
+                
+                items.forEach(item => {
+                    if (correctItems.includes(item)) {
+                        correct++;
+                        zone.classList.add('correct');
+                    } else {
+                        zone.classList.add('incorrect');
+                        setTimeout(() => zone.classList.remove('incorrect'), 1000);
+                    }
+                });
+            });
+            
+            const feedback = document.getElementById('dragDropFeedback');
+            const percentage = Math.round((correct / total) * 100);
+            
+            if (correct === total) {
+                feedback.innerHTML = `<div style="background: #c8e6c9; padding: 20px; border-radius: 15px; color: #2e7d32; font-weight: bold; font-size: 1.2em;">
+                    🎉 Perfekt! Alle richtig! +50 XP
+                </div>`;
+                addXP(50, challenge.skill);
+                gameState.streak++;
+                
+                if (!gameState.unlockedBadges.includes('drag_master')) {
+                    unlockBadge('drag_master');
+                }
+                
+                if (gameState.streak >= 10) {
+                    unlockBadge('streak');
+                }
+                
+                createConfetti();
+            } else {
+                feedback.innerHTML = `<div style="background: #ffcdd2; padding: 20px; border-radius: 15px; color: #c62828; font-weight: bold; font-size: 1.2em;">
+                    ${correct} von ${total} richtig (${percentage}%). Versuch es nochmal! 💪
+                </div>`;
+                gameState.streak = 0;
+            }
+            
+            setTimeout(() => {
+                dropZones.forEach(zone => {
+                    zone.classList.remove('correct');
+                    zone.classList.remove('incorrect');
+                });
+            }, 2000);
+        }
+
+        function renderMazeGame() {
+            const size = 10;
+            const maze = generateMaze(size);
+            currentMaze = maze;
+            
+            const gameContent = document.getElementById('gameContent');
+            gameContent.innerHTML = `
+                <div class="maze-container">
+                    <h2 style="color: #667eea; margin-bottom: 20px;">🌀 Labyrinth-Abenteuer</h2>
+                    <p style="margin-bottom: 20px;">Finde den Weg zum Ziel! Beantworte Fragen auf orangenen Feldern.</p>
+                    
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <span style="font-size: 1.2em; background: #667eea; color: white; padding: 10px 20px; border-radius: 10px;">
+                            Fragen beantwortet: <span id="questionsAnswered">0</span>/<span id="totalQuestions">${maze.questions.length}</span>
+                        </span>
+                    </div>
+                    
+                    <div class="maze-grid" id="mazeGrid" style="grid-template-columns: repeat(${size}, 1fr);"></div>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn" onclick="renderMazeGame()">Neues Labyrinth</button>
+                    </div>
+                </div>
+            `;
+            
+            renderMaze();
+            setupMazeControls();
+        }
+
+        function generateMaze(size) {
+            // Simple maze generation - path from top-left to bottom-right
+            const maze = Array(size).fill().map(() => Array(size).fill('wall'));
+            
+            // Create a simple path
+            let x = 0, y = 0;
+            maze[y][x] = 'path';
+            
+            while (x < size - 1 || y < size - 1) {
+                if (x < size - 1 && (Math.random() > 0.5 || y === size - 1)) {
+                    x++;
+                } else if (y < size - 1) {
+                    y++;
+                }
+                maze[y][x] = 'path';
+            }
+            
+            // Add some random paths
+            for (let i = 0; i < size * 2; i++) {
+                const rx = Math.floor(Math.random() * size);
+                const ry = Math.floor(Math.random() * size);
+                maze[ry][rx] = 'path';
+            }
+            
+            // Add question cells
+            const questions = [];
+            for (let i = 0; i < 5; i++) {
+                let qx, qy;
+                do {
+                    qx = Math.floor(Math.random() * size);
+                    qy = Math.floor(Math.random() * size);
+                } while (maze[qy][qx] !== 'path' || (qx === 0 && qy === 0) || (qx === size-1 && qy === size-1));
+                
+                maze[qy][qx] = 'question';
+                questions.push({ x: qx, y: qy, answered: false });
+            }
+            
+            return {
+                grid: maze,
+                size: size,
+                playerX: 0,
+                playerY: 0,
+                goalX: size - 1,
+                goalY: size - 1,
+                questions: questions,
+                questionsAnswered: 0
+            };
+        }
+
+        function renderMaze() {
+            const mazeGrid = document.getElementById('mazeGrid');
+            if (!mazeGrid || !currentMaze) return;
+            
+            mazeGrid.innerHTML = '';
+            
+            for (let y = 0; y < currentMaze.size; y++) {
+                for (let x = 0; x < currentMaze.size; x++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'maze-cell ' + currentMaze.grid[y][x];
+                    cell.dataset.x = x;
+                    cell.dataset.y = y;
+                    
+                    if (x === currentMaze.playerX && y === currentMaze.playerY) {
+                        cell.classList.add('player');
+                        cell.textContent = '😊';
+                    } else if (x === currentMaze.goalX && y === currentMaze.goalY) {
+                        cell.classList.add('goal');
+                        cell.textContent = '🏆';
+                    } else if (currentMaze.grid[y][x] === 'question') {
+                        cell.textContent = '❓';
+                    }
+                    
+                    cell.onclick = () => moveTo(x, y);
+                    mazeGrid.appendChild(cell);
+                }
+            }
+            
+            document.getElementById('questionsAnswered').textContent = currentMaze.questionsAnswered;
+            document.getElementById('totalQuestions').textContent = currentMaze.questions.length;
+        }
+
+        function moveTo(x, y) {
+            if (!currentMaze) return;
+            
+            // Check if adjacent
+            const dx = Math.abs(x - currentMaze.playerX);
+            const dy = Math.abs(y - currentMaze.playerY);
+            
+            if ((dx === 1 && dy === 0) || (dx === 0 && dy === 1)) {
+                if (currentMaze.grid[y][x] !== 'wall') {
+                    currentMaze.playerX = x;
+                    currentMaze.playerY = y;
+                    
+                    // Check if question cell
+                    const question = currentMaze.questions.find(q => q.x === x && q.y === y && !q.answered);
+                    if (question) {
+                        showMazeQuestion(question);
+                    }
+                    
+                    // Check if goal reached
+                    if (x === currentMaze.goalX && y === currentMaze.goalY) {
+                        mazeCompleted();
+                    }
+                    
+                    renderMaze();
+                }
+            }
+        }
+
+        function showMazeQuestion(question) {
+            const questions = questionBank[gameState.grade].grammatik.concat(
+                questionBank[gameState.grade].wortschatz || [],
+                questionBank[gameState.grade].lesen || []
+            );
+            const q = questions[Math.floor(Math.random() * questions.length)];
+            
+            currentQuizQuestion = { question: question, quiz: q };
+            
+            document.getElementById('quizQuestion').textContent = q.q;
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, index) => {
+                const optionEl = document.createElement('div');
+                optionEl.className = 'quiz-option';
+                optionEl.textContent = option;
+                optionEl.onclick = () => {
+                    document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('selected'));
+                    optionEl.classList.add('selected');
+                    optionEl.dataset.index = index;
+                };
+                optionsContainer.appendChild(optionEl);
+            });
+            
+            document.getElementById('quizModal').classList.add('show');
+        }
+
+        function submitQuizAnswer() {
+            const selected = document.querySelector('.quiz-option.selected');
+            if (!selected) {
+                alert('Bitte wähle eine Antwort!');
+                return;
+            }
+            
+            const answerIndex = parseInt(selected.dataset.index);
+            const correct = answerIndex === currentQuizQuestion.quiz.correct;
+            
+            if (correct) {
+                currentQuizQuestion.question.answered = true;
+                currentMaze.questionsAnswered++;
+                currentMaze.grid[currentQuizQuestion.question.y][currentQuizQuestion.question.x] = 'path';
+                
+                addXP(20, 'grammatik');
+                gameState.streak++;
+                
+                alert('🎉 Richtig! +20 XP');
+            } else {
+                gameState.streak = 0;
+                alert('❌ Leider falsch. Versuch es nochmal!');
+            }
+            
+            document.getElementById('quizModal').classList.remove('show');
+            renderMaze();
+        }
+
+        function mazeCompleted() {
+            const bonus = currentMaze.questionsAnswered * 10;
+            addXP(50 + bonus);
+            
+            if (!gameState.unlockedBadges.includes('maze_runner')) {
+                unlockBadge('maze_runner');
+            }
+            
+            document.getElementById('completionMessage').textContent = 
+                `Du hast das Labyrinth geschafft! ${currentMaze.questionsAnswered}/${currentMaze.questions.length} Fragen beantwortet! +${50 + bonus} XP`;
+            document.getElementById('completionModal').classList.add('show');
+            
+            createConfetti();
+        }
+
+        function setupMazeControls() {
+            document.addEventListener('keydown', (e) => {
+                if (!currentMaze) return;
+                
+                let newX = currentMaze.playerX;
+                let newY = currentMaze.playerY;
+                
+                switch(e.key) {
+                    case 'ArrowUp':
+                    case 'w':
+                        newY--;
+                        break;
+                    case 'ArrowDown':
+                    case 's':
+                        newY++;
+                        break;
+                    case 'ArrowLeft':
+                    case 'a':
+                        newX--;
+                        break;
+                    case 'ArrowRight':
+                    case 'd':
+                        newX++;
+                        break;
+                    default:
+                        return;
+                }
+                
+                e.preventDefault();
+                moveTo(newX, newY);
+            });
+        }
+
+        function renderQuizGame(skill) {
+            const questions = questionBank[gameState.grade][skill];
+            if (!questions || questions.length === 0) {
+                alert('Keine Fragen für diesen Bereich verfügbar!');
+                return;
+            }
+            
+            const question = questions[Math.floor(Math.random() * questions.length)];
+            
+            const gameContent = document.getElementById('gameContent');
+            gameContent.innerHTML = `
+                <div class="drag-drop-container">
+                    <h2 style="color: #667eea; margin-bottom: 20px;">${getSkillTitle(skill)}</h2>
+                    <div class="quiz-question">${question.q}</div>
+                    <div class="quiz-options" id="standaloneQuizOptions"></div>
+                    <div style="text-align: center;">
+                        <button class="btn" onclick="checkStandaloneQuiz(${JSON.stringify(question).replace(/"/g, '&quot;')}, '${skill}')">
+                            Antworten
+                        </button>
+                        <button class="btn btn-secondary" onclick="renderQuizGame('${skill}')">
+                            Nächste Frage
+                        </button>
+                    </div>
+                    <div id="standaloneFeedback" style="margin-top: 20px;"></div>
+                </div>
+            `;
+            
+            const optionsContainer = document.getElementById('standaloneQuizOptions');
+            question.options.forEach((option, index) => {
+                const optionEl = document.createElement('div');
+                optionEl.className = 'quiz-option';
+                optionEl.textContent = option;
+                optionEl.dataset.index = index;
+                optionEl.onclick = () => {
+                    document.querySelectorAll('#standaloneQuizOptions .quiz-option').forEach(el => el.classList.remove('selected'));
+                    optionEl.classList.add('selected');
+                };
+                optionsContainer.appendChild(optionEl);
+            });
+        }
+
+        function checkStandaloneQuiz(question, skill) {
+            const selected = document.querySelector('#standaloneQuizOptions .quiz-option.selected');
+            if (!selected) {
+                alert('Bitte wähle eine Antwort!');
+                return;
+            }
+            
+            const answerIndex = parseInt(selected.dataset.index);
+            const correct = answerIndex === question.correct;
+            
+            const feedback = document.getElementById('standaloneFeedback');
+            
+            if (correct) {
+                feedback.innerHTML = `<div style="background: #c8e6c9; padding: 20px; border-radius: 15px; color: #2e7d32; font-weight: bold; font-size: 1.2em;">
+                    🎉 Richtig! +25 XP
+                </div>`;
+                addXP(25, skill);
+                gameState.streak++;
+                
+                if (skill === 'grammatik' && gameState.skillProgress.grammatik >= gameState.skillMax.grammatik) {
+                    unlockBadge('grammar');
+                }
+                if (skill === 'wortschatz' && gameState.skillProgress.wortschatz >= gameState.skillMax.wortschatz) {
+                    unlockBadge('vocab');
+                }
+                if (skill === 'lesen' && gameState.skillProgress.lesen >= gameState.skillMax.lesen) {
+                    unlockBadge('reading');
+                }
+                
+                if (gameState.streak >= 10) {
+                    unlockBadge('streak');
+                }
+            } else {
+                feedback.innerHTML = `<div style="background: #ffcdd2; padding: 20px; border-radius: 15px; color: #c62828; font-weight: bold; font-size: 1.2em;">
+                    ❌ Leider falsch. Die richtige Antwort war: ${question.options[question.correct]}
+                </div>`;
+                gameState.streak = 0;
+            }
+        }
+
+        function renderWritingPrompts() {
+            const prompts = gameState.grade === 4 ? [
+                'Schreibe eine Wegbeschreibung von deiner Wohnung zur Schule (mindestens 8 Sätze).',
+                'Erfinde ein kleines Abenteuer mit dem Fahrrad (mindestens 6 Sätze).',
+                'Schreibe einen Brief an einen Freund über einen Ausflug.',
+            ] : [
+                'Schreibe eine Geschichte: "Verirrt in der Stadt" mit Anfang, Mitte und Ende.',
+                'Beschreibe deinen Schulweg mit allen Sinnen (was siehst, hörst, riechst du?).',
+                'Schreibe eine Stellungnahme: Sollten Kinder alleine in die Stadt fahren dürfen?',
+            ];
+            
+            const prompt = prompts[Math.floor(Math.random() * prompts.length)];
+            
+            const gameContent = document.getElementById('gameContent');
+            gameContent.innerHTML = `
+                <div class="drag-drop-container">
+                    <h2 style="color: #667eea; margin-bottom: 20px;">✍️ Schreibaufgabe</h2>
+                    <div style="background: #fff3e0; padding: 20px; border-radius: 15px; margin: 20px 0; border-left: 5px solid #ff9800;">
+                        <strong>Aufgabe:</strong> ${prompt}
+                    </div>
+                    <p style="margin: 20px 0;">Schreibe deinen Text in dein Heft oder auf ein Blatt Papier.</p>
+                    <p>Wenn du fertig bist, klicke auf "Aufgabe erledigt!"</p>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn" onclick="completeWritingTask()">Aufgabe erledigt!</button>
+                        <button class="btn btn-secondary" onclick="renderWritingPrompts()">Neue Aufgabe</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function completeWritingTask() {
+            addXP(40, 'schreiben');
+            
+            if (gameState.skillProgress.schreiben >= gameState.skillMax.schreiben) {
+                unlockBadge('writing');
+            }
+            
+            alert('🎉 Gut gemacht! +40 XP für deine Schreibaufgabe!');
+        }
+
+        function getSkillTitle(skill) {
+            const titles = {
+                lesen: '📖 Lesen',
+                schreiben: '✍️ Schreiben',
+                hoeren: '👂 Hören',
+                verstehen: '🧠 Verstehen',
+                grammatik: '📝 Grammatik',
+                wortschatz: '💭 Wortschatz'
+            };
+            return titles[skill] || skill;
+        }
+
+        function createConfetti() {
+            const colors = ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#fa709a', '#fee140'];
+            
+            for (let i = 0; i < 80; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = Math.random() * 15 + 5 + 'px';
+                    confetti.style.height = Math.random() * 15 + 5 + 'px';
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 40);
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        function saveGameState() {
+            localStorage.setItem('deutschMeister', JSON.stringify(gameState));
+        }
+
+        function loadGameState() {
+            const saved = localStorage.getItem('deutschMeister');
+            if (saved) {
+                const loaded = JSON.parse(saved);
+                gameState.level = loaded.level || 1;
+                gameState.xp = loaded.xp || 0;
+                gameState.score = loaded.score || 0;
+                gameState.completedActivities = loaded.completedActivities || {};
+                gameState.unlockedBadges = loaded.unlockedBadges || [];
+                gameState.skillProgress = loaded.skillProgress || {
+                    lesen: 0, schreiben: 0, hoeren: 0, verstehen: 0, grammatik: 0, wortschatz: 0
+                };
+                updateAllProgress();
+                initBadges();
+            }
+        }
+    </script>
+</body>
+</html>
