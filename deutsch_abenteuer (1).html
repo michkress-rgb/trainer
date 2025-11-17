@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌟 Deutsch-Abenteuer 🌟</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', 'Comic Sans MS', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        /* Welcome Screen */
+        .welcome-screen {
+            background: white;
+            border-radius: 30px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.5s;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .welcome-screen.hidden { display: none; }
+        
+        .welcome-screen h1 {
+            font-size: 3.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+            animation: bounce 1s infinite alternate;
+        }
+        
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+        
+        .welcome-screen input {
+            padding: 20px 30px;
+            font-size: 1.3em;
+            border: 3px solid #667eea;
+            border-radius: 25px;
+            width: 80%;
+            max-width: 400px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .grade-selector {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+        .grade-selector button {
+            padding: 20px 40px;
+            font-size: 1.5em;
+            border: 3px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .grade-selector button.selected {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .start-button {
+            padding: 25px 60px;
+            font-size: 1.5em;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        
+        .start-button:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Game Screen */
+        .game-screen { display: none; }
+        .game-screen.active { display: block; animation: fadeIn 0.5s; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .player-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .player-name {
+            font-size: 1.8em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .stat-box:hover { transform: translateY(-5px); }
+        
+        .stat-value { font-size: 2em; font-weight: bold; }
+        
+        .progress-bar-container {
+            background: #e0e0e0;
+            border-radius: 20px;
+            height: 30px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* Badges */
+        .badges-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .badge {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .badge:hover { transform: scale(1.15); }
+        .badge.locked { background: #ddd; opacity: 0.5; filter: grayscale(100%); }
+        .badge.unlocked { animation: badgePop 0.5s; }
+        
+        @keyframes badgePop {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+        
+        /* Content Area */
+        .content-wrapper {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .skills-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .skill-button {
+            padding: 20px;
+            border: none;
+            border-radius: 15px;
+            background: #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        
+        .skill-button:hover { transform: translateY(-3px); }
+        
+        .skill-button.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        /* Task Cards */
+        .tasks-grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .task-card {
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border-radius: 20px;
+            padding: 25px;
+            border: 3px solid #e0e0e0;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .task-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+        
+        .task-card.completed {
+            background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+            border-color: #4caf50;
+        }
+        
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .task-title {
+            font-size: 1.4em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .task-points {
+            background: linear-gradient(135deg, #ffd54f, #ffb300);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .task-body { color: #444; line-height: 1.8; }
+        
+        .submit-button {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+        
+        .submit-button:hover { transform: scale(1.05); }
+        .submit-button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .feedback-message {
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 15px;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .feedback-message.success {
+            background: #c8e6c9;
+            color: #2e7d32;
+            display: block;
+        }
+        
+        .feedback-message.error {
+            background: #ffcdd2;
+            color: #c62828;
+            display: block;
+        }
+        
+        /* Modals */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+        }
+        
+        .modal.show { display: flex; }
+        
+        .modal-content {
+            background: white;
+            padding: 50px;
+            border-radius: 30px;
+            text-align: center;
+            animation: bounceIn 0.5s;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .modal-content h2 {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .modal-content .emoji {
+            font-size: 5em;
+            margin: 20px 0;
+        }
+        
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall 3s linear forwards;
+            z-index: 10000;
+        }
+        
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .welcome-screen h1 { font-size: 2em; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .skills-menu { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div class="welcome-screen" id="welcomeScreen">
+            <h1>🌟 Deutsch-Abenteuer 🌟</h1>
+            <p style="font-size: 1.3em; margin-bottom: 20px;">Bereite dich spielerisch auf deine Klassenarbeit vor!</p>
+            <p style="font-size: 1.1em; color: #ff6b6b; font-weight: bold;">📅 Klassenarbeit: 24. November 2025</p>
+            
+            <input type="text" id="playerName" placeholder="Wie heißt du?" maxlength="20">
+            
+            <div class="grade-selector">
+                <button onclick="selectGrade(4)">Klasse 4 🎈</button>
+                <button onclick="selectGrade(5)">Klasse 5 🎪</button>
+            </div>
+            
+            <button class="start-button" onclick="startGame()">Los geht's! 🚀</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="game-screen" id="gameScreen">
+            <div class="header">
+                <div class="player-info">
+                    <div class="player-avatar" id="playerAvatar">?</div>
+                    <div>
+                        <div class="player-name" id="displayName">Spieler</div>
+                        <div style="color: #666;">Klasse <span id="displayGrade">4</span></div>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div style="font-size: 0.9em; opacity: 0.9;">Level</div>
+                        <div class="stat-value" id="playerLevel">1</div>
+                    </div>
+                    <div class="stat-box">
+                        <div style="font-size: 0.9em; opacity: 0.9;">XP</div>
+                        <div class="stat-value"><span id="playerXP">0</span>/<span id="xpNeeded">100</span></div>
+                    </div>
+                    <div class="stat-box">
+                        <div style="font-size: 0.9em; opacity: 0.9;">Punkte</div>
+                        <div class="stat-value" id="playerScore">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div style="font-size: 0.9em; opacity: 0.9;">Streak 🔥</div>
+                        <div class="stat-value" id="playerStreak">0</div>
+                    </div>
+                </div>
+
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar" style="width: 0%">0%</div>
+                </div>
+
+                <div class="badges-container" id="badgesContainer"></div>
+            </div>
+
+            <div class="content-wrapper">
+                <div class="skills-menu">
+                    <button class="skill-button active" onclick="showSkill('lesen')">📖 Lesen</button>
+                    <button class="skill-button" onclick="showSkill('schreiben')">✍️ Schreiben</button>
+                    <button class="skill-button" onclick="showSkill('hoeren')">👂 Hören</button>
+                    <button class="skill-button" onclick="showSkill('verstehen')">🧠 Verstehen</button>
+                    <button class="skill-button" onclick="showSkill('grammatik')">📝 Grammatik</button>
+                    <button class="skill-button" onclick="showSkill('wortschatz')">💭 Wortschatz</button>
+                </div>
+
+                <div id="contentArea"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Level Up Modal -->
+    <div class="modal" id="levelUpModal">
+        <div class="modal-content">
+            <div class="emoji">🎉</div>
+            <h2>Level Up!</h2>
+            <p style="font-size: 1.5em; margin: 20px 0;">Du bist jetzt <strong>Level <span id="newLevel">2</span></strong>!</p>
+            <button class="submit-button" onclick="closeModal()">Weiter! 🚀</button>
+        </div>
+    </div>
+
+    <!-- Badge Modal -->
+    <div class="modal" id="badgeModal">
+        <div class="modal-content">
+            <div class="emoji" id="badgeEmoji">🏆</div>
+            <h2>Neues Abzeichen!</h2>
+            <p style="font-size: 1.3em; margin: 20px 0;" id="badgeName">Super gemacht!</p>
+            <button class="submit-button" onclick="closeBadgeModal()">Fantastisch! ✨</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+    <script>
+        // Game configuration
+        const badges = [
+            { id: 'first', emoji: '🌟', name: 'Erster Schritt', desc: 'Erste Aufgabe', color: '#FFD700' },
+            { id: 'reading', emoji: '📚', name: 'Lesemeister', desc: 'Alle Leseaufgaben', color: '#4CAF50' },
+            { id: 'writing', emoji: '✍️', name: 'Schreibzauberer', desc: 'Alle Schreibaufgaben', color: '#2196F3' },
+            { id: 'grammar', emoji: '📝', name: 'Grammatik-Guru', desc: 'Grammatik perfekt', color: '#9C27B0' },
+            { id: 'vocab', emoji: '💭', name: 'Wortschatz-Champion', desc: 'Wortschatz-Experte', color: '#FF5722' },
+            { id: 'streak', emoji: '🔥', name: 'Perfekte Serie', desc: '10 richtig hintereinander', color: '#FF9800' },
+            { id: 'level5', emoji: '⭐', name: 'Aufsteiger', desc: 'Level 5 erreicht', color: '#FFEB3B' },
+            { id: 'level10', emoji: '🌟', name: 'Superstar', desc: 'Level 10 erreicht', color: '#FFC107' },
+            { id: 'dedicated', emoji: '💪', name: 'Fleißig', desc: '100 Punkte erreicht', color: '#8BC34A' },
+            { id: 'overachiever', emoji: '🏆', name: 'Überflieger', desc: '500 Punkte erreicht', color: '#FDD835' },
+        ];
+
+        let gameState = {
+            playerName: '',
+            grade: 4,
+            level: 1,
+            xp: 0,
+            score: 0,
+            streak: 0,
+            currentSkill: 'lesen',
+            completedTasks: {},
+            unlockedBadges: []
+        };
+
+        let selectedGrade = 4;
+
+        function selectGrade(grade) {
+            selectedGrade = grade;
+            document.querySelectorAll('.grade-selector button').forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+        }
+
+        function startGame() {
+            const name = document.getElementById('playerName').value.trim();
+            if (!name) {
+                alert('Bitte gib deinen Namen ein! 😊');
+                return;
+            }
+            
+            gameState.playerName = name;
+            gameState.grade = selectedGrade;
+            
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.add('active');
+            
+            document.getElementById('displayName').textContent = name;
+            document.getElementById('displayGrade').textContent = selectedGrade;
+            document.getElementById('playerAvatar').textContent = name[0].toUpperCase();
+            
+            initBadges();
+            loadContent('lesen');
+            loadGameState();
+        }
+
+        function initBadges() {
+            const container = document.getElementById('badgesContainer');
+            container.innerHTML = '';
+            
+            badges.forEach(badge => {
+                const badgeEl = document.createElement('div');
+                badgeEl.className = 'badge ' + (gameState.unlockedBadges.includes(badge.id) ? 'unlocked' : 'locked');
+                badgeEl.style.background = badge.color;
+                badgeEl.innerHTML = badge.emoji;
+                badgeEl.title = badge.name + ': ' + badge.desc;
+                badgeEl.id = 'badge-' + badge.id;
+                container.appendChild(badgeEl);
+            });
+        }
+
+        function unlockBadge(badgeId) {
+            if (gameState.unlockedBadges.includes(badgeId)) return;
+            
+            gameState.unlockedBadges.push(badgeId);
+            const badgeEl = document.getElementById('badge-' + badgeId);
+            if (badgeEl) {
+                badgeEl.classList.remove('locked');
+                badgeEl.classList.add('unlocked');
+            }
+            
+            const badge = badges.find(b => b.id === badgeId);
+            if (badge) {
+                document.getElementById('badgeEmoji').textContent = badge.emoji;
+                document.getElementById('badgeName').textContent = badge.name;
+                document.getElementById('badgeModal').classList.add('show');
+                createConfetti();
+            }
+            
+            saveGameState();
+        }
+
+        function addXP(amount) {
+            gameState.xp += amount;
+            gameState.score += amount;
+            
+            const xpNeeded = gameState.level * 100;
+            
+            if (gameState.xp >= xpNeeded) {
+                gameState.xp -= xpNeeded;
+                gameState.level++;
+                
+                document.getElementById('newLevel').textContent = gameState.level;
+                document.getElementById('levelUpModal').classList.add('show');
+                createConfetti();
+                
+                if (gameState.level === 5) unlockBadge('level5');
+                if (gameState.level === 10) unlockBadge('level10');
+            }
+            
+            if (gameState.score >= 100) unlockBadge('dedicated');
+            if (gameState.score >= 500) unlockBadge('overachiever');
+            
+            updateStats();
+            saveGameState();
+        }
+
+        function updateStats() {
+            document.getElementById('playerLevel').textContent = gameState.level;
+            document.getElementById('playerXP').textContent = gameState.xp;
+            document.getElementById('xpNeeded').textContent = gameState.level * 100;
+            document.getElementById('playerScore').textContent = gameState.score;
+            document.getElementById('playerStreak').textContent = gameState.streak;
+            
+            const progress = (gameState.xp / (gameState.level * 100)) * 100;
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = Math.round(progress) + '%';
+        }
+
+        function showSkill(skill) {
+            gameState.currentSkill = skill;
+            
+            document.querySelectorAll('.skill-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            loadContent(skill);
+        }
+
+        function loadContent(skill) {
+            const contentArea = document.getElementById('contentArea');
+            contentArea.innerHTML = `
+                <h2 style="color: #667eea; margin-bottom: 20px;">${getSkillTitle(skill)}</h2>
+                <div class="tasks-grid" id="tasksGrid"></div>
+            `;
+            
+            const tasks = getTasks(skill, gameState.grade);
+            const tasksGrid = document.getElementById('tasksGrid');
+            
+            tasks.forEach(task => {
+                const taskCard = document.createElement('div');
+                taskCard.className = 'task-card' + (gameState.completedTasks[task.id] ? ' completed' : '');
+                taskCard.dataset.taskId = task.id;
+                taskCard.innerHTML = `
+                    <div class="task-header">
+                        <div class="task-title">${task.title}</div>
+                        <div class="task-points">+${task.points} XP</div>
+                    </div>
+                    <div class="task-body">
+                        ${task.content}
+                        <button class="submit-button" onclick="completeTask('${task.id}', ${task.points})">
+                            ${gameState.completedTasks[task.id] ? '✓ Erledigt' : 'Aufgabe abschließen'}
+                        </button>
+                        <div class="feedback-message"></div>
+                    </div>
+                `;
+                tasksGrid.appendChild(taskCard);
+            });
+        }
+
+        function getSkillTitle(skill) {
+            const titles = {
+                lesen: '📖 Lesen',
+                schreiben: '✍️ Schreiben',
+                hoeren: '👂 Hören',
+                verstehen: '🧠 Verstehen',
+                grammatik: '📝 Grammatik',
+                wortschatz: '💭 Wortschatz'
+            };
+            return titles[skill] || skill;
+        }
+
+        function getTasks(skill, grade) {
+            // Sample tasks - you can expand these
+            const tasks = {
+                4: {
+                    lesen: [
+                        { id: 'l4_1', title: 'Kurztext verstehen', points: 30, content: '<p>Lies den Text "Anna und Lukas" in deinem Heft und beantworte die Fragen.</p>' },
+                        { id: 'l4_2', title: 'Zeitwörter finden', points: 25, content: '<p>Finde im Text: zuerst, danach, später.</p>' },
+                        { id: 'l4_3', title: 'Eigene Fragen', points: 30, content: '<p>Schreibe 2 Fragen zum Text.</p>' },
+                    ],
+                    schreiben: [
+                        { id: 's4_1', title: 'Wegbeschreibung', points: 35, content: '<p>Beschreibe den Weg zur Schule (8 Sätze).</p>' },
+                        { id: 's4_2', title: 'Fahrrad-Abenteuer', points: 40, content: '<p>Erfinde eine Geschichte mit dem Fahrrad.</p>' },
+                    ],
+                    grammatik: [
+                        { id: 'g4_1', title: 'Verben konjugieren', points: 25, content: '<p>Konjugiere "fahren" im Präsens.</p>' },
+                        { id: 'g4_2', title: 'Adjektive steigern', points: 30, content: '<p>Steigere: schnell, groß, klein.</p>' },
+                    ]
+                },
+                5: {
+                    lesen: [
+                        { id: 'l5_1', title: 'Komplexer Text', points: 35, content: '<p>Lies und analysiere den Text über Laura.</p>' },
+                        { id: 'l5_2', title: 'Kausale Beziehungen', points: 30, content: '<p>Finde alle "weil" und "obwohl" Sätze.</p>' },
+                    ],
+                    schreiben: [
+                        { id: 's5_1', title: 'Detaillierte Beschreibung', points: 40, content: '<p>Beschreibe deinen Schulweg mit allen Sinnen.</p>' },
+                        { id: 's5_2', title: 'Kreative Geschichte', points: 45, content: '<p>Schreibe "Verirrt in der Stadt" (12+ Sätze).</p>' },
+                    ],
+                    grammatik: [
+                        { id: 'g5_1', title: 'Präteritum üben', points: 30, content: '<p>Konjugiere "sein" im Präteritum.</p>' },
+                        { id: 'g5_2', title: 'Nebensätze', points: 35, content: '<p>Verbinde Sätze mit "weil" und "obwohl".</p>' },
+                    ]
+                }
+            };
+            
+            return tasks[grade][skill] || [];
+        }
+
+        function completeTask(taskId, points) {
+            if (gameState.completedTasks[taskId]) return;
+            
+            gameState.completedTasks[taskId] = true;
+            gameState.streak++;
+            
+            addXP(points);
+            
+            const taskCard = document.querySelector(`[data-task-id="${taskId}"]`);
+            if (taskCard) {
+                taskCard.classList.add('completed');
+                const button = taskCard.querySelector('.submit-button');
+                button.textContent = '✓ Erledigt';
+                button.disabled = true;
+                
+                const feedback = taskCard.querySelector('.feedback-message');
+                feedback.className = 'feedback-message success';
+                feedback.textContent = `🎉 Super! +${points} XP`;
+            }
+            
+            if (Object.keys(gameState.completedTasks).length === 1) {
+                unlockBadge('first');
+            }
+            
+            if (gameState.streak >= 10) {
+                unlockBadge('streak');
+            }
+            
+            createConfetti();
+        }
+
+        function createConfetti() {
+            const colors = ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#fa709a', '#fee140'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = Math.random() * 15 + 5 + 'px';
+                    confetti.style.height = Math.random() * 15 + 5 + 'px';
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 50);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('levelUpModal').classList.remove('show');
+        }
+
+        function closeBadgeModal() {
+            document.getElementById('badgeModal').classList.remove('show');
+        }
+
+        function saveGameState() {
+            localStorage.setItem('deutschAbenteuer', JSON.stringify(gameState));
+        }
+
+        function loadGameState() {
+            const saved = localStorage.getItem('deutschAbenteuer');
+            if (saved) {
+                const loaded = JSON.parse(saved);
+                gameState.level = loaded.level || 1;
+                gameState.xp = loaded.xp || 0;
+                gameState.score = loaded.score || 0;
+                gameState.completedTasks = loaded.completedTasks || {};
+                gameState.unlockedBadges = loaded.unlockedBadges || [];
+                updateStats();
+                initBadges();
+            }
+        }
+    </script>
+</body>
+</html>
