@@ -2,296 +2,139 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Arbeitshilfe Deutsch – Klassenarbeit 4/5</title>
+    <title>🎓 Arbeitshilfe Deutsch – Klassenarbeit 4/5</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            min-height: 100vh;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: #f0f;
-            position: absolute;
-            animation: confetti-fall 3s linear forwards;
-            z-index: 9999;
-        }
-        @keyframes confetti-fall {
-            to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
-        }
-        .star {
-            position: fixed;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 3s infinite;
-            z-index: 0;
-        }
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: 30px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            position: relative;
-            z-index: 1;
-            animation: slideIn 0.6s ease-out;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 2.5rem;
-            font-weight: 800;
-        }
-        .subtitle {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #5a67d8;
-            font-size: 1rem;
-            font-weight: 500;
-        }
-        .progress-container {
-            margin-bottom: 20px;
-            background: #e0e7ff;
-            border-radius: 20px;
-            padding: 15px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .progress-label {
-            font-weight: 600;
-            color: #5a67d8;
-            font-size: 0.9rem;
-        }
-        .progress-score {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-weight: 700;
-            font-size: 0.85rem;
-        }
-        .progress-bar {
-            height: 25px;
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            width: 0%;
-            transition: width 0.6s ease-out;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 10px;
-            color: white;
-            font-weight: 700;
-            font-size: 0.8rem;
-        }
-        .mini-game-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            border: none;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            font-size: 2rem;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4);
-            z-index: 1000;
-            transition: all 0.3s;
-            animation: bounce 2s infinite;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        .mini-game-btn:hover { transform: scale(1.1); }
-        .game-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 10000;
-            align-items: center;
-            justify-content: center;
-        }
-        .game-modal.active { display: flex; }
-        .game-content {
-            background: white;
-            border-radius: 25px;
-            padding: 30px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            animation: slideIn 0.4s;
-        }
-        .game-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .game-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .game-close {
-            background: #e53e3e;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 35px;
-            height: 35px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .game-close:hover {
-            transform: rotate(90deg);
-            background: #c53030;
-        }
-        .game-score {
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #5a67d8;
-            margin-bottom: 20px;
-        }
-        .matching-game {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        .word-column, .definition-column {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .word-item, .definition-item {
-            padding: 12px;
-            background: #f7fafc;
-            border-radius: 12px;
-            border: 2px solid #cbd5e0;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            font-weight: 600;
-        }
-        .word-item:hover, .definition-item:hover {
-            transform: translateX(5px);
-            border-color: #667eea;
-        }
-        .word-item.selected, .definition-item.selected {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-color: #5a67d8;
-        }
-        .word-item.matched, .definition-item.matched {
-            background: #48bb78;
-            color: white;
-            border-color: #38a169;
-            cursor: default;
-        }
-        .game-buttons {
-            margin-top: 20px;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-        .game-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .game-btn-check {
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-            color: white;
-        }
-        .game-btn-reset {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-        }
-        .game-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-        .trophy-display {
-            text-align: center;
-            font-size: 3rem;
-            margin: 20px 0;
-            display: none;
-        }
-        .trophy-display.show {
-            display: block;
-            animation: zoomIn 0.6s;
-        }
-        @keyframes zoomIn {
-            from { transform: scale(0); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Segoe UI", Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); min-height: 100vh; padding: 20px; position: relative; overflow-x: hidden; }
+.confetti { position: fixed; width: 10px; height: 10px; animation: confetti-fall 3s linear forwards; z-index: 9999; pointer-events: none; }
+@keyframes confetti-fall { to { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
+.star { position: fixed; background: white; border-radius: 50%; animation: twinkle 3s infinite; z-index: 0; pointer-events: none; }
+@keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
+.container { max-width: 1200px; margin: 0 auto; background: #ffffff; border-radius: 30px; padding: 30px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); position: relative; z-index: 1; animation: slideIn 0.6s ease-out; }
+@keyframes slideIn { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+h1 { text-align: center; margin-bottom: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 2.5rem; font-weight: 800; }
+.subtitle { text-align: center; margin-bottom: 20px; color: #5a67d8; font-size: 1rem; font-weight: 500; }
+.progress-container { margin-bottom: 20px; background: linear-gradient(135deg, #e0e7ff 0%, #fef3c7 100%); border-radius: 20px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.progress-label { font-weight: 700; color: #5a67d8; font-size: 1rem; }
+.progress-score { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; box-shadow: 0 2px 8px rgba(245, 87, 108, 0.3); }
+.progress-bar { height: 30px; background: white; border-radius: 15px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%); width: 0%; transition: width 0.6s ease-out; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; color: white; font-weight: 700; font-size: 0.9rem; }
+.top-bar { display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 3px solid #e0e7ff; padding-bottom: 20px; }
+.name-section { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.name-section label { font-weight: 700; color: #5a67d8; font-size: 1.1rem; }
+.name-section input { padding: 10px 15px; border-radius: 15px; border: 2px solid #c3dafe; min-width: 220px; font-size: 1rem; transition: all 0.3s; }
+.name-section input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2); transform: scale(1.02); }
+.grade-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+.grade-btn { border: none; border-radius: 25px; padding: 12px 24px; cursor: pointer; font-weight: 700; background: #e0e7ff; color: #5a67d8; transition: all 0.3s; font-size: 1.05rem; }
+.grade-btn.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; transform: translateY(-3px); box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4); }
+.grade-btn:hover:not(.active) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); background: #c3dafe; }
+.greeting { font-size: 1.2rem; color: #667eea; font-weight: 700; animation: fadeIn 0.5s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+.layout { display: grid; gap: 25px; }
+@media (min-width: 900px) { .layout { grid-template-columns: 2fr 1fr; } }
+.skill-tabs { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.skill-tab { border-radius: 20px; border: none; padding: 12px 20px; cursor: pointer; background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); color: #4a5568; font-size: 1rem; font-weight: 700; transition: all 0.3s; position: relative; overflow: hidden; }
+.skill-tab::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); transition: left 0.5s; }
+.skill-tab:hover::before { left: 100%; }
+.skill-tab.active { background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: #ffffff; transform: translateY(-3px); box-shadow: 0 6px 16px rgba(72, 187, 120, 0.4); }
+.skill-tab:hover:not(.active) { transform: translateY(-2px); background: linear-gradient(135deg, #e6fffa 0%, #c6f6d5 100%); }
+.skills-container { border-radius: 25px; background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); padding: 25px; border: 3px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.skill-section { display: none; }
+.skill-section.active { display: block; animation: fadeInUp 0.4s; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.skill-section h2 { margin-bottom: 12px; font-size: 1.8rem; color: #2d3748; text-align: center; font-weight: 800; }
+.skill-hint { font-size: 1rem; color: #718096; margin-bottom: 20px; text-align: center; font-style: italic; padding: 10px; background: white; border-radius: 12px; }
+.task-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+@media (min-width: 700px) { .task-list { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.task-card { background: white; border-radius: 18px; padding: 18px; border: 3px solid #e2e8f0; transition: all 0.3s; cursor: pointer; }
+.task-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 12px 24px rgba(102, 126, 234, 0.2); border-color: #667eea; }
+.task-title { font-weight: 800; margin-bottom: 10px; color: #2d3748; font-size: 1.1rem; }
+.task-body { font-size: 0.95rem; color: #4a5568; line-height: 1.6; }
+.task-body p { margin-bottom: 8px; }
+.task-body ol, .task-body ul { padding-left: 24px; margin-bottom: 8px; }
+.small-text { font-size: 0.85rem; color: #a0aec0; font-style: italic; margin-top: 8px; }
+.text-input { width: 100%; padding: 8px 12px; margin-top: 6px; margin-bottom: 6px; border-radius: 10px; border: 2px solid #cbd5e0; font-size: 0.95rem; transition: all 0.3s; }
+.text-input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15); }
+.quiz-button { margin-top: 10px; padding: 10px 20px; border-radius: 18px; border: none; cursor: pointer; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; font-size: 0.95rem; font-weight: 700; transition: all 0.3s; }
+.quiz-button:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4); }
+.quiz-result { margin-top: 10px; font-size: 1rem; font-weight: 700; padding: 12px; border-radius: 12px; text-align: center; }
+.correct { color: #22543d; background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%); animation: successPulse 0.5s; }
+.incorrect { color: #742a2a; background: linear-gradient(135deg, #fed7d7 0%, #fc8181 100%); }
+@keyframes successPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+.badge-panel { background: linear-gradient(135deg, #fef5e7 0%, #fdebd0 100%); border-radius: 25px; padding: 25px; border: 3px solid #f6ad55; box-shadow: 0 8px 20px rgba(246, 173, 85, 0.25); }
+.badge-panel h3 { font-size: 1.5rem; margin-bottom: 15px; color: #c05621; text-align: center; font-weight: 800; }
+.badge-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.badge { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px 10px; border-radius: 18px; font-size: 0.8rem; border: 3px dashed #ed8936; text-align: center; transition: all 0.3s; position: relative; min-height: 100px; }
+.badge.locked { background: #f7fafc; color: #a0aec0; border-style: dashed; }
+.badge.unlocked { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #78350f; border-style: solid; border-color: #d97706; animation: badgePop 0.6s; box-shadow: 0 6px 16px rgba(251, 191, 36, 0.5); }
+@keyframes badgePop { 0% { transform: scale(0) rotate(-180deg); } 50% { transform: scale(1.2) rotate(10deg); } 100% { transform: scale(1) rotate(0deg); } }
+.badge.unlocked::before { content: '⭐'; position: absolute; top: -8px; right: -8px; font-size: 1.5rem; animation: spin 3s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.badge-name { font-weight: 800; font-size: 0.85rem; margin-bottom: 4px; }
+.badge-grade { font-size: 0.75rem; margin-top: 4px; opacity: 0.8; }
+.badge-icon { font-size: 2rem; margin-bottom: 8px; }
+.badge-controls { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; }
+.badge-unlock-btn { border-radius: 20px; padding: 12px 18px; border: none; cursor: pointer; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #ffffff; font-size: 0.9rem; font-weight: 700; transition: all 0.3s; }
+.badge-unlock-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4); }
+.badge-info { font-size: 0.9rem; color: #92400e; text-align: center; margin-bottom: 15px; line-height: 1.5; }
+.badge-message { margin-top: 12px; font-size: 1rem; color: #78350f; font-weight: 700; text-align: center; padding: 12px; background: #fef3c7; border-radius: 12px; animation: pulse 1s infinite; box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3); }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+.bonus-section { margin-top: 20px; padding: 20px; border-radius: 18px; border: 3px solid #f59e0b; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); font-size: 0.95rem; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25); }
+.bonus-section strong { color: #92400e; font-size: 1.1rem; }
+.radio-group label { display: block; font-size: 0.9rem; margin-bottom: 6px; cursor: pointer; padding: 6px; border-radius: 8px; transition: all 0.2s; }
+.radio-group label:hover { background: #e0e7ff; color: #667eea; }
+.checkbox-inline { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; cursor: pointer; padding: 6px; border-radius: 8px; transition: all 0.2s; }
+.checkbox-inline:hover { background: #e0e7ff; }
+.section-note { font-size: 0.85rem; color: #718096; margin-bottom: 12px; text-align: center; font-style: italic; }
+.mini-game-btn { position: fixed; bottom: 30px; right: 30px; width: 75px; height: 75px; border-radius: 50%; border: none; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; font-size: 2.2rem; cursor: pointer; box-shadow: 0 8px 20px rgba(245, 87, 108, 0.5); z-index: 1000; transition: all 0.3s; animation: bounce 2s infinite; }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.mini-game-btn:hover { transform: scale(1.15); animation: none; }
+.game-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 10000; align-items: center; justify-content: center; }
+.game-modal.active { display: flex; }
+.game-content { background: white; border-radius: 30px; padding: 35px; max-width: 650px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); animation: slideIn 0.4s; }
+.game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+.game-title { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.game-close { background: #e53e3e; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.4rem; cursor: pointer; transition: all 0.3s; }
+.game-close:hover { transform: rotate(90deg); background: #c53030; }
+.game-score { text-align: center; font-size: 1.3rem; font-weight: 700; color: #5a67d8; margin-bottom: 25px; }
+.matching-game { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+.word-column, .definition-column { display: flex; flex-direction: column; gap: 12px; }
+.word-item, .definition-item { padding: 14px; background: #f7fafc; border-radius: 14px; border: 3px solid #cbd5e0; cursor: pointer; transition: all 0.3s; text-align: center; font-weight: 700; font-size: 0.95rem; }
+.word-item:hover, .definition-item:hover { transform: translateX(8px); border-color: #667eea; background: #e0e7ff; }
+.word-item.selected, .definition-item.selected { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-color: #5a67d8; transform: scale(1.05); }
+.word-item.matched, .definition-item.matched { background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; border-color: #38a169; cursor: default; animation: matchSuccess 0.5s; }
+@keyframes matchSuccess { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+.game-buttons { margin-top: 25px; display: flex; gap: 15px; justify-content: center; }
+.game-btn { padding: 12px 24px; border: none; border-radius: 18px; font-weight: 700; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
+.game-btn-check { background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; }
+.game-btn-reset { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+.game-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25); }
+.trophy-display { text-align: center; font-size: 4rem; margin: 25px 0; display: none; }
+.trophy-display.show { display: block; animation: zoomIn 0.6s; }
+@keyframes zoomIn { from { transform: scale(0) rotate(-180deg); opacity: 0; } to { transform: scale(1) rotate(0deg); opacity: 1; } }
     </style>
 </head>
 <body>
 <script>
-    for (let i = 0; i < 50; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.width = Math.random() * 3 + 'px';
-        star.style.height = star.style.width;
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 100 + '%';
-        star.style.animationDelay = Math.random() * 3 + 's';
-        document.body.appendChild(star);
-    }
+for (let i = 0; i < 60; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.width = Math.random() * 3 + 'px';
+    star.style.height = star.style.width;
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.animationDelay = Math.random() * 3 + 's';
+    document.body.appendChild(star);
+}
 </script>
 
 <div class="container">
     <h1>🎓 Arbeitshilfe Deutsch 🎓</h1>
     <div class="subtitle">
-        Vorbereitung auf die Klassenarbeit – Mit Spaß und Motivation lernen!
+        Vorbereitung auf die Klassenarbeit – getrennte Aufgaben für Klasse 4 und 5<br>
+        📖 Lesen • ✍️ Schreiben • 👂 Hören • 🧠 Verstehen • 📝 Grammatik • 💬 Wortschatz
     </div>
 
     <div class="progress-container">
@@ -304,9 +147,378 @@
         </div>
     </div>
 
-    <p style="text-align:center; color: #5a67d8; font-weight: 600; margin-bottom: 20px;">
-        ✨ Klicke auf den 🎮 Button unten rechts für ein Wortschatz-Spiel! ✨
-    </p>
+    <div class="top-bar">
+        <div class="name-section">
+            <label for="studentName">👤 Name:</label>
+            <input id="studentName" type="text" placeholder="Bitte Namen eingeben">
+            <span class="greeting" id="greeting"></span>
+        </div>
+        <div class="grade-buttons">
+            <button class="grade-btn active" data-grade="4">📚 Klasse 4</button>
+            <button class="grade-btn" data-grade="5">📖 Klasse 5</button>
+        </div>
+    </div>
+
+    <div class="layout">
+        <div>
+            <div class="skills-container">
+                <div class="skill-tabs">
+                    <button class="skill-tab active" data-skill="lesen">📖 Lesen</button>
+                    <button class="skill-tab" data-skill="schreiben">✍️ Schreiben</button>
+                    <button class="skill-tab" data-skill="hoeren">👂 Hören</button>
+                    <button class="skill-tab" data-skill="verstehen">🧠 Verstehen</button>
+                    <button class="skill-tab" data-skill="grammatik">📝 Grammatik</button>
+                    <button class="skill-tab" data-skill="wortschatz">💬 Wortschatz</button>
+                </div>
+
+                <div id="grade4Content">
+                    <!-- LESEN KLASSE 4 -->
+                    <section class="skill-section active" data-skill-section="lesen">
+                        <h2>📖 Lesen – Klasse 4</h2>
+                        <div class="skill-hint">
+                            Lies aufmerksam. Markiere im Heft wichtige Wörter, schreibe dir Fragen auf und kontrolliere mit den Aufgaben.
+                        </div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Kurztext zum Thema Unterwegs</div>
+                                <div class="task-body">
+                                    <p><strong>Text:</strong> Anna und Lukas fahren mit ihren Eltern in die Stadt. Zuerst gehen sie über die Straße und achten auf den Zebrastreifen. Danach schauen sie auf den Stadtplan, weil sie den Bahnhof suchen. Später gehen sie über eine Brücke und sehen viele Fahrräder in der Fußgängerzone.</p>
+                                    <p><strong>Aufgaben:</strong></p>
+                                    <ol>
+                                        <li>Wo wollen Anna und Lukas hin?</li>
+                                        <li>Welche Verkehrsmittel oder Orte kommen im Text vor?</li>
+                                        <li>Unterstreiche alle Zeitwörter im Text.</li>
+                                    </ol>
+                                    <p class="small-text">Antworten im Heft notieren.</p>
+                                </div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">2. Leseverstehen mit Auswahlfragen</div>
+                                <div class="task-body">
+                                    <div class="quiz" data-quiz-id="lesen4_auswahl">
+                                        <div class="radio-group">
+                                            <p>1. Was suchen Anna und Lukas?</p>
+                                            <label><input type="radio" name="lesen4_1" value="a"> die Brücke</label>
+                                            <label><input type="radio" name="lesen4_1" value="b"> den Bahnhof</label>
+                                            <label><input type="radio" name="lesen4_1" value="c"> die Kreuzung</label>
+                                        </div>
+                                        <button class="quiz-button" type="button">Auswerten</button>
+                                        <div class="quiz-result" data-result></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">3. Textstruktur erkennen</div>
+                                <div class="task-body">
+                                    <p>Suche in einem Text Beispiele für Konnektoren und Zeitwörter.</p>
+                                </div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">4. Schwieriger Lesetext</div>
+                                <div class="task-body">
+                                    <p>Wähle einen anspruchsvollen Text, lies ihn zweimal und erkläre ihn in eigenen Worten.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SCHREIBEN KLASSE 4 -->
+                    <section class="skill-section" data-skill-section="schreiben">
+                        <h2>✍️ Schreiben – Klasse 4</h2>
+                        <div class="skill-hint">Formuliere vollständige Sätze, nutze Konnektoren und achte auf Groß- und Kleinschreibung.</div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Wegbeschreibung</div>
+                                <div class="task-body">
+                                    <p>Schreibe eine Wegbeschreibung von deiner Wohnung zur Schule mit mindestens 8 Sätzen.</p>
+                                </div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">2. Kleines Abenteuer</div>
+                                <div class="task-body">
+                                    <p>Erfinde ein kurzes Abenteuer mit dem Fahrrad in der 1. Person.</p>
+                                </div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">3. Kontrollliste Schreiben</div>
+                                <div class="task-body">
+                                    <ul>
+                                        <li class="checkbox-inline"><input type="checkbox"> Großschreibung beachtet</li>
+                                        <li class="checkbox-inline"><input type="checkbox"> Nomen großgeschrieben</li>
+                                        <li class="checkbox-inline"><input type="checkbox"> Konnektoren verwendet</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">4. Bildgeschichte</div>
+                                <div class="task-body">
+                                    <p>Erstelle 4 Bilder mit Beschreibungen zu einem Abenteuer.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- HÖREN KLASSE 4 -->
+                    <section class="skill-section" data-skill-section="hoeren">
+                        <h2>👂 Hören – Klasse 4</h2>
+                        <div class="skill-hint">Hier brauchst du eine zweite Person, die dir vorliest.</div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Ansage verstehen</div>
+                                <div class="task-body"><p>Höre eine Durchsage vom Bahnhof und notiere wichtige Informationen.</p></div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">2. Hörprotokoll</div>
+                                <div class="task-body"><p>Lass dir einen Text vorlesen und notiere drei wichtige Wörter.</p></div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">3. Hörminuten sammeln</div>
+                                <div class="task-body"><p>Höre einen deutschen Hörtext und dokumentiere Titel und Thema.</p></div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">4. Diktat üben</div>
+                                <div class="task-body"><p>Lass dir Sätze diktieren und markiere alle Verben.</p></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- VERSTEHEN KLASSE 4 -->
+                    <section class="skill-section" data-skill-section="verstehen">
+                        <h2>🧠 Verstehen – Klasse 4</h2>
+                        <div class="skill-hint">Erfasse Inhalte und erkläre sie in eigenen Worten.</div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Fragen an einen Text</div>
+                                <div class="task-body"><p>Formuliere fünf W-Fragen zu einem Text.</p></div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">2. Hauptperson beschreiben</div>
+                                <div class="task-body"><p>Beschreibe eine Figur in 5–7 Sätzen.</p></div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">3. Ursache und Folge</div>
+                                <div class="task-body"><p>Übe Sätze mit "weil" und "deshalb".</p></div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">4. Zusammenfassung üben</div>
+                                <div class="task-body"><p>Fasse einen Abschnitt in höchstens fünf Sätzen zusammen.</p></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- GRAMMATIK KLASSE 4 -->
+                    <section class="skill-section" data-skill-section="grammatik">
+                        <h2>📝 Grammatik – Klasse 4</h2>
+                        <div class="skill-hint">Fokus: starke Verben im Präteritum, Steigerung, Konnektoren.</div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Starke Verben im Präteritum</div>
+                                <div class="task-body">
+                                    <div class="quiz" data-quiz-id="gram4_verben">
+                                        <p>a) Gestern <input class="text-input" data-answer="ging"> ich zur Schule.</p>
+                                        <p>b) Letzte Woche <input class="text-input" data-answer="fuhr"> meine Familie in die Stadt.</p>
+                                        <button class="quiz-button">Auswerten</button>
+                                        <div class="quiz-result" data-result></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">2. Adjektive steigern</div>
+                                <div class="task-body"><p>Schreibe die Steigerungsreihen für: hell, laut, jung</p></div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">3. Konnektoren üben</div>
+                                <div class="task-body"><p>Ergänze Sätze mit passenden Konnektoren.</p></div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">4. Satzarten</div>
+                                <div class="task-body"><p>Erfinde Beispiele für Aussagesätze, Fragesätze und Ausrufesätze.</p></div>
+                            </div>
+                        </div>
+                        <div class="bonus-section" data-required-badge="4_grammatik">
+                            <p><strong>🎁 Bonusaufgabe (mit Abzeichen Grammatik freigeschaltet)</strong></p>
+                            <p>Schreibe einen Text mit fünf starken Verben im Präteritum.</p>
+                        </div>
+                    </section>
+
+                    <!-- WORTSCHATZ KLASSE 4 -->
+                    <section class="skill-section" data-skill-section="wortschatz">
+                        <h2>💬 Wortschatz – Klasse 4</h2>
+                        <div class="skill-hint">Schwerpunkt: Unterwegs und Abenteuer.</div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Wortfelder sortieren</div>
+                                <div class="task-body"><p>Ordne Wörter in Gruppen: Orte, Verkehr, Fortbewegung</p></div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">2. Mini-Wortquiz</div>
+                                <div class="task-body">
+                                    <div class="quiz" data-quiz-id="wort4_quiz">
+                                        <p>Was ist ein Zebrastreifen?</p>
+                                        <select class="text-input" data-answer="b">
+                                            <option value="">Wählen</option>
+                                            <option value="a">Ein Schild</option>
+                                            <option value="b">Markierte Stelle zum Überqueren</option>
+                                        </select>
+                                        <button class="quiz-button">Auswerten</button>
+                                        <div class="quiz-result" data-result></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">3. Wortschatzkarte</div>
+                                <div class="task-body"><p>Erstelle eine Mind-Map zum Thema "Abenteuer".</p></div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">4. Synonyme finden</div>
+                                <div class="task-body"><p>Finde ähnliche Wörter für: groß, laut, gut, schnell</p></div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- KLASSE 5 CONTENT -->
+                <div id="grade5Content" style="display:none;">
+                    <section class="skill-section active" data-skill-section="lesen">
+                        <h2>📖 Lesen – Klasse 5</h2>
+                        <div class="skill-hint">Anspruchsvollere Texte über Gefühle und Erlebnisse.</div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Erlebnisbericht verstehen</div>
+                                <div class="task-body"><p>Markiere Gefühle im Text und schreibe eine Inhaltsangabe.</p></div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">2. Multiple-Choice-Verstehen</div>
+                                <div class="task-body">
+                                    <div class="quiz" data-quiz-id="lesen5_auswahl">
+                                        <p>Text: "Am Tag des Fußballturniers war ich nervös..."</p>
+                                        <div class="radio-group">
+                                            <p>Gefühl am Anfang?</p>
+                                            <label><input type="radio" name="lesen5_1" value="a"> mutig</label>
+                                            <label><input type="radio" name="lesen5_1" value="b"> nervös</label>
+                                        </div>
+                                        <button class="quiz-button">Auswerten</button>
+                                        <div class="quiz-result" data-result></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">3. Erzählperspektive erkennen</div>
+                                <div class="task-body"><p>Ist der Text in 1. oder 3. Person erzählt?</p></div>
+                            </div>
+                            <div class="task-card">
+                                <div class="task-title">4. Text mit Unterüberschriften</div>
+                                <div class="task-body"><p>Strukturiere einen Text mit eigenen Zwischenüberschriften.</p></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="skill-section" data-skill-section="schreiben">
+                        <h2>✍️ Schreiben – Klasse 5</h2>
+                        <div class="skill-hint">Längere, strukturierte Texte mit Konnektoren.</div>
+                        <div class="task-list">
+                            <div class="task-card"><div class="task-title">1. Erlebnisaufsatz</div><div class="task-body"><p>Schreibe über ein starkes Gefühl mit Einleitung, Hauptteil, Schluss.</p></div></div>
+                            <div class="task-card"><div class="task-title">2. Perspektivwechsel</div><div class="task-body"><p>Schreibe ein Erlebnis aus anderer Sicht.</p></div></div>
+                            <div class="task-card"><div class="task-title">3. Schreibplan erstellen</div><div class="task-body"><p>Erstelle einen Stichwortplan für deinen nächsten Text.</p></div></div>
+                            <div class="task-card"><div class="task-title">4. Überarbeiten üben</div><div class="task-body"><p>Verbessere einen alten Text.</p></div></div>
+                        </div>
+                    </section>
+
+                    <section class="skill-section" data-skill-section="hoeren">
+                        <h2>👂 Hören – Klasse 5</h2>
+                        <div class="skill-hint">Hörtexte gezielt auswerten.</div>
+                        <div class="task-list">
+                            <div class="task-card"><div class="task-title">1. Interview anhören</div><div class="task-body"><p>Notiere Schlüsselwörter und Gefühle.</p></div></div>
+                            <div class="task-card"><div class="task-title">2. Notizen zu Hörtext</div><div class="task-body"><p>Erstelle eine Tabelle: Wer? Wo? Was? Gefühle?</p></div></div>
+                            <div class="task-card"><div class="task-title">3. Diktat mit Konnektoren</div><div class="task-body"><p>Lass dir einen Text diktieren und markiere Konnektoren.</p></div></div>
+                            <div class="task-card"><div class="task-title">4. Eigene Durchsage</div><div class="task-body"><p>Schreibe und lies eine Ansage vor.</p></div></div>
+                        </div>
+                    </section>
+
+                    <section class="skill-section" data-skill-section="verstehen">
+                        <h2>🧠 Verstehen – Klasse 5</h2>
+                        <div class="skill-hint">Texte genauer deuten: Was und Warum?</div>
+                        <div class="task-list">
+                            <div class="task-card"><div class="task-title">1. Gefühle begründen</div><div class="task-body"><p>Analysiere Gefühle mit Zitaten.</p></div></div>
+                            <div class="task-card"><div class="task-title">2. Ursache – Folge – Reaktion</div><div class="task-body"><p>Erstelle ein Schema zu einer Szene.</p></div></div>
+                            <div class="task-card"><div class="task-title">3. Zwischen den Zeilen</div><div class="task-body"><p>Erkläre unausgesprochene Gedanken.</p></div></div>
+                            <div class="task-card"><div class="task-title">4. Zusammenfassung und Meinung</div><div class="task-body"><p>Fasse zusammen und teile deine Meinung.</p></div></div>
+                        </div>
+                    </section>
+
+                    <section class="skill-section" data-skill-section="grammatik">
+                        <h2>📝 Grammatik – Klasse 5</h2>
+                        <div class="skill-hint">Fortgeschrittene Verben, Konnektoren, Satzgefüge.</div>
+                        <div class="task-list">
+                            <div class="task-card">
+                                <div class="task-title">1. Starke Verben – Fortgeschritten</div>
+                                <div class="task-body">
+                                    <div class="quiz" data-quiz-id="gram5_verben">
+                                        <p>a) Letztes Jahr <input class="text-input" data-answer="begann"> ich ein Hobby.</p>
+                                        <button class="quiz-button">Auswerten</button>
+                                        <div class="quiz-result" data-result></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="task-card"><div class="task-title">2. Konnektoren einsetzen</div><div class="task-body"><p>Übe: obwohl, trotzdem, bevor, nachdem, während</p></div></div>
+                            <div class="task-card"><div class="task-title">3. Adjektive genau verwenden</div><div class="task-body"><p>Steigere: interessant, wichtig, freundlich, ruhig</p></div></div>
+                            <div class="task-card"><div class="task-title">4. Haupt- und Nebensätze</div><div class="task-body"><p>Verbinde Sätze mit Konnektoren.</p></div></div>
+                        </div>
+                        <div class="bonus-section" data-required-badge="5_grammatik">
+                            <p><strong>🎁 Bonusaufgabe (mit Abzeichen freigeschaltet)</strong></p>
+                            <p>Schreibe eine Doppelgeschichte aus zwei Perspektiven.</p>
+                        </div>
+                    </section>
+
+                    <section class="skill-section" data-skill-section="wortschatz">
+                        <h2>💬 Wortschatz – Klasse 5</h2>
+                        <div class="skill-hint">Erlebnisse und Gefühle, präzise Wörter.</div>
+                        <div class="task-list">
+                            <div class="task-card"><div class="task-title">1. Gefühlswörter ordnen</div><div class="task-body"><p>Sortiere Wörter: positiv, negativ, neutral</p></div></div>
+                            <div class="task-card">
+                                <div class="task-title">2. Wortbedeutungen</div>
+                                <div class="task-body">
+                                    <div class="quiz" data-quiz-id="wort5_quiz">
+                                        <p>Was ist Erfolg?</p>
+                                        <select class="text-input" data-answer="b">
+                                            <option value="">Wählen</option>
+                                            <option value="a">Unangenehmes Erlebnis</option>
+                                            <option value="b">Gutes Ergebnis nach Anstrengung</option>
+                                        </select>
+                                        <button class="quiz-button">Auswerten</button>
+                                        <div class="quiz-result" data-result></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="task-card"><div class="task-title">3. Präziser schreiben</div><div class="task-body"><p>Ersetze einfache Wörter durch bessere.</p></div></div>
+                            <div class="task-card"><div class="task-title">4. Wortfamilien bilden</div><div class="task-body"><p>Bilde Wortfamilien: erleben, hoffen, träumen</p></div></div>
+                        </div>
+                    </section>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- BADGE PANEL -->
+        <aside>
+            <div class="badge-panel">
+                <h3>🏆 Abzeichen – Motivation 🏆</h3>
+                <p class="badge-info">
+                    Wenn du eine Kategorie gründlich bearbeitet hast, kannst du das passende Abzeichen freischalten!
+                </p>
+                <div id="badgeRows" class="badge-row"></div>
+                <div class="badge-controls">
+                    <button class="badge-unlock-btn" data-skill="lesen">📖 Abzeichen Lesen</button>
+                    <button class="badge-unlock-btn" data-skill="schreiben">✍️ Abzeichen Schreiben</button>
+                    <button class="badge-unlock-btn" data-skill="hoeren">👂 Abzeichen Hören</button>
+                    <button class="badge-unlock-btn" data-skill="verstehen">🧠 Abzeichen Verstehen</button>
+                    <button class="badge-unlock-btn" data-skill="grammatik">📝 Abzeichen Grammatik</button>
+                    <button class="badge-unlock-btn" data-skill="wortschatz">💬 Abzeichen Wortschatz</button>
+                </div>
+                <div id="badgeMessage" class="badge-message"></div>
+            </div>
+        </aside>
+    </div>
 </div>
 
 <button class="mini-game-btn" id="gameBtn">🎮</button>
@@ -314,12 +526,12 @@
 <div class="game-modal" id="gameModal">
     <div class="game-content">
         <div class="game-header">
-            <h2 class="game-title">🎯 Wortschatz-Matching-Spiel</h2>
+            <h2 class="game-title">🎯 Wortschatz-Matching</h2>
             <button class="game-close" id="gameClose">✕</button>
         </div>
         <div class="game-score" id="gameScore">Punkte: 0 / 5</div>
         <div class="trophy-display" id="trophyDisplay">🏆✨🎉</div>
-        <p style="text-align:center; margin-bottom:15px; color: #718096;">
+        <p style="text-align:center; margin-bottom:20px; color: #718096;">
             Verbinde die Wörter mit ihren Bedeutungen!
         </p>
         <div class="matching-game">
@@ -335,21 +547,48 @@
 
 <script>
 (function () {
-    const gameBtn = document.getElementById("gameBtn");
-    const gameModal = document.getElementById("gameModal");
-    const gameClose = document.getElementById("gameClose");
-    const checkBtn = document.getElementById("checkBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const gameScore = document.getElementById("gameScore");
-    const wordColumn = document.getElementById("wordColumn");
-    const definitionColumn = document.getElementById("definitionColumn");
-    const trophyDisplay = document.getElementById("trophyDisplay");
+    const nameInput = document.getElementById("studentName");
+    const greetingSpan = document.getElementById("greeting");
+    const gradeButtons = document.querySelectorAll(".grade-btn");
+    const skillTabs = document.querySelectorAll(".skill-tab");
+    const badgeRows = document.getElementById("badgeRows");
+    const badgeButtons = document.querySelectorAll(".badge-unlock-btn");
+    const badgeMessage = document.getElementById("badgeMessage");
     const progressFill = document.getElementById("progressFill");
     const totalScore = document.getElementById("totalScore");
+    const grade4Content = document.getElementById("grade4Content");
+    const grade5Content = document.getElementById("grade5Content");
+
+    const STORAGE_KEY = "arbeitshilfe_badges_v2";
+    const NAME_KEY = "arbeitshilfe_name_v2";
+    
+    const ALL_BADGES = {
+        4: {
+            lesen: {name: "Lesemeister/in 4", icon: "📖"},
+            schreiben: {name: "Schreibprofi 4", icon: "✍️"},
+            hoeren: {name: "Hörprofi 4", icon: "👂"},
+            verstehen: {name: "Versteh-Experte/in 4", icon: "🧠"},
+            grammatik: {name: "Grammatik-Profi 4", icon: "📝"},
+            wortschatz: {name: "Wortschatz-Sammler/in 4", icon: "💬"}
+        },
+        5: {
+            lesen: {name: "Lesemeister/in 5", icon: "📖"},
+            schreiben: {name: "Schreibprofi 5", icon: "✍️"},
+            hoeren: {name: "Hörprofi 5", icon: "👂"},
+            verstehen: {name: "Versteh-Experte/in 5", icon: "🧠"},
+            grammatik: {name: "Grammatik-Profi 5", icon: "📝"},
+            wortschatz: {name: "Wortschatz-Sammler/in 5", icon: "💬"}
+        }
+    };
+
+    let currentGrade = 4;
+    let currentSkill = "lesen";
+    let badgesByStudent = {};
+    let currentName = "";
 
     function createConfetti() {
-        const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500'];
-        for (let i = 0; i < 50; i++) {
+        const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#ff1493'];
+        for (let i = 0; i < 60; i++) {
             const confetti = document.createElement('div');
             confetti.className = 'confetti';
             confetti.style.left = Math.random() * 100 + '%';
@@ -360,13 +599,290 @@
         }
     }
 
-    const gameData = [
-        {word: "die Straße", definition: "Ein Weg für Autos und Menschen"},
-        {word: "der Zebrastreifen", definition: "Markierte Stelle zum Überqueren"},
-        {word: "die Kreuzung", definition: "Wo sich zwei Straßen treffen"},
-        {word: "die Brücke", definition: "Bauwerk über Wasser oder Straße"},
-        {word: "der Bahnhof", definition: "Ort wo Züge ankommen"}
-    ];
+    function loadStorage() {
+        const storedName = localStorage.getItem(NAME_KEY) || "";
+        const storedBadges = localStorage.getItem(STORAGE_KEY);
+        if (storedName) {
+            currentName = storedName;
+            nameInput.value = storedName;
+            greetingSpan.textContent = "Hallo, " + storedName + "! 👋";
+        }
+        if (storedBadges) {
+            try {
+                badgesByStudent = JSON.parse(storedBadges);
+            } catch (e) {
+                badgesByStudent = {};
+            }
+        }
+        ensureStudentEntry();
+        renderBadges();
+        updateBonusVisibility();
+        updateProgress();
+    }
+
+    function saveStorage() {
+        localStorage.setItem(NAME_KEY, currentName);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(badgesByStudent));
+    }
+
+    function ensureStudentEntry() {
+        if (!currentName) return;
+        if (!badgesByStudent[currentName]) {
+            badgesByStudent[currentName] = {4: {}, 5: {}};
+        }
+        if (!badgesByStudent[currentName][4]) badgesByStudent[currentName][4] = {};
+        if (!badgesByStudent[currentName][5]) badgesByStudent[currentName][5] = {};
+    }
+
+    function getCurrentBadges() {
+        ensureStudentEntry();
+        if (!currentName) return {};
+        return badgesByStudent[currentName][currentGrade] || {};
+    }
+
+    function updateProgress() {
+        const gradeBadges = getCurrentBadges();
+        const total = Object.keys(ALL_BADGES[currentGrade]).length;
+        const earned = Object.values(gradeBadges).filter(v => v).length;
+        const percent = Math.round((earned / total) * 100);
+        progressFill.style.width = percent + '%';
+        progressFill.textContent = percent + '%';
+        totalScore.textContent = earned + ' / ' + total + ' Abzeichen';
+    }
+
+    function awardBadge(skill) {
+        if (!currentName) {
+            badgeMessage.textContent = "Bitte zuerst den Namen eingeben! 📝";
+            badgeMessage.style.display = "block";
+            setTimeout(() => badgeMessage.style.display = "none", 3000);
+            return;
+        }
+        ensureStudentEntry();
+        const gradeBadges = badgesByStudent[currentName][currentGrade];
+        if (!gradeBadges[skill]) {
+            gradeBadges[skill] = true;
+            const badgeName = ALL_BADGES[currentGrade][skill].name;
+            badgeMessage.textContent = "🎉 Neues Abzeichen: " + badgeName + " erhalten! 🎉";
+            badgeMessage.style.display = "block";
+            createConfetti();
+            saveStorage();
+            renderBadges();
+            updateBonusVisibility();
+            updateProgress();
+            setTimeout(() => badgeMessage.style.display = "none", 5000);
+        } else {
+            badgeMessage.textContent = "Dieses Abzeichen hast du bereits! ✨";
+            badgeMessage.style.display = "block";
+            setTimeout(() => badgeMessage.style.display = "none", 3000);
+        }
+    }
+
+    function renderBadges() {
+        badgeRows.innerHTML = "";
+        const gradeBadges = getCurrentBadges();
+        const gradeData = ALL_BADGES[currentGrade];
+        Object.keys(gradeData).forEach(skill => {
+            const div = document.createElement("div");
+            div.className = "badge " + (gradeBadges[skill] ? "unlocked" : "locked");
+            
+            const iconSpan = document.createElement("span");
+            iconSpan.className = "badge-icon";
+            iconSpan.textContent = gradeData[skill].icon;
+            
+            const nameSpan = document.createElement("span");
+            nameSpan.className = "badge-name";
+            nameSpan.textContent = gradeData[skill].name;
+            
+            const gradeSpan = document.createElement("span");
+            gradeSpan.className = "badge-grade";
+            gradeSpan.textContent = "Klasse " + currentGrade;
+            
+            div.appendChild(iconSpan);
+            div.appendChild(nameSpan);
+            div.appendChild(gradeSpan);
+            badgeRows.appendChild(div);
+        });
+    }
+
+    function updateBonusVisibility() {
+        const gradeBadges = getCurrentBadges();
+        document.querySelectorAll(".bonus-section").forEach(section => {
+            const required = section.getAttribute("data-required-badge");
+            if (!required) return;
+            const [gStr, skill] = required.split("_");
+            const g = parseInt(gStr, 10);
+            section.style.display = (g === currentGrade && gradeBadges[skill]) ? "block" : "none";
+        });
+    }
+
+    nameInput.addEventListener("input", () => {
+        currentName = nameInput.value.trim();
+        greetingSpan.textContent = currentName ? "Hallo, " + currentName + "! 👋" : "";
+        ensureStudentEntry();
+        saveStorage();
+        renderBadges();
+        updateBonusVisibility();
+        updateProgress();
+    });
+
+    gradeButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const grade = parseInt(btn.getAttribute("data-grade"), 10);
+            if (grade === currentGrade) return;
+            currentGrade = grade;
+            gradeButtons.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            
+            if (grade === 4) {
+                grade4Content.style.display = "";
+                grade5Content.style.display = "none";
+            } else {
+                grade4Content.style.display = "none";
+                grade5Content.style.display = "";
+            }
+            updateSkillSections();
+            renderBadges();
+            updateBonusVisibility();
+            updateProgress();
+            badgeMessage.style.display = "none";
+        });
+    });
+
+    skillTabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            const skill = tab.getAttribute("data-skill");
+            if (skill === currentSkill) return;
+            currentSkill = skill;
+            skillTabs.forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+            updateSkillSections();
+        });
+    });
+
+    function updateSkillSections() {
+        const container = currentGrade === 4 ? grade4Content : grade5Content;
+        const sections = container.querySelectorAll(".skill-section");
+        sections.forEach(section => {
+            const skill = section.getAttribute("data-skill-section");
+            if (skill === currentSkill) {
+                section.classList.add("active");
+            } else {
+                section.classList.remove("active");
+            }
+        });
+    }
+
+    badgeButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const skill = btn.getAttribute("data-skill");
+            awardBadge(skill);
+        });
+    });
+
+    // Quiz Logic
+    function checkTextInputs(root) {
+        const inputs = root.querySelectorAll("input.text-input[data-answer], select.text-input[data-answer]");
+        let correct = 0;
+        let total = 0;
+        inputs.forEach(input => {
+            const expected = (input.getAttribute("data-answer") || "").trim();
+            const value = (input.value || "").trim();
+            if (!expected) return;
+            total++;
+            if (value.toLowerCase() === expected.toLowerCase()) {
+                correct++;
+                input.style.borderColor = "#48bb78";
+            } else {
+                input.style.borderColor = "#f56565";
+            }
+        });
+        return {correct, total};
+    }
+
+    function checkRadios(root, answers) {
+        let correct = 0;
+        let total = 0;
+        Object.keys(answers).forEach(name => {
+            const expected = answers[name];
+            const checked = root.querySelector("input[name='" + name + "']:checked");
+            total++;
+            if (checked && checked.value === expected) {
+                correct++;
+            }
+        });
+        return {correct, total};
+    }
+
+    function attachQuizHandlers() {
+        const quizBlocks = document.querySelectorAll(".quiz");
+        quizBlocks.forEach(block => {
+            const button = block.querySelector(".quiz-button");
+            if (!button) return;
+            const resultDiv = block.querySelector("[data-result]");
+            let quizId = block.getAttribute("data-quiz-id") || "";
+
+            button.addEventListener("click", () => {
+                let correct = 0;
+                let total = 0;
+
+                const textResult = checkTextInputs(block);
+                correct += textResult.correct;
+                total += textResult.total;
+
+                if (quizId === "lesen4_auswahl") {
+                    const radioRes = checkRadios(block, {lesen4_1: "b"});
+                    correct += radioRes.correct;
+                    total += radioRes.total;
+                } else if (quizId === "lesen5_auswahl") {
+                    const radioRes = checkRadios(block, {lesen5_1: "b"});
+                    correct += radioRes.correct;
+                    total += radioRes.total;
+                }
+
+                if (resultDiv) {
+                    if (total === 0) {
+                        resultDiv.textContent = "Keine auswertbaren Felder gefunden.";
+                        resultDiv.className = "quiz-result";
+                    } else {
+                        const percent = Math.round((correct / total) * 100);
+                        resultDiv.textContent = "Richtig: " + correct + " von " + total + " (" + percent + "%)";
+                        resultDiv.className = "quiz-result " + (percent >= 70 ? "correct" : "incorrect");
+                        if (percent === 100) {
+                            createConfetti();
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    // Mini Game
+    const gameBtn = document.getElementById("gameBtn");
+    const gameModal = document.getElementById("gameModal");
+    const gameClose = document.getElementById("gameClose");
+    const checkBtn = document.getElementById("checkBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const gameScore = document.getElementById("gameScore");
+    const wordColumn = document.getElementById("wordColumn");
+    const definitionColumn = document.getElementById("definitionColumn");
+    const trophyDisplay = document.getElementById("trophyDisplay");
+
+    const gameData = {
+        4: [
+            {word: "die Straße", definition: "Ein Weg für Autos und Menschen"},
+            {word: "der Zebrastreifen", definition: "Markierte Stelle zum Überqueren"},
+            {word: "die Kreuzung", definition: "Wo sich zwei Straßen treffen"},
+            {word: "die Brücke", definition: "Bauwerk über Wasser"},
+            {word: "der Bahnhof", definition: "Ort wo Züge ankommen"}
+        ],
+        5: [
+            {word: "die Angst", definition: "Gefühl der Furcht"},
+            {word: "die Freude", definition: "Glückliches Gefühl"},
+            {word: "der Mut", definition: "Wenn man etwas wagt"},
+            {word: "die Hoffnung", definition: "Vertrauen in gutes Ausgang"},
+            {word: "der Erfolg", definition: "Gutes Ergebnis"}
+        ]
+    };
 
     let selectedWord = null;
     let selectedDefinition = null;
@@ -379,7 +895,7 @@
         selectedDefinition = null;
         trophyDisplay.classList.remove('show');
         
-        currentGameData = [...gameData];
+        currentGameData = [...gameData[currentGrade]];
         const shuffledDefs = [...currentGameData].sort(() => Math.random() - 0.5);
         
         wordColumn.innerHTML = '';
@@ -447,10 +963,6 @@
 
     function updateScore() {
         gameScore.textContent = `Punkte: ${matches.length} / ${currentGameData.length}`;
-        const percent = Math.round((matches.length / currentGameData.length) * 100);
-        progressFill.style.width = percent + '%';
-        progressFill.textContent = percent + '%';
-        totalScore.textContent = matches.length + ' / ' + currentGameData.length + ' Wörter';
     }
 
     gameBtn.addEventListener('click', () => {
@@ -471,6 +983,9 @@
     gameModal.addEventListener('click', (e) => {
         if (e.target === gameModal) gameModal.classList.remove('active');
     });
+
+    loadStorage();
+    attachQuizHandlers();
 })();
 </script>
 </body>
