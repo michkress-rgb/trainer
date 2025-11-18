@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Komma-Commander 3000 ⭐</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&family=Poppins:wght@700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --secondary: #10b981;
+            --bg-dark: #0f172a;
+            --card-dark: #1e293b;
+            --accent: #f43f5e;
+            --gold: #fbbf24;
+            --cyan: #06b6d4;
+            --pink: #ec4899;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: white;
+            touch-action: manipulation;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated Background Particles */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(139, 92, 246, 0.3);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { 
+            background: linear-gradient(180deg, #8b5cf6 0%, #ec4899 100%); 
+            border-radius: 5px; 
+        }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #a78bfa 0%, #f472b6 100%); }
+
+        /* Enhanced Animations */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.8), 0 0 60px rgba(139, 92, 246, 0.4); }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+            50% { transform: scale(1.1) rotate(5deg); }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
+        }
+
+        @keyframes bounce-in {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .badge-unlocked {
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            border: 3px solid var(--secondary);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.3) 100%);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+        }
+
+        .badge-locked {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge-locked::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.03) 10px,
+                rgba(255,255,255,0.03) 20px
+            );
+            animation: shimmer 20s linear infinite;
+        }
+
+        .word-slot {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: inline-block;
+        }
+        
+        /* Enhanced Comma Slots */
+        .comma-gap {
+            width: 14px;
+            height: 32px;
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0 3px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.1) 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            border: 2px solid rgba(255,255,255,0.1);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .comma-gap:hover { 
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(139, 92, 246, 0.5) 100%);
+            transform: scale(1.1);
+            border-color: rgba(139, 92, 246, 0.6);
+        }
+        
+        .comma-gap.active { 
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            animation: pulse-glow 1.5s infinite;
+            border-color: #a78bfa;
+            transform: scale(1.05);
+        }
+        
+        .comma-gap.active::after {
+            content: ',';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            line-height: 1;
+            text-shadow: 0 2px 10px rgba(139, 92, 246, 0.8);
+            animation: bounce-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Drag and Drop Enhanced */
+        .draggable-item {
+            touch-action: none;
+            user-select: none;
+            cursor: grab;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .draggable-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .draggable-item:hover::before {
+            left: 100%;
+        }
+
+        .draggable-item:active { 
+            cursor: grabbing;
+            transform: scale(0.95) rotate(2deg);
+        }
+
+        .draggable-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+        }
+        
+        .drop-zone {
+            min-height: 100px;
+            border: 3px dashed #475569;
+            border-radius: 1rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(51, 65, 85, 0.3) 100%);
+        }
+        
+        .drop-zone.drag-over {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(124, 58, 237, 0.3) 100%);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
+            transform: scale(1.02);
+        }
+
+        /* Feedback Classes */
+        .correct-flash { 
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(5, 150, 105, 0.4) 100%) !important; 
+            border-color: var(--secondary) !important;
+            animation: pulse-glow 0.5s;
+        }
+        
+        .wrong-flash { 
+            background: linear-gradient(135deg, rgba(244, 63, 94, 0.3) 0%, rgba(225, 29, 72, 0.4) 100%) !important; 
+            border-color: var(--accent) !important;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Tab Navigation */
+        .nav-btn.active {
+            border-bottom: 4px solid var(--primary);
+            color: white;
+            background: linear-gradient(180deg, transparent 0%, rgba(139, 92, 246, 0.1) 100%);
+        }
+        
+        .nav-btn {
+            color: #94a3b8;
+            border-bottom: 4px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            color: #cbd5e1;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Badge Grid */
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Card Styles */
+        .glass-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.6) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* Level Badge */
+        .level-badge {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            animation: pulse-glow 2s infinite;
+        }
+
+        /* XP Bar */
+        .xp-bar-fill {
+            background: linear-gradient(90deg, #8b5cf6 0%, #ec4899 50%, #fbbf24 100%);
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+        }
+
+        /* Fade In Animation */
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Stagger Children Animation */
+        .stagger-children > * {
+            animation: fadeIn 0.5s ease-out backwards;
+        }
+
+        .stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
+        .stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
+        .stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
+        .stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
+        .stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Score Counter Animation */
+        .score-pop {
+            animation: scorePop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes scorePop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); color: #fbbf24; }
+            100% { transform: scale(1); }
+        }
+
+        /* Floating Score Indicator */
+        .floating-score {
+            position: fixed;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fbbf24;
+            pointer-events: none;
+            z-index: 9999;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.8);
+            animation: floatUp 1s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-100px) scale(1.5); }
+        }
+
+        /* Rule Card Colors */
+        .rule-aufzaehlung { border-left-color: #3b82f6; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%); }
+        .rule-nebensatz { border-left-color: #a855f7; background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, transparent 100%); }
+        .rule-infinitiv { border-left-color: #ec4899; background: linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, transparent 100%); }
+        .rule-apposition { border-left-color: #fbbf24; background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, transparent 100%); }
+
+        /* Progress Ring */
+        @keyframes progress-ring {
+            0% { stroke-dashoffset: 283; }
+            100% { stroke-dashoffset: 0; }
+        }
+
+        .progress-ring {
+            animation: progress-ring 2s ease-out forwards;
+        }
+
+        /* Streak Counter */
+        .streak-indicator {
+            animation: bounce-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .badge-grid {
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Animated Background -->
+    <div class="bg-particles" id="particles"></div>
+
+    <!-- HEADER -->
+    <header class="glass-card p-4 sticky top-0 z-50 shadow-2xl relative">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-xl flex items-center justify-center text-2xl font-bold shadow-lg transform hover:scale-110 transition">
+                    <span style="font-family: 'Poppins', sans-serif;">K</span>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold leading-none" style="font-family: 'Poppins', sans-serif;">Komma-Commander</h1>
+                    <p class="text-xs text-slate-400">⚡ Klasse 8 Training</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden sm:block">
+                    <div class="text-xs text-slate-400 flex items-center gap-2">
+                        <span class="level-badge px-2 py-0.5 rounded-full text-slate-900 font-bold text-xs">LVL <span id="level-display">1</span></span>
+                        <span id="streak-display" class="streak-indicator hidden items-center gap-1 bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded-full text-xs font-bold">
+                            🔥 <span id="streak-count">0</span>
+                        </span>
+                    </div>
+                    <div class="w-40 h-3 bg-slate-800 rounded-full mt-2 overflow-hidden shadow-inner border border-slate-700">
+                        <div id="xp-bar" class="xp-bar-fill h-full w-0 transition-all duration-500 rounded-full"></div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-yellow-500 to-orange-500 px-4 py-2 rounded-full border-2 border-yellow-400/30 font-mono font-bold text-slate-900 shadow-lg flex items-center gap-2">
+                    <i class="ph-fill ph-star text-lg"></i>
+                    <span id="score-display">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 max-w-5xl mx-auto w-full p-4 relative z-10">
+        
+        <!-- NAVIGATION TABS -->
+        <nav class="flex border-b-2 border-slate-800 mb-8 overflow-x-auto glass-card rounded-t-xl" style="border-bottom: none;">
+            <button onclick="switchTab('rules')" class="nav-btn active px-6 py-4 font-semibold whitespace-nowrap flex items-center gap-2" id="btn-rules">
+                <i class="ph ph-book-open text-lg"></i><span>Regeln</span>
+            </button>
+            <button onclick="switchTab('training')" class="nav-btn px-6 py-4 font-semibold whitespace-nowrap flex items-center gap-2" id="btn-training">
+                <i class="ph ph-game-controller text-lg"></i><span>Training</span>
+            </button>
+            <button onclick="switchTab('badges')" class="nav-btn px-6 py-4 font-semibold whitespace-nowrap flex items-center gap-2" id="btn-badges">
+                <i class="ph ph-medal text-lg"></i><span>Profil</span>
+            </button>
+            <button onclick="switchTab('settings')" class="nav-btn px-6 py-4 font-semibold whitespace-nowrap flex items-center gap-2" id="btn-settings">
+                <i class="ph ph-gear text-lg"></i><span>Optionen</span>
+            </button>
+        </nav>
+
+        <!-- TAB: RULES -->
+        <div id="view-rules" class="space-y-6 animate-fade-in stagger-children">
+            <div class="glass-card p-8 rounded-2xl">
+                <h2 class="text-3xl font-bold mb-2 bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent" style="font-family: 'Poppins', sans-serif;">
+                    📚 Das Handbuch des Commanders
+                </h2>
+                <p class="text-slate-300 mb-6 text-lg">Kommas sind wie Verkehrsschilder im Satz. Sie zeigen uns, wo eine Pause ist und welche Teile zusammengehören.</p>
+                
+                <div class="space-y-5">
+                    <!-- Rule 1 -->
+                    <div class="glass-card p-5 rounded-xl border-l-4 rule-aufzaehlung hover:scale-[1.02] transition transform">
+                        <h3 class="font-bold text-xl text-white mb-2 flex items-center gap-2">
+                            <span class="text-2xl">📝</span>
+                            1. Aufzählungen
+                        </h3>
+                        <p class="text-slate-400 mb-3">Zwischen Elementen einer Aufzählung steht ein Komma. Ausnahme: Wenn <em class="text-blue-400 font-semibold">und</em> oder <em class="text-blue-400 font-semibold">oder</em> steht.</p>
+                        <div class="bg-slate-900/70 p-4 rounded-lg font-mono text-base text-green-400 border border-slate-700">
+                            Ich kaufe Äpfel<span class="text-white font-bold bg-blue-500 px-1.5 py-0.5 rounded mx-1">,</span> Birnen<span class="text-white font-bold bg-blue-500 px-1.5 py-0.5 rounded mx-1">,</span> Bananen und Brot.
+                        </div>
+                    </div>
+
+                    <!-- Rule 2 -->
+                    <div class="glass-card p-5 rounded-xl border-l-4 rule-nebensatz hover:scale-[1.02] transition transform">
+                        <h3 class="font-bold text-xl text-white mb-2 flex items-center gap-2">
+                            <span class="text-2xl">🔗</span>
+                            2. Hauptsatz und Nebensatz
+                        </h3>
+                        <p class="text-slate-400 mb-3">Nebensätze werden vom Hauptsatz durch Komma getrennt. Signalwörter: <em class="text-purple-400 font-semibold">weil, dass, wenn, obwohl</em>.</p>
+                        <div class="bg-slate-900/70 p-4 rounded-lg font-mono text-base text-green-400 border border-slate-700">
+                            Ich lerne viel<span class="text-white font-bold bg-purple-500 px-1.5 py-0.5 rounded mx-1">,</span> weil ich den Test bestehen will.
+                        </div>
+                    </div>
+
+                    <!-- Rule 3 -->
+                    <div class="glass-card p-5 rounded-xl border-l-4 rule-infinitiv hover:scale-[1.02] transition transform">
+                        <h3 class="font-bold text-xl text-white mb-2 flex items-center gap-2">
+                            <span class="text-2xl">➡️</span>
+                            3. Infinitivgruppen
+                        </h3>
+                        <p class="text-slate-400 mb-3">Erweiterte Infinitive mit <em class="text-pink-400 font-semibold">zu</em>. Pflichtkomma bei Signalwörtern wie <em class="text-pink-400 font-semibold">um, ohne, anstatt</em>.</p>
+                        <div class="bg-slate-900/70 p-4 rounded-lg font-mono text-base text-green-400 border border-slate-700">
+                            Er ging nach Hause<span class="text-white font-bold bg-pink-500 px-1.5 py-0.5 rounded mx-1">,</span> um zu schlafen.
+                        </div>
+                    </div>
+
+                     <!-- Rule 4 -->
+                     <div class="glass-card p-5 rounded-xl border-l-4 rule-apposition hover:scale-[1.02] transition transform">
+                        <h3 class="font-bold text-xl text-white mb-2 flex items-center gap-2">
+                            <span class="text-2xl">📦</span>
+                            4. Einschübe & Appositionen
+                        </h3>
+                        <p class="text-slate-400 mb-3">Zusatzinformationen (Einschübe) werden in Kommas "eingepackt".</p>
+                        <div class="bg-slate-900/70 p-4 rounded-lg font-mono text-base text-green-400 border border-slate-700">
+                            Herr Müller<span class="text-white font-bold bg-yellow-500 px-1.5 py-0.5 rounded mx-1">,</span> unser Lehrer<span class="text-white font-bold bg-yellow-500 px-1.5 py-0.5 rounded mx-1">,</span> ist sehr nett.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: TRAINING (GAME) -->
+        <div id="view-training" class="hidden space-y-6">
+            
+            <!-- Mode Selection -->
+            <div id="mode-selection" class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
+                <button onclick="startGame('click')" class="glass-card hover:border-violet-500 p-8 rounded-2xl transition text-left group border-2 border-transparent transform hover:scale-105 hover:shadow-2xl">
+                    <div class="w-16 h-16 bg-gradient-to-br from-violet-500 to-purple-600 text-white rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
+                        <i class="ph ph-cursor-click text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2" style="font-family: 'Poppins', sans-serif;">Komma-Scanner</h3>
+                    <p class="text-slate-400">Tippe auf die Lücken im Satz, wo ein Komma fehlt. Schnell und effektiv! ⚡</p>
+                </button>
+
+                <button onclick="startGame('drag')" class="glass-card hover:border-emerald-500 p-8 rounded-2xl transition text-left group border-2 border-transparent transform hover:scale-105 hover:shadow-2xl">
+                    <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
+                        <i class="ph ph-hand-grabbing text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2" style="font-family: 'Poppins', sans-serif;">Satz-Baustelle</h3>
+                    <p class="text-slate-400">Ziehe Satzteile und Kommas in die richtige Reihenfolge. Perfekt zum Üben! 🏗️</p>
+                </button>
+            </div>
+
+            <!-- Game Area -->
+            <div id="game-interface" class="hidden animate-fade-in">
+                <div class="flex justify-between items-center mb-6">
+                    <button onclick="quitGame()" class="text-slate-400 hover:text-white flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-slate-800 transition">
+                        <i class="ph ph-arrow-left text-lg"></i> <span class="font-semibold">Zurück</span>
+                    </button>
+                    <div class="flex items-center gap-3">
+                        <div class="text-sm font-mono bg-violet-500/20 text-violet-300 px-4 py-2 rounded-full border border-violet-500/30">
+                            📊 Aufgabe <span id="current-task-num" class="font-bold">1</span><span class="text-violet-400">/5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question Container -->
+                <div class="glass-card p-8 md:p-12 rounded-2xl min-h-[350px] flex flex-col justify-center items-center relative overflow-hidden border-2 border-slate-700">
+                    
+                    <!-- Instructions -->
+                    <p id="game-instruction" class="absolute top-6 left-0 w-full text-center text-slate-400 text-sm uppercase tracking-wider font-bold">
+                        🎯 Finde die fehlenden Kommas
+                    </p>
+
+                    <!-- CLICK MODE CONTAINER -->
+                    <div id="click-game-container" class="text-xl md:text-2xl leading-loose text-center font-medium hidden w-full">
+                        <!-- Dynamically filled -->
+                    </div>
+
+                    <!-- DRAG MODE CONTAINER -->
+                    <div id="drag-game-container" class="w-full hidden flex-col items-center gap-8">
+                        <div id="drop-zone" class="drop-zone w-full p-6 flex flex-wrap gap-3 items-center justify-center min-h-[120px]">
+                            <span class="text-slate-500 italic pointer-events-none text-lg instruction-text">✨ Ziehe die Teile hierher...</span>
+                        </div>
+                        <div id="source-zone" class="flex flex-wrap gap-3 justify-center">
+                            <!-- Draggables -->
+                        </div>
+                    </div>
+
+                    <!-- Feedback Overlay -->
+                    <div id="feedback-overlay" class="absolute inset-0 glass-card flex flex-col items-center justify-center z-10 hidden backdrop-blur-md">
+                        <div id="feedback-icon" class="text-7xl mb-4"></div>
+                        <h3 id="feedback-title" class="text-3xl font-bold mb-3" style="font-family: 'Poppins', sans-serif;"></h3>
+                        <p id="feedback-text" class="text-slate-300 text-center text-lg max-w-xl mb-8 px-4"></p>
+                        <button onclick="nextTask()" class="btn-primary text-white px-10 py-4 rounded-xl font-bold text-lg transition transform hover:scale-105 flex items-center gap-2">
+                            <span>Weiter</span>
+                            <i class="ph ph-arrow-right"></i>
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-8 flex justify-center">
+                    <button id="check-btn" onclick="checkAnswer()" class="btn-primary text-white px-16 py-5 rounded-xl font-bold text-xl transition transform active:scale-95 w-full md:w-auto flex items-center justify-center gap-3 hover:scale-105">
+                        <i class="ph ph-check-circle text-2xl"></i>
+                        <span>Überprüfen</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: BADGES -->
+        <div id="view-badges" class="hidden space-y-8 animate-fade-in">
+            <div class="glass-card p-8 rounded-2xl text-center">
+                <div class="w-32 h-32 bg-gradient-to-br from-violet-500 via-fuchsia-500 to-pink-500 rounded-full mx-auto flex items-center justify-center text-5xl font-bold shadow-2xl mb-6 border-4 border-white/20 relative overflow-hidden" style="font-family: 'Poppins', sans-serif;">
+                    <span id="profile-level" class="relative z-10 text-white drop-shadow-lg">1</span>
+                    <div class="absolute inset-0 bg-gradient-to-br from-yellow-400 to-orange-500 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+                </div>
+                <h2 class="text-3xl font-bold mb-2" id="rank-title" style="font-family: 'Poppins', sans-serif;">Cadet</h2>
+                <p class="text-slate-400 text-lg mb-8">Level <span id="profile-level-text" class="text-violet-400 font-bold">1</span> Komma-Setzer 🎯</p>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto">
+                    <div class="glass-card p-4 rounded-xl border border-slate-600 hover:border-violet-500 transition">
+                        <div class="text-xs text-slate-400 mb-1">Gesamtpunkte</div>
+                        <div class="text-2xl font-mono font-bold text-yellow-400" id="profile-score">0</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-xl border border-slate-600 hover:border-emerald-500 transition">
+                        <div class="text-xs text-slate-400 mb-1">Gelöste Aufgaben</div>
+                        <div class="text-2xl font-mono font-bold text-emerald-400" id="profile-solved">0</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-xl border border-slate-600 hover:border-pink-500 transition">
+                        <div class="text-xs text-slate-400 mb-1">Genauigkeit</div>
+                        <div class="text-2xl font-mono font-bold text-pink-400"><span id="profile-accuracy">100</span>%</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-xl border border-slate-600 hover:border-orange-500 transition">
+                        <div class="text-xs text-slate-400 mb-1">Beste Serie</div>
+                        <div class="text-2xl font-mono font-bold text-orange-400" id="profile-best-streak">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-2xl font-bold mb-6 pl-4 border-l-4 border-yellow-500 flex items-center gap-2" style="font-family: 'Poppins', sans-serif;">
+                    <span>🏆</span> Deine Abzeichen
+                </h3>
+                <div class="badge-grid" id="badge-container">
+                    <!-- Badges generated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: SETTINGS -->
+        <div id="view-settings" class="hidden space-y-6 animate-fade-in">
+            <div class="glass-card p-8 rounded-2xl">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2" style="font-family: 'Poppins', sans-serif;">
+                    <i class="ph-fill ph-floppy-disk text-violet-400 text-2xl"></i> 
+                    Speicherstand
+                </h2>
+                <p class="text-slate-400 mb-8 text-lg">Speichere deinen Fortschritt als Datei, um ihn auf einem anderen Gerät (z.B. iPad oder Schulcomputer) weiterzuspielen.</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <button onclick="downloadProgress()" class="glass-card hover:bg-slate-700 p-6 rounded-xl flex items-center justify-center gap-3 transition transform hover:scale-105 border-2 border-transparent hover:border-violet-500">
+                        <i class="ph ph-download-simple text-2xl text-violet-400"></i> 
+                        <span class="font-semibold">Fortschritt herunterladen</span>
+                    </button>
+                    
+                    <label class="glass-card hover:bg-slate-700 p-6 rounded-xl flex items-center justify-center gap-3 transition cursor-pointer transform hover:scale-105 border-2 border-transparent hover:border-emerald-500">
+                        <i class="ph ph-upload-simple text-2xl text-emerald-400"></i> 
+                        <span class="font-semibold">Fortschritt laden</span>
+                        <input type="file" id="file-upload" class="hidden" accept=".json" onchange="uploadProgress(this)">
+                    </label>
+                </div>
+
+                <div class="mt-10 pt-8 border-t border-slate-700">
+                    <button onclick="resetProgress()" class="text-red-400 hover:text-red-300 text-sm flex items-center gap-2 hover:bg-red-500/10 px-4 py-2 rounded-lg transition">
+                        <i class="ph ph-trash"></i> 
+                        <span>Alle Daten löschen (Reset)</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="glass-card p-8 rounded-2xl">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2" style="font-family: 'Poppins', sans-serif;">
+                    <i class="ph-fill ph-info text-cyan-400 text-2xl"></i> 
+                    Über diese App
+                </h2>
+                <p class="text-slate-300 mb-4 text-lg">
+                    <strong class="text-white">Komma-Commander 3000</strong> wurde speziell für Schüler der 8. Klasse entwickelt, um Kommaregeln spielerisch zu lernen und zu trainieren.
+                </p>
+                <div class="space-y-2 text-slate-400">
+                    <p>✨ Version 2.0 Enhanced</p>
+                    <p>🎯 Mit Gamification-Elementen</p>
+                    <p>📱 Optimiert für Tablets und Desktop</p>
+                    <p>💾 Offline-fähig mit Speicherfunktion</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // --- PARTICLE SYSTEM ---
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for(let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // --- DATA & STATE ---
+        const state = {
+            score: 0,
+            xp: 0,
+            level: 1,
+            tasksSolved: 0,
+            correctAnswers: 0,
+            totalAttempts: 0,
+            currentStreak: 0,
+            bestStreak: 0,
+            badges: [],
+            currentMode: null,
+            currentTaskIndex: 0,
+            currentTaskData: null
+        };
+
+        // Badge Definitions with colors
+        const badgesDB = [
+            { id: 'novice', name: 'Rekrut', icon: 'ph-rocket-launch', desc: 'Erste Aufgabe gelöst', condition: (s) => s.tasksSolved >= 1, color: 'from-blue-500 to-cyan-500' },
+            { id: 'builder', name: 'Baumeister', icon: 'ph-wrench', desc: '5 Aufgaben gelöst', condition: (s) => s.tasksSolved >= 5, color: 'from-orange-500 to-amber-500' },
+            { id: 'scout', name: 'Späher', icon: 'ph-binoculars', desc: '1000 Punkte erreicht', condition: (s) => s.score >= 1000, color: 'from-emerald-500 to-teal-500' },
+            { id: 'streak', name: 'Feuersträhne', icon: 'ph-fire', desc: '5er Serie erreicht', condition: (s) => s.bestStreak >= 5, color: 'from-red-500 to-orange-500' },
+            { id: 'accurate', name: 'Präzisions-Profi', icon: 'ph-target', desc: '90% Genauigkeit', condition: (s) => s.totalAttempts >= 10 && (s.correctAnswers/s.totalAttempts) >= 0.9, color: 'from-pink-500 to-rose-500' },
+            { id: 'ninja', name: 'Komma-Ninja', icon: 'ph-sword', desc: 'Level 5 erreicht', condition: (s) => s.level >= 5, color: 'from-purple-500 to-indigo-500' },
+            { id: 'master', name: 'Grammatik-Gott', icon: 'ph-crown', desc: 'Level 10 erreicht', condition: (s) => s.level >= 10, color: 'from-yellow-500 to-amber-500' },
+            { id: 'legend', name: 'Legende', icon: 'ph-trophy', desc: '5000 Punkte erreicht', condition: (s) => s.score >= 5000, color: 'from-fuchsia-500 to-purple-500' }
+        ];
+
+        // Question Database
+        const questions = [
+            { 
+                text: "Ich freue mich dass du endlich da bist.", 
+                solution: [3], 
+                parts: ["Ich freue mich", "dass", "du endlich", "da bist."],
+                correctOrder: [0, "COMMA", 1, 2, 3],
+                explanation: "Ein Nebensatz mit 'dass' wird immer durch ein Komma abgetrennt.",
+                type: "nebensatz"
+            },
+            { 
+                text: "Er kaufte Äpfel Birnen und Brot.", 
+                solution: [2], 
+                parts: ["Er kaufte", "Äpfel", "Birnen", "und Brot."],
+                correctOrder: [0, 1, "COMMA", 2, 3],
+                explanation: "Bei Aufzählungen werden die Elemente durch Kommas getrennt (außer bei 'und').",
+                type: "aufzaehlung"
+            },
+            { 
+                text: "Lisa die beste Spielerin schoss das Tor.", 
+                solution: [1, 4], 
+                parts: ["Lisa", "die beste Spielerin", "schoss", "das Tor."],
+                correctOrder: [0, "COMMA", 1, "COMMA", 2, 3],
+                explanation: "Das ist eine Apposition (Einschub). Sie wird von Kommas eingeschlossen.",
+                type: "apposition"
+            },
+            { 
+                text: "Er ging früh ins Bett weil er müde war.", 
+                solution: [4], 
+                parts: ["Er ging", "früh ins Bett", "weil", "er müde war."],
+                correctOrder: [0, 1, "COMMA", 2, 3],
+                explanation: "Der Nebensatz mit 'weil' muss mit Komma abgetrennt werden.",
+                type: "nebensatz"
+            },
+            { 
+                text: "Sie versuchte das Tor zu treffen.", 
+                solution: [], 
+                parts: ["Sie versuchte", "das Tor", "zu treffen."],
+                correctOrder: [0, 1, 2],
+                explanation: "Hier ist kein Komma zwingend nötig (einfacher Infinitiv ohne Signalwort).",
+                type: "infinitiv"
+            },
+            { 
+                text: "Ohne zu zögern sprang er ins Wasser.", 
+                solution: [2], 
+                parts: ["Ohne zu zögern", "sprang", "er ins Wasser."],
+                correctOrder: [0, "COMMA", 1, 2],
+                explanation: "Erweiterter Infinitiv mit 'ohne... zu' verlangt ein Komma.",
+                type: "infinitiv"
+            },
+            {
+                text: "Maria meine beste Freundin kommt heute.",
+                solution: [1, 4],
+                parts: ["Maria", "meine beste Freundin", "kommt", "heute."],
+                correctOrder: [0, "COMMA", 1, "COMMA", 2, 3],
+                explanation: "Eine Apposition wird in Kommas eingeschlossen.",
+                type: "apposition"
+            },
+            {
+                text: "Ich mag Pizza Pasta und Salat.",
+                solution: [2],
+                parts: ["Ich mag", "Pizza", "Pasta", "und Salat."],
+                correctOrder: [0, 1, "COMMA", 2, 3],
+                explanation: "Bei Aufzählungen stehen Kommas zwischen den Elementen.",
+                type: "aufzaehlung"
+            },
+            {
+                text: "Obwohl es regnete gingen wir spazieren.",
+                solution: [2],
+                parts: ["Obwohl es regnete", "gingen", "wir spazieren."],
+                correctOrder: [0, "COMMA", 1, 2],
+                explanation: "Der Nebensatz mit 'obwohl' wird durch Komma abgetrennt.",
+                type: "nebensatz"
+            },
+            {
+                text: "Er versprach pünktlich zu sein.",
+                solution: [],
+                parts: ["Er versprach", "pünktlich", "zu sein."],
+                correctOrder: [0, 1, 2],
+                explanation: "Einfacher Infinitiv ohne Signalwort braucht kein Komma.",
+                type: "infinitiv"
+            }
+        ];
+
+        // Rank titles based on level
+        const rankTitles = [
+            { level: 1, title: "Cadet 🌱", color: "text-slate-400" },
+            { level: 3, title: "Scout 🔍", color: "text-blue-400" },
+            { level: 5, title: "Sergeant ⭐", color: "text-violet-400" },
+            { level: 7, title: "Lieutenant 💫", color: "text-fuchsia-400" },
+            { level: 10, title: "Commander 👑", color: "text-yellow-400" }
+        ];
+
+        // --- INITIALIZATION ---
+        window.onload = () => {
+            createParticles();
+            loadState();
+            renderBadges();
+            updateUI();
+            updateRankTitle();
+        };
+
+        // --- TAB NAVIGATION ---
+        function switchTab(tabId) {
+            document.querySelectorAll('[id^="view-"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active', 'text-white'));
+            
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+            document.getElementById(`btn-${tabId}`).classList.add('active', 'text-white');
+            
+            if (tabId === 'badges') renderBadges();
+        }
+
+        // --- GAME ENGINE ---
+
+        function startGame(mode) {
+            state.currentMode = mode;
+            state.currentTaskIndex = 0;
+            
+            questions.sort(() => Math.random() - 0.5);
+            
+            document.getElementById('mode-selection').classList.add('hidden');
+            document.getElementById('game-interface').classList.remove('hidden');
+            
+            loadTask();
+        }
+
+        function quitGame() {
+            document.getElementById('game-interface').classList.add('hidden');
+            document.getElementById('mode-selection').classList.remove('hidden');
+            resetGameArea();
+        }
+
+        function loadTask() {
+            resetGameArea();
+            state.currentTaskData = questions[state.currentTaskIndex];
+            document.getElementById('current-task-num').innerText = state.currentTaskIndex + 1;
+
+            if (state.currentMode === 'click') {
+                setupClickGame(state.currentTaskData);
+            } else {
+                setupDragGame(state.currentTaskData);
+            }
+        }
+
+        function resetGameArea() {
+            document.getElementById('feedback-overlay').classList.add('hidden');
+            document.getElementById('click-game-container').innerHTML = '';
+            document.getElementById('click-game-container').classList.add('hidden');
+            
+            const dropZone = document.getElementById('drop-zone');
+            dropZone.innerHTML = '<span class="text-slate-500 italic pointer-events-none text-lg instruction-text">✨ Ziehe die Teile hierher...</span>';
+            document.getElementById('source-zone').innerHTML = '';
+            document.getElementById('drag-game-container').classList.add('hidden');
+            document.getElementById('check-btn').style.display = 'flex';
+        }
+
+        // --- CLICK MODE LOGIC ---
+        
+        function setupClickGame(task) {
+            document.getElementById('game-instruction').innerText = "🎯 Tippe auf die Lücken, um Kommas zu setzen";
+            const container = document.getElementById('click-game-container');
+            container.classList.remove('hidden');
+            container.classList.add('flex', 'flex-wrap', 'justify-center', 'gap-y-4', 'items-center');
+
+            const words = task.text.split(' ');
+            
+            words.forEach((word, index) => {
+                const span = document.createElement('span');
+                span.innerText = word;
+                span.className = "word-slot select-none px-1";
+                container.appendChild(span);
+
+                if (index < words.length - 1) {
+                    const gap = document.createElement('div');
+                    gap.className = "comma-gap";
+                    gap.dataset.index = index;
+                    gap.onclick = () => toggleComma(gap);
+                    container.appendChild(gap);
+                }
+            });
+        }
+
+        function toggleComma(element) {
+            element.classList.toggle('active');
+            playClickSound();
+        }
+
+        // --- DRAG MODE LOGIC ---
+
+        let draggedItem = null;
+
+        function setupDragGame(task) {
+            document.getElementById('game-instruction').innerText = "🏗️ Baue den Satz: Ziehe Teile und Kommas nach oben";
+            const container = document.getElementById('drag-game-container');
+            container.classList.remove('hidden');
+            container.classList.add('flex');
+
+            const sourceZone = document.getElementById('source-zone');
+            const parts = [...task.parts];
+            
+            const commaCount = task.solution.length + 1; 
+            for(let i=0; i<commaCount; i++) {
+                parts.push({ type: 'comma', text: ',' });
+            }
+
+            parts.sort(() => Math.random() - 0.5);
+
+            parts.forEach((part, id) => {
+                const el = document.createElement('div');
+                el.className = "draggable-item glass-card px-5 py-3 rounded-xl shadow-lg cursor-grab border-2 border-slate-600 font-semibold select-none hover:border-violet-500";
+                
+                if (typeof part === 'object' && part.type === 'comma') {
+                    el.innerText = ',';
+                    el.dataset.type = 'comma';
+                    el.classList.add('bg-gradient-to-br', 'from-violet-600', 'to-purple-700', 'font-bold', 'text-2xl', 'w-14', 'h-14', 'flex', 'items-center', 'justify-center', 'px-0');
+                } else {
+                    el.innerText = part;
+                    el.dataset.type = 'text';
+                    el.dataset.val = part;
+                }
+
+                el.draggable = true;
+                el.id = `drag-${id}`;
+                
+                el.addEventListener('dragstart', handleDragStart);
+                el.addEventListener('touchstart', handleTouchStart, {passive: false});
+                el.addEventListener('touchmove', handleTouchMove, {passive: false});
+                el.addEventListener('touchend', handleTouchEnd);
+
+                sourceZone.appendChild(el);
+            });
+
+            const dropZone = document.getElementById('drop-zone');
+            dropZone.addEventListener('dragover', handleDragOver);
+            dropZone.addEventListener('drop', handleDrop);
+            dropZone.addEventListener('click', (e) => {
+                if(e.target.classList.contains('draggable-item')) {
+                    document.getElementById('source-zone').appendChild(e.target);
+                    checkDropZoneEmpty();
+                }
+            });
+            
+            sourceZone.addEventListener('click', (e) => {
+                if(e.target.classList.contains('draggable-item')) {
+                    const instruction = dropZone.querySelector('.instruction-text');
+                    if(instruction) instruction.remove();
+                    dropZone.appendChild(e.target);
+                }
+            });
+        }
+
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.id);
+            draggedItem = e.target;
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            const dropZone = document.getElementById('drop-zone');
+            dropZone.classList.add('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const dropZone = document.getElementById('drop-zone');
+            dropZone.classList.remove('drag-over');
+            
+            const instruction = dropZone.querySelector('.instruction-text');
+            if(instruction) instruction.remove();
+
+            const id = e.dataTransfer.getData('text');
+            const draggable = document.getElementById(id);
+            if (draggable) dropZone.appendChild(draggable);
+        }
+
+        let touchDragItem = null;
+        
+        function handleTouchStart(e) {
+            touchDragItem = e.target;
+            touchDragItem.style.opacity = '0.7';
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            if (!touchDragItem) return;
+            
+            const touch = e.targetTouches[0];
+            
+            touchDragItem.style.position = 'fixed';
+            touchDragItem.style.left = (touch.clientX - touchDragItem.offsetWidth/2) + 'px';
+            touchDragItem.style.top = (touch.clientY - touchDragItem.offsetHeight/2) + 'px';
+            touchDragItem.style.zIndex = '1000';
+            touchDragItem.style.pointerEvents = 'none';
+        }
+
+        function handleTouchEnd(e) {
+            if (!touchDragItem) return;
+            
+            touchDragItem.style.opacity = '1';
+            touchDragItem.style.position = '';
+            touchDragItem.style.left = '';
+            touchDragItem.style.top = '';
+            touchDragItem.style.zIndex = '';
+            touchDragItem.style.pointerEvents = '';
+            
+            const touch = e.changedTouches[0];
+            const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+            const dropZone = document.getElementById('drop-zone');
+            const sourceZone = document.getElementById('source-zone');
+
+            if (dropZone.contains(dropTarget)) {
+                 const instruction = dropZone.querySelector('.instruction-text');
+                 if(instruction) instruction.remove();
+                 dropZone.appendChild(touchDragItem);
+            } else {
+                sourceZone.appendChild(touchDragItem);
+                checkDropZoneEmpty();
+            }
+            
+            touchDragItem = null;
+        }
+
+        function checkDropZoneEmpty() {
+            const dropZone = document.getElementById('drop-zone');
+            if(dropZone.children.length === 0) {
+                 dropZone.innerHTML = '<span class="text-slate-500 italic pointer-events-none text-lg instruction-text">✨ Ziehe die Teile hierher...</span>';
+            }
+        }
+
+        // --- CHECK ANSWER LOGIC ---
+
+        function checkAnswer() {
+            const task = state.currentTaskData;
+            let isCorrect = false;
+            let userIndices = [];
+
+            state.totalAttempts++;
+
+            if (state.currentMode === 'click') {
+                const gaps = document.querySelectorAll('.comma-gap');
+                gaps.forEach(gap => {
+                    if (gap.classList.contains('active')) {
+                        userIndices.push(parseInt(gap.dataset.index));
+                    }
+                });
+
+                userIndices.sort();
+                const solution = [...task.solution].sort();
+                isCorrect = JSON.stringify(userIndices) === JSON.stringify(solution);
+
+            } else if (state.currentMode === 'drag') {
+                const dropZone = document.getElementById('drop-zone');
+                const children = Array.from(dropZone.children).filter(c => !c.classList.contains('instruction-text'));
+                
+                const userSequence = children.map(child => {
+                    if(child.dataset.type === 'comma') return "COMMA";
+                    return task.parts.indexOf(child.innerText);
+                });
+
+                isCorrect = JSON.stringify(userSequence) === JSON.stringify(task.correctOrder);
+            }
+
+            showFeedback(isCorrect, task);
+        }
+
+        function showFeedback(isCorrect, task) {
+            const overlay = document.getElementById('feedback-overlay');
+            const icon = document.getElementById('feedback-icon');
+            const title = document.getElementById('feedback-title');
+            const text = document.getElementById('feedback-text');
+            const checkBtn = document.getElementById('check-btn');
+
+            checkBtn.style.display = 'none';
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+
+            if (isCorrect) {
+                icon.innerHTML = '🎉';
+                title.innerText = "Ausgezeichnet!";
+                title.className = "text-3xl font-bold mb-3 text-emerald-400";
+                text.innerHTML = `<span class="text-emerald-300 font-semibold">Das war absolut richtig!</span><br><br>${task.explanation}`;
+                
+                const points = 100;
+                addXP(points);
+                state.tasksSolved++;
+                state.correctAnswers++;
+                state.currentStreak++;
+                
+                if(state.currentStreak > state.bestStreak) {
+                    state.bestStreak = state.currentStreak;
+                }
+                
+                updateStreakDisplay();
+                showFloatingScore(points);
+                checkBadges();
+                saveState();
+                playSuccessSound();
+                triggerConfetti();
+            } else {
+                icon.innerHTML = '🤔';
+                title.innerText = "Nicht ganz...";
+                title.className = "text-3xl font-bold mb-3 text-red-400";
+                
+                text.innerHTML = `<span class="text-red-300 font-semibold">Versuch's nochmal!</span><br><br>${task.explanation}`;
+                
+                state.currentStreak = 0;
+                updateStreakDisplay();
+                playErrorSound();
+            }
+        }
+
+        function nextTask() {
+            state.currentTaskIndex++;
+            if (state.currentTaskIndex >= 5) {
+                finishRound();
+            } else {
+                if(state.currentTaskIndex >= questions.length) state.currentTaskIndex = 0;
+                loadTask();
+            }
+        }
+
+        function finishRound() {
+            document.getElementById('game-interface').classList.add('hidden');
+            document.getElementById('mode-selection').classList.remove('hidden');
+            
+            triggerConfetti();
+            
+            const accuracy = state.totalAttempts > 0 ? Math.round((state.correctAnswers / state.totalAttempts) * 100) : 100;
+            
+            setTimeout(() => {
+                alert(`🎊 Runde beendet!\n\n📊 Statistik:\n✨ Punkte: ${state.score}\n🎯 Genauigkeit: ${accuracy}%\n🔥 Beste Serie: ${state.bestStreak}`);
+            }, 500);
+            
+            saveState();
+        }
+
+        // --- GAMIFICATION ---
+
+        function addXP(amount) {
+            state.score += amount;
+            state.xp += amount;
+            
+            const needed = state.level * 500;
+            if (state.xp >= needed) {
+                state.level++;
+                state.xp = state.xp - needed;
+                
+                triggerLevelUp();
+                updateRankTitle();
+            }
+            updateUI();
+        }
+
+        function triggerLevelUp() {
+            confetti({
+                particleCount: 150,
+                spread: 120,
+                origin: { y: 0.6 },
+                colors: ['#8b5cf6', '#ec4899', '#fbbf24', '#10b981']
+            });
+            
+            setTimeout(() => {
+                alert(`🎉 LEVEL UP!\n\nDu bist jetzt Level ${state.level}!`);
+            }, 100);
+        }
+
+        function updateStreakDisplay() {
+            const streakDisplay = document.getElementById('streak-display');
+            const streakCount = document.getElementById('streak-count');
+            
+            if(state.currentStreak > 0) {
+                streakDisplay.classList.remove('hidden');
+                streakDisplay.classList.add('flex');
+                streakCount.innerText = state.currentStreak;
+            } else {
+                streakDisplay.classList.add('hidden');
+            }
+        }
+
+        function showFloatingScore(points) {
+            const scoreEl = document.createElement('div');
+            scoreEl.className = 'floating-score';
+            scoreEl.innerText = `+${points}`;
+            
+            const rect = document.getElementById('score-display').getBoundingClientRect();
+            scoreEl.style.left = rect.left + 'px';
+            scoreEl.style.top = rect.top + 'px';
+            
+            document.body.appendChild(scoreEl);
+            
+            setTimeout(() => scoreEl.remove(), 1000);
+            
+            document.getElementById('score-display').classList.add('score-pop');
+            setTimeout(() => {
+                document.getElementById('score-display').classList.remove('score-pop');
+            }, 600);
+        }
+
+        function checkBadges() {
+            badgesDB.forEach(badge => {
+                if (!state.badges.includes(badge.id) && badge.condition(state)) {
+                    state.badges.push(badge.id);
+                    
+                    setTimeout(() => {
+                        confetti({
+                            particleCount: 100,
+                            spread: 70,
+                            origin: { y: 0.6 }
+                        });
+                        alert(`🏆 NEUES ABZEICHEN!\n\n${badge.name}\n${badge.desc}`);
+                    }, 300);
+                }
+            });
+        }
+
+        function renderBadges() {
+            const container = document.getElementById('badge-container');
+            container.innerHTML = '';
+            
+            badgesDB.forEach(badge => {
+                const isUnlocked = state.badges.includes(badge.id);
+                
+                const div = document.createElement('div');
+                div.className = `p-5 rounded-2xl flex flex-col items-center text-center transition transform hover:scale-105 ${isUnlocked ? 'badge-unlocked' : 'badge-locked glass-card opacity-40 grayscale'}`;
+                
+                const iconColor = isUnlocked ? `bg-gradient-to-br ${badge.color}` : 'bg-slate-700';
+                
+                div.innerHTML = `
+                    <div class="w-16 h-16 ${iconColor} rounded-xl flex items-center justify-center mb-3 shadow-lg">
+                        <i class="ph-fill ${badge.icon} text-3xl text-white"></i>
+                    </div>
+                    <div class="font-bold text-base mb-1">${badge.name}</div>
+                    <div class="text-xs text-slate-400">${badge.desc}</div>
+                `;
+                container.appendChild(div);
+            });
+
+            document.getElementById('profile-level').innerText = state.level;
+            document.getElementById('profile-level-text').innerText = state.level;
+            document.getElementById('profile-score').innerText = state.score;
+            document.getElementById('profile-solved').innerText = state.tasksSolved;
+            
+            const accuracy = state.totalAttempts > 0 ? Math.round((state.correctAnswers / state.totalAttempts) * 100) : 100;
+            document.getElementById('profile-accuracy').innerText = accuracy;
+            document.getElementById('profile-best-streak').innerText = state.bestStreak;
+        }
+
+        function updateRankTitle() {
+            let currentRank = rankTitles[0];
+            for(let rank of rankTitles) {
+                if(state.level >= rank.level) {
+                    currentRank = rank;
+                }
+            }
+            
+            const rankEl = document.getElementById('rank-title');
+            if(rankEl) {
+                rankEl.innerText = currentRank.title;
+                rankEl.className = `text-3xl font-bold mb-2 ${currentRank.color}`;
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('score-display').innerText = state.score;
+            document.getElementById('level-display').innerText = state.level;
+            
+            const needed = state.level * 500;
+            const percent = (state.xp / needed) * 100;
+            document.getElementById('xp-bar').style.width = `${percent}%`;
+            
+            updateStreakDisplay();
+        }
+
+        // --- SAVE / LOAD ---
+
+        function saveState() {
+            localStorage.setItem('kommaCommanderSave', JSON.stringify(state));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('kommaCommanderSave');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                Object.assign(state, parsed);
+            }
+        }
+
+        function downloadProgress() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", `komma_commander_progress_${Date.now()}.json`);
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+            
+            confetti({
+                particleCount: 50,
+                spread: 60,
+                origin: { y: 0.7 }
+            });
+        }
+
+        function uploadProgress(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const contents = JSON.parse(e.target.result);
+                    if (contents.score !== undefined && contents.level !== undefined) {
+                        Object.assign(state, contents);
+                        saveState();
+                        updateUI();
+                        updateRankTitle();
+                        renderBadges();
+                        
+                        confetti({
+                            particleCount: 100,
+                            spread: 70,
+                            origin: { y: 0.6 }
+                        });
+                        
+                        alert("✅ Spielstand erfolgreich geladen!");
+                        switchTab('badges');
+                    } else {
+                        alert("❌ Ungültige Datei.");
+                    }
+                } catch (err) {
+                    alert("❌ Fehler beim Lesen der Datei.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetProgress() {
+            if(confirm("⚠️ Bist du sicher?\n\nAlle Punkte und Abzeichen gehen verloren!")) {
+                localStorage.removeItem('kommaCommanderSave');
+                location.reload();
+            }
+        }
+
+        // --- AUDIO & EFFECTS ---
+
+        function playClickSound() {
+            // Simple audio feedback using Web Audio API
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.1);
+        }
+
+        function playSuccessSound() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+            oscillator.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+            oscillator.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+            
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+            
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.4);
+        }
+
+        function playErrorSound() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
+            oscillator.frequency.setValueAtTime(150, audioCtx.currentTime + 0.1);
+            
+            oscillator.type = 'sawtooth';
+            
+            gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.2);
+        }
+
+        function triggerConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#8b5cf6', '#ec4899', '#fbbf24', '#10b981', '#06b6d4']
+            });
+        }
+
+    </script>
+</body>
+</html>
