@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Arbeitshilfe Deutsch – Klassenarbeit 4/5</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f0f;
+            position: absolute;
+            animation: confetti-fall 3s linear forwards;
+            z-index: 9999;
+        }
+        @keyframes confetti-fall {
+            to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        .star {
+            position: fixed;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+            z-index: 0;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+            animation: slideIn 0.6s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+        .subtitle {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #5a67d8;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .progress-container {
+            margin-bottom: 20px;
+            background: #e0e7ff;
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .progress-label {
+            font-weight: 600;
+            color: #5a67d8;
+            font-size: 0.9rem;
+        }
+        .progress-score {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+        .progress-bar {
+            height: 25px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            width: 0%;
+            transition: width 0.6s ease-out;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        .mini-game-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4);
+            z-index: 1000;
+            transition: all 0.3s;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .mini-game-btn:hover { transform: scale(1.1); }
+        .game-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+        .game-modal.active { display: flex; }
+        .game-content {
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideIn 0.4s;
+        }
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .game-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .game-close {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .game-close:hover {
+            transform: rotate(90deg);
+            background: #c53030;
+        }
+        .game-score {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #5a67d8;
+            margin-bottom: 20px;
+        }
+        .matching-game {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .word-column, .definition-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .word-item, .definition-item {
+            padding: 12px;
+            background: #f7fafc;
+            border-radius: 12px;
+            border: 2px solid #cbd5e0;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 600;
+        }
+        .word-item:hover, .definition-item:hover {
+            transform: translateX(5px);
+            border-color: #667eea;
+        }
+        .word-item.selected, .definition-item.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #5a67d8;
+        }
+        .word-item.matched, .definition-item.matched {
+            background: #48bb78;
+            color: white;
+            border-color: #38a169;
+            cursor: default;
+        }
+        .game-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .game-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .game-btn-check {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+        .game-btn-reset {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        .game-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .trophy-display {
+            text-align: center;
+            font-size: 3rem;
+            margin: 20px 0;
+            display: none;
+        }
+        .trophy-display.show {
+            display: block;
+            animation: zoomIn 0.6s;
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+<script>
+    for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = Math.random() * 3 + 'px';
+        star.style.height = star.style.width;
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        document.body.appendChild(star);
+    }
+</script>
+
+<div class="container">
+    <h1>🎓 Arbeitshilfe Deutsch 🎓</h1>
+    <div class="subtitle">
+        Vorbereitung auf die Klassenarbeit – Mit Spaß und Motivation lernen!
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-header">
+            <span class="progress-label">🎯 Dein Fortschritt</span>
+            <span class="progress-score" id="totalScore">0 / 6 Abzeichen</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill">0%</div>
+        </div>
+    </div>
+
+    <p style="text-align:center; color: #5a67d8; font-weight: 600; margin-bottom: 20px;">
+        ✨ Klicke auf den 🎮 Button unten rechts für ein Wortschatz-Spiel! ✨
+    </p>
+</div>
+
+<button class="mini-game-btn" id="gameBtn">🎮</button>
+
+<div class="game-modal" id="gameModal">
+    <div class="game-content">
+        <div class="game-header">
+            <h2 class="game-title">🎯 Wortschatz-Matching-Spiel</h2>
+            <button class="game-close" id="gameClose">✕</button>
+        </div>
+        <div class="game-score" id="gameScore">Punkte: 0 / 5</div>
+        <div class="trophy-display" id="trophyDisplay">🏆✨🎉</div>
+        <p style="text-align:center; margin-bottom:15px; color: #718096;">
+            Verbinde die Wörter mit ihren Bedeutungen!
+        </p>
+        <div class="matching-game">
+            <div class="word-column" id="wordColumn"></div>
+            <div class="definition-column" id="definitionColumn"></div>
+        </div>
+        <div class="game-buttons">
+            <button class="game-btn game-btn-check" id="checkBtn">✓ Prüfen</button>
+            <button class="game-btn game-btn-reset" id="resetBtn">↻ Neu starten</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    const gameBtn = document.getElementById("gameBtn");
+    const gameModal = document.getElementById("gameModal");
+    const gameClose = document.getElementById("gameClose");
+    const checkBtn = document.getElementById("checkBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const gameScore = document.getElementById("gameScore");
+    const wordColumn = document.getElementById("wordColumn");
+    const definitionColumn = document.getElementById("definitionColumn");
+    const trophyDisplay = document.getElementById("trophyDisplay");
+    const progressFill = document.getElementById("progressFill");
+    const totalScore = document.getElementById("totalScore");
+
+    function createConfetti() {
+        const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500'];
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animationDelay = Math.random() * 0.5 + 's';
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 3000);
+        }
+    }
+
+    const gameData = [
+        {word: "die Straße", definition: "Ein Weg für Autos und Menschen"},
+        {word: "der Zebrastreifen", definition: "Markierte Stelle zum Überqueren"},
+        {word: "die Kreuzung", definition: "Wo sich zwei Straßen treffen"},
+        {word: "die Brücke", definition: "Bauwerk über Wasser oder Straße"},
+        {word: "der Bahnhof", definition: "Ort wo Züge ankommen"}
+    ];
+
+    let selectedWord = null;
+    let selectedDefinition = null;
+    let matches = [];
+    let currentGameData = [];
+
+    function initGame() {
+        matches = [];
+        selectedWord = null;
+        selectedDefinition = null;
+        trophyDisplay.classList.remove('show');
+        
+        currentGameData = [...gameData];
+        const shuffledDefs = [...currentGameData].sort(() => Math.random() - 0.5);
+        
+        wordColumn.innerHTML = '';
+        definitionColumn.innerHTML = '';
+        
+        currentGameData.forEach((item, index) => {
+            const wordDiv = document.createElement('div');
+            wordDiv.className = 'word-item';
+            wordDiv.textContent = item.word;
+            wordDiv.dataset.index = index;
+            wordDiv.addEventListener('click', () => selectWord(wordDiv, index));
+            wordColumn.appendChild(wordDiv);
+        });
+        
+        shuffledDefs.forEach((item) => {
+            const defDiv = document.createElement('div');
+            defDiv.className = 'definition-item';
+            defDiv.textContent = item.definition;
+            const originalIndex = currentGameData.findIndex(d => d.definition === item.definition);
+            defDiv.dataset.index = originalIndex;
+            defDiv.addEventListener('click', () => selectDefinition(defDiv, originalIndex));
+            definitionColumn.appendChild(defDiv);
+        });
+        
+        updateScore();
+    }
+
+    function selectWord(element, index) {
+        if (element.classList.contains('matched')) return;
+        document.querySelectorAll('.word-item').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        selectedWord = index;
+        if (selectedDefinition !== null) checkMatch();
+    }
+
+    function selectDefinition(element, index) {
+        if (element.classList.contains('matched')) return;
+        document.querySelectorAll('.definition-item').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        selectedDefinition = index;
+        if (selectedWord !== null) checkMatch();
+    }
+
+    function checkMatch() {
+        if (selectedWord === selectedDefinition) {
+            matches.push(selectedWord);
+            const wordEl = wordColumn.querySelector(`[data-index="${selectedWord}"]`);
+            const defEl = definitionColumn.querySelector(`[data-index="${selectedDefinition}"]`);
+            wordEl.classList.remove('selected');
+            wordEl.classList.add('matched');
+            defEl.classList.remove('selected');
+            defEl.classList.add('matched');
+            createConfetti();
+            if (matches.length === currentGameData.length) {
+                setTimeout(() => {
+                    trophyDisplay.classList.add('show');
+                    gameScore.innerHTML = '🎉 Perfekt! Alle richtig! 🎉';
+                }, 500);
+            }
+        }
+        selectedWord = null;
+        selectedDefinition = null;
+        updateScore();
+    }
+
+    function updateScore() {
+        gameScore.textContent = `Punkte: ${matches.length} / ${currentGameData.length}`;
+        const percent = Math.round((matches.length / currentGameData.length) * 100);
+        progressFill.style.width = percent + '%';
+        progressFill.textContent = percent + '%';
+        totalScore.textContent = matches.length + ' / ' + currentGameData.length + ' Wörter';
+    }
+
+    gameBtn.addEventListener('click', () => {
+        gameModal.classList.add('active');
+        initGame();
+    });
+
+    gameClose.addEventListener('click', () => gameModal.classList.remove('active'));
+    resetBtn.addEventListener('click', () => initGame());
+    checkBtn.addEventListener('click', () => {
+        if (selectedWord !== null && selectedDefinition !== null) {
+            checkMatch();
+        } else {
+            alert('Bitte wähle ein Wort und eine Definition aus! 🎯');
+        }
+    });
+
+    gameModal.addEventListener('click', (e) => {
+        if (e.target === gameModal) gameModal.classList.remove('active');
+    });
+})();
+</script>
+</body>
+</html>
