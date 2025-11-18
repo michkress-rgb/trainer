@@ -1,0 +1,1937 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IGCSE Vokabel-Arena | Cambridge Champion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+
+        .rank-display {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: rgba(255,255,255,0.2);
+            padding: 15px 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .rank-title {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .rank-name {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            background: #f7fafc;
+            padding: 25px;
+            border-bottom: 3px solid #e2e8f0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        .stat-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #718096;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4facfe;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            transition: width 0.5s ease;
+        }
+
+        .badges-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .badge {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .badge.earned {
+            border-color: #48bb78;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        .badge.locked {
+            opacity: 0.3;
+            filter: grayscale(100%);
+        }
+
+        .badge-tooltip {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2d3748;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.6em;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .badge:hover .badge-tooltip {
+            opacity: 1;
+        }
+
+        .main-content {
+            display: flex;
+            min-height: 600px;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #f7fafc 0%, #edf2f7 100%);
+            padding: 25px;
+            border-right: 2px solid #e2e8f0;
+            overflow-y: auto;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            max-height: 70vh;
+        }
+
+        .game-mode-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            border: 3px solid #e2e8f0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-mode-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .game-mode-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.3);
+            border-color: #4facfe;
+        }
+
+        .game-mode-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .mode-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .mode-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #4facfe;
+            margin-bottom: 10px;
+        }
+
+        .mode-description {
+            color: #718096;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .mode-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .mode-stat {
+            text-align: center;
+        }
+
+        .mode-stat-value {
+            font-weight: bold;
+            color: #4facfe;
+            font-size: 1.1em;
+        }
+
+        .mode-stat-label {
+            font-size: 0.85em;
+            color: #718096;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .question-number {
+            color: #4facfe;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-button {
+            background: white;
+            border: 3px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .option-button:hover {
+            border-color: #4facfe;
+            background: #f0f9ff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.2);
+        }
+
+        .option-button.correct {
+            background: #48bb78;
+            color: white;
+            border-color: #48bb78;
+        }
+
+        .option-button.incorrect {
+            background: #f56565;
+            color: white;
+            border-color: #f56565;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+        }
+
+        .button.secondary {
+            background: #718096;
+            box-shadow: 0 4px 15px rgba(113, 128, 150, 0.3);
+        }
+
+        .results-screen {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .results-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .results-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #4facfe;
+            margin-bottom: 15px;
+        }
+
+        .results-score {
+            font-size: 3em;
+            font-weight: bold;
+            color: #48bb78;
+            margin-bottom: 30px;
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .result-stat-card {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .result-stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4facfe;
+        }
+
+        .result-stat-label {
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        .tips-panel {
+            background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
+            border-left: 5px solid #ffa500;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .tips-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #d97706;
+            margin-bottom: 15px;
+        }
+
+        .tip-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            color: #2d3748;
+        }
+
+        .feedback-panel {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 15px;
+            animation: slideIn 0.5s ease;
+        }
+
+        .feedback-panel.correct {
+            background: linear-gradient(135deg, #d4f4dd 0%, #b8e6c2 100%);
+            border-left: 5px solid #48bb78;
+        }
+
+        .feedback-panel.incorrect {
+            background: linear-gradient(135deg, #fee 0%, #fdd 100%);
+            border-left: 5px solid #f56565;
+        }
+
+        .feedback-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .feedback-explanation {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Drag and Drop Spelling Styles */
+        .spelling-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .word-display {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #4facfe;
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f0f9ff;
+            border-radius: 15px;
+        }
+
+        .letter-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 15px;
+            min-height: 100px;
+        }
+
+        .letter-tile {
+            background: white;
+            border: 3px solid #4facfe;
+            border-radius: 10px;
+            padding: 15px 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: move;
+            transition: all 0.3s ease;
+            color: #4facfe;
+            user-select: none;
+        }
+
+        .letter-tile:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        .letter-tile.dragging {
+            opacity: 0.5;
+        }
+
+        .drop-zone {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            min-height: 100px;
+            padding: 30px;
+            background: #e6f7ff;
+            border: 3px dashed #4facfe;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .drop-zone.drag-over {
+            background: #cceeff;
+            border-color: #00a8e8;
+        }
+
+        .drop-slot {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px 20px;
+            font-size: 1.5em;
+            min-width: 50px;
+            text-align: center;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .pronunciation-hint {
+            text-align: center;
+            font-size: 1.3em;
+            color: #718096;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .level-1 { background: #c6f6d5; color: #22543d; }
+        .level-2 { background: #bee3f8; color: #2c5282; }
+        .level-3 { background: #faf089; color: #744210; }
+        .level-4 { background: #fbb6ce; color: #742a2a; }
+        .level-5 { background: #d6bcfa; color: #44337a; }
+
+        .word-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .word-card:hover {
+            border-color: #4facfe;
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.2);
+        }
+
+        .word-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .word-german {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .word-english {
+            color: #4facfe;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .word-example {
+            color: #718096;
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background: #e6f7ff;
+            color: #0077b6;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin: 5px 5px 0 0;
+        }
+
+        .cambridge-badge {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+
+        .home-screen {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 2em;
+            color: #4facfe;
+            margin: 30px 0 20px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 IGCSE Vokabel-Arena</h1>
+            <p>Cambridge German Language Champion</p>
+            <div class="rank-display">
+                <div class="rank-title">Dein Rang</div>
+                <div class="rank-name" id="rankName">Anfänger</div>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-label">Gesamtpunkte</div>
+                <div class="stat-value" id="totalPoints">0</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="pointsProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-label">Gelernte Wörter</div>
+                <div class="stat-value" id="masteredWords">0</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="wordsProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-label">Streak</div>
+                <div class="stat-value" id="streak">0</div>
+                <div class="stat-label" style="margin-top: 5px; font-size: 0.8em;">Tage in Folge</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎮</div>
+                <div class="stat-label">Spiele gespielt</div>
+                <div class="stat-value" id="gamesPlayed">0</div>
+            </div>
+        </div>
+
+        <div style="background: #f7fafc; padding: 20px; border-bottom: 2px solid #e2e8f0;">
+            <div style="text-align: center; color: #4facfe; font-weight: bold; margin-bottom: 10px;">🏆 Abzeichen-Sammlung</div>
+            <div class="badges-container" id="badgesContainer">
+                <!-- Badges will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <h3 style="color: #4facfe; margin-bottom: 20px;">🎯 Spielmodi</h3>
+                <div id="gameModes">
+                    <!-- Game modes will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="content-area" id="mainContent">
+                <!-- Content will be dynamically loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============= GAME STATE =============
+        let gameState = {
+            totalPoints: 0,
+            masteredWords: 0,
+            streak: 0,
+            lastPlayed: null,
+            completedGames: 0,
+            badges: [],
+            personalVocab: [],
+            spellingMastered: []
+        };
+
+        // Badge definitions
+        const badges = [
+            { id: 'first-steps', emoji: '👶', name: 'Erste Schritte', requirement: 'Spiele dein erstes Spiel', check: () => gameState.completedGames >= 1 },
+            { id: 'word-warrior', emoji: '⚔️', name: 'Wort-Krieger', requirement: '50 Wörter gemeistert', check: () => gameState.masteredWords >= 50 },
+            { id: 'vocab-master', emoji: '🎓', name: 'Vokabel-Meister', requirement: '100 Wörter gemeistert', check: () => gameState.masteredWords >= 100 },
+            { id: 'point-collector', emoji: '💰', name: 'Punkte-Sammler', requirement: '500 Punkte erreicht', check: () => gameState.totalPoints >= 500 },
+            { id: 'perfectionist', emoji: '💎', name: 'Perfektionist', requirement: '10 Spiele mit 100% gespielt', check: () => gameState.perfectGames >= 10 },
+            { id: 'streak-master', emoji: '🔥', name: 'Streak-Champion', requirement: '7 Tage in Folge', check: () => gameState.streak >= 7 },
+            { id: 'spelling-bee', emoji: '🐝', name: 'Rechtschreib-Ass', requirement: '20 Wörter korrekt buchstabiert', check: () => gameState.spellingMastered.length >= 20 },
+            { id: 'cambridge-scholar', emoji: '🎖️', name: 'Cambridge-Gelehrter', requirement: '1000 Punkte erreicht', check: () => gameState.totalPoints >= 1000 },
+            { id: 'dedication', emoji: '🏅', name: 'Hingabe', requirement: '30 Spiele absolviert', check: () => gameState.completedGames >= 30 },
+            { id: 'polyglot', emoji: '🌍', name: 'Polyglott', requirement: 'Alle Levels gemeistert', check: () => gameState.masteredWords >= 200 }
+        ];
+
+        // Rank system
+        const ranks = [
+            { name: 'Anfänger', minPoints: 0 },
+            { name: 'Lernender', minPoints: 100 },
+            { name: 'Fortgeschrittener', minPoints: 300 },
+            { name: 'Experte', minPoints: 600 },
+            { name: 'Meister', minPoints: 1000 },
+            { name: 'Cambridge Champion', minPoints: 2000 }
+        ];
+
+        // ============= IGCSE VOCABULARY DATABASE =============
+        const vocabDatabase = {
+            level1: [ // Basic/Good - CEFR A1-A2
+                { word: 'gut', translation: 'good', example: 'Das Essen ist gut.', skill: 'Everyday language' },
+                { word: 'schön', translation: 'beautiful/nice', example: 'Das Wetter ist schön.', skill: 'Descriptions' },
+                { word: 'nett', translation: 'nice/kind', example: 'Er ist sehr nett.', skill: 'Character descriptions' },
+                { word: 'toll', translation: 'great', example: 'Die Party war toll!', skill: 'Opinions' },
+                { word: 'schlecht', translation: 'bad', example: 'Das war eine schlechte Idee.', skill: 'Opinions' },
+                { word: 'groß', translation: 'big/tall', example: 'Berlin ist eine große Stadt.', skill: 'Descriptions' },
+                { word: 'klein', translation: 'small', example: 'Ich habe einen kleinen Bruder.', skill: 'Descriptions' },
+                { word: 'neu', translation: 'new', example: 'Ich habe ein neues Handy.', skill: 'Everyday language' },
+                { word: 'alt', translation: 'old', example: 'Mein Großvater ist alt.', skill: 'Descriptions' },
+                { word: 'jung', translation: 'young', example: 'Sie ist noch sehr jung.', skill: 'Descriptions' }
+            ],
+            level2: [ // Better - CEFR A2-B1
+                { word: 'angenehm', translation: 'pleasant', example: 'Es war ein angenehmer Abend.', skill: 'Opinions & impressions' },
+                { word: 'interessant', translation: 'interesting', example: 'Der Film war sehr interessant.', skill: 'Expressing opinions' },
+                { word: 'praktisch', translation: 'practical', example: 'Das ist eine praktische Lösung.', skill: 'Evaluating' },
+                { word: 'wichtig', translation: 'important', example: 'Bildung ist wichtig.', skill: 'Expressing importance' },
+                { word: 'schwierig', translation: 'difficult', example: 'Die Prüfung war schwierig.', skill: 'Describing challenges' },
+                { word: 'einfach', translation: 'easy/simple', example: 'Die Aufgabe war einfach.', skill: 'Describing difficulty' },
+                { word: 'modern', translation: 'modern', example: 'Die Stadt ist sehr modern.', skill: 'Descriptions' },
+                { word: 'erfolgreich', translation: 'successful', example: 'Sie ist eine erfolgreiche Geschäftsfrau.', skill: 'Describing achievement' },
+                { word: 'beliebt', translation: 'popular', example: 'Fußball ist sehr beliebt.', skill: 'Describing popularity' },
+                { word: 'möglich', translation: 'possible', example: 'Alles ist möglich!', skill: 'Expressing possibility' }
+            ],
+            level3: [ // Good/Strong - CEFR B1-B2
+                { word: 'beeindruckend', translation: 'impressive', example: 'Die Architektur ist beeindruckend.', skill: 'Sophisticated opinions' },
+                { word: 'außergewöhnlich', translation: 'extraordinary', example: 'Er hat außergewöhnliche Fähigkeiten.', skill: 'Higher-level descriptions' },
+                { word: 'vorteilhaft', translation: 'advantageous', example: 'Das ist sehr vorteilhaft für uns.', skill: 'Argumentation' },
+                { word: 'empfehlenswert', translation: 'recommendable', example: 'Dieses Restaurant ist empfehlenswert.', skill: 'Making recommendations' },
+                { word: 'bedeutsam', translation: 'significant', example: 'Das war ein bedeutsamer Moment.', skill: 'Expressing significance' },
+                { word: 'nachhaltig', translation: 'sustainable', example: 'Wir brauchen nachhaltige Lösungen.', skill: 'Environmental topics' },
+                { word: 'effektiv', translation: 'effective', example: 'Diese Methode ist sehr effektiv.', skill: 'Evaluating methods' },
+                { word: 'vielfältig', translation: 'diverse/varied', example: 'Deutschland ist kulturell vielfältig.', skill: 'Cultural topics' },
+                { word: 'anspruchsvoll', translation: 'demanding/sophisticated', example: 'Das ist eine anspruchsvolle Aufgabe.', skill: 'Describing complexity' },
+                { word: 'bemerkenswert', translation: 'remarkable', example: 'Seine Leistung war bemerkenswert.', skill: 'Expressing admiration' }
+            ],
+            level4: [ // Very Good/Excellent - CEFR B2
+                { word: 'hervorragend', translation: 'excellent/outstanding', example: 'Die Präsentation war hervorragend.', skill: 'High-level praise' },
+                { word: 'ausgezeichnet', translation: 'excellent', example: 'Sie hat ausgezeichnete Arbeit geleistet.', skill: 'Expressing excellence' },
+                { word: 'außerordentlich', translation: 'exceptional', example: 'Das war ein außerordentlicher Erfolg.', skill: 'Emphasizing quality' },
+                { word: 'erstklassig', translation: 'first-class', example: 'Der Service war erstklassig.', skill: 'Evaluating quality' },
+                { word: 'vorbildlich', translation: 'exemplary', example: 'Sein Verhalten war vorbildlich.', skill: 'Describing behavior' },
+                { word: 'wegweisend', translation: 'pioneering/groundbreaking', example: 'Das war eine wegweisende Entscheidung.', skill: 'Describing innovation' },
+                { word: 'bahnbrechend', translation: 'groundbreaking', example: 'Eine bahnbrechende Erfindung!', skill: 'Describing breakthroughs' },
+                { word: 'lobenswert', translation: 'praiseworthy', example: 'Ihr Engagement ist lobenswert.', skill: 'Expressing praise' },
+                { word: 'überzeugend', translation: 'convincing', example: 'Das Argument war überzeugend.', skill: 'Argumentation' },
+                { word: 'beispielhaft', translation: 'exemplary', example: 'Eine beispielhafte Leistung!', skill: 'Expressing approval' }
+            ],
+            level5: [ // Outstanding - CEFR B2+ / Cambridge Excellence
+                { word: 'außergewöhnlich begabt', translation: 'exceptionally talented', example: 'Sie ist eine außergewöhnlich begabte Musikerin.', skill: 'Describing exceptional talent' },
+                { word: 'unübertroffen', translation: 'unsurpassed', example: 'Seine Leistung ist unübertroffen.', skill: 'Superlative expressions' },
+                { word: 'maßgeblich', translation: 'authoritative/decisive', example: 'Er hat einen maßgeblichen Beitrag geleistet.', skill: 'Formal writing' },
+                { word: 'richtungsweisend', translation: 'trend-setting', example: 'Eine richtungsweisende Studie.', skill: 'Academic language' },
+                { word: 'zukunftsweisend', translation: 'forward-looking', example: 'Ein zukunftsweisendes Konzept.', skill: 'Describing innovation' },
+                { word: 'anspruchsvoll', translation: 'sophisticated/demanding', example: 'Ein anspruchsvolles literarisches Werk.', skill: 'Literary analysis' },
+                { word: 'tiefgründig', translation: 'profound', example: 'Eine tiefgründige Analyse.', skill: 'Critical thinking' },
+                { word: 'differenziert', translation: 'nuanced/differentiated', example: 'Eine differenzierte Betrachtung.', skill: 'Analytical writing' },
+                { word: 'fundiert', translation: 'well-founded/sound', example: 'Eine fundierte Argumentation.', skill: 'Academic argumentation' },
+                { word: 'maßstabsetzend', translation: 'setting standards', example: 'Sein Werk ist maßstabsetzend.', skill: 'Highest-level evaluation' }
+            ]
+        };
+
+        // Frequently misspelled words for spelling practice
+        const spellingWords = [
+            { word: 'ausgezeichnet', hint: 'aus-ge-zeich-net', difficulty: 5 },
+            { word: 'außergewöhnlich', hint: 'au-ßer-ge-wöhn-lich', difficulty: 5 },
+            { word: 'beeindruckend', hint: 'be-ein-dru-ckend', difficulty: 4 },
+            { word: 'empfehlenswert', hint: 'emp-feh-lens-wert', difficulty: 4 },
+            { word: 'hervorragend', hint: 'her-vor-ra-gend', difficulty: 4 },
+            { word: 'außerordentlich', hint: 'au-ßer-or-dent-lich', difficulty: 5 },
+            { word: 'wegweisend', hint: 'weg-wei-send', difficulty: 3 },
+            { word: 'bahnbrechend', hint: 'bahn-bre-chend', difficulty: 3 },
+            { word: 'überzeugend', hint: 'ü-ber-zeu-gend', difficulty: 3 },
+            { word: 'beispielhaft', hint: 'bei-spiel-haft', difficulty: 3 },
+            { word: 'anspruchsvoll', hint: 'an-spruchs-voll', difficulty: 4 },
+            { word: 'nachhaltig', hint: 'nach-hal-tig', difficulty: 2 },
+            { word: 'bedeutsam', hint: 'be-deut-sam', difficulty: 2 },
+            { word: 'vorteilhaft', hint: 'vor-teil-haft', difficulty: 3 },
+            { word: 'schwierig', hint: 'schwie-rig', difficulty: 3 }
+        ];
+
+        // ============= INITIALIZATION =============
+        
+        function init() {
+            loadState();
+            updateDisplay();
+            updateBadges();
+            renderGameModes();
+            showHomeScreen();
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('igcseVocabArena');
+            if (saved) {
+                gameState = JSON.parse(saved);
+            }
+        }
+
+        function saveState() {
+            localStorage.saveItem('igcseVocabArena', JSON.stringify(gameState));
+        }
+
+        function updateDisplay() {
+            document.getElementById('totalPoints').textContent = gameState.totalPoints;
+            document.getElementById('masteredWords').textContent = gameState.masteredWords;
+            document.getElementById('streak').textContent = gameState.streak;
+            document.getElementById('gamesPlayed').textContent = gameState.completedGames;
+
+            // Update progress bars
+            const pointsProgress = Math.min((gameState.totalPoints / 2000) * 100, 100);
+            const wordsProgress = Math.min((gameState.masteredWords / 200) * 100, 100);
+            document.getElementById('pointsProgress').style.width = pointsProgress + '%';
+            document.getElementById('wordsProgress').style.width = wordsProgress + '%';
+
+            // Update rank
+            const currentRank = ranks.reduce((acc, rank) => 
+                gameState.totalPoints >= rank.minPoints ? rank : acc
+            );
+            document.getElementById('rankName').textContent = currentRank.name;
+        }
+
+        function updateBadges() {
+            const container = document.getElementById('badgesContainer');
+            container.innerHTML = badges.map(badge => {
+                const earned = badge.check();
+                if (earned && !gameState.badges.includes(badge.id)) {
+                    gameState.badges.push(badge.id);
+                    showBadgeNotification(badge);
+                }
+                return `
+                    <div class="badge ${earned ? 'earned' : 'locked'}">
+                        ${badge.emoji}
+                        <div class="badge-tooltip">${badge.name}<br>${badge.requirement}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function showBadgeNotification(badge) {
+            // Create a simple notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #48bb78, #38a169);
+                color: white;
+                padding: 20px 30px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(72, 187, 120, 0.5);
+                z-index: 1000;
+                font-size: 1.2em;
+                animation: slideIn 0.5s ease;
+            `;
+            notification.innerHTML = `
+                <strong>🎉 Neues Abzeichen!</strong><br>
+                ${badge.emoji} ${badge.name}
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        function addPoints(points) {
+            gameState.totalPoints += points;
+            updateDisplay();
+            updateBadges();
+            saveState();
+        }
+
+        function renderGameModes() {
+            const modes = [
+                { 
+                    id: 'vocab-climb', 
+                    icon: '🏔️', 
+                    title: 'Vokabel-Aufstieg', 
+                    description: 'Klettere von "gut" zu "ausgezeichnet"! Lerne, wie man von Basic zu Cambridge-Level aufsteigt.',
+                    skill: 'Vocabulary progression'
+                },
+                { 
+                    id: 'spelling-master', 
+                    icon: '✍️', 
+                    title: 'Rechtschreib-Meister', 
+                    description: 'Drag & Drop! Buchstabiere häufig falsch geschriebene Wörter richtig.',
+                    skill: 'Spelling practice'
+                },
+                { 
+                    id: 'translation-sprint', 
+                    icon: '⚡', 
+                    title: 'Übersetzungs-Sprint', 
+                    description: 'Schnelle Übersetzungen für IGCSE Reading & Writing Paper.',
+                    skill: 'Translation speed'
+                },
+                { 
+                    id: 'context-builder', 
+                    icon: '🧩', 
+                    title: 'Kontext-Baumeister', 
+                    description: 'Setze Vokabeln in den richtigen Kontext ein - perfekt für Writing tasks!',
+                    skill: 'Contextual usage'
+                },
+                { 
+                    id: 'synonym-upgrade', 
+                    icon: '⬆️', 
+                    title: 'Synonym-Upgrade', 
+                    description: 'Upgrade deine Wörter! Von "gut" zu "hervorragend" für bessere Noten.',
+                    skill: 'Vocabulary range'
+                },
+                { 
+                    id: 'cambridge-prep', 
+                    icon: '🎓', 
+                    title: 'Cambridge-Vorbereitung', 
+                    description: 'Spezielle Übungen für IGCSE Speaking & Writing exams.',
+                    skill: 'Exam preparation'
+                }
+            ];
+
+            const sidebar = document.getElementById('gameModes');
+            sidebar.innerHTML = modes.map(mode => `
+                <div class="game-mode-card" onclick="startGame('${mode.id}')">
+                    <div class="mode-icon">${mode.icon}</div>
+                    <div class="mode-title">${mode.title}</div>
+                    <div class="mode-description">${mode.description}</div>
+                    <div class="cambridge-badge">${mode.skill}</div>
+                </div>
+            `).join('');
+        }
+
+        function showHomeScreen() {
+            const content = document.getElementById('mainContent');
+            content.innerHTML = `
+                <div class="home-screen">
+                    <h2 class="section-title">Willkommen zurück! 🎯</h2>
+                    <p style="font-size: 1.2em; color: #718096; margin-bottom: 30px;">
+                        Bereit, dein Deutsch auf das nächste Level zu bringen? Wähle links einen Spielmodus und starte dein Training!
+                    </p>
+
+                    <div class="tips-panel">
+                        <div class="tips-title">💡 Cambridge IGCSE Success Tips</div>
+                        <div class="tip-item">
+                            <strong>Vocabulary Range:</strong> Die Prüfer suchen nach Vielfalt! Zeige, dass du mehr als nur "gut" und "schön" kennst.
+                        </div>
+                        <div class="tip-item">
+                            <strong>Spelling Matters:</strong> In Writing Papers verlierst du Punkte für Rechtschreibfehler. Übe die schwierigen Wörter!
+                        </div>
+                        <div class="tip-item">
+                            <strong>Context is Key:</strong> Es reicht nicht, Wörter zu kennen - du musst sie richtig einsetzen können!
+                        </div>
+                        <div class="tip-item">
+                            <strong>Build Your Arsenal:</strong> Erstelle dein persönliches Vokabular für verschiedene Topics (Familie, Umwelt, Technologie, etc.)
+                        </div>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #e6f7ff 0%, #cceeff 100%); padding: 30px; border-radius: 20px; margin-top: 30px;">
+                        <h3 style="color: #0077b6; margin-bottom: 15px;">📊 Deine Lernziele</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                            <div style="background: white; padding: 15px; border-radius: 10px;">
+                                <div style="font-size: 2em;">📚</div>
+                                <div style="font-weight: bold; color: #2d3748;">200 Wörter</div>
+                                <div style="color: #718096; font-size: 0.9em;">Vocabulary Goal</div>
+                            </div>
+                            <div style="background: white; padding: 15px; border-radius: 10px;">
+                                <div style="font-size: 2em;">✍️</div>
+                                <div style="font-weight: bold; color: #2d3748;">15 Wörter</div>
+                                <div style="color: #718096; font-size: 0.9em;">Spelling Mastery</div>
+                            </div>
+                            <div style="background: white; padding: 15px; border-radius: 10px;">
+                                <div style="font-size: 2em;">🎯</div>
+                                <div style="font-weight: bold; color: #2d3748;">Level 5</div>
+                                <div style="color: #718096; font-size: 0.9em;">Target Level</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ============= GAME FUNCTIONS =============
+
+        function startGame(gameId) {
+            switch(gameId) {
+                case 'vocab-climb':
+                    startVocabClimb();
+                    break;
+                case 'spelling-master':
+                    startSpellingMaster();
+                    break;
+                case 'translation-sprint':
+                    startTranslationSprint();
+                    break;
+                case 'context-builder':
+                    startContextBuilder();
+                    break;
+                case 'synonym-upgrade':
+                    startSynonymUpgrade();
+                    break;
+                case 'cambridge-prep':
+                    startCambridgePrep();
+                    break;
+            }
+        }
+
+        // ============= VOCAB CLIMB GAME =============
+        
+        function startVocabClimb() {
+            let currentQuestion = 0;
+            let score = 0;
+            const questions = [];
+            
+            // Create 15 questions mixing all levels
+            for (let i = 1; i <= 5; i++) {
+                const levelWords = vocabDatabase['level' + i];
+                const shuffled = [...levelWords].sort(() => Math.random() - 0.5).slice(0, 3);
+                questions.push(...shuffled.map(w => ({...w, level: i})));
+            }
+            questions.sort(() => Math.random() - 0.5);
+            questions.length = 15;
+            
+            function showQuestion() {
+                if (currentQuestion >= questions.length) {
+                    endGame();
+                    return;
+                }
+                
+                const q = questions[currentQuestion];
+                const options = [
+                    { level: 1, label: 'Basic' },
+                    { level: 2, label: 'Better' },
+                    { level: 3, label: 'Good' },
+                    { level: 4, label: 'Very Good' },
+                    { level: 5, label: 'Excellent' }
+                ];
+                
+                const content = document.getElementById('mainContent');
+                content.innerHTML = `
+                    <div class="question-card">
+                        <div class="question-number">Frage ${currentQuestion + 1} von ${questions.length}</div>
+                        <div style="text-align: right; color: #4facfe; font-weight: bold; margin-bottom: 15px;">
+                            Punkte: ${score}
+                        </div>
+                        
+                        <div class="question-text">${q.word}</div>
+                        <div style="font-size: 1.2em; color: #718096; margin-bottom: 10px; font-style: italic;">
+                            "${q.translation}"
+                        </div>
+                        <div style="font-size: 1em; color: #718096; margin-bottom: 30px;">
+                            Beispiel: "${q.example}"
+                        </div>
+                        
+                        <p style="margin-bottom: 20px; color: #2d3748; font-size: 1.1em;">
+                            Auf welchem Level ist dieses Wort?
+                        </p>
+                        
+                        <div class="options-grid">
+                            ${options.map(opt => `
+                                <div class="option-button" onclick="checkAnswer(${opt.level})">
+                                    Level ${opt.level}<br>
+                                    <span style="font-size: 0.8em; color: #718096;">${opt.label}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div id="feedback"></div>
+                    </div>
+                `;
+            }
+            
+            window.checkAnswer = function(answer) {
+                const q = questions[currentQuestion];
+                const correct = q.level === answer;
+                const feedback = document.getElementById('feedback');
+                
+                if (correct) {
+                    score += 10;
+                    feedback.innerHTML = `
+                        <div class="feedback-panel correct">
+                            <div class="feedback-title">✓ Richtig!</div>
+                            <div class="feedback-explanation">
+                                "${q.word}" ist Level ${q.level}. ${q.skill}
+                                <br><br>Beispiel: "${q.example}"
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    feedback.innerHTML = `
+                        <div class="feedback-panel incorrect">
+                            <div class="feedback-title">✗ Nicht ganz!</div>
+                            <div class="feedback-explanation">
+                                "${q.word}" ist Level ${q.level} (${['', 'Basic', 'Better', 'Good', 'Very Good', 'Excellent'][q.level]}).
+                                <br><br>Cambridge Skill: ${q.skill}
+                                <br>Beispiel: "${q.example}"
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                setTimeout(() => {
+                    currentQuestion++;
+                    showQuestion();
+                }, 2500);
+            };
+            
+            function endGame() {
+                addPoints(score);
+                gameState.completedGames++;
+                gameState.masteredWords += Math.floor(score / 10);
+                saveState();
+                
+                const content = document.getElementById('mainContent');
+                content.innerHTML = `
+                    <div class="results-screen">
+                        <div class="results-icon">${score >= 120 ? '🏆' : score >= 80 ? '🎯' : '📚'}</div>
+                        <div class="results-title">Aufstieg geschafft!</div>
+                        <div class="results-score">${score} / 150 Punkte</div>
+                        
+                        <div class="results-stats">
+                            <div class="result-stat-card">
+                                <div class="result-stat-value">${Math.round((score / 150) * 100)}%</div>
+                                <div class="result-stat-label">Erfolgsquote</div>
+                            </div>
+                            <div class="result-stat-card">
+                                <div class="result-stat-value">${Math.floor(score / 10)}</div>
+                                <div class="result-stat-label">Level erkannt</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tips-panel">
+                            <div class="tips-title">💡 Cambridge IGCSE Tipp</div>
+                            <div class="tip-item">
+                                Im Writing Paper zeigst du "Vocabulary Range" durch verschiedene Levels. 
+                                Verwende Level 3-5 Wörter für höhere Marks in Language Quality!
+                            </div>
+                        </div>
+                        
+                        <button class="button" onclick="startGame('vocab-climb')">Nochmal üben</button>
+                        <button class="button secondary" onclick="showHomeScreen()">Hauptmenü</button>
+                    </div>
+                `;
+            }
+            
+            showQuestion();
+        }
+
+        // ============= SPELLING MASTER GAME =============
+        
+        function startSpellingMaster() {
+            let currentWordIndex = 0;
+            let score = 0;
+            const wordsToSpell = [...spellingWords].sort(() => Math.random() - 0.5).slice(0, 10);
+            let currentAttempt = [];
+            let letterBank = [];
+            
+            function showSpelling() {
+                if (currentWordIndex >= wordsToSpell.length) {
+                    endSpellingGame();
+                    return;
+                }
+                
+                const word = wordsToSpell[currentWordIndex];
+                currentAttempt = [];
+                
+                // Create letter bank with word letters shuffled plus some extra common letters
+                letterBank = word.word.split('');
+                const extraLetters = ['e', 'n', 'r', 't', 's', 'i', 'a'].slice(0, 3);
+                letterBank = [...letterBank, ...extraLetters].sort(() => Math.random() - 0.5);
+                
+                const content = document.getElementById('mainContent');
+                content.innerHTML = `
+                    <div class="spelling-container">
+                        <div class="question-number">Wort ${currentWordIndex + 1} von ${wordsToSpell.length}</div>
+                        <div style="text-align: right; color: #4facfe; font-weight: bold; margin-bottom: 20px;">
+                            Punkte: ${score}
+                        </div>
+                        
+                        <div class="pronunciation-hint">${word.hint}</div>
+                        
+                        <h3 style="text-align: center; color: #2d3748; margin-bottom: 30px;">
+                            Buchstabiere das Wort richtig!
+                        </h3>
+                        
+                        <div class="drop-zone" id="dropZone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                            ${currentAttempt.length === 0 ? '<p style="color: #718096; font-style: italic;">Ziehe die Buchstaben hierher...</p>' : ''}
+                        </div>
+                        
+                        <div class="letter-bank" id="letterBank">
+                            ${letterBank.map((letter, index) => `
+                                <div class="letter-tile" draggable="true" ondragstart="handleDragStart(event, ${index}, '${letter}')" id="letter-${index}">
+                                    ${letter}
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 30px;">
+                            <button class="button" onclick="checkSpelling()">Prüfen</button>
+                            <button class="button secondary" onclick="resetSpelling()">Zurücksetzen</button>
+                        </div>
+                        
+                        <div id="spellingFeedback"></div>
+                    </div>
+                `;
+            }
+            
+            window.handleDragStart = function(event, index, letter) {
+                event.dataTransfer.effectAllowed = 'move';
+                event.dataTransfer.setData('text/plain', JSON.stringify({index, letter}));
+                event.target.classList.add('dragging');
+            };
+            
+            window.handleDragOver = function(event) {
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'move';
+                document.getElementById('dropZone').classList.add('drag-over');
+            };
+            
+            window.handleDragLeave = function(event) {
+                document.getElementById('dropZone').classList.remove('drag-over');
+            };
+            
+            window.handleDrop = function(event) {
+                event.preventDefault();
+                document.getElementById('dropZone').classList.remove('drag-over');
+                
+                const data = JSON.parse(event.dataTransfer.getData('text/plain'));
+                currentAttempt.push(data.letter);
+                
+                // Remove letter from bank
+                const letterElement = document.getElementById(`letter-${data.index}`);
+                if (letterElement) {
+                    letterElement.style.display = 'none';
+                }
+                
+                // Update drop zone
+                const dropZone = document.getElementById('dropZone');
+                dropZone.innerHTML = currentAttempt.map(l => `<div class="drop-slot">${l}</div>`).join('');
+            };
+            
+            window.resetSpelling = function() {
+                currentAttempt = [];
+                showSpelling();
+            };
+            
+            window.checkSpelling = function() {
+                const word = wordsToSpell[currentWordIndex];
+                const attempt = currentAttempt.join('');
+                const correct = attempt === word.word;
+                
+                const feedback = document.getElementById('spellingFeedback');
+                
+                if (correct) {
+                    score += word.difficulty * 10;
+                    if (!gameState.spellingMastered.includes(word.word)) {
+                        gameState.spellingMastered.push(word.word);
+                    }
+                    feedback.innerHTML = `
+                        <div class="feedback-panel correct">
+                            <div class="feedback-title">✓ Perfekt!</div>
+                            <div class="feedback-explanation">
+                                "${word.word}" ist richtig geschrieben!
+                                <br>+${word.difficulty * 10} Punkte
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    feedback.innerHTML = `
+                        <div class="feedback-panel incorrect">
+                            <div class="feedback-title">✗ Leider nicht richtig</div>
+                            <div class="feedback-explanation">
+                                Du hast geschrieben: "${attempt}"
+                                <br>Richtig ist: "${word.word}"
+                                <br>Tipp: ${word.hint}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                setTimeout(() => {
+                    currentWordIndex++;
+                    showSpelling();
+                }, 3000);
+            };
+            
+            function endSpellingGame() {
+                addPoints(score);
+                gameState.completedGames++;
+                saveState();
+                updateBadges();
+                
+                const content = document.getElementById('mainContent');
+                content.innerHTML = `
+                    <div class="results-screen">
+                        <div class="results-icon">✍️</div>
+                        <div class="results-title">Rechtschreib-Training beendet!</div>
+                        <div class="results-score">${score} Punkte</div>
+                        
+                        <div class="results-stats">
+                            <div class="result-stat-card">
+                                <div class="result-stat-value">${gameState.spellingMastered.length}</div>
+                                <div class="result-stat-label">Wörter gemeistert</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tips-panel">
+                            <div class="tips-title">💡 Spelling Tips für IGCSE</div>
+                            <div class="tip-item">
+                                <strong>Umlaute beachten:</strong> ä, ö, ü sind wichtig! "außergewöhnlich" nicht "ausergewonlich"
+                            </div>
+                            <div class="tip-item">
+                                <strong>Doppelkonsonanten:</strong> Viele Fehler passieren hier - "außergewöhnlich" hat kein "ss"
+                            </div>
+                            <div class="tip-item">
+                                <strong>Compound words:</strong> Deutsche Wörter werden zusammengeschrieben - ein Wort, nicht zwei!
+                            </div>
+                        </div>
+                        
+                        <button class="button" onclick="startGame('spelling-master')">Nochmal üben</button>
+                        <button class="button secondary" onclick="showHomeScreen()">Hauptmenü</button>
+                    </div>
+                `;
+            }
+            
+            showSpelling();
+        }
+
+        // ============= TRANSLATION SPRINT =============
+        
+        function startTranslationSprint() {
+            let currentQuestion = 0;
+            let score = 0;
+            let timeLeft = 60;
+            const questions = [];
+            
+            // Gather words from all levels
+            for (let level = 1; level <= 5; level++) {
+                const words = vocabDatabase['level' + level];
+                questions.push(...words.map(w => ({...w, level})));
+            }
+            questions.sort(() => Math.random() - 0.5);
+            questions.length = 20;
+            
+            const timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    endSprint();
+                }
+            }, 1000);
+            
+            function showQuestion() {
+                if (currentQuestion >= questions.length) {
+                    clearInterval(timer);
+                    endSprint();
+                    return;
+                }
+                
+                const q = questions[currentQuestion];
+                const allWords = questions.map(w => w.translation);
+                const wrongAnswers = allWords.filter(w => w !== q.translation).sort(() => Math.random() - 0.5).slice(0, 3);
+                const options = [q.translation, ...wrongAnswers].sort(() => Math.random() - 0.5);
+                
+                const content = document.getElementById('mainContent');
+                content.innerHTML = `
+                    <div class="question-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                            <div class="question-number">Frage ${currentQuestion + 1} von ${questions.length}</div>
+                            <div style="font-size: 2em; color: #f56565; font-weight: bold;">
+                                ⏱️ <span id="timer">${timeLeft}</span>s
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <div class="level-badge level-${q.level}">Level ${q.level}</div>
+                        </div>
+                        
+                        <div class="question-text">${q.word}</div>
+                        
+                        <p style="margin-bottom: 20px; color: #2d3748; font-size: 1.1em; text-align: center;">
+                            Was bedeutet dieses Wort?
+                        </p>
+                        
+                        <div class="options-grid">
+                            ${options.map(opt => `
+                                <div class="option-button" onclick="checkTranslation('${opt}', '${q.translation}')">
+                                    ${opt}
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 20px; color: #718096;">
+                            Punkte: ${score}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            window.checkTranslation = function(answer, correct) {
+                if (answer === correct) {
+                    score += 10;
+                }
+                currentQuestion++;
+                showQuestion();
+            };
+            
+            function endSprint() {
+                clearInterval(timer);
+                addPoints(score);
+                gameState.completedGames++;
+                saveState();
+                
+                const content = document.getElementById('mainContent');
+                content.innerHTML = `
+                    <div class="results-screen">
+                        <div class="results-icon">⚡</div>
+                        <div class="results-title">Sprint beendet!</div>
+                        <div class="results-score">${score} Punkte</div>
+                        
+                        <div class="results-stats">
+                            <div class="result-stat-card">
+                                <div class="result-stat-value">${currentQuestion}</div>
+                                <div class="result-stat-label">Beantwortet</div>
+                            </div>
+                            <div class="result-stat-card">
+                                <div class="result-stat-value">${Math.round((score / (currentQuestion * 10)) * 100)}%</div>
+                                <div class="result-stat-label">Genauigkeit</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tips-panel">
+                            <div class="tips-title">💡 Speed Reading Tip</div>
+                            <div class="tip-item">
+                                In IGCSE Reading Papers musst du schnell verstehen können. 
+                                Übe regelmäßig, um deine Reaktionszeit zu verbessern!
+                            </div>
+                        </div>
+                        
+                        <button class="button" onclick="startGame('translation-sprint')">Nochmal!</button>
+                        <button class="button secondary" onclick="showHomeScreen()">Hauptmenü</button>
+                    </div>
+                `;
+            }
+            
+            showQuestion();
+        }
+
+        // ============= CONTEXT BUILDER =============
+        
+        function startContextBuilder() {
+            let currentQuestion = 0;
+            let score = 0;
+            const scenarios = [
+                {
+                    context: 'Du schreibst einen Brief über deine Schulerfahrung.',
+                    sentence: 'Der Unterricht war ___.',
+                    correct: 'interessant',
+                    options: ['gut', 'interessant', 'schön', 'toll'],
+                    level: 2,
+                    explanation: '"interessant" ist besser für formelle Beschreibungen als "gut"'
+                },
+                {
+                    context: 'Du beschreibst ein umweltfreundliches Projekt.',
+                    sentence: 'Das Projekt war sehr ___ für die Umwelt.',
+                    correct: 'nachhaltig',
+                    options: ['gut', 'nett', 'nachhaltig', 'schön'],
+                    level: 3,
+                    explanation: '"nachhaltig" ist das präzise Wort für Umweltthemen'
+                },
+                {
+                    context: 'Du bewertest die Leistung eines Sportlers.',
+                    sentence: 'Seine Leistung war ___.',
+                    correct: 'hervorragend',
+                    options: ['gut', 'toll', 'sehr gut', 'hervorragend'],
+                    level: 4,
+                    explanation: '"hervorragend" zeigt höhere Sprachkompetenz'
+                },
+                {
+                    context: 'Du schreibst über eine wissenschaftliche Entdeckung.',
+                    sentence: 'Die Entdeckung war ___.',
+                    correct: 'bahnbrechend',
+                    options: ['gut', 'wichtig', 'toll', 'bahnbrechend'],
+                    level: 4,
+                    explanation: '"bahnbrechend" ist perfekt für bedeutende Entdeckungen'
+                },
+                {
+                    context: 'Du beschreibst dein Lieblingsbuch.',
+                    sentence: 'Das Buch war ___.',
+                    correct: 'fesselnd',
+                    options: ['gut', 'interessant', 'fesselnd', 'schön'],
+                    level: 3,
+                    explanation: '"fesselnd" zeigt, dass das Buch dich gefangen hielt'
+                },
+                {
+                    context: 'Du schreibst über deinen Urlaub.',
+                    sentence: 'Die Reise war ___.',
+                    correct: 'unvergesslich',
+                    options: ['gut', 'toll', 'schön', 'unvergesslich'],
+                    level: 3,
+                    explanation: '"unvergesslich" ist emotionaler und ausdrucksstärker'
+                },
+                {
+                    context: 'Du bewertest ein Restaurant.',
+                    sentence: 'Der Service war ___.',
+                    correct: 'erstklassig',
+                    options: ['gut', 'nett', 'sehr gut', 'erstklassig'],
+                    level: 4,
+                    explanation: '"erstklassig" zeigt höchste Qualität'
+                },
+                {
+                    context: 'Du beschreibst einen Freund.',
+                    sentence: 'Er ist ein ___ Freund.',
+                    correct: 'treuer',
+                    options: ['guter', 'netter', 'treuer', 'toller'],
+                    level: 2,
+                    explanation: '"treu" ist spezifischer als nur "gut"'
+                },
+                {
+                    context: 'Du schreibst über Technologie.',
+                    sentence: 'Die Erfindung war ___.',
+                    correct: 'revolutionär',
+                    options: ['gut', 'modern', 'wichtig', 'revolutionär'],
+                    level: 4,
+                    explanation: '"revolutionär" zeigt große Bedeutung'
+                },
+                {
+                    context: 'Du beschreibst einen Film.',
+                    sentence: 'Der Film war ___.',
+                    correct: 'bewegend',
+                    options: ['gut', 'schön', 'interessant', 'bewegend'],
+                    level: 3,
+                    explanation: '"bewegend" zeigt emotionale Tiefe'
+                }
+            ];
+            
+            scenarios.sort(() => Math.random() - 0.5);
+            scenarios.length = 8;
+            
+            function showQuestion() {
+                if (currentQuestion >= scenarios.length) {
+                    endGame();
+                    return;
+                }
+                
+                const q = scenarios[currentQuestion];
+                
+                const content = document.getElementById('mainContent');
+                content.innerHTML = `
+                    <div class="question-card">
+                        <div class="question-number">Situation ${currentQuestion + 1} von ${scenarios.length}</div>
+                        <div style="text-align: right; color: #4facfe; font-weight: bold; margin-bottom: 15px;">
+                            Punkte: ${score}
+                        </div>
+                        
+                        <div style="background: #f0f9ff; padding: 20px; border-radius: 15px; margin-bottom: 30px; border-left: 5px solid #4facfe;">
+                            <strong style="color: #0077b6;">Kontext:</strong><br>
+                            <span style="font-size: 1.1em; color: #2d3748;">${q.context}</span>
+                        </div>
+                        
+                        <div class="question-text" style="font-size: 1.5em;">${q.sentence}</div>
+                        
+                        <p style="margin: 20px 0; color: #718096; font-size: 1.1em; text-align: center;">
+                            Welches Wort passt am besten?
+                        </p>
+                        
+                        <div class="options-grid">
+                            ${q.options.map(opt => `
+                                <div class="option-button" onclick="checkContext('${opt}', '${q.correct}')">
+                                    ${opt}
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div id="feedback"></div>
+                    </div>
+                `;
+            }
+            
+            window.checkContext = function(answer, correct) {
+                const q = scenarios[currentQuestion];
+                const isCorrect = answer === correct;
+                const feedback = document.getElementById('feedback');
+                
+                if (isCorrect) {
+                    score += 15;
+                    feedback.innerHTML = `
+                        <div class="feedback-panel correct">
+                            <div class="feedback-title">✓ Perfekt!</div>
+                            <div class="feedback-explanation">
+                                "${correct}" ist die beste Wahl für diesen Kontext.
+                                <br><br>${q.explanation}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    feedback.innerHTML = `
+                        <div class="feedback-panel incorrect">
+                            <div class="feedback-title">✗ Nicht ganz</div>
+                            <div class="feedback-explanation">
+                                Die beste Wahl wäre "${correct}".
+                                <br><br>${q.explanation}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                setTimeout(() => {
+                    currentQuestion++;
+                    showQuestion();
+                }, 3000);
+            };
+            
+            function endGame() {
+                addPoints(score);
+                gameState.completedGames++;
+                saveState();
+                
+                const content = document.getElementById('mainContent');
+                content.innerHTML = `
+                    <div class="results-screen">
+                        <div class="results-icon">🧩</div>
+                        <div class="results-title">Kontext-Training beendet!</div>
+                        <div class="results-score">${score} Punkte</div>
+                        
+                        <div class="results-stats">
+                            <div class="result-stat-card">
+                                <div class="result-stat-value">${Math.round((score / (scenarios.length * 15)) * 100)}%</div>
+                                <div class="result-stat-label">Genauigkeit</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tips-panel">
+                            <div class="tips-title">💡 IGCSE Writing Tip</div>
+                            <div class="tip-item">
+                                <strong>Context is King:</strong> In IGCSE Writing bewertet Cambridge nicht nur, 
+                                OB du Vokabular kennst, sondern ob du es RICHTIG einsetzt. Kontext ist alles!
+                            </div>
+                        </div>
+                        
+                        <button class="button" onclick="startGame('context-builder')">Nochmal üben</button>
+                        <button class="button secondary" onclick="showHomeScreen()">Hauptmenü</button>
+                    </div>
+                `;
+            }
+            
+            showQuestion();
+        }
+
+        // ============= SYNONYM UPGRADE =============
+        
+        function startSynonymUpgrade() {
+            let currentQuestion = 0;
+            let score = 0;
+            const upgrades = [
+                { basic: 'gut', better: 'angenehm', best: 'hervorragend', context: 'Qualität beschreiben' },
+                { basic: 'schön', better: 'beeindruckend', best: 'außergewöhnlich', context: 'Aussehen/Eindruck' },
+                { basic: 'wichtig', better: 'bedeutsam', best: 'maßgeblich', context: 'Bedeutung betonen' },
+                { basic: 'schwierig', better: 'anspruchsvoll', best: 'komplex', context: 'Herausforderungen' },
+                { basic: 'toll', better: 'bemerkenswert', best: 'außerordentlich', context: 'Begeisterung ausdrücken' },
+                { basic: 'interessant', better: 'fesselnd', best: 'tiefgründig', context: 'Engagement zeigen' },
+                { basic: 'nett', better: 'liebenswürdig', best: 'zuvorkommend', context: 'Charakter beschreiben' },
+                { basic: 'neu', better: 'innovativ', best: 'bahnbrechend', context: 'Innovation beschreiben' }
+            ];
+            
+            upgrades.sort(() => Math.random() - 0.5);
+            upgrades.length = 6;
+            
+            function showQuestion() {
+                if (currentQuestion >= upgrades.length) {
+                    endGame();
+                    return;
+                }
+                
+                const q = upgrades[currentQuestion];
+                const options = [q.better, q.best];
+                options.sort(() => Math.random() - 0.5);
+                
+                const content = document.getElementById('mainContent');
+                content.innerHTML = `
+                    <div class="question-card">
+                        <div class="question-number">Upgrade ${currentQuestion + 1} von ${upgrades.length}</div>
+                        <div style="text-align: right; color: #4facfe; font-weight: bold; margin-bottom: 15px;">
+                            Punkte: ${score}
+                        </div>
+                        
+                        <div style="text-align: center; margin-bottom: 30px;">
+                            <div style="background: #fee; padding: 20px; border-radius: 15px; display: inline-block; border: 3px solid #f56565;">
+                                <div style="color: #c53030; font-size: 0.9em; font-weight: bold; margin-bottom: 5px;">❌ ZU EINFACH</div>
+                                <div style="font-size: 2em; font-weight: bold; color: #2d3748;">${q.basic}</div>
+                            </div>
+                        </div>
+                        
+                        <p style="text-align: center; color: #2d3748; font-size: 1.2em; margin-bottom: 10px;">
+                            Upgrade für: <strong>${q.context}</strong>
+                        </p>
+                        <p style="text-align: center; color: #718096; margin-bottom: 30px;">
+                            Wähle die bessere Alternative:
+                        </p>
+                        
+                        <div class="options-grid">
+                            ${options.map(opt => `
+                                <div class="option-button" onclick="checkUpgrade('${opt}', '${q.best}')">
+                                    ${opt}
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div id="feedback"></div>
+                    </div>
+                `;
+            }
+            
+            window.checkUpgrade = function(answer, best) {
+                const q = upgrades[currentQuestion];
+                const isBest = answer === best;
+                const feedback = document.getElementById('feedback');
+                
+                if (isBest) {
+                    score += 20;
+                    feedback.innerHTML = `
+                        <div class="feedback-panel correct">
+                            <div class="feedback-title">✓ Perfektes Upgrade!</div>
+                            <div class="feedback-explanation">
+                                "${best}" ist die beste Wahl! Das zeigt advanced vocabulary.
+                                <br><br>
+                                Progression: ${q.basic} → ${q.better} → <strong>${q.best}</strong>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    score += 10;
+                    feedback.innerHTML = `
+                        <div class="feedback-panel incorrect">
+                            <div class="feedback-title">✓ Gut, aber es geht noch besser!</div>
+                            <div class="feedback-explanation">
+                                "${answer}" ist besser als "${q.basic}", aber "${best}" wäre top!
+                                <br><br>
+                                Progression: ${q.basic} → ${q.better} → <strong>${q.best}</strong>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                setTimeout(() => {
+                    currentQuestion++;
+                    showQuestion();
+                }, 3500);
+            };
+            
+            function endGame() {
+                addPoints(score);
+                gameState.completedGames++;
+                saveState();
+                
+                const content = document.getElementById('mainContent');
+                content.innerHTML = `
+                    <div class="results-screen">
+                        <div class="results-icon">⬆️</div>
+                        <div class="results-title">Upgrade Complete!</div>
+                        <div class="results-score">${score} Punkte</div>
+                        
+                        <div class="results-stats">
+                            <div class="result-stat-card">
+                                <div class="result-stat-value">${Math.round((score / (upgrades.length * 20)) * 100)}%</div>
+                                <div class="result-stat-label">Upgrade Level</div>
+                            </div>
+                        </div>
+                        
+                        <div class="tips-panel">
+                            <div class="tips-title">💡 Vocabulary Range Strategy</div>
+                            <div class="tip-item">
+                                <strong>Level 1 Wörter (gut, schön):</strong> Vermeide diese in IGCSE Writing!
+                            </div>
+                            <div class="tip-item">
+                                <strong>Level 2-3 Wörter:</strong> Solid choice - zeigt gutes Vokabular
+                            </div>
+                            <div class="tip-item">
+                                <strong>Level 4-5 Wörter:</strong> Excellence! Verwende 5-8 davon pro Text
+                            </div>
+                        </div>
+                        
+                        <button class="button" onclick="startGame('synonym-upgrade')">Nochmal!</button>
+                        <button class="button secondary" onclick="showHomeScreen()">Hauptmenü</button>
+                    </div>
+                `;
+            }
+            
+            showQuestion();
+        }
+
+        // ============= CAMBRIDGE PREP =============
+        
+        function startCambridgePrep() {
+            const content = document.getElementById('mainContent');
+            content.innerHTML = `
+                <div class="home-screen">
+                    <h2 class="section-title">🎓 Cambridge IGCSE Prep</h2>
+                    
+                    <div class="tips-panel">
+                        <div class="tips-title">📋 IGCSE German Assessment Criteria</div>
+                        <div class="tip-item">
+                            <strong>Communication & Content:</strong> Beantworte alle Aspekte der Aufgabe klar und detailliert
+                        </div>
+                        <div class="tip-item">
+                            <strong>Language Quality:</strong> Zeige vocabulary range von basic zu advanced
+                        </div>
+                        <div class="tip-item">
+                            <strong>Accuracy:</strong> Grammar und spelling müssen stimmen
+                        </div>
+                        <div class="tip-item">
+                            <strong>Range of Structures:</strong> Verwende verschiedene Satzstrukturen und Zeitformen
+                        </div>
+                    </div>
+
+                    <div style="background: white; padding: 30px; border-radius: 20px; margin: 30px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                        <h3 style="color: #4facfe; margin-bottom: 20px;">📝 Writing Tips</h3>
+                        
+                        <div class="word-card">
+                            <div class="word-header">
+                                <div class="word-german">Vocabulary Range</div>
+                            </div>
+                            <div class="word-example">
+                                Verwende in jedem Text mindestens 5-8 Wörter aus Level 3-5. 
+                                Das zeigt dem Examiner, dass dein Vokabular über Basics hinausgeht.
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <span class="skill-tag">Writing Paper 4</span>
+                                <span class="skill-tag">High marks</span>
+                            </div>
+                        </div>
+
+                        <div class="word-card">
+                            <div class="word-header">
+                                <div class="word-german">Avoid Repetition</div>
+                            </div>
+                            <div class="word-example">
+                                Verwende nicht 5x "gut". Nutze Synonyme: gut → angenehm → beeindruckend → hervorragend
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <span class="skill-tag">Variety</span>
+                                <span class="skill-tag">Sophistication</span>
+                            </div>
+                        </div>
+
+                        <div class="word-card">
+                            <div class="word-header">
+                                <div class="word-german">Context Matters</div>
+                            </div>
+                            <div class="word-example">
+                                Ein formeller Brief braucht formelles Vokabular. 
+                                Eine Email an einen Freund kann informeller sein.
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <span class="skill-tag">Register</span>
+                                <span class="skill-tag">Appropriateness</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #d4f4dd 0%, #b8e6c2 100%); padding: 30px; border-radius: 20px; border-left: 5px solid #48bb78;">
+                        <h3 style="color: #22543d; margin-bottom: 20px;">✅ Exam Day Checklist</h3>
+                        <div style="display: grid; gap: 15px;">
+                            <div style="background: white; padding: 15px; border-radius: 10px;">
+                                ✓ Lies die Aufgabe zweimal durch
+                            </div>
+                            <div style="background: white; padding: 15px; border-radius: 10px;">
+                                ✓ Plane deine Antwort (2-3 Minuten)
+                            </div>
+                            <div style="background: white; padding: 15px; border-radius: 10px;">
+                                ✓ Schreibe im Entwurf und überarbeite
+                            </div>
+                            <div style="background: white; padding: 15px; border-radius: 10px;">
+                                ✓ Prüfe Rechtschreibung und Grammatik
+                            </div>
+                            <div style="background: white; padding: 15px; border-radius: 10px;">
+                                ✓ Zähle deine Level 3-5 Wörter (mindestens 5!)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="button" onclick="showHomeScreen()">Zurück zum Hauptmenü</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Start the application
+        init();
+    </script>
+</body>
+</html>
