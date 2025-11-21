@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Deutsch Jeopardy – Klasse 4 & 5</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 3rem;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            color: #ffd700;
+        }
+
+        .setup-screen, .game-screen, .winner-screen {
+            display: none;
+        }
+
+        .setup-screen.active, .game-screen.active, .winner-screen.active {
+            display: block;
+        }
+
+        .setup-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #333;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .setup-panel h2 {
+            color: #1a237e;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .team-input {
+            margin-bottom: 20px;
+        }
+
+        .team-input label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #37474F;
+        }
+
+        .team-input input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #B0BEC5;
+            font-size: 1rem;
+        }
+
+        .grade-select {
+            margin-bottom: 20px;
+        }
+
+        .grade-select label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #37474F;
+        }
+
+        .grade-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .grade-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #1E88E5;
+            background: #E3F2FD;
+            color: #1E88E5;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .grade-btn.active {
+            background: #1E88E5;
+            color: white;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 16px;
+            background: #43A047;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.2s;
+        }
+
+        .start-btn:hover {
+            background: #2E7D32;
+        }
+
+        .scoreboard {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+
+        .team-score {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 16px 24px;
+            text-align: center;
+            flex: 1;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .team-score.active {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.2);
+            transform: scale(1.05);
+        }
+
+        .team-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .team-points {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        .round-info {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .category-header {
+            background: #1565C0;
+            padding: 16px 8px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .question-cell {
+            background: #1976D2;
+            padding: 24px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            color: #ffd700;
+        }
+
+        .question-cell:hover:not(.used) {
+            background: #2196F3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .question-cell.used {
+            background: #455A64;
+            cursor: default;
+            color: #78909C;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 800px;
+            width: 90%;
+            color: #333;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #1976D2;
+        }
+
+        .question-category {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1565C0;
+        }
+
+        .question-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffd700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .question-text {
+            font-size: 1.6rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: #E3F2FD;
+            border-radius: 8px;
+            color: #1565C0;
+            font-weight: 500;
+        }
+
+        .answer-section {
+            margin-top: 20px;
+        }
+
+        .show-answer-btn {
+            width: 100%;
+            padding: 14px;
+            background: #FF9800;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: background 0.2s;
+        }
+
+        .show-answer-btn:hover {
+            background: #F57C00;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 1.3rem;
+            padding: 16px;
+            background: #C8E6C9;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #1B5E20;
+            font-weight: 500;
+            border-left: 4px solid #43A047;
+        }
+
+        .answer-text.visible {
+            display: block;
+        }
+
+        .scoring-buttons {
+            display: none;
+            gap: 12px;
+        }
+
+        .scoring-buttons.visible {
+            display: flex;
+        }
+
+        .correct-btn, .incorrect-btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .correct-btn {
+            background: #43A047;
+            color: white;
+        }
+
+        .correct-btn:hover {
+            background: #2E7D32;
+            transform: scale(1.02);
+        }
+
+        .incorrect-btn {
+            background: #E53935;
+            color: white;
+        }
+
+        .incorrect-btn:hover {
+            background: #C62828;
+            transform: scale(1.02);
+        }
+
+        .close-modal {
+            display: none;
+            width: 100%;
+            padding: 12px;
+            background: #78909C;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        .close-modal.visible {
+            display: block;
+        }
+
+        .next-round-btn {
+            width: 100%;
+            padding: 16px;
+            background: #1976D2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.2s;
+        }
+
+        .next-round-btn:hover {
+            background: #1565C0;
+        }
+
+        .winner-screen {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .winner-trophy {
+            font-size: 8rem;
+            margin-bottom: 20px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .winner-text {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #ffd700;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        .final-scores {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px auto;
+            max-width: 500px;
+        }
+
+        .final-score-item {
+            font-size: 1.8rem;
+            margin: 12px 0;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .play-again-btn {
+            padding: 16px 32px;
+            background: #43A047;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.2s;
+        }
+
+        .play-again-btn:hover {
+            background: #2E7D32;
+        }
+
+        @media (max-width: 900px) {
+            .board {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .question-cell {
+                font-size: 1.5rem;
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Setup Screen -->
+    <div class="setup-screen active">
+        <h1>🎓 Deutsch Jeopardy 🎓</h1>
+        <div class="setup-panel">
+            <h2>Spielvorbereitung</h2>
+            
+            <div class="team-input">
+                <label for="team1Name">Team 1 Name:</label>
+                <input type="text" id="team1Name" placeholder="z.B. Die Lesefüchse" value="Team 1">
+            </div>
+            
+            <div class="team-input">
+                <label for="team2Name">Team 2 Name:</label>
+                <input type="text" id="team2Name" placeholder="z.B. Die Grammatikprofis" value="Team 2">
+            </div>
+            
+            <div class="grade-select">
+                <label>Klassenstufe wählen:</label>
+                <div class="grade-buttons">
+                    <button class="grade-btn active" data-grade="4">Klasse 4</button>
+                    <button class="grade-btn" data-grade="5">Klasse 5</button>
+                </div>
+            </div>
+            
+            <button class="start-btn">Spiel starten! 🎮</button>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div class="game-screen">
+        <h1>🎓 Deutsch Jeopardy 🎓</h1>
+        
+        <div class="round-info">Runde <span id="currentRound">1</span></div>
+        
+        <div class="scoreboard">
+            <div class="team-score active" data-team="1">
+                <div class="team-name" id="team1Display">Team 1</div>
+                <div class="team-points" id="team1Score">0</div>
+            </div>
+            <div class="team-score" data-team="2">
+                <div class="team-name" id="team2Display">Team 2</div>
+                <div class="team-points" id="team2Score">0</div>
+            </div>
+        </div>
+        
+        <div class="board" id="gameBoard"></div>
+        
+        <button class="next-round-btn" id="nextRoundBtn" style="display: none;">Zur nächsten Runde! 🎯</button>
+    </div>
+
+    <!-- Winner Screen -->
+    <div class="winner-screen">
+        <div class="winner-trophy">🏆</div>
+        <div class="winner-text" id="winnerAnnouncement">Team 1 gewinnt!</div>
+        <div class="final-scores">
+            <div class="final-score-item" id="finalTeam1"></div>
+            <div class="final-score-item" id="finalTeam2"></div>
+        </div>
+        <button class="play-again-btn">Nochmal spielen! 🔄</button>
+    </div>
+
+    <!-- Question Modal -->
+    <div class="modal" id="questionModal">
+        <div class="modal-content">
+            <div class="question-header">
+                <div class="question-category" id="modalCategory"></div>
+                <div class="question-value" id="modalValue"></div>
+            </div>
+            <div class="question-text" id="modalQuestion"></div>
+            
+            <div class="answer-section">
+                <button class="show-answer-btn" id="showAnswerBtn">Antwort zeigen 👁️</button>
+                <div class="answer-text" id="modalAnswer"></div>
+                
+                <div class="scoring-buttons" id="scoringButtons">
+                    <button class="correct-btn" id="correctBtn">✓ Richtig</button>
+                    <button class="incorrect-btn" id="incorrectBtn">✗ Falsch</button>
+                </div>
+                
+                <button class="close-modal" id="closeModalBtn">Schließen</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const QUESTIONS = {
+    4: {
+        round1: {
+            categories: ["Lesen", "Schreiben", "Hören", "Grammatik", "Wortschatz"],
+            questions: [
+                // Lesen - 100
+                {
+                    category: "Lesen",
+                    value: 100,
+                    question: "Wo wollen Anna und Lukas hin?",
+                    answer: "Zum Bahnhof"
+                },
+                // Lesen - 200
+                {
+                    category: "Lesen",
+                    value: 200,
+                    question: "Welches Zeitwort steht am Anfang im Satz: '______ gehen sie über die Straße.'",
+                    answer: "Zuerst"
+                },
+                // Lesen - 300
+                {
+                    category: "Lesen",
+                    value: 300,
+                    question: "Wo sehen Anna und Lukas viele Fahrräder?",
+                    answer: "In der Fußgängerzone"
+                },
+                // Lesen - 400
+                {
+                    category: "Lesen",
+                    value: 400,
+                    question: "Nenne drei Zeitwörter, die die Reihenfolge in einer Geschichte zeigen.",
+                    answer: "Zuerst, danach, später, am Ende (drei davon)"
+                },
+                // Lesen - 500
+                {
+                    category: "Lesen",
+                    value: 500,
+                    question: "Erkläre, was eine Textstruktur ist und warum sie wichtig ist.",
+                    answer: "Textstruktur zeigt den Aufbau eines Textes (Anfang, Mitte, Ende) und hilft beim Verstehen"
+                },
+                
+                // Schreiben - 100
+                {
+                    category: "Schreiben",
+                    value: 100,
+                    question: "Was muss am Satzanfang immer stehen?",
+                    answer: "Ein Großbuchstabe"
+                },
+                // Schreiben - 200
+                {
+                    category: "Schreiben",
+                    value: 200,
+                    question: "Nenne zwei Konnektoren, die du in einer Wegbeschreibung verwenden kannst.",
+                    answer: "Zuerst, danach, später, am Ende (zwei davon)"
+                },
+                // Schreiben - 300
+                {
+                    category: "Schreiben",
+                    value: 300,
+                    question: "Was ist der Unterschied zwischen einem Aussagesatz und einem Fragesatz?",
+                    answer: "Aussagesatz: Punkt am Ende, Fragesatz: Fragezeichen am Ende"
+                },
+                // Schreiben - 400
+                {
+                    category: "Schreiben",
+                    value: 400,
+                    question: "Schreibe einen Satz mit 'weil' über das Thema Unterwegs.",
+                    answer: "Beispiel: 'Ich ging langsam, weil ich müde war.' (Team muss einen korrekten Satz bilden)"
+                },
+                // Schreiben - 500
+                {
+                    category: "Schreiben",
+                    value: 500,
+                    question: "Was gehört in eine Bildgeschichte? Nenne drei wichtige Elemente.",
+                    answer: "Bilder in Reihenfolge, Sätze zu jedem Bild, Zeitwörter (zuerst, danach, später)"
+                },
+                
+                // Hören - 100
+                {
+                    category: "Hören",
+                    value: 100,
+                    question: "Was solltest du beim ersten Hören eines Textes tun?",
+                    answer: "Aufmerksam zuhören ohne Notizen"
+                },
+                // Hören - 200
+                {
+                    category: "Hören",
+                    value: 200,
+                    question: "Nenne zwei Informationen, die in einer Bahnhofsansage vorkommen können.",
+                    answer: "Zug, Uhrzeit, Gleis, Verspätung (zwei davon)"
+                },
+                // Hören - 300
+                {
+                    category: "Hören",
+                    value: 300,
+                    question: "Was machst du beim zweiten Hören eines Textes anders als beim ersten Mal?",
+                    answer: "Beim zweiten Mal notierst du Stichwörter"
+                },
+                // Hören - 400
+                {
+                    category: "Hören",
+                    value: 400,
+                    question: "Warum ist ein Diktat eine gute Hörübung?",
+                    answer: "Man übt genau zuzuhören und gleichzeitig richtig zu schreiben"
+                },
+                // Hören - 500
+                {
+                    category: "Hören",
+                    value: 500,
+                    question: "Was sind drei wichtige Wörter, die du aus einem Hörtext notieren solltest?",
+                    answer: "Wer? Wo? Was passiert? (oder ähnliche Schlüsselinformationen)"
+                },
+                
+                // Grammatik - 100
+                {
+                    category: "Grammatik",
+                    value: 100,
+                    question: "Was ist die Präteritumform von 'gehen'?",
+                    answer: "ging"
+                },
+                // Grammatik - 200
+                {
+                    category: "Grammatik",
+                    value: 200,
+                    question: "Was ist die Präteritumform von 'fahren'?",
+                    answer: "fuhr"
+                },
+                // Grammatik - 300
+                {
+                    category: "Grammatik",
+                    value: 300,
+                    question: "Steigere das Adjektiv: hell – ___ – am hellsten",
+                    answer: "heller"
+                },
+                // Grammatik - 400
+                {
+                    category: "Grammatik",
+                    value: 400,
+                    question: "Setze den richtigen Konnektor ein: '_____ ich müde war, ging ich früh schlafen.'",
+                    answer: "Weil (oder: Da)"
+                },
+                // Grammatik - 500
+                {
+                    category: "Grammatik",
+                    value: 500,
+                    question: "Nenne drei starke Verben im Präteritum.",
+                    answer: "ging, fuhr, sah, las, nahm, begann (drei davon)"
+                },
+                
+                // Wortschatz - 100
+                {
+                    category: "Wortschatz",
+                    value: 100,
+                    question: "Was ist ein Zebrastreifen?",
+                    answer: "Eine markierte Stelle zum Überqueren der Straße"
+                },
+                // Wortschatz - 200
+                {
+                    category: "Wortschatz",
+                    value: 200,
+                    question: "Wofür benutzt man einen Stadtplan?",
+                    answer: "Um Wege und Straßen zu finden"
+                },
+                // Wortschatz - 300
+                {
+                    category: "Wortschatz",
+                    value: 300,
+                    question: "Nenne drei Orte in der Stadt.",
+                    answer: "Bahnhof, Brücke, Fußgängerzone, Kreuzung, Straße (drei davon)"
+                },
+                // Wortschatz - 400
+                {
+                    category: "Wortschatz",
+                    value: 400,
+                    question: "Finde ein Synonym für das Wort 'groß'.",
+                    answer: "riesig, gigantisch, enorm, gewaltig (eins davon)"
+                },
+                // Wortschatz - 500
+                {
+                    category: "Wortschatz",
+                    value: 500,
+                    question: "Erkläre den Unterschied zwischen 'Verkehr' und 'Fortbewegung'.",
+                    answer: "Verkehr = Autos/Züge auf Straßen, Fortbewegung = wie man sich bewegt (z.B. Fahrrad)"
+                }
+            ]
+        },
+        round2: {
+            categories: ["Verstehen", "Textarbeit", "Sprache", "Satzlehre", "Kreatives"],
+            questions: [
+                // Verstehen - 200
+                {
+                    category: "Verstehen",
+                    value: 200,
+                    question: "Was sind W-Fragen? Nenne drei Beispiele.",
+                    answer: "Wer? Wo? Wann? Was? Warum? (drei davon)"
+                },
+                // Verstehen - 400
+                {
+                    category: "Verstehen",
+                    value: 400,
+                    question: "Was bedeutet 'Ursache und Folge'? Gib ein Beispiel.",
+                    answer: "Ursache = Grund, Folge = was passiert. Beispiel: Weil es regnet, nehme ich einen Schirm."
+                },
+                // Verstehen - 600
+                {
+                    category: "Verstehen",
+                    value: 600,
+                    question: "Wie beschreibst du eine Person mit Adjektiven? Nenne drei Adjektive.",
+                    answer: "jung, alt, freundlich, mutig, lustig, klug (drei davon)"
+                },
+                // Verstehen - 800
+                {
+                    category: "Verstehen",
+                    value: 800,
+                    question: "Was gehört in eine gute Zusammenfassung?",
+                    answer: "Wichtigste Informationen, kurze Form, eigene Worte, verständlich für andere"
+                },
+                // Verstehen - 1000
+                {
+                    category: "Verstehen",
+                    value: 1000,
+                    question: "Erkläre, wie du einen Text in eigenen Worten zusammenfasst.",
+                    answer: "Text lesen, wichtige Punkte markieren, in eigenen Worten neu schreiben, kürzer als Original"
+                },
+                
+                // Textarbeit - 200
+                {
+                    category: "Textarbeit",
+                    value: 200,
+                    question: "Was machst du, wenn du ein Wort nicht verstehst?",
+                    answer: "Im Wörterbuch nachschlagen, jemanden fragen, aus dem Kontext erschließen"
+                },
+                // Textarbeit - 400
+                {
+                    category: "Textarbeit",
+                    value: 400,
+                    question: "Warum solltest du beim Lesen wichtige Wörter markieren?",
+                    answer: "Damit du die Hauptinformationen schneller wiederfindest"
+                },
+                // Textarbeit - 600
+                {
+                    category: "Textarbeit",
+                    value: 600,
+                    question: "Was ist der Unterschied zwischen einem Sachtext und einer Geschichte?",
+                    answer: "Sachtext = Informationen/Fakten, Geschichte = Handlung/Figuren/Spannung"
+                },
+                // Textarbeit - 800
+                {
+                    category: "Textarbeit",
+                    value: 800,
+                    question: "Wie kannst du überprüfen, ob du einen Text verstanden hast?",
+                    answer: "Fragen zum Text beantworten, Text zusammenfassen, jemandem erklären"
+                },
+                // Textarbeit - 1000
+                {
+                    category: "Textarbeit",
+                    value: 1000,
+                    question: "Was bedeutet es, 'zwischen den Zeilen zu lesen'?",
+                    answer: "Verstehen, was nicht direkt gesagt wird, auf Hinweise achten"
+                },
+                
+                // Sprache - 200
+                {
+                    category: "Sprache",
+                    value: 200,
+                    question: "Steigere: laut – ___– am lautesten",
+                    answer: "lauter"
+                },
+                // Sprache - 400
+                {
+                    category: "Sprache",
+                    value: 400,
+                    question: "Was ist die Mehrzahl von 'das Auto'?",
+                    answer: "die Autos"
+                },
+                // Sprache - 600
+                {
+                    category: "Sprache",
+                    value: 600,
+                    question: "Nenne drei Nomen aus dem Wortfeld 'Verkehr'.",
+                    answer: "Auto, Bus, Straße, Ampel, Kreuzung, Verkehrsschild (drei davon)"
+                },
+                // Sprache - 800
+                {
+                    category: "Sprache",
+                    value: 800,
+                    question: "Bilde einen Satz mit 'obwohl'.",
+                    answer: "Beispiel: 'Obwohl es regnete, spielte ich draußen.' (Team muss korrekten Satz bilden)"
+                },
+                // Sprache - 1000
+                {
+                    category: "Sprache",
+                    value: 1000,
+                    question: "Erkläre den Unterschied zwischen 'weil' und 'obwohl'.",
+                    answer: "'Weil' = Grund/Ursache, 'obwohl' = Gegensatz/trotzdem"
+                },
+                
+                // Satzlehre - 200
+                {
+                    category: "Satzlehre",
+                    value: 200,
+                    question: "Welches Satzzeichen kommt am Ende eines Fragesatzes?",
+                    answer: "Fragezeichen (?)"
+                },
+                // Satzlehre - 400
+                {
+                    category: "Satzlehre",
+                    value: 400,
+                    question: "Was ist ein Ausrufesatz? Gib ein Beispiel.",
+                    answer: "Ein Satz mit starkem Gefühl. Beispiel: 'Das ist toll!'"
+                },
+                // Satzlehre - 600
+                {
+                    category: "Satzlehre",
+                    value: 600,
+                    question: "Was ist ein Subjekt im Satz?",
+                    answer: "Wer oder was etwas tut (z.B. 'Der Hund bellt' – Subjekt: der Hund)"
+                },
+                // Satzlehre - 800
+                {
+                    category: "Satzlehre",
+                    value: 800,
+                    question: "Bilde einen Satz mit Subjekt, Prädikat und Objekt.",
+                    answer: "Beispiel: 'Ich (Subjekt) lese (Prädikat) ein Buch (Objekt).' (Team muss Satz bilden)"
+                },
+                // Satzlehre - 1000
+                {
+                    category: "Satzlehre",
+                    value: 1000,
+                    question: "Was ist der Unterschied zwischen einem Hauptsatz und einem Nebensatz?",
+                    answer: "Hauptsatz = kann allein stehen, Nebensatz = braucht Hauptsatz, beginnt oft mit Konnektor"
+                },
+                
+                // Kreatives - 200
+                {
+                    category: "Kreatives",
+                    value: 200,
+                    question: "Nenne drei Gefühle, die in einer Geschichte vorkommen können.",
+                    answer: "Freude, Angst, Mut, Hoffnung, Trauer, Wut (drei davon)"
+                },
+                // Kreatives - 400
+                {
+                    category: "Kreatives",
+                    value: 400,
+                    question: "Was gehört zur Einleitung einer Geschichte?",
+                    answer: "Wer? Wo? Wann? (Personen, Ort, Zeit)"
+                },
+                // Kreatives - 600
+                {
+                    category: "Kreatives",
+                    value: 600,
+                    question: "Was macht eine Geschichte spannend?",
+                    answer: "Wendepunkt, Konflikt, überraschende Ereignisse, starke Gefühle"
+                },
+                // Kreatives - 800
+                {
+                    category: "Kreatives",
+                    value: 800,
+                    question: "Erfinde einen spannenden ersten Satz für ein Abenteuer.",
+                    answer: "(Team muss einen Satz erfinden – bewerten nach Kreativität)"
+                },
+                // Kreatives - 1000
+                {
+                    category: "Kreatives",
+                    value: 1000,
+                    question: "Was ist der Höhepunkt einer Geschichte und warum ist er wichtig?",
+                    answer: "Der spannendste Moment, wo sich alles entscheidet. Wichtig für Spannung und Interesse."
+                }
+            ]
+        }
+    },
+    5: {
+        round1: {
+            categories: ["Lesen", "Schreiben", "Hören", "Grammatik", "Wortschatz"],
+            questions: [
+                // Lesen - 100
+                {
+                    category: "Lesen",
+                    value: 100,
+                    question: "Was ist ein Erlebnisbericht?",
+                    answer: "Ein Text, der ein persönliches Erlebnis beschreibt"
+                },
+                // Lesen - 200
+                {
+                    category: "Lesen",
+                    value: 200,
+                    question: "Nenne drei Gefühle, die in einem Erlebnisbericht beschrieben werden können.",
+                    answer: "Angst, Freude, Mut, Hoffnung, Trauer, Wut (drei davon)"
+                },
+                // Lesen - 300
+                {
+                    category: "Lesen",
+                    value: 300,
+                    question: "Was ist der Unterschied zwischen 1. Person (ich) und 3. Person (er/sie) Erzählung?",
+                    answer: "1. Person = Erzähler ist Teil der Geschichte, 3. Person = Erzähler beobachtet von außen"
+                },
+                // Lesen - 400
+                {
+                    category: "Lesen",
+                    value: 400,
+                    question: "Warum sind Zwischenüberschriften in einem Text hilfreich?",
+                    answer: "Sie strukturieren den Text und zeigen die Hauptthemen der Abschnitte"
+                },
+                // Lesen - 500
+                {
+                    category: "Lesen",
+                    value: 500,
+                    question: "Erkläre, was eine Inhaltsangabe ist und worauf man achten muss.",
+                    answer: "Kurze Zusammenfassung der Hauptpunkte, eigene Worte, Präsens, keine Details"
+                },
+                
+                // Schreiben - 100
+                {
+                    category: "Schreiben",
+                    value: 100,
+                    question: "Nenne die drei Teile eines Erlebnisaufsatzes.",
+                    answer: "Einleitung, Hauptteil, Schluss"
+                },
+                // Schreiben - 200
+                {
+                    category: "Schreiben",
+                    value: 200,
+                    question: "Was gehört in die Einleitung eines Erlebnisaufsatzes?",
+                    answer: "Wer? Wann? Wo? (Personen, Zeit, Ort)"
+                },
+                // Schreiben - 300
+                {
+                    category: "Schreiben",
+                    value: 300,
+                    question: "Nenne drei Konnektoren, die man in einem Erlebnisaufsatz verwenden sollte.",
+                    answer: "obwohl, trotzdem, bevor, nachdem, während (drei davon)"
+                },
+                // Schreiben - 400
+                {
+                    category: "Schreiben",
+                    value: 400,
+                    question: "Was ist ein Perspektivwechsel beim Schreiben?",
+                    answer: "Dieselbe Geschichte aus der Sicht einer anderen Person erzählen"
+                },
+                // Schreiben - 500
+                {
+                    category: "Schreiben",
+                    value: 500,
+                    question: "Warum sollte man einen Text überarbeiten? Nenne drei Verbesserungen.",
+                    answer: "Rechtschreibung prüfen, bessere Wörter finden, Konnektoren ergänzen, Struktur verbessern (drei davon)"
+                },
+                
+                // Hören - 100
+                {
+                    category: "Hören",
+                    value: 100,
+                    question: "Was solltest du während eines Interviews notieren?",
+                    answer: "Schlüsselwörter, wichtige Informationen, Namen, Daten"
+                },
+                // Hören - 200
+                {
+                    category: "Hören",
+                    value: 200,
+                    question: "Nenne drei Kategorien für ein Hörprotokoll.",
+                    answer: "Wer? Wo? Was passiert? Gefühle? (drei davon)"
+                },
+                // Hören - 300
+                {
+                    category: "Hören",
+                    value: 300,
+                    question: "Warum ist ein Diktat mit Konnektoren schwieriger als ein normales Diktat?",
+                    answer: "Man muss auf Satzverbindungen achten und die Struktur verstehen"
+                },
+                // Hören - 400
+                {
+                    category: "Hören",
+                    value: 400,
+                    question: "Was ist der Unterschied zwischen Information und Gefühl in einem Hörtext?",
+                    answer: "Information = Fakten (was, wann, wo), Gefühl = Emotionen (Freude, Angst)"
+                },
+                // Hören - 500
+                {
+                    category: "Hören",
+                    value: 500,
+                    question: "Wie überprüfst du, ob jemand deine Durchsage richtig verstanden hat?",
+                    answer: "Vergleich zwischen vorgelesener Ansage und Mitschrift, wichtige Punkte abfragen"
+                },
+                
+                // Grammatik - 100
+                {
+                    category: "Grammatik",
+                    value: 100,
+                    question: "Was ist die Präteritumform von 'beginnen'?",
+                    answer: "begann"
+                },
+                // Grammatik - 200
+                {
+                    category: "Grammatik",
+                    value: 200,
+                    question: "Was ist die Präteritumform von 'gewinnen'?",
+                    answer: "gewann"
+                },
+                // Grammatik - 300
+                {
+                    category: "Grammatik",
+                    value: 300,
+                    question: "Setze den Konnektor ein: '_____ ich müde war, ging ich zum Training.'",
+                    answer: "Obwohl (oder: Trotzdem)"
+                },
+                // Grammatik - 400
+                {
+                    category: "Grammatik",
+                    value: 400,
+                    question: "Steigere: interessant – ___ – am interessantesten",
+                    answer: "interessanter"
+                },
+                // Grammatik - 500
+                {
+                    category: "Grammatik",
+                    value: 500,
+                    question: "Was ist der Unterschied zwischen einem Hauptsatz und einem Nebensatz?",
+                    answer: "Hauptsatz kann allein stehen, Nebensatz braucht Hauptsatz und beginnt oft mit Konnektor"
+                },
+                
+                // Wortschatz - 100
+                {
+                    category: "Wortschatz",
+                    value: 100,
+                    question: "Was ist ein Erfolg?",
+                    answer: "Ein gutes Ergebnis nach Anstrengung"
+                },
+                // Wortschatz - 200
+                {
+                    category: "Wortschatz",
+                    value: 200,
+                    question: "Was bedeutet Hoffnung?",
+                    answer: "Das Vertrauen, dass etwas gut ausgeht"
+                },
+                // Wortschatz - 300
+                {
+                    category: "Wortschatz",
+                    value: 300,
+                    question: "Nenne drei positive Gefühlswörter.",
+                    answer: "Freude, Hoffnung, Mut, Glück, Stolz, Zufriedenheit (drei davon)"
+                },
+                // Wortschatz - 400
+                {
+                    category: "Wortschatz",
+                    value: 400,
+                    question: "Ersetze 'Es war schön' durch einen präziseren Ausdruck.",
+                    answer: "Es war wunderbar/großartig/unvergesslich/beeindruckend (eins davon)"
+                },
+                // Wortschatz - 500
+                {
+                    category: "Wortschatz",
+                    value: 500,
+                    question: "Bilde eine Wortfamilie zum Wort 'hoffen'.",
+                    answer: "hoffen, Hoffnung, hoffnungsvoll, hoffnungslos, erhoffen (mindestens drei)"
+                }
+            ]
+        },
+        round2: {
+            categories: ["Verstehen", "Textanalyse", "Sprache", "Satzgefüge", "Kreatives"],
+            questions: [
+                // Verstehen - 200
+                {
+                    category: "Verstehen",
+                    value: 200,
+                    question: "Was bedeutet es, Gefühle zu begründen?",
+                    answer: "Erklären, warum jemand ein bestimmtes Gefühl hat, mit Textstellen belegen"
+                },
+                // Verstehen - 400
+                {
+                    category: "Verstehen",
+                    value: 400,
+                    question: "Was ist der Zusammenhang zwischen Ursache, Folge und Reaktion?",
+                    answer: "Ursache = Grund, Folge = was passiert, Reaktion = wie Personen darauf reagieren"
+                },
+                // Verstehen - 600
+                {
+                    category: "Verstehen",
+                    value: 600,
+                    question: "Was bedeutet 'zwischen den Zeilen lesen'?",
+                    answer: "Verstehen, was nicht direkt gesagt wird, Hinweise im Text erkennen"
+                },
+                // Verstehen - 800
+                {
+                    category: "Verstehen",
+                    value: 800,
+                    question: "Wie findest du heraus, was eine Figur denkt, wenn es nicht direkt im Text steht?",
+                    answer: "Handlungen beobachten, Reaktionen analysieren, Kontext nutzen, eigene Schlüsse ziehen"
+                },
+                // Verstehen - 1000
+                {
+                    category: "Verstehen",
+                    value: 1000,
+                    question: "Erkläre den Unterschied zwischen Zusammenfassung und eigener Meinung.",
+                    answer: "Zusammenfassung = objektive Wiedergabe, eigene Meinung = persönliche Bewertung/Interpretation"
+                },
+                
+                // Textanalyse - 200
+                {
+                    category: "Textanalyse",
+                    value: 200,
+                    question: "Was ist eine Erzählperspektive?",
+                    answer: "Aus wessen Sicht die Geschichte erzählt wird (Ich-Erzähler oder Er/Sie-Erzähler)"
+                },
+                // Textanalyse - 400
+                {
+                    category: "Textanalyse",
+                    value: 400,
+                    question: "Warum ist es wichtig, die Erzählperspektive zu erkennen?",
+                    answer: "Sie beeinflusst, was wir erfahren und wie nah wir den Figuren sind"
+                },
+                // Textanalyse - 600
+                {
+                    category: "Textanalyse",
+                    value: 600,
+                    question: "Was verändert sich, wenn du eine Geschichte aus anderer Perspektive erzählst?",
+                    answer: "Gefühle, Gedanken, Informationen, die der Leser bekommt"
+                },
+                // Textanalyse - 800
+                {
+                    category: "Textanalyse",
+                    value: 800,
+                    question: "Wie erkennst du die Stimmung in einem Text?",
+                    answer: "Wortwahl, Beschreibungen, Handlungen der Figuren, Satzlänge und -rhythmus"
+                },
+                // Textanalyse - 1000
+                {
+                    category: "Textanalyse",
+                    value: 1000,
+                    question: "Erkläre, wie man einen Text mit Zwischenüberschriften strukturiert.",
+                    answer: "Text in Sinnabschnitte teilen, Hauptaussage jedes Abschnitts als Überschrift formulieren"
+                },
+                
+                // Sprache - 200
+                {
+                    category: "Sprache",
+                    value: 200,
+                    question: "Was ist ein Synonym? Gib ein Beispiel.",
+                    answer: "Ein Wort mit ähnlicher Bedeutung. Beispiel: groß – riesig"
+                },
+                // Sprache - 400
+                {
+                    category: "Sprache",
+                    value: 400,
+                    question: "Steigere: wichtig – ___ – am wichtigsten",
+                    answer: "wichtiger"
+                },
+                // Sprache - 600
+                {
+                    category: "Sprache",
+                    value: 600,
+                    question: "Erkläre den Unterschied zwischen 'weil' und 'trotzdem'.",
+                    answer: "'Weil' = Grund, 'trotzdem' = Gegensatz, etwas passiert trotz eines Hindernisses"
+                },
+                // Sprache - 800
+                {
+                    category: "Sprache",
+                    value: 800,
+                    question: "Bilde einen Satz mit 'während'.",
+                    answer: "Beispiel: 'Während ich las, hörte ich Musik.' (Team muss korrekten Satz bilden)"
+                },
+                // Sprache - 1000
+                {
+                    category: "Sprache",
+                    value: 1000,
+                    question: "Was ist der Unterschied zwischen 'nachdem' und 'bevor'?",
+                    answer: "'Nachdem' = etwas ist schon passiert, 'bevor' = etwas passiert vorher"
+                },
+                
+                // Satzgefüge - 200
+                {
+                    category: "Satzgefüge",
+                    value: 200,
+                    question: "Was ist ein Nebensatz?",
+                    answer: "Ein Satz, der nicht allein stehen kann und einen Hauptsatz braucht"
+                },
+                // Satzgefüge - 400
+                {
+                    category: "Satzgefüge",
+                    value: 400,
+                    question: "Nenne drei Wörter, mit denen ein Nebensatz beginnen kann.",
+                    answer: "weil, obwohl, während, bevor, nachdem, dass, wenn (drei davon)"
+                },
+                // Satzgefüge - 600
+                {
+                    category: "Satzgefüge",
+                    value: 600,
+                    question: "Verbinde die Sätze: 'Ich war nervös.' + 'Ich schrieb die Klassenarbeit.'",
+                    answer: "Beispiel: 'Obwohl ich nervös war, schrieb ich die Klassenarbeit.' (oder mit anderem Konnektor)"
+                },
+                // Satzgefüge - 800
+                {
+                    category: "Satzgefüge",
+                    value: 800,
+                    question: "Warum machen Nebensätze einen Text interessanter?",
+                    answer: "Sie verbinden Informationen, zeigen Zusammenhänge, machen Texte flüssiger und komplexer"
+                },
+                // Satzgefüge - 1000
+                {
+                    category: "Satzgefüge",
+                    value: 1000,
+                    question: "Erkläre den Unterschied zwischen koordinierenden und subordinierenden Konnektoren.",
+                    answer: "Koordinierend = verbinden gleichwertige Sätze (und, aber), subordinierend = verbinden Haupt- und Nebensatz (weil, obwohl)"
+                },
+                
+                // Kreatives - 200
+                {
+                    category: "Kreatives",
+                    value: 200,
+                    question: "Was ist ein Wendepunkt in einer Geschichte?",
+                    answer: "Der Moment, wo sich alles verändert, die Geschichte eine neue Richtung nimmt"
+                },
+                // Kreatives - 400
+                {
+                    category: "Kreatives",
+                    value: 400,
+                    question: "Warum ist es wichtig, Gefühle in einem Erlebnisaufsatz zu beschreiben?",
+                    answer: "Sie machen die Geschichte lebendig und helfen dem Leser, sich hineinzuversetzen"
+                },
+                // Kreatives - 600
+                {
+                    category: "Kreatives",
+                    value: 600,
+                    question: "Was sollte im Schlussteil eines Erlebnisaufsatzes stehen?",
+                    answer: "Ergebnis, was man gelernt hat, wie man sich am Ende fühlt, Ausblick"
+                },
+                // Kreatives - 800
+                {
+                    category: "Kreatives",
+                    value: 800,
+                    question: "Erfinde einen spannenden Wendepunkt für eine Geschichte über ein Turnier.",
+                    answer: "(Team muss eine kreative Idee entwickeln – bewerten nach Originalität)"
+                },
+                // Kreatives - 1000
+                {
+                    category: "Kreatives",
+                    value: 1000,
+                    question: "Was ist der Unterschied zwischen 'zeigen' und 'erzählen' beim Schreiben?",
+                    answer: "Zeigen = Leser erfährt durch Handlungen/Beschreibungen, Erzählen = direkt sagen was ist"
+                }
+            ]
+        }
+    }
+};
+
+class JeopardyGame {
+    constructor() {
+        this.currentGrade = 4;
+        this.currentRound = 1;
+        this.team1Name = "Team 1";
+        this.team2Name = "Team 2";
+        this.team1Score = 0;
+        this.team2Score = 0;
+        this.activeTeam = 1;
+        this.usedQuestions = new Set();
+        this.currentQuestion = null;
+        
+        this.setupElements();
+        this.attachEventListeners();
+    }
+    
+    setupElements() {
+        // Setup screen
+        this.setupScreen = document.querySelector(".setup-screen");
+        this.team1Input = document.getElementById("team1Name");
+        this.team2Input = document.getElementById("team2Name");
+        this.gradeButtons = document.querySelectorAll(".grade-btn");
+        this.startBtn = document.querySelector(".start-btn");
+        
+        // Game screen
+        this.gameScreen = document.querySelector(".game-screen");
+        this.roundDisplay = document.getElementById("currentRound");
+        this.team1Display = document.getElementById("team1Display");
+        this.team2Display = document.getElementById("team2Display");
+        this.team1ScoreDisplay = document.getElementById("team1Score");
+        this.team2ScoreDisplay = document.getElementById("team2Score");
+        this.gameBoard = document.getElementById("gameBoard");
+        this.nextRoundBtn = document.getElementById("nextRoundBtn");
+        this.teamScores = document.querySelectorAll(".team-score");
+        
+        // Modal
+        this.modal = document.getElementById("questionModal");
+        this.modalCategory = document.getElementById("modalCategory");
+        this.modalValue = document.getElementById("modalValue");
+        this.modalQuestion = document.getElementById("modalQuestion");
+        this.modalAnswer = document.getElementById("modalAnswer");
+        this.showAnswerBtn = document.getElementById("showAnswerBtn");
+        this.scoringButtons = document.getElementById("scoringButtons");
+        this.correctBtn = document.getElementById("correctBtn");
+        this.incorrectBtn = document.getElementById("incorrectBtn");
+        this.closeModalBtn = document.getElementById("closeModalBtn");
+        
+        // Winner screen
+        this.winnerScreen = document.querySelector(".winner-screen");
+        this.winnerAnnouncement = document.getElementById("winnerAnnouncement");
+        this.finalTeam1 = document.getElementById("finalTeam1");
+        this.finalTeam2 = document.getElementById("finalTeam2");
+        this.playAgainBtn = document.querySelector(".play-again-btn");
+    }
+    
+    attachEventListeners() {
+        // Setup
+        this.gradeButtons.forEach(btn => {
+            btn.addEventListener("click", () => this.selectGrade(btn));
+        });
+        
+        this.startBtn.addEventListener("click", () => this.startGame());
+        
+        // Modal
+        this.showAnswerBtn.addEventListener("click", () => this.showAnswer());
+        this.correctBtn.addEventListener("click", () => this.scoreAnswer(true));
+        this.incorrectBtn.addEventListener("click", () => this.scoreAnswer(false));
+        this.closeModalBtn.addEventListener("click", () => this.closeModal());
+        
+        // Next round
+        this.nextRoundBtn.addEventListener("click", () => this.startRound2());
+        
+        // Play again
+        this.playAgainBtn.addEventListener("click", () => this.resetGame());
+        
+        // Team switching
+        this.teamScores.forEach(score => {
+            score.addEventListener("click", () => {
+                const team = parseInt(score.getAttribute("data-team"));
+                this.switchActiveTeam(team);
+            });
+        });
+    }
+    
+    selectGrade(btn) {
+        this.gradeButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        this.currentGrade = parseInt(btn.getAttribute("data-grade"));
+    }
+    
+    startGame() {
+        this.team1Name = this.team1Input.value.trim() || "Team 1";
+        this.team2Name = this.team2Input.value.trim() || "Team 2";
+        
+        this.team1Display.textContent = this.team1Name;
+        this.team2Display.textContent = this.team2Name;
+        
+        this.setupScreen.classList.remove("active");
+        this.gameScreen.classList.add("active");
+        
+        this.renderBoard();
+    }
+    
+    renderBoard() {
+        this.gameBoard.innerHTML = "";
+        const roundKey = this.currentRound === 1 ? "round1" : "round2";
+        const data = QUESTIONS[this.currentGrade][roundKey];
+        
+        // Headers
+        data.categories.forEach(cat => {
+            const header = document.createElement("div");
+            header.className = "category-header";
+            header.textContent = cat;
+            this.gameBoard.appendChild(header);
+        });
+        
+        // Questions (5 rows)
+        const values = this.currentRound === 1 ? [100, 200, 300, 400, 500] : [200, 400, 600, 800, 1000];
+        
+        values.forEach(value => {
+            data.categories.forEach(category => {
+                const question = data.questions.find(q => q.category === category && q.value === value);
+                const cell = document.createElement("div");
+                cell.className = "question-cell";
+                
+                const questionId = `${this.currentGrade}-${this.currentRound}-${category}-${value}`;
+                
+                if (this.usedQuestions.has(questionId)) {
+                    cell.classList.add("used");
+                    cell.textContent = "—";
+                } else {
+                    cell.textContent = value;
+                    cell.addEventListener("click", () => this.openQuestion(question, questionId));
+                }
+                
+                this.gameBoard.appendChild(cell);
+            });
+        });
+        
+        this.roundDisplay.textContent = this.currentRound;
+    }
+    
+    openQuestion(question, questionId) {
+        if (this.usedQuestions.has(questionId)) return;
+        
+        this.currentQuestion = { ...question, id: questionId };
+        
+        this.modalCategory.textContent = question.category;
+        this.modalValue.textContent = question.value + " Punkte";
+        this.modalQuestion.textContent = question.question;
+        this.modalAnswer.textContent = "Antwort: " + question.answer;
+        
+        this.modalAnswer.classList.remove("visible");
+        this.scoringButtons.classList.remove("visible");
+        this.closeModalBtn.classList.remove("visible");
+        
+        this.modal.classList.add("active");
+    }
+    
+    showAnswer() {
+        this.modalAnswer.classList.add("visible");
+        this.scoringButtons.classList.add("visible");
+    }
+    
+    scoreAnswer(correct) {
+        const value = this.currentQuestion.value;
+        
+        if (correct) {
+            if (this.activeTeam === 1) {
+                this.team1Score += value;
+                this.team1ScoreDisplay.textContent = this.team1Score;
+            } else {
+                this.team2Score += value;
+                this.team2ScoreDisplay.textContent = this.team2Score;
+            }
+        } else {
+            // Switch to other team for next question
+            this.switchActiveTeam(this.activeTeam === 1 ? 2 : 1);
+        }
+        
+        this.usedQuestions.add(this.currentQuestion.id);
+        this.renderBoard();
+        
+        this.scoringButtons.classList.remove("visible");
+        this.closeModalBtn.classList.add("visible");
+        
+        // Check if round is complete
+        this.checkRoundComplete();
+    }
+    
+    closeModal() {
+        this.modal.classList.remove("active");
+        this.currentQuestion = null;
+    }
+    
+    switchActiveTeam(team) {
+        this.activeTeam = team;
+        this.teamScores.forEach(score => {
+            const scoreTeam = parseInt(score.getAttribute("data-team"));
+            if (scoreTeam === team) {
+                score.classList.add("active");
+            } else {
+                score.classList.remove("active");
+            }
+        });
+    }
+    
+    checkRoundComplete() {
+        const roundKey = this.currentRound === 1 ? "round1" : "round2";
+        const totalQuestions = QUESTIONS[this.currentGrade][roundKey].questions.length;
+        
+        const currentRoundQuestions = Array.from(this.usedQuestions).filter(id => 
+            id.startsWith(`${this.currentGrade}-${this.currentRound}-`)
+        );
+        
+        if (currentRoundQuestions.length === totalQuestions) {
+            if (this.currentRound === 1) {
+                this.nextRoundBtn.style.display = "block";
+            } else {
+                this.showWinner();
+            }
+        }
+    }
+    
+    startRound2() {
+        this.currentRound = 2;
+        this.nextRoundBtn.style.display = "none";
+        this.renderBoard();
+    }
+    
+    showWinner() {
+        this.gameScreen.classList.remove("active");
+        this.winnerScreen.classList.add("active");
+        
+        let winner, winnerScore, loserScore;
+        if (this.team1Score > this.team2Score) {
+            winner = this.team1Name;
+            winnerScore = this.team1Score;
+            loserScore = this.team2Score;
+            this.finalTeam1.textContent = `🏆 ${this.team1Name}: ${this.team1Score} Punkte`;
+            this.finalTeam2.textContent = `${this.team2Name}: ${this.team2Score} Punkte`;
+        } else if (this.team2Score > this.team1Score) {
+            winner = this.team2Name;
+            winnerScore = this.team2Score;
+            loserScore = this.team1Score;
+            this.finalTeam1.textContent = `${this.team1Name}: ${this.team1Score} Punkte`;
+            this.finalTeam2.textContent = `🏆 ${this.team2Name}: ${this.team2Score} Punkte`;
+        } else {
+            winner = "Unentschieden";
+            this.finalTeam1.textContent = `🏆 ${this.team1Name}: ${this.team1Score} Punkte`;
+            this.finalTeam2.textContent = `🏆 ${this.team2Name}: ${this.team2Score} Punkte`;
+        }
+        
+        if (winner === "Unentschieden") {
+            this.winnerAnnouncement.textContent = "Unentschieden! 🎉";
+        } else {
+            this.winnerAnnouncement.textContent = `${winner} gewinnt! 🎉`;
+        }
+    }
+    
+    resetGame() {
+        this.currentRound = 1;
+        this.team1Score = 0;
+        this.team2Score = 0;
+        this.activeTeam = 1;
+        this.usedQuestions.clear();
+        
+        this.team1ScoreDisplay.textContent = "0";
+        this.team2ScoreDisplay.textContent = "0";
+        
+        this.winnerScreen.classList.remove("active");
+        this.setupScreen.classList.add("active");
+        
+        this.switchActiveTeam(1);
+    }
+}
+
+// Initialize game
+const game = new JeopardyGame();
+</script>
+</body>
+</html>
