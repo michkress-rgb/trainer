@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Workshop for Teachers | ISN Professional Development</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a2e; --ink-light: #4a4a5e; --ink-muted: #7a7a8e;
+            --paper: #faf9f7; --paper-warm: #f5f3ef;
+            --accent: #e07a5f; --accent-dark: #c4614a;
+            --success: #4a9f7a; --info: #5a8fcf; --warning: #d4a03a;
+            --basics: #7eb8b4; --intermediate: #c49a6c; --advanced: #9a7bc4;
+            --font-display: 'Fraunces', Georgia, serif;
+            --font-body: 'Source Sans 3', -apple-system, sans-serif;
+            --shadow: 0 2px 20px rgba(26,26,46,0.08);
+            --shadow-lift: 0 8px 30px rgba(26,26,46,0.12);
+            --radius: 12px; --transition: 0.3s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-body); font-size: 17px; line-height: 1.7; color: var(--ink); background: var(--paper); min-height: 100vh; }
+        h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 500; line-height: 1.3; }
+        h1 { font-size: clamp(2rem, 5vw, 3rem); }
+        h2 { font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: 1rem; }
+        h3 { font-size: 1.35rem; margin-bottom: 0.75rem; }
+        p { margin-bottom: 1rem; }
+        p:last-child { margin-bottom: 0; }
+        a { color: var(--accent); text-decoration: none; }
+        code { font-family: 'SF Mono', monospace; background: var(--paper-warm); padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9em; }
+        
+        .header { background: var(--ink); color: var(--paper); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-lift); }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .site-title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 500; display: flex; align-items: center; gap: 0.75rem; }
+        .progress-summary { display: flex; align-items: center; gap: 1.5rem; font-size: 0.9rem; }
+        .progress-bar-mini { width: 120px; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; overflow: hidden; }
+        .progress-bar-mini-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.5s ease; }
+        .points-display { background: rgba(255,255,255,0.1); padding: 0.35rem 0.75rem; border-radius: 20px; font-weight: 500; }
+        
+        .level-nav { background: var(--paper-warm); border-bottom: 1px solid rgba(26,26,46,0.1); padding: 0 2rem; position: sticky; top: 56px; z-index: 90; overflow-x: auto; }
+        .level-tabs { max-width: 1200px; margin: 0 auto; display: flex; gap: 0; }
+        .level-tab { padding: 1rem 1.5rem; font-family: var(--font-body); font-size: 0.95rem; font-weight: 500; color: var(--ink-muted); background: transparent; border: none; cursor: pointer; position: relative; transition: var(--transition); display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; }
+        .level-tab:hover { color: var(--ink); }
+        .level-tab.active { color: var(--ink); }
+        .level-tab::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: transparent; transition: var(--transition); }
+        .level-tab.active::after { background: var(--accent); }
+        .tab-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .level-tab[data-level="basics"] .tab-dot { background: var(--basics); }
+        .level-tab[data-level="intermediate"] .tab-dot { background: var(--intermediate); }
+        .level-tab[data-level="advanced"] .tab-dot { background: var(--advanced); }
+        .level-tab[data-level="project"] .tab-dot { background: var(--accent); }
+        .level-tab[data-level="resources"] .tab-dot { background: var(--info); }
+        .tab-check { color: var(--success); font-size: 0.85rem; display: none; }
+        
+        .main { max-width: 900px; margin: 0 auto; padding: 3rem 2rem; }
+        .welcome { text-align: center; padding: 3rem 2rem; margin-bottom: 3rem; background: linear-gradient(135deg, var(--paper-warm) 0%, var(--paper) 100%); border-radius: var(--radius); border: 1px solid rgba(26,26,46,0.06); }
+        .welcome h1 { margin-bottom: 1rem; }
+        .welcome .subtitle { font-size: 1.2rem; color: var(--ink-light); max-width: 600px; margin: 0 auto 2rem; }
+        .time-est { display: inline-flex; align-items: center; gap: 0.5rem; background: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; color: var(--ink-muted); box-shadow: var(--shadow); }
+        
+        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .card { background: white; border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem; box-shadow: var(--shadow); border: 1px solid rgba(26,26,46,0.04); }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(26,26,46,0.08); }
+        .card-num { font-family: var(--font-display); font-size: 0.85rem; color: var(--ink-muted); }
+        .badge { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.25rem 0.75rem; border-radius: 20px; background: var(--paper-warm); color: var(--ink-muted); }
+        .badge.done { background: rgba(74,159,122,0.15); color: var(--success); }
+        
+        .module-progress { display: flex; align-items: center; gap: 0.5rem; margin: 1rem 0; font-size: 0.9rem; }
+        .progress-bar { flex: 1; height: 8px; background: var(--paper-warm); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--success); border-radius: 4px; transition: width 0.5s ease; }
+        
+        .badges-row { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1.5rem 0; }
+        .badge-item { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 1rem 1.25rem; background: var(--paper-warm); border-radius: var(--radius); min-width: 100px; text-align: center; border: 2px solid transparent; transition: var(--transition); }
+        .badge-item.earned { background: rgba(74,159,122,0.1); border-color: var(--success); }
+        .badge-item.locked { opacity: 0.5; filter: grayscale(1); }
+        .badge-icon { font-size: 2rem; }
+        .badge-name { font-size: 0.8rem; font-weight: 600; color: var(--ink-light); }
+        
+        .expandable { border: 1px solid rgba(26,26,46,0.1); border-radius: 6px; margin: 1rem 0; overflow: hidden; }
+        .expand-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; background: var(--paper-warm); cursor: pointer; font-weight: 500; transition: var(--transition); }
+        .expand-header:hover { background: rgba(224,122,95,0.1); }
+        .expand-icon { transition: transform 0.3s ease; }
+        .expandable.open .expand-icon { transform: rotate(180deg); }
+        .expand-content { display: none; padding: 1.25rem; background: white; border-top: 1px solid rgba(26,26,46,0.08); }
+        .expandable.open .expand-content { display: block; }
+        
+        .prompt-box { background: var(--ink); color: var(--paper); border-radius: var(--radius); padding: 1.5rem; margin: 1.5rem 0; position: relative; }
+        .prompt-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.75rem; display: block; }
+        .prompt-box pre { font-family: 'SF Mono', monospace; font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap; word-break: break-word; margin: 0; }
+        .copy-btn { position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.1); border: none; color: var(--paper); padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer; transition: var(--transition); }
+        .copy-btn:hover { background: rgba(255,255,255,0.2); }
+        .copy-btn.copied { background: var(--success); }
+        
+        .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
+        @media (max-width: 700px) { .comparison { grid-template-columns: 1fr; } }
+        .compare-side { padding: 1.25rem; border-radius: 6px; }
+        .compare-side.before { background: rgba(212,160,58,0.1); border: 1px solid rgba(212,160,58,0.3); }
+        .compare-side.after { background: rgba(74,159,122,0.1); border: 1px solid rgba(74,159,122,0.3); }
+        .compare-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
+        .compare-side.before .compare-label { color: var(--warning); }
+        .compare-side.after .compare-label { color: var(--success); }
+        
+        .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; font-family: var(--font-body); font-size: 0.95rem; font-weight: 500; border-radius: 6px; border: none; cursor: pointer; transition: var(--transition); }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); }
+        .btn-secondary { background: var(--paper-warm); color: var(--ink); border: 1px solid rgba(26,26,46,0.15); }
+        .btn-secondary:hover { background: white; border-color: var(--accent); }
+        .btn-success { background: var(--success); color: white; }
+        
+        .challenge { background: linear-gradient(135deg, rgba(224,122,95,0.08) 0%, rgba(224,122,95,0.02) 100%); border: 1px solid rgba(224,122,95,0.2); border-radius: var(--radius); padding: 1.5rem; margin: 1.5rem 0; }
+        .challenge-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+        .challenge-icon { font-size: 1.5rem; }
+        .challenge-title { font-weight: 600; color: var(--accent-dark); }
+        .challenge-pts { margin-left: auto; font-size: 0.85rem; font-weight: 500; color: var(--accent); }
+        .challenge textarea { width: 100%; min-height: 100px; padding: 1rem; border: 1px solid rgba(26,26,46,0.15); border-radius: 6px; font-family: var(--font-body); font-size: 0.95rem; resize: vertical; margin: 1rem 0; }
+        .challenge textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(224,122,95,0.1); }
+        .challenge-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        
+        .checklist { margin: 1rem 0; }
+        .check-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid rgba(26,26,46,0.06); }
+        .check-item:last-child { border-bottom: none; }
+        .check-item input[type="checkbox"] { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--success); cursor: pointer; }
+        .check-item label { cursor: pointer; flex: 1; }
+        .check-item.checked label { color: var(--ink-muted); text-decoration: line-through; }
+        
+        .tip { display: flex; gap: 1rem; background: rgba(126,184,180,0.1); border-radius: 6px; padding: 1rem 1.25rem; margin: 1rem 0; }
+        .tip-icon { font-size: 1.25rem; flex-shrink: 0; }
+        .warning { display: flex; gap: 1rem; background: rgba(212,160,58,0.1); border-radius: 6px; padding: 1rem 1.25rem; margin: 1rem 0; }
+        
+        .scenario { background: linear-gradient(135deg, rgba(90,143,207,0.1) 0%, rgba(90,143,207,0.02) 100%); border-left: 4px solid var(--info); padding: 1.25rem 1.5rem; margin: 1.5rem 0; border-radius: 0 6px 6px 0; }
+        .scenario-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--info); margin-bottom: 0.5rem; }
+        
+        .quiz-q { background: white; border: 1px solid rgba(26,26,46,0.1); border-radius: var(--radius); padding: 1.5rem; margin: 1rem 0; }
+        .quiz-q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .quiz-q-num { font-family: var(--font-display); font-size: 0.85rem; color: var(--ink-muted); }
+        .quiz-opt { display: block; padding: 0.75rem 1rem; margin: 0.5rem 0; border: 1px solid rgba(26,26,46,0.15); border-radius: 6px; cursor: pointer; transition: var(--transition); }
+        .quiz-opt:hover { background: var(--paper-warm); border-color: var(--accent); }
+        .quiz-opt.selected { background: rgba(224,122,95,0.1); border-color: var(--accent); }
+        .quiz-opt.correct { background: rgba(74,159,122,0.15); border-color: var(--success); }
+        .quiz-opt.incorrect { background: rgba(224,95,95,0.1); border-color: #e05f5f; }
+        .quiz-opt input { margin-right: 0.75rem; }
+        
+        .template-card { border: 1px solid rgba(26,26,46,0.1); border-radius: 6px; margin: 0.75rem 0; overflow: hidden; }
+        .template-header { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: var(--paper-warm); }
+        .template-title { font-weight: 500; font-size: 0.95rem; }
+        .template-content { padding: 1rem; font-family: 'SF Mono', monospace; font-size: 0.85rem; background: var(--ink); color: var(--paper); white-space: pre-wrap; }
+        
+        .certificate { background: white; border: 3px solid var(--ink); border-radius: var(--radius); padding: 3rem; text-align: center; margin: 2rem 0; position: relative; }
+        .certificate::before { content: ''; position: absolute; top: 1rem; left: 1rem; right: 1rem; bottom: 1rem; border: 1px solid var(--ink-muted); border-radius: 6px; pointer-events: none; }
+        .cert-title { font-family: var(--font-display); font-size: 2rem; margin-bottom: 0.5rem; }
+        .cert-subtitle { color: var(--ink-muted); margin-bottom: 2rem; }
+        .cert-name { font-family: var(--font-display); font-size: 1.75rem; font-style: italic; color: var(--accent); margin: 1.5rem 0; }
+        .cert-date { color: var(--ink-muted); font-size: 0.9rem; }
+        
+        .list { margin: 1rem 0; padding-left: 1.5rem; }
+        .list li { margin-bottom: 0.5rem; }
+        .nav-btns { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(26,26,46,0.1); }
+        
+        .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--ink); color: var(--paper); padding: 1rem 1.5rem; border-radius: var(--radius); box-shadow: var(--shadow-lift); display: flex; align-items: center; gap: 0.75rem; transform: translateX(150%); transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 1000; }
+        .toast.show { transform: translateX(0); }
+        .toast-icon { font-size: 1.5rem; }
+        .toast-title { font-weight: 600; margin-bottom: 0.25rem; }
+        .toast-msg { font-size: 0.85rem; opacity: 0.9; }
+        
+        .name-input { width: 100%; padding: 0.75rem 1rem; font-family: var(--font-body); font-size: 1rem; border: 1px solid rgba(26,26,46,0.2); border-radius: 6px; margin: 1rem 0; }
+        .name-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(224,122,95,0.1); }
+        
+        @media (max-width: 768px) {
+            .header { padding: 0.75rem 1rem; }
+            .header-content { flex-direction: column; align-items: flex-start; }
+            .progress-summary { width: 100%; justify-content: space-between; }
+            .level-nav { padding: 0 1rem; }
+            .level-tab { padding: 0.75rem 1rem; font-size: 0.85rem; }
+            .main { padding: 2rem 1rem; }
+            .card { padding: 1.5rem; }
+        }
+        
+        @media print {
+            body * { visibility: hidden; }
+            .certificate, .certificate * { visibility: visible; }
+            .certificate { position: absolute; left: 0; top: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toast" id="toast"><div class="toast-icon">🎉</div><div><div class="toast-title">Achievement!</div><div class="toast-msg" id="toast-msg"></div></div></div>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="site-title"><span>🤖</span> AI Workshop for Teachers</div>
+            <div class="progress-summary">
+                <div class="progress-bar-mini"><div class="progress-bar-mini-fill" id="overall-progress" style="width:0%"></div></div>
+                <span id="progress-pct">0%</span>
+                <div class="points-display"><span id="total-pts">0</span> pts</div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="level-nav">
+        <div class="level-tabs">
+            <button class="level-tab active" data-level="basics" onclick="go('basics')"><span class="tab-dot"></span>Basics<span class="tab-check" id="check-basics">✓</span></button>
+            <button class="level-tab" data-level="intermediate" onclick="go('intermediate')"><span class="tab-dot"></span>Intermediate<span class="tab-check" id="check-intermediate">✓</span></button>
+            <button class="level-tab" data-level="advanced" onclick="go('advanced')"><span class="tab-dot"></span>Advanced<span class="tab-check" id="check-advanced">✓</span></button>
+            <button class="level-tab" data-level="project" onclick="go('project')"><span class="tab-dot"></span>Final Project<span class="tab-check" id="check-project">✓</span></button>
+            <button class="level-tab" data-level="resources" onclick="go('resources')"><span class="tab-dot"></span>Resources</button>
+        </div>
+    </nav>
+
+    <main class="main">
+        <!-- BASICS SECTION -->
+        <section class="section active" id="section-basics">
+            <div class="welcome">
+                <h1>Welcome to AI for Educators</h1>
+                <p class="subtitle">A practical, no-nonsense guide to using AI tools in your classroom. We know you're busy—let's make this actually useful.</p>
+                <div class="time-est">⏱️ ~1.5-2 hours total (go at your own pace)</div>
+            </div>
+
+            <div class="module-progress"><span>Basics Progress:</span><div class="progress-bar"><div class="progress-fill" id="basics-progress" style="width:0%"></div></div><span id="basics-progress-text">0/5</span></div>
+
+            <div class="badges-row">
+                <div class="badge-item" id="badge-apprentice"><span class="badge-icon">🌱</span><span class="badge-name">AI Apprentice</span></div>
+                <div class="badge-item locked" id="badge-promptpro"><span class="badge-icon">✨</span><span class="badge-name">Prompt Pro</span></div>
+                <div class="badge-item locked" id="badge-creator"><span class="badge-icon">🎨</span><span class="badge-name">Digital Creator</span></div>
+                <div class="badge-item locked" id="badge-master"><span class="badge-icon">🏆</span><span class="badge-name">AI Master</span></div>
+            </div>
+
+            <div class="card" id="basics-1">
+                <div class="card-header"><span class="card-num">Module 1 of 5</span><span class="badge" id="badge-b1">Not started</span></div>
+                <h2>What Exactly Are We Talking About?</h2>
+                <p>When we say "AI tools for teachers," we're talking about <strong>Large Language Models (LLMs)</strong> like ChatGPT, Claude, and Gemini—extremely well-read assistants who've processed billions of documents.</p>
+                <div class="tip"><span class="tip-icon">💡</span><div><strong>Key insight:</strong> These tools predict what text should come next based on patterns. This is why they can be brilliantly helpful <em>and</em> confidently wrong.</div></div>
+                <h3>What AI Is Good At</h3>
+                <p>Generating first drafts, brainstorming, explaining concepts differently, transforming text (summarizing, expanding, translating), creating variations, handling repetitive writing tasks.</p>
+                <h3>What AI Struggles With</h3>
+                <p>Precise factual accuracy, math calculations, original creative insight, understanding your specific students, making professional judgments requiring your context.</p>
+                <div class="expandable" onclick="toggleExpand(this)">
+                    <div class="expand-header"><span>📚 Learn More: How LLMs Work</span><span class="expand-icon">▼</span></div>
+                    <div class="expand-content"><p>LLMs learn statistical patterns about which words tend to appear together. When you ask a question, they generate plausible-sounding text rather than checking facts—which is why they "hallucinate."</p></div>
+                </div>
+                <div class="checklist" id="cl-b1">
+                    <div class="check-item"><input type="checkbox" id="cb1-1" onchange="updateCL('b1')"><label for="cb1-1">I understand that LLMs predict text based on patterns</label></div>
+                    <div class="check-item"><input type="checkbox" id="cb1-2" onchange="updateCL('b1')"><label for="cb1-2">I can name things AI is good at and struggles with</label></div>
+                </div>
+                <button class="btn btn-primary" onclick="completeModule('basics',1)">Mark Complete (+20 pts)</button>
+            </div>
+
+            <div class="card" id="basics-2">
+                <div class="card-header"><span class="card-num">Module 2 of 5</span><span class="badge" id="badge-b2">Not started</span></div>
+                <h2>Your First Prompts: The CLEAR Framework</h2>
+                <p><strong>C</strong>ontext – Who are you, what's the situation?<br><strong>L</strong>ength – How long should it be?<br><strong>E</strong>xamples – Show what you want<br><strong>A</strong>udience – Who is this for?<br><strong>R</strong>ole – What role should AI take?</p>
+                <div class="comparison">
+                    <div class="compare-side before"><div class="compare-label">❌ Vague</div><p>"Write about the water cycle."</p></div>
+                    <div class="compare-side after"><div class="compare-label">✓ CLEAR</div><p>"I'm a Grade 5 teacher. Write a 150-word explanation for 10-year-olds using simple language and one analogy."</p></div>
+                </div>
+                <div class="prompt-box"><span class="prompt-label">Template</span><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><pre>You are an experienced [SUBJECT] teacher.
+Context: I teach [GRADE] at an international school.
+Task: Create [OUTPUT] for [TOPIC].
+Length: [X] words. Audience: [LEVEL]. Format: [STRUCTURE]</pre></div>
+                <div class="challenge"><div class="challenge-header"><span class="challenge-icon">🎯</span><span class="challenge-title">Challenge: Write a CLEAR Prompt</span><span class="challenge-pts">+15 pts</span></div><p>Write a prompt for a warm-up activity using 3+ CLEAR elements.</p><textarea id="input-b2" placeholder="Type your prompt..."></textarea><div class="challenge-actions"><button class="btn btn-secondary" onclick="showHint('b2')">Hint</button><button class="btn btn-primary" onclick="submitChallenge('b2',15)">Submit</button></div><div class="hint" id="hint-b2" style="display:none;margin-top:1rem;padding:1rem;background:var(--paper-warm);border-radius:6px;">Start with your role, state what you need, who it's for, and how long.</div></div>
+                <button class="btn btn-primary" onclick="completeModule('basics',2)">Mark Complete (+20 pts)</button>
+            </div>
+
+            <div class="card" id="basics-3">
+                <div class="card-header"><span class="card-num">Module 3 of 5</span><span class="badge" id="badge-b3">Not started</span></div>
+                <h2>Practical Classroom Applications</h2>
+                <div class="prompt-box"><span class="prompt-label">Lesson Planning</span><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><pre>Create a 45-minute lesson plan for [TOPIC] for [GRADE].
+Include: learning objective, 5-min warm-up, 15-min instruction, 20-min activity, 5-min closure.
+My students are [CHARACTERISTICS].</pre></div>
+                <div class="prompt-box"><span class="prompt-label">Differentiation</span><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><pre>Create three versions of this content:
+1. SIMPLIFIED: Shorter sentences, basic vocabulary
+2. STANDARD: Grade-level appropriate
+3. EXTENDED: Complex structures, challenging vocabulary
+Original: [PASTE TEXT]</pre></div>
+                <div class="prompt-box"><span class="prompt-label">Discussion Questions</span><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><pre>Generate 8 discussion questions for [TOPIC/TEXT] for [GRADE]:
+- 2 recall questions (lower order)
+- 3 analysis questions (medium)
+- 2 evaluation questions (higher order)
+- 1 personal connection question</pre></div>
+                <div class="scenario"><div class="scenario-label">Real-World Scenario</div><p><strong>7:45 AM:</strong> Colleague is sick, you're covering their Year 7 History at 8:30. Generate a 45-minute activity in 15 minutes!</p></div>
+                <button class="btn btn-primary" onclick="completeModule('basics',3)">Mark Complete (+20 pts)</button>
+            </div>
+
+            <div class="card" id="basics-4">
+                <div class="card-header"><span class="card-num">Module 4 of 5</span><span class="badge" id="badge-b4">Not started</span></div>
+                <h2>What NOT to Use AI For</h2>
+                <div class="warning"><span class="tip-icon">⚠️</span><div><strong>Golden Rule:</strong> Never input student names or personal data into public AI tools.</div></div>
+                <h3>Avoid AI For:</h3>
+                <ul class="list">
+                    <li><strong>Final fact-checking</strong> – Always verify facts independently</li>
+                    <li><strong>Student data</strong> – GDPR/DSGVO applies</li>
+                    <li><strong>Calculations</strong> – AI is bad at math</li>
+                    <li><strong>Current events</strong> – Knowledge cutoffs apply</li>
+                </ul>
+                <div class="expandable" onclick="toggleExpand(this)">
+                    <div class="expand-header"><span>🇩🇪 German Legal Framework</span><span class="expand-icon">▼</span></div>
+                    <div class="expand-content"><p><strong>DSGVO:</strong> No identifiable student info. Check school-approved tools.<br><strong>Copyright:</strong> Unclear status—don't claim AI work as original creation.</p></div>
+                </div>
+                <div class="tip"><span class="tip-icon">✅</span><div><strong>Good news:</strong> For generating ideas and drafting materials, you're on solid ground if you review output and keep student data out.</div></div>
+                <button class="btn btn-primary" onclick="completeModule('basics',4)">Mark Complete (+20 pts)</button>
+            </div>
+
+            <div class="card" id="basics-5">
+                <div class="card-header"><span class="card-num">Module 5 of 5</span><span class="badge" id="badge-b5">Not started</span></div>
+                <h2>Basics Knowledge Check</h2>
+                <div id="quiz-basics">
+                    <div class="quiz-q" data-correct="b"><div class="quiz-q-header"><span class="quiz-q-num">Q1</span></div><p><strong>Why do AI tools generate incorrect info confidently?</strong></p><label class="quiz-opt"><input type="radio" name="bq1" value="a">Not updated recently</label><label class="quiz-opt"><input type="radio" name="bq1" value="b">They predict patterns, not facts</label><label class="quiz-opt"><input type="radio" name="bq1" value="c">Designed for creativity</label></div>
+                    <div class="quiz-q" data-correct="c"><div class="quiz-q-header"><span class="quiz-q-num">Q2</span></div><p><strong>"A" in CLEAR stands for?</strong></p><label class="quiz-opt"><input type="radio" name="bq2" value="a">Accuracy</label><label class="quiz-opt"><input type="radio" name="bq2" value="b">Assignment</label><label class="quiz-opt"><input type="radio" name="bq2" value="c">Audience</label></div>
+                    <div class="quiz-q" data-correct="d"><div class="quiz-q-header"><span class="quiz-q-num">Q3</span></div><p><strong>Appropriate AI use?</strong></p><label class="quiz-opt"><input type="radio" name="bq3" value="a">Input student names</label><label class="quiz-opt"><input type="radio" name="bq3" value="b">Unverified dates</label><label class="quiz-opt"><input type="radio" name="bq3" value="c">Calculate grades</label><label class="quiz-opt"><input type="radio" name="bq3" value="d">Generate differentiated passages</label></div>
+                    <div class="quiz-q" data-correct="b"><div class="quiz-q-header"><span class="quiz-q-num">Q4</span></div><p><strong>Never input into public AI?</strong></p><label class="quiz-opt"><input type="radio" name="bq4" value="a">Curriculum standards</label><label class="quiz-opt"><input type="radio" name="bq4" value="b">Student names/info</label><label class="quiz-opt"><input type="radio" name="bq4" value="c">Lesson topics</label></div>
+                    <div class="quiz-q" data-correct="a"><div class="quiz-q-header"><span class="quiz-q-num">Q5</span></div><p><strong>Best approach with AI content?</strong></p><label class="quiz-opt"><input type="radio" name="bq5" value="a">Review, verify, adapt</label><label class="quiz-opt"><input type="radio" name="bq5" value="b">Use directly</label><label class="quiz-opt"><input type="radio" name="bq5" value="c">Avoid AI entirely</label></div>
+                </div>
+                <button class="btn btn-primary" onclick="submitQuiz('basics')">Check Answers (+30 pts)</button>
+                <div id="quiz-basics-result" style="margin-top:1rem;"></div>
+            </div>
+            <div class="nav-btns"><div></div><button class="btn btn-primary" onclick="go('intermediate')">Continue to Intermediate →</button></div>
+        </section>
+Matching games</li><li>Gamified learning with points</li></ul>
+                <div class="prompt-box"><span class="prompt-label">Interactive Activity Generator</span><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><pre>Create a single-file HTML page with CSS and JavaScript.
+Type: [Quiz/Flashcards/Matching/Fill-blank]
+Topic: [TOPIC], Level: [GRADE]
+Requirements:
+- Modern design, mobile-responsive
+- 10+ items, instant feedback
+- Progress tracking, final results
+- "Try again" option
+Content: [YOUR ITEMS]</pre></div>
+                <h3>How to Use</h3>
+                <ol class="list"><li>Generate with your content</li><li>Save as <code>activity.html</code></li><li>Test in browser</li><li>Refine: "The button doesn't work—fix it"</li><li>Share via LMS or Drive</li></ol>
+                <div class="challenge"><div class="challenge-header"><span class="challenge-icon">🎯</span><span class="challenge-title">Challenge: Plan an Activity</span><span class="challenge-pts">+30 pts</span></div><p>Write a complete prompt for an interactive activity.</p><textarea id="input-a1" placeholder="Create a single-file HTML..."></textarea><div class="challenge-actions"><button class="btn btn-primary" onclick="submitChallenge('a1',30)">Submit</button></div></div>
+                <button class="btn btn-primary" onclick="completeModule('advanced',1)">Mark Complete (+20 pts)</button>
+            </div>
+
+            <div class="card" id="advanced-2">
+                <div class="card-header"><span class="card-num">Module 2 of 3</span><span class="badge" id="badge-a2">Not started</span></div>
+                <h2>Complex Project Planning</h2>
+                <p>For complex projects, break into phases:</p>
+                <div class="prompt-box"><span class="prompt-label">Phase 1: Blueprint</span><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><pre>I want to create a [PROJECT TYPE] for [TOPIC] for [GRADE].
+Before creating, give me a blueprint:
+1. Overall structure
+2. Components needed
+3. Time estimate
+4. Potential challenges
+This is just planning—no content yet.</pre></div>
+                <div class="prompt-box"><span class="prompt-label">Phase 2: Components</span><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><pre>Based on blueprint, create [COMPONENT]:
+[Paste relevant section]
+Make it: age-appropriate, ~[X] minutes, self-explanatory.</pre></div>
+                <div class="scenario"><div class="scenario-label">Example: Escape Room</div><p><strong>Phase 1:</strong> Blueprint for German B1 escape room about traveling<br><strong>Phase 2:</strong> Create Puzzle #1 (train tickets)<br><strong>Phase 3:</strong> Create Puzzle #2 (restaurant dialogue)</p></div>
+                <button class="btn btn-primary" onclick="completeModule('advanced',2)">Mark Complete (+20 pts)</button>
+            </div>
+
+            <div class="card" id="advanced-3">
+                <div class="card-header"><span class="card-num">Module 3 of 3</span><span class="badge" id="badge-a3">Not started</span></div>
+                <h2>Advanced Knowledge Check</h2>
+                <div id="quiz-advanced">
+                    <div class="quiz-q" data-correct="b"><div class="quiz-q-header"><span class="quiz-q-num">Q1</span></div><p><strong>File extension for web activities?</strong></p><label class="quiz-opt"><input type="radio" name="aq1" value="a">.txt</label><label class="quiz-opt"><input type="radio" name="aq1" value="b">.html</label><label class="quiz-opt"><input type="radio" name="aq1" value="c">.doc</label></div>
+                    <div class="quiz-q" data-correct="c"><div class="quiz-q-header"><span class="quiz-q-num">Q2</span></div><p><strong>Complex project approach?</strong></p><label class="quiz-opt"><input type="radio" name="aq2" value="a">One long prompt</label><label class="quiz-opt"><input type="radio" name="aq2" value="b">Only templates</label><label class="quiz-opt"><input type="radio" name="aq2" value="c">Blueprint first, then components</label></div>
+                    <div class="quiz-q" data-correct="a"><div class="quiz-q-header"><span class="quiz-q-num">Q3</span></div><p><strong>When HTML doesn't work?</strong></p><label class="quiz-opt"><input type="radio" name="aq3" value="a">Describe problem, ask AI to fix</label><label class="quiz-opt"><input type="radio" name="aq3" value="b">Start over</label><label class="quiz-opt"><input type="radio" name="aq3" value="c">Give up</label></div>
+                </div>
+                <button class="btn btn-primary" onclick="submitQuiz('advanced')">Check Answers (+30 pts)</button>
+                <div id="quiz-advanced-result" style="margin-top:1rem;"></div>
+            </div>
+            <div class="nav-btns"><button class="btn btn-secondary" onclick="go('intermediate')">← Intermediate</button><button class="btn btn-primary" onclick="go('project')">Final Project →</button></div>
+        </section>
+
+        <!-- PROJECT SECTION -->
+        <section class="section" id="section-project">
+            <div class="card">
+                <h2>🏆 Final Project</h2>
+                <p>Choose ONE project to demonstrate mastery:</p>
+            </div>
+            <div class="card">
+                <h3>Choose Your Project</h3>
+                <div class="expandable" onclick="toggleExpand(this)"><div class="expand-header"><span>📅 Option A: Week of Lesson Plans</span><span class="expand-icon">▼</span></div><div class="expand-content"><p>5 days of plans using AI for 3+ elements. Include objectives, differentiation, assessment, and prompts used.</p></div></div>
+                <div class="expandable" onclick="toggleExpand(this)"><div class="expand-header"><span>🎮 Option B: Interactive HTML Activity</span><span class="expand-icon">▼</span></div><div class="expand-content"><p>Complete working activity with 10+ items, interactivity, tested in browser.</p></div></div>
+                <div class="expandable" onclick="toggleExpand(this)"><div class="expand-header"><span>📝 Option C: Assessment Package</span><span class="expand-icon">▼</span></div><div class="expand-content"><p>Assessment + rubric (4 levels) + answer key + study guide.</p></div></div>
+                <div class="expandable" onclick="toggleExpand(this)"><div class="expand-header"><span>📚 Option D: Prompt Library</span><span class="expand-icon">▼</span></div><div class="expand-content"><p>10+ tested prompts across 3+ task types with effectiveness notes.</p></div></div>
+            </div>
+            <div class="card">
+                <h3>Submit Your Project</h3>
+                <div style="margin:1rem 0;"><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Project Option:</label><select id="project-type" style="width:100%;padding:0.75rem;border:1px solid rgba(26,26,46,0.2);border-radius:6px;font-size:1rem;"><option value="">Select...</option><option value="A">A: Lesson Plans</option><option value="B">B: HTML Activity</option><option value="C">C: Assessment</option><option value="D">D: Prompt Library</option></select></div>
+                <div style="margin:1rem 0;"><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Description & Prompts:</label><textarea id="project-desc" rows="6" placeholder="Describe what you created and your key prompts..."></textarea></div>
+                <button class="btn btn-success" onclick="submitProject()">Submit (+100 pts)</button>
+                <div id="project-result" style="margin-top:1rem;"></div>
+            </div>
+            <div class="card" id="cert-section" style="display:none;">
+                <h3>🎓 Your Certificate</h3>
+                <input type="text" id="cert-name-input" class="name-input" placeholder="Enter your name">
+                <button class="btn btn-primary" onclick="genCert()">Generate Certificate</button>
+                <div class="certificate" id="certificate" style="display:none;"><div class="cert-title">Certificate of Completion</div><div class="cert-subtitle">AI Workshop for Teachers</div><p>This certifies that</p><div class="cert-name" id="cert-name-display"></div><p>has completed the AI Workshop for Teachers<br>at International School Neustadt</p><div class="cert-date" id="cert-date"></div></div>
+                <div id="cert-actions" style="display:none;margin-top:1rem;text-align:center;"><button class="btn btn-secondary" onclick="window.print()">🖨️ Print</button></div>
+            </div>
+            <div class="nav-btns"><button class="btn btn-secondary" onclick="go('advanced')">← Advanced</button><button class="btn btn-primary" onclick="go('resources')">Resources →</button></div>
+        </section>
+
+        <!-- RESOURCES SECTION -->
+        <section class="section" id="section-resources">
+            <div class="card"><h2>📚 Resource Library</h2><p>Bookmark this! All templates in one place.</p></div>
+            <div class="card">
+                <h3>Prompt Templates</h3>
+                <div class="template-card"><div class="template-header"><span class="template-title">📝 Lesson Planning</span><button class="btn btn-secondary" style="padding:0.25rem 0.75rem;font-size:0.8rem;" onclick="copyTpl(this)">Copy</button></div><div class="template-content">Create a [TIME]-min lesson for [TOPIC] for [GRADE].
+Include: objective, warm-up, instruction, practice, closure.
+Students are [CHARACTERISTICS].</div></div>
+                <div class="template-card"><div class="template-header"><span class="template-title">📊 Differentiation</span><button class="btn btn-secondary" style="padding:0.25rem 0.75rem;font-size:0.8rem;" onclick="copyTpl(this)">Copy</button></div><div class="template-content">Create three versions:
+1. SIMPLIFIED: Short sentences, basic vocab
+2. STANDARD: Grade-level
+3. EXTENDED: Complex, challenging
+Original: [PASTE TEXT]</div></div>
+                <div class="template-card"><div class="template-header"><span class="template-title">🎮 Interactive HTML</span><button class="btn btn-secondary" style="padding:0.25rem 0.75rem;font-size:0.8rem;" onclick="copyTpl(this)">Copy</button></div><div class="template-content">Create single-file HTML with CSS/JS.
+Type: [Quiz/Flashcards/Matching]
+Topic: [TOPIC], Level: [GRADE]
+10+ items, feedback, progress, responsive.</div></div>
+            </div>
+            <div class="card">
+                <h3>CLEAR Framework</h3>
+                <div style="background:var(--paper-warm);padding:1.5rem;border-radius:6px;"><p><strong>C</strong>ontext – Situation<br><strong>L</strong>ength – How long<br><strong>E</strong>xamples – Show what you want<br><strong>A</strong>udience – Who for<br><strong>R</strong>ole – AI's role</p></div>
+            </div>
+            <div class="card">
+                <h3>Do's and Don'ts</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                    <div style="background:rgba(74,159,122,0.1);padding:1rem;border-radius:6px;"><h4 style="color:var(--success);">✓ DO</h4><ul class="list" style="font-size:0.9rem;"><li>Verify facts</li><li>Use placeholders</li><li>Review output</li><li>Build prompt library</li></ul></div>
+                    <div style="background:rgba(224,95,95,0.1);padding:1rem;border-radius:6px;"><h4 style="color:#c45050;">✗ DON'T</h4><ul class="list" style="font-size:0.9rem;"><li>Input student data</li><li>Trust AI math</li><li>Skip review</li><li>Claim AI as original</li></ul></div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Your Progress</h3>
+                <div class="badges-row" id="final-badges"></div>
+                <p><strong>Points:</strong> <span id="final-pts">0</span> | <strong>Modules:</strong> <span id="final-modules">0</span>/12 | <strong>Challenges:</strong> <span id="final-challenges">0</span></p>
+                <button class="btn btn-secondary" onclick="resetAll()">🔄 Reset Progress</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const defaultState = { level:'basics', pts:0, badges:{apprentice:false,promptpro:false,creator:false,master:false}, modules:{basics:[false,false,false,false,false],intermediate:[false,false,false,false],advanced:[false,false,false]}, challenges:{}, quizzes:{basics:false,intermediate:false,advanced:false}, project:false };
+        let state = loadState();
+        function loadState() { try { const s=localStorage.getItem('aiWS'); return s?{...defaultState,...JSON.parse(s)}:{...defaultState}; } catch(e){return{...defaultState};} }
+        function saveState() { try{localStorage.setItem('aiWS',JSON.stringify(state));}catch(e){} }
+        function resetAll() { if(confirm('Reset all progress?')){localStorage.removeItem('aiWS');location.reload();} }
+        
+        function go(level) {
+            document.querySelectorAll('.level-tab').forEach(t=>t.classList.toggle('active',t.dataset.level===level));
+            document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+            document.getElementById(`section-${level}`).classList.add('active');
+            state.level=level; saveState();
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+        
+        function toggleExpand(el) { el.classList.toggle('open'); }
+        
+        function copyPrompt(btn) {
+            const txt=btn.parentElement.querySelector('pre').textContent;
+            navigator.clipboard.writeText(txt).then(()=>{btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);});
+        }
+        function copyTpl(btn) {
+            const txt=btn.closest('.template-card').querySelector('.template-content').textContent;
+            navigator.clipboard.writeText(txt).then(()=>{const o=btn.textContent;btn.textContent='Copied!';setTimeout(()=>{btn.textContent=o;},2000);});
+        }
+        
+        function showHint(id) { const h=document.getElementById(`hint-${id}`); h.style.display=h.style.display==='none'?'block':'none'; }
+        
+        function submitChallenge(id,pts) {
+            const input=document.getElementById(`input-${id}`);
+            if(input.value.trim().length<20){alert('Please write more (20+ characters).');return;}
+            if(!state.challenges[id]){state.challenges[id]=true;addPts(pts);toast('Challenge Complete!',`+${pts} points!`);}
+            saveState();
+        }
+        
+        function completeModule(level,num) {
+            const idx=num-1;
+            if(!state.modules[level][idx]){state.modules[level][idx]=true;addPts(20);toast('Module Complete!','+20 points!');updateProgress(level);checkBadges();}
+            const badgeId=level==='basics'?`badge-b${num}`:level==='intermediate'?`badge-i${num}`:`badge-a${num}`;
+            document.getElementById(badgeId).textContent='Completed';
+            document.getElementById(badgeId).classList.add('done');
+            saveState();
+        }
+        
+        function updateProgress(level) {
+            const done=state.modules[level].filter(Boolean).length;
+            const total=state.modules[level].length;
+            document.getElementById(`${level}-progress`).style.width=`${(done/total)*100}%`;
+            document.getElementById(`${level}-progress-text`).textContent=`${done}/${total}`;
+            if(done===total)document.getElementById(`check-${level}`).style.display='inline';
+            updateOverall();
+        }
+        
+        function updateOverall() {
+            const all=[...state.modules.basics,...state.modules.intermediate,...state.modules.advanced];
+            let pct=(all.filter(Boolean).length/all.length)*100;
+            if(state.project)pct=Math.min(100,pct+10);
+            document.getElementById('overall-progress').style.width=`${pct}%`;
+            document.getElementById('progress-pct').textContent=`${Math.round(pct)}%`;
+        }
+        
+        function submitQuiz(level) {
+            if(state.quizzes[level]){alert('Already completed!');return;}
+            const qs=document.querySelectorAll(`#quiz-${level} .quiz-q`);
+            let correct=0;
+            qs.forEach(q=>{
+                const ans=q.dataset.correct;
+                const sel=q.querySelector('input:checked');
+                q.querySelectorAll('.quiz-opt').forEach(o=>o.classList.remove('selected','correct','incorrect'));
+                if(sel){
+                    const opt=sel.closest('.quiz-opt');
+                    if(sel.value===ans){correct++;opt.classList.add('correct');}
+                    else{opt.classList.add('incorrect');q.querySelector(`input[value="${ans}"]`).closest('.quiz-opt').classList.add('correct');}
+                }
+            });
+            const needed=level==='basics'?4:level==='intermediate'?3:2;
+            const res=document.getElementById(`quiz-${level}-result`);
+            if(correct>=needed){
+                state.quizzes[level]=true;addPts(30);
+                const badge=level==='basics'?'apprentice':level==='intermediate'?'promptpro':'creator';
+                state.badges[badge]=true;
+                const name=level==='basics'?'AI Apprentice 🌱':level==='intermediate'?'Prompt Pro ✨':'Digital Creator 🎨';
+                res.innerHTML=`<p style="color:var(--success);font-weight:600;">🎉 ${correct}/${qs.length} correct! ${name} badge earned!</p>`;
+                toast('Badge Earned!',name);
+                updateBadges();
+            }else{res.innerHTML=`<p style="color:var(--warning);font-weight:600;">${correct}/${qs.length} correct. Need ${needed}+ to pass.</p>`;}
+            saveState();
+        }
+        
+        function submitProject() {
+            const type=document.getElementById('project-type').value;
+            const desc=document.getElementById('project-desc').value;
+            if(!type){alert('Select a project.');return;}
+            if(desc.trim().length<50){alert('More detail needed (50+ chars).');return;}
+            if(!state.project){
+                state.project=true;addPts(100);state.badges.master=true;
+                toast('Project Complete!','AI Master 🏆 earned!');
+                document.getElementById('project-result').innerHTML=`<p style="color:var(--success);font-weight:600;">🎉 Congratulations! AI Master Teacher badge earned!</p>`;
+                document.getElementById('cert-section').style.display='block';
+                document.getElementById('check-project').style.display='inline';
+                updateBadges();updateOverall();saveState();
+            }
+        }
+        
+        function genCert() {
+            const name=document.getElementById('cert-name-input').value.trim();
+            if(!name){alert('Enter your name.');return;}
+            document.getElementById('cert-name-display').textContent=name;
+            document.getElementById('cert-date').textContent=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+            document.getElementById('certificate').style.display='block';
+            document.getElementById('cert-actions').style.display='block';
+        }
+        
+        function addPts(n) { state.pts+=n; document.getElementById('total-pts').textContent=state.pts; saveState(); }
+        function checkBadges() { updateBadges(); }
+        
+        function updateBadges() {
+            ['apprentice','promptpro','creator','master'].forEach(b=>{
+                const el=document.getElementById(`badge-${b}`);
+                if(el){if(state.badges[b]){el.classList.add('earned');el.classList.remove('locked');}}
+            });
+            const fb=document.getElementById('final-badges');
+            if(fb){fb.innerHTML=`
+                <div class="badge-item ${state.badges.apprentice?'earned':'locked'}"><span class="badge-icon">🌱</span><span class="badge-name">AI Apprentice</span></div>
+                <div class="badge-item ${state.badges.promptpro?'earned':'locked'}"><span class="badge-icon">✨</span><span class="badge-name">Prompt Pro</span></div>
+                <div class="badge-item ${state.badges.creator?'earned':'locked'}"><span class="badge-icon">🎨</span><span class="badge-name">Digital Creator</span></div>
+                <div class="badge-item ${state.badges.master?'earned':'locked'}"><span class="badge-icon">🏆</span><span class="badge-name">AI Master</span></div>
+            `;}
+            const fp=document.getElementById('final-pts');
+            const fm=document.getElementById('final-modules');
+            const fc=document.getElementById('final-challenges');
+            if(fp)fp.textContent=state.pts;
+            if(fm)fm.textContent=[...state.modules.basics,...state.modules.intermediate,...state.modules.advanced].filter(Boolean).length;
+            if(fc)fc.textContent=Object.values(state.challenges).filter(Boolean).length;
+        }
+        
+        function toast(title,msg) {
+            const t=document.getElementById('toast');
+            t.querySelector('.toast-title').textContent=title;
+            document.getElementById('toast-msg').textContent=msg;
+            t.classList.add('show');
+            setTimeout(()=>t.classList.remove('show'),3500);
+        }
+        
+        function updateCL(id) {
+            document.querySelectorAll(`#cl-${id} .check-item`).forEach(item=>{
+                const cb=item.querySelector('input');
+                item.classList.toggle('checked',cb.checked);
+            });
+        }
+        
+        function init() {
+            document.getElementById('total-pts').textContent=state.pts;
+            ['basics','intermediate','advanced'].forEach(level=>{
+                state.modules[level].forEach((done,idx)=>{
+                    if(done){
+                        const badgeId=level==='basics'?`badge-b${idx+1}`:level==='intermediate'?`badge-i${idx+1}`:`badge-a${idx+1}`;
+                        const el=document.getElementById(badgeId);
+                        if(el){el.textContent='Completed';el.classList.add('done');}
+                    }
+                });
+                updateProgress(level);
+            });
+            if(state.project){
+                document.getElementById('cert-section').style.display='block';
+                document.getElementById('check-project').style.display='inline';
+            }
+            updateBadges();updateOverall();
+            if(state.level!=='basics')go(state.level);
+        }
+        
+        document.addEventListener('DOMContentLoaded',init);
+    </script>
+</body>
+</html>
