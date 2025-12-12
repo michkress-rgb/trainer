@@ -1,0 +1,1563 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Trinitäts-Meditation — 3D Drei-Lichter</title>
+  <style>
+    :root{
+      --panel-bg: rgba(12, 14, 18, 0.76);
+      --panel-stroke: rgba(255,255,255,0.10);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.66);
+      --shadow: 0 18px 60px rgba(0,0,0,0.60);
+      --radius: 16px;
+      --soft: rgba(255,255,255,0.07);
+      --soft2: rgba(255,255,255,0.035);
+      --accent: rgba(255,255,255,0.10);
+    }
+
+    html, body{
+      height:100%;
+      margin:0;
+      background:#000;
+      overflow:hidden;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+    }
+
+    canvas{
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+      display:block;
+      background: radial-gradient(1200px 900px at 50% 55%,
+        rgba(14,18,28,0.96),
+        rgba(7,8,12,1) 60%,
+        rgba(0,0,0,1) 100%);
+    }
+
+    /* Collapsible panel */
+    .panelWrap{
+      position:fixed;
+      left:18px;
+      bottom:18px;
+      z-index:3;
+      width:min(600px, calc(100vw - 36px));
+      transition: transform 220ms ease;
+      will-change: transform;
+    }
+    .panelWrap.collapsed{
+      transform: translateX(calc(-100% + 54px));
+    }
+
+    .panel{
+      background:var(--panel-bg);
+      border:1px solid var(--panel-stroke);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding:14px 14px 12px 14px;
+      overflow:hidden;
+    }
+
+    .handle{
+      position:absolute;
+      top:14px;
+      right:-12px;
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.40);
+      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+    }
+    .handle:hover{ transform: translateY(-1px); background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.18); }
+    .chev{
+      width:12px; height:12px;
+      border-right:2px solid rgba(255,255,255,0.80);
+      border-bottom:2px solid rgba(255,255,255,0.80);
+      transform: rotate(135deg);
+      transition: transform 220ms ease;
+      margin-left:2px;
+    }
+    .panelWrap.collapsed .chev{ transform: rotate(-45deg); margin-left:0; }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      margin-bottom:10px;
+      padding-right:24px; /* breathing room for handle overlap */
+    }
+
+    .titleBlock{ display:flex; flex-direction:column; gap:4px; }
+    .title{
+      font-weight:700;
+      font-size:14px;
+      letter-spacing:0.2px;
+      color:rgba(255,255,255,0.95);
+    }
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      letter-spacing:0.2px;
+      line-height:1.25;
+      max-width: 64ch;
+    }
+
+    .btnSmall{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.86);
+      font-size:12px;
+      letter-spacing:0.2px;
+      cursor:pointer;
+      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+      white-space:nowrap;
+    }
+    .btnSmall:hover{ transform: translateY(-1px); background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.16); }
+    .btnSmall:active{ transform: translateY(0px); }
+
+    .grid{ display:grid; grid-template-columns:1fr; gap:10px; }
+
+    .control{
+      padding:10px 10px 8px 10px;
+      border-radius:12px;
+      border:1px solid var(--soft);
+      background: var(--soft2);
+    }
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:6px;
+    }
+    label{
+      font-size:12px;
+      color:rgba(255,255,255,0.84);
+      letter-spacing:0.25px;
+    }
+    .val{
+      font-variant-numeric: tabular-nums;
+      font-size:12px;
+      color:rgba(255,255,255,0.74);
+      white-space:nowrap;
+    }
+
+    input[type="range"]{
+      -webkit-appearance:none;
+      appearance:none;
+      width:100%;
+      height:14px;
+      background:transparent;
+      outline:none;
+    }
+    input[type="range"]::-webkit-slider-runnable-track{
+      height:10px;
+      border-radius:999px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08));
+      border:1px solid rgba(255,255,255,0.10);
+    }
+    input[type="range"]::-moz-range-track{
+      height:10px;
+      border-radius:999px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08));
+      border:1px solid rgba(255,255,255,0.10);
+    }
+    input[type="range"]::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      appearance:none;
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      margin-top:-5px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.98), rgba(255,255,255,0.45));
+      box-shadow: 0 6px 18px rgba(0,0,0,0.55);
+      border:1px solid rgba(0,0,0,0.35);
+    }
+    input[type="range"]::-moz-range-thumb{
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.98), rgba(255,255,255,0.45));
+      box-shadow: 0 6px 18px rgba(0,0,0,0.55);
+      border:1px solid rgba(0,0,0,0.35);
+    }
+
+    .toggles{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:stretch;
+    }
+
+    .switch{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px;
+      border-radius:12px;
+      border:1px solid var(--soft);
+      background: var(--soft2);
+      flex: 1 1 250px;
+      min-width: 230px;
+    }
+    .switch .meta{ display:flex; flex-direction:column; gap:2px; }
+    .switch .meta .small{
+      font-size:11px;
+      color:rgba(255,255,255,0.62);
+      line-height:1.2;
+    }
+
+    .checkbox{
+      width:42px;
+      height:26px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      position:relative;
+      flex: 0 0 auto;
+      cursor:pointer;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25);
+    }
+    .checkbox::after{
+      content:"";
+      position:absolute;
+      top:3px;
+      left:3px;
+      width:20px;
+      height:20px;
+      border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.98), rgba(255,255,255,0.40));
+      box-shadow: 0 6px 16px rgba(0,0,0,0.55);
+      transition: transform 160ms ease, opacity 160ms ease;
+      opacity:0.92;
+    }
+    .checkbox.on{
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.18);
+    }
+    .checkbox.on::after{ transform: translateX(16px); opacity:1; }
+
+    .presetRow{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.86);
+      font-size:12px;
+      letter-spacing:0.2px;
+      cursor:pointer;
+      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+      user-select:none;
+    }
+    .pill:hover{ transform: translateY(-1px); background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.16); }
+    .pill:active{ transform: translateY(0px); }
+    .pill.primary{ background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.18); }
+
+    details.about{
+      border:1px solid var(--soft);
+      background: var(--soft2);
+      border-radius:12px;
+      padding:10px;
+    }
+    details.about summary{
+      cursor:pointer;
+      font-size:12px;
+      letter-spacing:0.25px;
+      color:rgba(255,255,255,0.86);
+      list-style:none;
+    }
+    details.about summary::-webkit-details-marker{ display:none; }
+    .aboutText{
+      margin-top:8px;
+      font-size:11px;
+      color:rgba(255,255,255,0.66);
+      line-height:1.40;
+    }
+    .quoteBox{
+      margin-top:8px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.22);
+      color: rgba(255,255,255,0.74);
+      font-size:11px;
+      line-height:1.35;
+    }
+    .quoteBox .who{
+      color: rgba(255,255,255,0.84);
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 11px;
+      letter-spacing: 0.2px;
+    }
+
+    .footer{
+      margin-top:10px;
+      color:rgba(255,255,255,0.58);
+      font-size:11px;
+      letter-spacing:0.2px;
+      line-height:1.35;
+    }
+
+    /* Intro overlay */
+    .intro{
+      position:fixed;
+      inset:0;
+      z-index:4;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      background: radial-gradient(900px 700px at 50% 35%, rgba(0,0,0,0.55), rgba(0,0,0,0.86));
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      transition: opacity 240ms ease, visibility 240ms ease;
+    }
+    .intro.hidden{ opacity:0; visibility:hidden; pointer-events:none; }
+    .introCard{
+      width:min(820px, 100%);
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(10,12,16,0.74);
+      box-shadow: 0 22px 80px rgba(0,0,0,0.65);
+      padding: 16px 16px 14px 16px;
+    }
+    .introHead{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .introTitle{
+      font-weight:800;
+      letter-spacing:0.2px;
+      font-size:14px;
+      color: rgba(255,255,255,0.94);
+    }
+    .introBody{
+      color: rgba(255,255,255,0.74);
+      font-size: 12px;
+      line-height: 1.45;
+      letter-spacing: 0.15px;
+    }
+    .introQuotes{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:8px;
+    }
+    .introActions{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+    .kbdHint{
+      margin-top:10px;
+      font-size:11px;
+      color: rgba(255,255,255,0.55);
+    }
+
+    /* Only show tri-color controls when enabled */
+    .triOnly{ display:none; }
+    .triOn .triOnly{ display:block; }
+  </style>
+</head>
+
+<body>
+  <canvas id="main"></canvas>
+
+  <!-- Intro overlay -->
+  <div id="intro" class="intro">
+    <div class="introCard">
+      <div class="introHead">
+        <div>
+          <div id="introTitle" class="introTitle"></div>
+          <div id="introSub" class="introBody" style="margin-top:6px;"></div>
+        </div>
+        <button id="introLangBtn" class="btnSmall" type="button">EN</button>
+      </div>
+
+      <div id="introBody" class="introBody"></div>
+
+      <div class="introQuotes">
+        <div class="quoteBox">
+          <div class="who" id="qWho1"></div>
+          <div id="q1"></div>
+        </div>
+        <div class="quoteBox">
+          <div class="who" id="qWho2"></div>
+          <div id="q2"></div>
+        </div>
+        <div class="quoteBox">
+          <div class="who" id="qWho3"></div>
+          <div id="q3"></div>
+        </div>
+      </div>
+
+      <div class="kbdHint" id="kbdHint"></div>
+
+      <div class="introActions">
+        <button id="introClose" class="btnSmall" type="button"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls panel -->
+  <div id="panelWrap" class="panelWrap">
+    <div class="panel" id="panel">
+      <div class="handle" id="collapseBtn" title="Ein-/Ausklappen">
+        <div class="chev"></div>
+      </div>
+
+      <div class="topbar">
+        <div class="titleBlock">
+          <div class="title" id="uiTitle"></div>
+          <div class="hint" id="uiHint"></div>
+        </div>
+        <button id="langBtn" class="btnSmall" type="button">EN</button>
+      </div>
+
+      <div class="grid" id="panelContent">
+
+        <div class="control">
+          <div class="row"><label id="lblPresets"></label><div class="val" id="presetVal"></div></div>
+          <div class="presetRow">
+            <div class="pill primary" data-preset="unity" id="pUnity"></div>
+            <div class="pill" data-preset="communion" id="pCommunion"></div>
+            <div class="pill" data-preset="still" id="pStill"></div>
+            <div class="pill" data-preset="cosmos" id="pCosmos"></div>
+          </div>
+        </div>
+
+        <div class="control">
+          <div class="row"><label id="lblSpeed" for="speed"></label><div class="val" id="speedVal"></div></div>
+          <input id="speed" type="range" min="0" max="3" step="0.001" value="0.85"/>
+        </div>
+
+        <div class="control">
+          <div class="row"><label id="lblErratic" for="erratic"></label><div class="val" id="erraticVal"></div></div>
+          <input id="erratic" type="range" min="0" max="1" step="0.001" value="0.26"/>
+        </div>
+
+        <div class="control">
+          <div class="row"><label id="lblCourse" for="course"></label><div class="val" id="courseVal"></div></div>
+          <input id="course" type="range" min="0" max="1" step="0.001" value="0.55"/>
+        </div>
+
+        <div class="control">
+          <div class="row"><label id="lblFlux" for="flux"></label><div class="val" id="fluxVal"></div></div>
+          <input id="flux" type="range" min="0" max="1" step="0.001" value="0.18"/>
+        </div>
+
+        <div class="control">
+          <div class="row"><label id="lblLove" for="love"></label><div class="val" id="loveVal"></div></div>
+          <input id="love" type="range" min="0" max="1" step="0.001" value="0.25"/>
+        </div>
+
+        <div class="control">
+          <div class="row"><label id="lblRadiance" for="radiance"></label><div class="val" id="radianceVal"></div></div>
+          <input id="radiance" type="range" min="0" max="1" step="0.001" value="0.00"/>
+        </div>
+
+        <div class="control">
+          <div class="row"><label id="lblDistinct" for="distinct"></label><div class="val" id="distinctVal"></div></div>
+          <input id="distinct" type="range" min="0" max="1" step="0.001" value="0.12"/>
+        </div>
+
+        <div class="control">
+          <div class="row"><label id="lblSize" for="size"></label><div class="val" id="sizeVal"></div></div>
+          <input id="size" type="range" min="0.18" max="0.65" step="0.001" value="0.46"/>
+        </div>
+
+        <div class="control">
+          <div class="row"><label id="lblDepth" for="depth"></label><div class="val" id="depthVal"></div></div>
+          <input id="depth" type="range" min="0.9" max="2.8" step="0.001" value="1.20"/>
+        </div>
+
+        <div class="control">
+          <div class="row"><label id="lblTrails" for="trails"></label><div class="val" id="trailsVal"></div></div>
+          <input id="trails" type="range" min="0" max="1" step="0.001" value="0.58"/>
+        </div>
+
+        <div id="colorGroup" class="control">
+          <div class="row"><label id="lblHue" for="hue"></label><div class="val" id="hueVal"></div></div>
+          <input id="hue" type="range" min="0" max="360" step="0.1" value="205"/>
+        </div>
+
+        <div class="control triOnly">
+          <div class="row"><label id="lblHueA" for="hueA"></label><div class="val" id="hueAVal"></div></div>
+          <input id="hueA" type="range" min="0" max="360" step="0.1" value="200"/>
+        </div>
+        <div class="control triOnly">
+          <div class="row"><label id="lblHueB" for="hueB"></label><div class="val" id="hueBVal"></div></div>
+          <input id="hueB" type="range" min="0" max="360" step="0.1" value="320"/>
+        </div>
+        <div class="control triOnly">
+          <div class="row"><label id="lblHueC" for="hueC"></label><div class="val" id="hueCVal"></div></div>
+          <input id="hueC" type="range" min="0" max="360" step="0.1" value="70"/>
+        </div>
+
+        <div class="control">
+          <div class="row"><label id="lblIntensity" for="intensity"></label><div class="val" id="intensityVal"></div></div>
+          <input id="intensity" type="range" min="0" max="1" step="0.001" value="0.85"/>
+        </div>
+
+        <div class="toggles">
+          <div class="switch">
+            <div class="meta">
+              <label id="lblCenter"></label>
+              <div class="small" id="lblCenterSub"></div>
+            </div>
+            <div id="centerSwitch" class="checkbox on" role="switch" aria-checked="true" tabindex="0"></div>
+          </div>
+
+          <div class="switch">
+            <div class="meta">
+              <label id="lblStars"></label>
+              <div class="small" id="lblStarsSub"></div>
+            </div>
+            <div id="starsSwitch" class="checkbox" role="switch" aria-checked="false" tabindex="0"></div>
+          </div>
+
+          <div class="switch">
+            <div class="meta">
+              <label id="lblTriColor"></label>
+              <div class="small" id="lblTriColorSub"></div>
+            </div>
+            <div id="triSwitch" class="checkbox" role="switch" aria-checked="false" tabindex="0"></div>
+          </div>
+
+          <div class="switch">
+            <div class="meta">
+              <label id="lblRadiateBtn"></label>
+              <div class="small" id="lblRadiateSub"></div>
+            </div>
+            <div id="radiateSwitch" class="checkbox" role="switch" aria-checked="false" tabindex="0"></div>
+          </div>
+        </div>
+
+        <div class="control">
+          <div class="row"><label id="lblStarCount" for="starCount"></label><div class="val" id="starCountVal"></div></div>
+          <input id="starCount" type="range" min="0" max="1" step="0.001" value="0.45"/>
+        </div>
+        <div class="control">
+          <div class="row"><label id="lblStarBright" for="starBright"></label><div class="val" id="starBrightVal"></div></div>
+          <input id="starBright" type="range" min="0" max="1" step="0.001" value="0.60"/>
+        </div>
+
+        <details class="about" open>
+          <summary id="aboutSummary"></summary>
+          <div class="aboutText" id="aboutText"></div>
+          <div class="quoteBox">
+            <div class="who" id="aboutWho"></div>
+            <div id="aboutQuote"></div>
+          </div>
+        </details>
+
+        <div class="footer" id="footerText"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  // ----------------------------
+  // Language strings (default: German)
+  // ----------------------------
+  const STR = {
+    de: {
+      title: "Trinitäts-Meditation — 3D Drei-Lichter",
+      hint:
+        "Heilige Kunst für Sammlung und Meditation: ein Bildimpuls zum Geheimnis der Dreifaltigkeit. Keine theologische Darstellung, kein „Modell Gottes“ — nur eine künstlerische Annäherung.",
+      presets: "Voreinstellungen",
+      presetVal: "Klick zum Umschalten",
+      pUnity: "Einheit",
+      pCommunion: "Gemeinschaft",
+      pStill: "Stille",
+      pCosmos: "Kosmos",
+      speed: "Drehgeschwindigkeit",
+      erratic: "Unruhe",
+      course: "Kurswechsel (Intervall)",
+      flux: "Quanten-Flux",
+      love: "Liebes-Puls",
+      radiance: "Ausstrahlung (Stärke)",
+      distinct: "Personen unterscheidbar (nur Helligkeit)",
+      size: "Dreiecksgröße",
+      depth: "Kameratiefe",
+      trails: "Spuren",
+      hue: "Farbton (alle gemeinsam)",
+      hueRotate: "Palette drehen",
+      hueA: "Farbe Person I",
+      hueB: "Farbe Person II",
+      hueC: "Farbe Person III",
+      intensity: "Lichtintensität",
+      center: "Zentrales Licht",
+      centerSub: "Künstlerische Darstellung der Mitte der Seele, wo die Dreifaltigkeit wohnt (optional).",
+      stars: "Sternenfeld",
+      starsSub: "Ruhiger „Himmels“-Hintergrund",
+      triColor: "Drei Farben",
+      triColorSub: "Ein Licht – drei Farbtöne (künstlerische Variation)",
+      radiateBtn: "Liebe strahlt",
+      radiateSub: "Ausstrahlung in die Weite (künstlerischer Effekt)",
+      starCount: "Sterne (Anzahl)",
+      starBright: "Sterne (Helligkeit)",
+      aboutSummary: "Hinweis zur Meditation (Hl. Elisabeth von der Dreifaltigkeit)",
+      aboutText:
+        "Die hl. Elisabeth von der Dreifaltigkeit betont innere Sammlung und die inwohnende Dreifaltigkeit. Diese Visualisierung soll nicht erklären, sondern helfen, still zu werden: drei Lichter in untrennbarer Gemeinschaft — ein Bildimpuls für Liebe und Einheit.",
+      aboutWho: "Hl. Elisabeth von der Dreifaltigkeit",
+      aboutQuote: "„Mach [meine Seele] zu deinem Himmel, zu deiner geliebten Wohnung.“",
+      footer:
+        "Tipp: Für klare „Wendungen“ Kurswechsel erhöhen. Flux sparsam. Mit der Pfeilfläche könnt ihr die Bedienung einklappen (Taste: H).",
+      introTitle: "Eine künstlerische Annäherung",
+      introSub:
+        "Ein Bild, um in Liebe zu verweilen — nicht um das Geheimnis zu „rechnen“.",
+      introBody:
+        "Diese Animation ist heilige Kunst: eine meditative Darstellung von Beziehung und Einheit. Sie ist ausdrücklich keine theologische Grafik und stellt Gott nicht dar. Nutzt sie als stillen Impuls: Sammlung, Anbetung, Dank, Liebe. Wenn ihr merkt, dass die Bewegung ablenkt, reduziert Flux und Unruhe; erhöht Spuren; verlangsamt die Drehung.",
+      introClose: "Beginnen",
+      introLang: "EN",
+      kbdHint: "Kurzbefehle: H = Bedienung ein/aus · I = Intro ein/aus",
+      qWho1: "Hl. Elisabeth — Gebet zur Dreifaltigkeit",
+      q1: "„Gib Frieden meiner Seele; mach sie zu deinem Himmel.“",
+      qWho2: "Hl. Elisabeth (zugeschrieben)",
+      q2: "„Ich habe den Himmel auf Erden gefunden: Gott ist in meiner Seele.“",
+      qWho3: "Hl. Elisabeth — letzte Worte",
+      q3: "„Ich gehe zum Licht, zur Liebe, zum Leben!“",
+      unitsDegPerSec: "°/s",
+      unitsSec: "s",
+      unitsPct: "%"
+    },
+
+    en: {
+      title: "Trinity Meditation — 3D Tri-Lights",
+      hint:
+        "Holy art for recollection and prayer: a visual prompt toward the mystery of the Trinity. Not a theological diagram, not a “model of God” — only an artistic meditation aid.",
+      presets: "Presets",
+      presetVal: "Click to switch",
+      pUnity: "Unity",
+      pCommunion: "Communion",
+      pStill: "Stillness",
+      pCosmos: "Cosmos",
+      speed: "Spin Speed",
+      erratic: "Erratic Motion",
+      course: "Course Changes (interval)",
+      flux: "Quantum Flux",
+      love: "Love Pulse",
+      radiance: "Radiance (strength)",
+      distinct: "Distinct Persons (brightness only)",
+      size: "Triangle Size",
+      depth: "Camera Depth",
+      trails: "Trails",
+      hue: "Hue (shared)",
+      hueRotate: "Rotate Palette",
+      hueA: "Color Person I",
+      hueB: "Color Person II",
+      hueC: "Color Person III",
+      intensity: "Light Intensity",
+      center: "Center Light",
+      centerSub: "Artistic sign of the soul’s center, where the Trinity dwells (optional).",
+      stars: "Starfield",
+      starsSub: "A quiet ‘heavens’ background",
+      triColor: "Three Colors",
+      triColorSub: "One light — three hues (artistic variation)",
+      radiateBtn: "Love Radiates",
+      radiateSub: "Radiating into the ‘universe’ (artistic effect)",
+      starCount: "Stars (count)",
+      starBright: "Stars (brightness)",
+      aboutSummary: "Meditation note (St. Elizabeth of the Trinity)",
+      aboutText:
+        "St. Elizabeth of the Trinity emphasizes interior recollection and the indwelling Trinity. This visualization is not meant to explain, but to help you become still: three lights in inseparable communion — a visual prompt for love and unity.",
+      aboutWho: "St. Elizabeth of the Trinity",
+      aboutQuote: "“Make [my soul] your heaven, your beloved dwelling.”",
+      footer:
+        "Tip: For clearer ‘turns,’ increase Course Changes. Use Flux sparingly. Collapse the panel with the arrow (key: H).",
+      introTitle: "An artistic conception",
+      introSub:
+        "A visual prompt to remain in love — not to ‘solve’ the mystery.",
+      introBody:
+        "This animation is holy art: a contemplative image of relation and unity. It is explicitly not a theological diagram and does not depict God. Use it as a gentle prompt for prayer: recollection, adoration, gratitude, love. If the motion distracts, reduce Flux and Erratic; increase Trails; slow the rotation.",
+      introClose: "Enter",
+      introLang: "DE",
+      kbdHint: "Shortcuts: H = panel toggle · I = intro toggle",
+      qWho1: "St. Elizabeth — Prayer to the Trinity",
+      q1: "“Give peace to my soul; make it your heaven.”",
+      qWho2: "St. Elizabeth (attributed)",
+      q2: "“I have found heaven on earth: God is in my soul.”",
+      qWho3: "St. Elizabeth — last words",
+      q3: "“I am going to Light, to Love, to Life!”",
+      unitsDegPerSec: "°/s",
+      unitsSec: "s",
+      unitsPct: "%"
+    }
+  };
+
+  let lang = "de"; // default German
+
+  const el = (id)=>document.getElementById(id);
+
+  // ----------------------------
+  // Canvas: one visible + one offscreen for trails
+  // ----------------------------
+  const canvas = el("main");
+  const ctx = canvas.getContext("2d", { alpha:false, desynchronized:true });
+
+  const lightCanvas = document.createElement("canvas");
+  const lctx = lightCanvas.getContext("2d", { alpha:true, desynchronized:true });
+
+  let W=0, H=0, DPR=1;
+  let bgGrad = null;
+
+  function buildGradient(){
+    bgGrad = ctx.createRadialGradient(W*0.5, H*0.55, Math.min(W,H)*0.06,
+                                      W*0.5, H*0.55, Math.max(W,H)*0.78);
+    bgGrad.addColorStop(0.00, "rgba(14,18,28,0.96)");
+    bgGrad.addColorStop(0.62, "rgba(7,8,12,1.00)");
+    bgGrad.addColorStop(1.00, "rgba(0,0,0,1.00)");
+  }
+
+  function resize(){
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    W = Math.floor(window.innerWidth);
+    H = Math.floor(window.innerHeight);
+
+    canvas.width = Math.floor(W*DPR);
+    canvas.height = Math.floor(H*DPR);
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+
+    lightCanvas.width = Math.floor(W*DPR);
+    lightCanvas.height = Math.floor(H*DPR);
+    lctx.setTransform(DPR,0,0,DPR,0,0);
+
+    buildGradient();
+    rebuildStars();
+    lctx.clearRect(0,0,W,H);
+  }
+  window.addEventListener("resize", resize, {passive:true});
+
+  // ----------------------------
+  // UI state
+  // ----------------------------
+  const params = {
+    speed: +el("speed").value,
+    erratic: +el("erratic").value,
+    course: +el("course").value,
+    flux: +el("flux").value,
+    love: +el("love").value,
+    radiance: +el("radiance").value,        // strength slider
+    distinct: +el("distinct").value,
+    size: +el("size").value,
+    depth: +el("depth").value,
+    trails: +el("trails").value,
+    hue: +el("hue").value,
+    hueA: +el("hueA").value,
+    hueB: +el("hueB").value,
+    hueC: +el("hueC").value,
+    intensity: +el("intensity").value,
+    centerOn: true,
+    starsOn: false,
+    triOn: false,
+    radiateOn: false,
+    starCount: +el("starCount").value,
+    starBright: +el("starBright").value,
+    activePreset: "unity"
+  };
+
+  function bindRange(id, key){
+    el(id).addEventListener("input", () => {
+      params[key] = +el(id).value;
+      if (key === "starCount") rebuildStars();
+      syncLabels();
+    }, {passive:true});
+  }
+  ["speed","erratic","course","flux","love","radiance","distinct","size","depth","trails","hue","hueA","hueB","hueC","intensity","starCount","starBright"]
+    .forEach(k => bindRange(k,k));
+
+  // ----------------------------
+  // Panel collapse
+  // ----------------------------
+  const panelWrap = el("panelWrap");
+  const collapseBtn = el("collapseBtn");
+  function togglePanel(){
+    panelWrap.classList.toggle("collapsed");
+  }
+  collapseBtn.addEventListener("click", togglePanel);
+
+  // Keyboard shortcuts
+  window.addEventListener("keydown", (e)=>{
+    if (e.key === "h" || e.key === "H") togglePanel();
+    if (e.key === "i" || e.key === "I") toggleIntro();
+  });
+
+  // ----------------------------
+  // Switch helpers
+  // ----------------------------
+  function setSwitch(node, on){
+    node.classList.toggle("on", on);
+    node.setAttribute("aria-checked", String(on));
+  }
+  function wireSwitch(node, getter, setter){
+    node.addEventListener("click", ()=>setter(!getter()));
+    node.addEventListener("keydown", (e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); setter(!getter()); }});
+  }
+
+  const centerSwitch = el("centerSwitch");
+  wireSwitch(centerSwitch, ()=>params.centerOn, (v)=>{ params.centerOn=v; setSwitch(centerSwitch,v); });
+
+  const starsSwitch = el("starsSwitch");
+  wireSwitch(starsSwitch, ()=>params.starsOn, (v)=>{ params.starsOn=v; setSwitch(starsSwitch,v); });
+
+  const triSwitch = el("triSwitch");
+  wireSwitch(triSwitch, ()=>params.triOn, (v)=>{
+    params.triOn=v;
+    setSwitch(triSwitch,v);
+    document.body.classList.toggle("triOn", v);
+    syncLabels(); // label changes for hue slider
+  });
+
+  const radiateSwitch = el("radiateSwitch");
+  wireSwitch(radiateSwitch, ()=>params.radiateOn, (v)=>{ params.radiateOn=v; setSwitch(radiateSwitch,v); });
+
+  // ----------------------------
+  // Language application (including intro)
+  // ----------------------------
+  function applyLang(){
+    const S = STR[lang];
+    document.documentElement.lang = (lang === "de") ? "de" : "en";
+    document.title = S.title;
+
+    el("uiTitle").textContent = S.title;
+    el("uiHint").textContent  = S.hint;
+
+    el("lblPresets").textContent = S.presets;
+    el("presetVal").textContent = S.presetVal;
+
+    el("pUnity").textContent = S.pUnity;
+    el("pCommunion").textContent = S.pCommunion;
+    el("pStill").textContent = S.pStill;
+    el("pCosmos").textContent = S.pCosmos;
+
+    el("lblSpeed").textContent = S.speed;
+    el("lblErratic").textContent = S.erratic;
+    el("lblCourse").textContent = S.course;
+    el("lblFlux").textContent = S.flux;
+    el("lblLove").textContent = S.love;
+    el("lblRadiance").textContent = S.radiance;
+    el("lblDistinct").textContent = S.distinct;
+    el("lblSize").textContent = S.size;
+    el("lblDepth").textContent = S.depth;
+    el("lblTrails").textContent = S.trails;
+
+    // Hue label changes in tri-color mode
+    el("lblHue").textContent = params.triOn ? S.hueRotate : S.hue;
+    el("lblHueA").textContent = S.hueA;
+    el("lblHueB").textContent = S.hueB;
+    el("lblHueC").textContent = S.hueC;
+
+    el("lblIntensity").textContent = S.intensity;
+
+    el("lblCenter").textContent = S.center;
+    el("lblCenterSub").textContent = S.centerSub;
+
+    el("lblStars").textContent = S.stars;
+    el("lblStarsSub").textContent = S.starsSub;
+
+    el("lblTriColor").textContent = S.triColor;
+    el("lblTriColorSub").textContent = S.triColorSub;
+
+    el("lblRadiateBtn").textContent = S.radiateBtn;
+    el("lblRadiateSub").textContent = S.radiateSub;
+
+    el("lblStarCount").textContent = S.starCount;
+    el("lblStarBright").textContent = S.starBright;
+
+    el("aboutSummary").textContent = S.aboutSummary;
+    el("aboutText").textContent = S.aboutText;
+    el("aboutWho").textContent = S.aboutWho;
+    el("aboutQuote").textContent = S.aboutQuote;
+
+    el("footerText").textContent = S.footer;
+
+    // Intro content
+    el("introTitle").textContent = S.introTitle;
+    el("introSub").textContent = S.introSub;
+    el("introBody").textContent = S.introBody;
+    el("introClose").textContent = S.introClose;
+    el("kbdHint").textContent = S.kbdHint;
+    el("qWho1").textContent = S.qWho1;
+    el("q1").textContent = S.q1;
+    el("qWho2").textContent = S.qWho2;
+    el("q2").textContent = S.q2;
+    el("qWho3").textContent = S.qWho3;
+    el("q3").textContent = S.q3;
+
+    el("langBtn").textContent = (lang === "de") ? "EN" : "DE";
+    el("introLangBtn").textContent = S.introLang;
+
+    syncLabels();
+  }
+
+  el("langBtn").addEventListener("click", ()=>{
+    lang = (lang === "de") ? "en" : "de";
+    applyLang();
+  });
+  el("introLangBtn").addEventListener("click", ()=>{
+    lang = (lang === "de") ? "en" : "de";
+    applyLang();
+  });
+
+  // ----------------------------
+  // Intro overlay toggling
+  // ----------------------------
+  const intro = el("intro");
+  function toggleIntro(){
+    intro.classList.toggle("hidden");
+  }
+  el("introClose").addEventListener("click", ()=>{
+    intro.classList.add("hidden");
+  });
+
+  // ----------------------------
+  // Presets
+  // ----------------------------
+  function setSlider(id, value){
+    el(id).value = String(value);
+    params[id] = +value;
+  }
+  function setPreset(name){
+    params.activePreset = name;
+
+    // Visual highlight
+    document.querySelectorAll(".pill").forEach(p => p.classList.remove("primary"));
+    const pill = document.querySelector(`.pill[data-preset="${name}"]`);
+    if (pill) pill.classList.add("primary");
+
+    // Preset values (tuned to “feel” intentional)
+    if (name === "unity"){
+      setSlider("speed", 1.65);
+      setSlider("erratic", 0.12);
+      setSlider("course", 0.22);
+      setSlider("flux", 0.05);
+      setSlider("love", 0.30);
+      setSlider("radiance", 0.10);
+      setSlider("distinct", 0.02);
+      setSlider("size", 0.42);
+      setSlider("depth", 1.05);
+      setSlider("trails", 0.82);
+      setSlider("hue", 210);
+      setSlider("intensity", 0.98);
+
+      params.triOn = false; setSwitch(triSwitch,false); document.body.classList.remove("triOn");
+      params.centerOn = true; setSwitch(centerSwitch,true);
+      params.starsOn = false; setSwitch(starsSwitch,false);
+      params.radiateOn = false; setSwitch(radiateSwitch,false);
+    }
+
+    if (name === "communion"){
+      setSlider("speed", 0.95);
+      setSlider("erratic", 0.30);
+      setSlider("course", 0.62);
+      setSlider("flux", 0.18);
+      setSlider("love", 0.50);
+      setSlider("radiance", 0.25);
+      setSlider("distinct", 0.12);
+      setSlider("size", 0.48);
+      setSlider("depth", 1.25);
+      setSlider("trails", 0.62);
+      setSlider("hue", 195);
+      setSlider("intensity", 0.88);
+
+      params.triOn = false; setSwitch(triSwitch,false); document.body.classList.remove("triOn");
+      params.centerOn = true; setSwitch(centerSwitch,true);
+      params.starsOn = true; setSwitch(starsSwitch,true);
+      params.radiateOn = true; setSwitch(radiateSwitch,true);
+    }
+
+    if (name === "still"){
+      setSlider("speed", 0.35);
+      setSlider("erratic", 0.05);
+      setSlider("course", 0.10);
+      setSlider("flux", 0.02);
+      setSlider("love", 0.15);
+      setSlider("radiance", 0.00);
+      setSlider("distinct", 0.05);
+      setSlider("size", 0.50);
+      setSlider("depth", 1.55);
+      setSlider("trails", 0.72);
+      setSlider("hue", 230);
+      setSlider("intensity", 0.75);
+
+      params.triOn = false; setSwitch(triSwitch,false); document.body.classList.remove("triOn");
+      params.centerOn = true; setSwitch(centerSwitch,true);
+      params.starsOn = true; setSwitch(starsSwitch,true);
+      params.radiateOn = false; setSwitch(radiateSwitch,false);
+    }
+
+    if (name === "cosmos"){
+      setSlider("speed", 1.05);
+      setSlider("erratic", 0.55);
+      setSlider("course", 0.72);
+      setSlider("flux", 0.45);
+      setSlider("love", 0.40);
+      setSlider("radiance", 0.45);
+      setSlider("distinct", 0.16);
+      setSlider("size", 0.56);
+      setSlider("depth", 1.25);
+      setSlider("trails", 0.55);
+      setSlider("hue", 205);
+      setSlider("hueA", 200);
+      setSlider("hueB", 320);
+      setSlider("hueC", 70);
+      setSlider("intensity", 0.92);
+
+      params.triOn = true; setSwitch(triSwitch,true); document.body.classList.add("triOn");
+      params.centerOn = false; setSwitch(centerSwitch,false);
+      params.starsOn = true; setSwitch(starsSwitch,true);
+      params.radiateOn = true; setSwitch(radiateSwitch,true);
+    }
+
+    // keep sliders in sync with state toggles
+    syncLabels();
+    applyLang(); // ensures hue label reflects triOn in the active language
+  }
+
+  document.querySelectorAll(".pill").forEach(p => {
+    p.addEventListener("click", ()=>{
+      const name = p.getAttribute("data-preset");
+      if (name) setPreset(name);
+    });
+  });
+
+  // ----------------------------
+  // Labels
+  // ----------------------------
+  function fmt(x,d=2){ return Number(x).toFixed(d); }
+  function mix(a,b,t){ return a+(b-a)*t; }
+  function clamp(x,a,b){ return Math.max(a, Math.min(b, x)); }
+
+  function syncLabels(){
+    const S = STR[lang];
+
+    const degPerSec = (params.speed ** 1.20) * 720;
+    el("speedVal").textContent = fmt(degPerSec,0) + " " + S.unitsDegPerSec;
+
+    el("erraticVal").textContent = fmt(params.erratic,2);
+    const courseSec = mix(2.8, 0.16, params.course);
+    el("courseVal").textContent = fmt(courseSec,2) + " " + S.unitsSec;
+
+    el("fluxVal").textContent = fmt(params.flux,2);
+    el("loveVal").textContent = fmt(params.love,2);
+    el("radianceVal").textContent = fmt(params.radiance,2);
+    el("distinctVal").textContent = fmt(params.distinct,2);
+
+    el("sizeVal").textContent = fmt(params.size,2);
+    el("depthVal").textContent = fmt(params.depth,2);
+    el("trailsVal").textContent = fmt(params.trails*100,0) + S.unitsPct;
+
+    // Hue labels
+    el("hueVal").textContent = fmt(params.hue,0) + "°";
+    el("hueAVal").textContent = fmt(params.hueA,0) + "°";
+    el("hueBVal").textContent = fmt(params.hueB,0) + "°";
+    el("hueCVal").textContent = fmt(params.hueC,0) + "°";
+
+    el("intensityVal").textContent = fmt(params.intensity,2);
+
+    // Update hue label text dynamically
+    el("lblHue").textContent = params.triOn ? S.hueRotate : S.hue;
+
+    // Stars
+    el("starCountVal").textContent = fmt(starCountMapped(),0);
+    el("starBrightVal").textContent = fmt(params.starBright,2);
+  }
+
+  // ----------------------------
+  // 3D Math + quaternions
+  // ----------------------------
+  const TAU = Math.PI*2;
+
+  const len3 = (v)=>Math.hypot(v.x,v.y,v.z);
+  const norm3 = (v)=>{ const l=len3(v)||1; return {x:v.x/l,y:v.y/l,z:v.z/l}; };
+  const dot3 = (a,b)=>a.x*b.x + a.y*b.y + a.z*b.z;
+  const add3 = (a,b)=>({x:a.x+b.x,y:a.y+b.y,z:a.z+b.z});
+  const mul3 = (v,s)=>({x:v.x*s,y:v.y*s,z:v.z*s});
+
+  function expSlew(current, target, lambda, dt){
+    const k = 1 - Math.exp(-lambda*dt);
+    return current + (target-current)*k;
+  }
+
+  function slerpDir(a,b,t){
+    const an = norm3(a), bn = norm3(b);
+    let c = clamp(dot3(an,bn), -1, 1);
+    const ang = Math.acos(c);
+    if (ang < 1e-5) return an;
+    const s = Math.sin(ang);
+    const w1 = Math.sin((1-t)*ang)/s;
+    const w2 = Math.sin(t*ang)/s;
+    return norm3(add3(mul3(an,w1), mul3(bn,w2)));
+  }
+
+  const qNorm = (q)=>{
+    const l = Math.hypot(q.w,q.x,q.y,q.z) || 1;
+    return {w:q.w/l, x:q.x/l, y:q.y/l, z:q.z/l};
+  };
+  const qMul = (a,b)=>({
+    w: a.w*b.w - a.x*b.x - a.y*b.y - a.z*b.z,
+    x: a.w*b.x + a.x*b.w + a.y*b.z - a.z*b.y,
+    y: a.w*b.y - a.x*b.z + a.y*b.w + a.z*b.x,
+    z: a.w*b.z + a.x*b.y - a.y*b.x + a.z*b.w,
+  });
+  const qFromAxisAngle = (axis, angle)=>{
+    const half = angle*0.5;
+    const s = Math.sin(half);
+    const a = norm3(axis);
+    return qNorm({w:Math.cos(half), x:a.x*s, y:a.y*s, z:a.z*s});
+  };
+  const qRotateVec = (q,v)=>{
+    const p = {w:0, x:v.x, y:v.y, z:v.z};
+    const qc = {w:q.w, x:-q.x, y:-q.y, z:-q.z};
+    const r = qMul(qMul(q,p),qc);
+    return {x:r.x, y:r.y, z:r.z};
+  };
+
+  // ----------------------------
+  // PRNG
+  // ----------------------------
+  function mulberry32(seed){
+    return function(){
+      let t = seed += 0x6D2B79F5;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const rand = mulberry32((Date.now() ^ 0x9E3779B9) >>> 0);
+  const randRange = (a,b)=>a+(b-a)*rand();
+  function randomUnitVector(){
+    const u = rand()*2 - 1;
+    const t = rand()*TAU;
+    const r = Math.sqrt(Math.max(0, 1-u*u));
+    return {x:r*Math.cos(t), y:r*Math.sin(t), z:u};
+  }
+
+  // ----------------------------
+  // Geometry + projection
+  // ----------------------------
+  function triVerts(side){
+    const R = side / Math.sqrt(3);
+    return [
+      {x: R, y: 0, z: 0},
+      {x: R*Math.cos(TAU/3), y: R*Math.sin(TAU/3), z: 0},
+      {x: R*Math.cos(2*TAU/3), y: R*Math.sin(2*TAU/3), z: 0},
+    ];
+  }
+  function project(v, camDist, fov){
+    const zc = camDist - v.z;
+    const s = fov / Math.max(0.001, zc);
+    return { x: v.x*s, y: v.y*s, s, z: v.z };
+  }
+
+  // ----------------------------
+  // Starfield (count + brightness)
+  // ----------------------------
+  let stars = [];
+  function starCountMapped(){
+    // 80 .. 2400
+    const t = clamp(params.starCount, 0, 1);
+    return Math.floor(mix(80, 2400, t*t));
+  }
+  function rebuildStars(){
+    stars = [];
+    const count = starCountMapped();
+    for(let i=0;i<count;i++){
+      const d = rand() ** 1.7;
+      stars.push({ x: rand(), y: rand(), d, tw: randRange(0.55, 1.75), ph: randRange(0, TAU) });
+    }
+  }
+  function drawStars(now){
+    const bright = clamp(params.starBright, 0, 1);
+    const t = now * 0.00002;
+    const dx = 0.020 * Math.sin(t*13.1);
+    const dy = 0.018 * Math.cos(t*11.7);
+
+    for(const s of stars){
+      const depth = 0.35 + 0.85*s.d;
+      const tw = 0.55 + 0.45*Math.sin(s.ph + now*0.0012*s.tw);
+      const a = (0.03 + 0.28*depth*tw) * (0.20 + 0.95*bright);
+
+      const x = ((s.x + dx*depth) % 1 + 1) % 1;
+      const y = ((s.y + dy*depth) % 1 + 1) % 1;
+
+      const px = x * W;
+      const py = y * H;
+
+      const r = 0.55 + 1.9*depth;
+      ctx.fillStyle = `rgba(255,255,255,${a.toFixed(3)})`;
+      ctx.beginPath();
+      ctx.arc(px, py, r, 0, TAU);
+      ctx.fill();
+    }
+  }
+
+  // ----------------------------
+  // Glow rendering (offscreen)
+  // ----------------------------
+  function hsl(h,s,l,a=1){ return `hsla(${h.toFixed(2)}, ${s.toFixed(2)}%, ${l.toFixed(2)}%, ${a.toFixed(3)})`; }
+
+  function fadeLightBuffer(){
+    // higher trails => slower fade
+    const t = clamp(params.trails, 0, 1);
+    const a = mix(0.28, 0.05, t);
+    lctx.globalCompositeOperation = "source-over";
+    lctx.fillStyle = `rgba(0,0,0,${a.toFixed(3)})`;
+    lctx.fillRect(0,0,W,H);
+  }
+
+  function drawGlow(x,y,r,hue,intensity,depthScale,isCenter=false){
+    const ds = clamp(depthScale, 0.65, 1.9);
+    const centerK = isCenter ? 0.62 : 1.00;
+
+    const baseAlpha = (0.18 + 0.70*intensity) * (0.72 + 0.28*ds);
+    const hotAlpha  = (0.22 + 0.78*intensity) * (0.68 + 0.32*ds);
+
+    // Outer bloom
+    {
+      const R = r * (2.6 + 2.2*intensity) * ds * centerK;
+      const g = lctx.createRadialGradient(x,y,0,x,y,R);
+      g.addColorStop(0.00, hsl(hue,95,70,0.00));
+      g.addColorStop(0.10, hsl(hue,95,70,baseAlpha*0.60));
+      g.addColorStop(0.45, hsl(hue,95,55,baseAlpha*0.24));
+      g.addColorStop(1.00, hsl(hue,95,45,0.00));
+      lctx.fillStyle = g;
+      lctx.beginPath(); lctx.arc(x,y,R,0,TAU); lctx.fill();
+    }
+    // Mid glow
+    {
+      const R = r * (1.25 + 1.50*intensity) * ds * centerK;
+      const g = lctx.createRadialGradient(x,y,0,x,y,R);
+      g.addColorStop(0.00, hsl(hue,100,74,hotAlpha*0.26));
+      g.addColorStop(0.20, hsl(hue,100,68,hotAlpha*0.68));
+      g.addColorStop(0.60, hsl(hue,100,55,hotAlpha*0.22));
+      g.addColorStop(1.00, hsl(hue,100,50,0.00));
+      lctx.fillStyle = g;
+      lctx.beginPath(); lctx.arc(x,y,R,0,TAU); lctx.fill();
+    }
+    // Core
+    {
+      const R = r * (0.40 + 0.36*intensity) * ds * centerK;
+      const g = lctx.createRadialGradient(x,y,0,x,y,R);
+      g.addColorStop(0.00, hsl(hue,100,92,0.95));
+      g.addColorStop(0.35, hsl(hue,100,82,0.70));
+      g.addColorStop(1.00, hsl(hue,100,60,0.00));
+      lctx.fillStyle = g;
+      lctx.beginPath(); lctx.arc(x,y,R,0,TAU); lctx.fill();
+    }
+  }
+
+  function vignette(){
+    const g = ctx.createRadialGradient(W*0.5, H*0.55, Math.min(W,H)*0.06,
+                                      W*0.5, H*0.55, Math.max(W,H)*0.78);
+    g.addColorStop(0.00, "rgba(0,0,0,0.00)");
+    g.addColorStop(0.62, "rgba(0,0,0,0.18)");
+    g.addColorStop(1.00, "rgba(0,0,0,0.62)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,W,H);
+  }
+
+  // ----------------------------
+  // Love radiance effect
+  // ----------------------------
+  let radiancePhase = 0;
+  function drawRadiance(cx,cy,hues,baseIntensity,now,dt){
+    if (!params.radiateOn) return;
+    const strength = clamp(params.radiance, 0, 1);
+    if (strength <= 0.0005) return;
+
+    radiancePhase += dt * (0.25 + 0.90*strength);
+    const phase = radiancePhase;
+
+    // Expanding rings (very soft), additive in offscreen buffer
+    lctx.save();
+    lctx.globalCompositeOperation = "lighter";
+
+    const maxR = Math.max(W,H) * (0.75 + 0.65*strength);
+    const ringCount = 3;
+    for (let k=0;k<ringCount;k++){
+      const t = (phase + k*0.22) % 1;
+      const r = 40 + t * maxR;
+      const a = (0.10 + 0.22*strength) * (1 - t) * (0.45 + 0.55*baseIntensity);
+
+      const hue = hues[(k % hues.length)];
+      const g = lctx.createRadialGradient(cx,cy, Math.max(0, r*0.72), cx,cy, r);
+      g.addColorStop(0.00, hsl(hue, 100, 70, 0.00));
+      g.addColorStop(0.70, hsl(hue, 100, 62, a*0.30));
+      g.addColorStop(0.92, hsl(hue, 100, 60, a));
+      g.addColorStop(1.00, hsl(hue, 100, 60, 0.00));
+
+      lctx.fillStyle = g;
+      lctx.beginPath();
+      lctx.arc(cx,cy,r,0,TAU);
+      lctx.fill();
+    }
+    lctx.restore();
+  }
+
+  // ----------------------------
+  // Motion model: coherent course changes + flux reorientation
+  // ----------------------------
+  let q = {w:1,x:0,y:0,z:0};
+
+  let axisCur = norm3({x: 0.25, y: 0.88, z: 0.40});
+  let axisTgt = axisCur;
+
+  let omegaMulCur = 1.0, omegaMulTgt = 1.0;
+
+  let courseTimer = 0;
+  let fluxTimer = 0;
+
+  let fluxPulse = 0;
+  let fluxPulseTgt = 0;
+
+  let phaseAxisCur = norm3({x:-0.6,y:0.2,z:0.78});
+  let phaseAxisTgt = phaseAxisCur;
+  let phaseRateCur = 0, phaseRateTgt = 0;
+
+  function chooseCourse(err){
+    // Interval-based direction change (no per-frame jitter)
+    const dev = 0.05 + 0.92*err;
+    axisTgt = slerpDir(axisCur, randomUnitVector(), dev);
+
+    const speedWander = 0.08 + 0.70*err;
+    omegaMulTgt = clamp(1.0 + randRange(-1,1)*speedWander, 0.18, 2.8);
+  }
+
+  function chooseFluxEvent(err, flux){
+    // Rarer, deeper reorientation (still smooth)
+    const dev = clamp(0.35 + 0.55*flux + 0.25*err, 0.35, 0.97);
+    axisTgt = slerpDir(axisCur, randomUnitVector(), dev);
+
+    fluxPulseTgt = clamp(0.20 + 1.35*flux, 0, 1.8);
+
+    phaseAxisTgt = slerpDir(phaseAxisCur, randomUnitVector(), clamp(0.25 + 0.55*flux, 0, 0.9));
+    phaseRateTgt = (0.15 + 2.0*flux) * (rand() < 0.5 ? -1 : 1);
+  }
+
+  // ----------------------------
+  // Main loop
+  // ----------------------------
+  let last = performance.now();
+
+  function frame(now){
+    const dt = Math.min(0.033, (now-last)/1000);
+    last = now;
+
+    const cx = W*0.5;
+    const cy = H*0.52;
+
+    // background
+    ctx.fillStyle = bgGrad || "#000";
+    ctx.fillRect(0,0,W,H);
+    if (params.starsOn) drawStars(now);
+
+    // trails buffer fade
+    fadeLightBuffer();
+
+    // triangle geometry
+    const side = Math.min(W,H) * clamp(params.size, 0.18, 0.65);
+    const local = triVerts(side);
+
+    const e = params.erratic;
+    const f = params.flux;
+
+    // course-change interval (adjustable, and also modulated by erratic)
+    const baseCourse = mix(2.8, 0.16, params.course);
+    const coursePeriod = mix(baseCourse*1.15, baseCourse*0.55, e);
+    const fluxPeriod = mix(7.2, 0.55, f);
+
+    courseTimer += dt;
+    if (courseTimer >= coursePeriod){
+      courseTimer -= coursePeriod;
+      chooseCourse(e);
+    }
+
+    fluxTimer += dt;
+    if (fluxTimer >= fluxPeriod){
+      fluxTimer -= fluxPeriod;
+      chooseFluxEvent(e, f);
+    }
+
+    // smooth steering toward targets
+    const steer = mix(2.2, 10.5, e) + 2.2*f;
+    axisCur = slerpDir(axisCur, axisTgt, 1 - Math.exp(-steer*dt));
+    omegaMulCur = expSlew(omegaMulCur, omegaMulTgt, steer*0.9, dt);
+
+    fluxPulse = expSlew(fluxPulse, fluxPulseTgt, 8.0, dt);
+    fluxPulseTgt = expSlew(fluxPulseTgt, 0, 1.8, dt);
+
+    phaseAxisCur = slerpDir(phaseAxisCur, phaseAxisTgt, 1 - Math.exp(-2.8*dt));
+    phaseRateCur = expSlew(phaseRateCur, phaseRateTgt, 2.2, dt);
+    phaseRateTgt = expSlew(phaseRateTgt, 0, 0.85, dt);
+
+    // speed mapping (high range)
+    const baseOmega = (params.speed ** 1.18) * 12.8;
+    const fluxBoost = 1.0 + 0.20*f + 0.22*fluxPulse;
+    const omega = baseOmega * omegaMulCur * fluxBoost;
+
+    // integrate orientation
+    q = qNorm(qMul(qFromAxisAngle(axisCur, omega*dt), q));
+    if (f > 0.0005 || Math.abs(phaseRateCur) > 1e-4){
+      q = qNorm(qMul(qFromAxisAngle(phaseAxisCur, phaseRateCur*dt), q));
+    }
+
+    // hue breathing (shared)
+    const hueBreath = 7.0*(0.10 + 0.90*(e+f)/2) * Math.sin(now*0.00035);
+
+    // Tri-color logic:
+    // - If triOn: hues are (hueRotate + hueA/B/C), so the main hue slider rotates the palette.
+    // - If not: all hues share the same (hue + breath).
+    let hue0, hue1, hue2;
+    if (params.triOn){
+      const rotate = (params.hue + hueBreath + 360) % 360;
+      hue0 = (rotate + params.hueA) % 360;
+      hue1 = (rotate + params.hueB) % 360;
+      hue2 = (rotate + params.hueC) % 360;
+    } else {
+      const shared = (params.hue + hueBreath + 360) % 360;
+      hue0 = hue1 = hue2 = shared;
+    }
+
+    // camera
+    const camBase = Math.min(W,H) * clamp(params.depth, 0.9, 2.8);
+    const camWob = (0.05 + 0.18*e + 0.12*f) * Math.sin(now*0.00022);
+    const camDist = camBase * (1.0 + camWob);
+    const fov = Math.min(W,H) * 0.92;
+
+    // rotate + project
+    const world = local.map(v => qRotateVec(q, v));
+    const proj = world.map(v => {
+      const p = project(v, camDist, fov);
+      return { x: cx + p.x, y: cy + p.y, depthScale: p.s, z: v.z };
+    });
+
+    // depth sort
+    const idx = [0,1,2].sort((i,j)=>proj[i].z - proj[j].z);
+
+    // unity edge (subtle)
+    lctx.globalCompositeOperation = "source-over";
+    lctx.lineWidth = 1.0;
+    lctx.strokeStyle = hsl((hue0+hue1+hue2)/3, 90, 60, 0.02 + 0.10*params.intensity);
+    lctx.beginPath();
+    lctx.moveTo(proj[0].x, proj[0].y);
+    lctx.lineTo(proj[1].x, proj[1].y);
+    lctx.lineTo(proj[2].x, proj[2].y);
+    lctx.closePath();
+    lctx.stroke();
+
+    // shared love pulse + optional “distinct persons” brightness offsets (renormalized)
+    const lovePulse = 1 + (params.love * 0.28) * Math.sin(now*0.0007 * TAU);
+
+    const d = clamp(params.distinct, 0, 1);
+    const t = now*0.0010;
+    const phases = [0, TAU/3, 2*TAU/3];
+    let mods = phases.map(ph => 1 + d*0.18*Math.sin(t*0.9 + ph));
+    const avg = (mods[0]+mods[1]+mods[2]) / 3;
+    mods = mods.map(m => m / (avg || 1));
+
+    // size
+    const baseDot = Math.max(4.2, Math.min(11.0, Math.min(W,H)*0.0100));
+    const dotR = baseDot * (0.80 + 1.55*params.intensity);
+
+    // love radiance (from center)
+    drawRadiance(cx, cy, [hue0,hue1,hue2], params.intensity, now, dt);
+
+    // draw glows
+    lctx.save();
+    lctx.globalCompositeOperation = "lighter";
+
+    const hues = [hue0,hue1,hue2];
+    for (const i of idx){
+      const inten = clamp(params.intensity * lovePulse * mods[i], 0, 1.25);
+      drawGlow(proj[i].x, proj[i].y, dotR*4.2, hues[i], inten, proj[i].depthScale, false);
+    }
+
+    // center light = artistic sign of soul-center (optional)
+    if (params.centerOn){
+      const centerDepth = 1.0 + 0.06*Math.sin(now*0.0011);
+      const centerHue = params.triOn ? ((hue0+hue1+hue2)/3) : hue0;
+      const centerInten = clamp(params.intensity * 0.78 * lovePulse, 0, 1.2);
+      drawGlow(cx, cy, dotR*3.2, centerHue, centerInten, centerDepth, true);
+    }
+
+    lctx.restore();
+
+    // crisp cores
+    lctx.globalCompositeOperation = "source-over";
+    for (const i of idx){
+      lctx.fillStyle = hsl(hues[i], 100, 92, 0.55 + 0.35*params.intensity);
+      const r = dotR*0.58 * clamp(proj[i].depthScale, 0.75, 1.35);
+      lctx.beginPath();
+      lctx.arc(proj[i].x, proj[i].y, r, 0, TAU);
+      lctx.fill();
+    }
+    if (params.centerOn){
+      const centerHue = params.triOn ? ((hue0+hue1+hue2)/3) : hue0;
+      lctx.fillStyle = hsl(centerHue, 100, 92, 0.55 + 0.35*params.intensity);
+      lctx.beginPath();
+      lctx.arc(cx, cy, dotR*0.42, 0, TAU);
+      lctx.fill();
+    }
+
+    // composite light buffer onto main
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    ctx.drawImage(lightCanvas, 0, 0, W, H);
+    ctx.restore();
+
+    vignette();
+    requestAnimationFrame(frame);
+  }
+
+  // ----------------------------
+  // Init
+  // ----------------------------
+  document.body.classList.remove("triOn");
+  setSwitch(centerSwitch, true);
+  setSwitch(starsSwitch, false);
+  setSwitch(triSwitch, false);
+  setSwitch(radiateSwitch, false);
+
+  // Start in German; show intro; apply preset unity
+  resize();
+  applyLang();
+  setPreset("unity");
+  syncLabels();
+  requestAnimationFrame(frame);
+
+})();
+</script>
+</body>
+</html>
