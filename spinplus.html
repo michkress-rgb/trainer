@@ -1,0 +1,860 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>3D Tri-Lights — Course Changes + Quantum Flux</title>
+  <style>
+    :root{
+      --panel-bg: rgba(12, 14, 18, 0.74);
+      --panel-stroke: rgba(255,255,255,0.09);
+      --text: rgba(255,255,255,0.90);
+      --muted: rgba(255,255,255,0.62);
+      --shadow: 0 18px 60px rgba(0,0,0,0.58);
+      --radius: 16px;
+      --soft: rgba(255,255,255,0.06);
+      --soft2: rgba(255,255,255,0.03);
+    }
+
+    html, body{
+      height:100%;
+      margin:0;
+      background:#07080c;
+      overflow:hidden;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+    }
+
+    canvas{
+      width:100%;
+      height:100%;
+      display:block;
+      background: radial-gradient(1200px 900px at 50% 55%, rgba(14,18,28,0.96), rgba(7,8,12,1) 60%, rgba(0,0,0,1) 100%);
+    }
+
+    .panel{
+      position:fixed;
+      left:18px;
+      bottom:18px;
+      width:min(460px, calc(100vw - 36px));
+      background:var(--panel-bg);
+      border:1px solid var(--panel-stroke);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding:14px 14px 12px 14px;
+      user-select:none;
+    }
+
+    .titleRow{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .title{
+      font-weight:680;
+      font-size:14px;
+      letter-spacing:0.2px;
+      color:rgba(255,255,255,0.93);
+    }
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      letter-spacing:0.2px;
+      text-align:right;
+      max-width: 60%;
+    }
+
+    .grid{ display:grid; grid-template-columns:1fr; gap:10px; }
+
+    .control{
+      padding:10px 10px 8px 10px;
+      border-radius:12px;
+      border:1px solid var(--soft);
+      background: var(--soft2);
+    }
+
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:6px;
+    }
+    label{
+      font-size:12px;
+      color:rgba(255,255,255,0.84);
+      letter-spacing:0.25px;
+    }
+    .val{
+      font-variant-numeric: tabular-nums;
+      font-size:12px;
+      color:rgba(255,255,255,0.74);
+      white-space:nowrap;
+    }
+
+    input[type="range"]{
+      -webkit-appearance:none;
+      appearance:none;
+      width:100%;
+      height:14px;
+      background:transparent;
+      outline:none;
+    }
+    input[type="range"]::-webkit-slider-runnable-track{
+      height:10px;
+      border-radius:999px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08));
+      border:1px solid rgba(255,255,255,0.10);
+    }
+    input[type="range"]::-moz-range-track{
+      height:10px;
+      border-radius:999px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08));
+      border:1px solid rgba(255,255,255,0.10);
+    }
+    input[type="range"]::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      appearance:none;
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      margin-top:-5px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.98), rgba(255,255,255,0.45));
+      box-shadow: 0 6px 18px rgba(0,0,0,0.55);
+      border:1px solid rgba(0,0,0,0.35);
+    }
+    input[type="range"]::-moz-range-thumb{
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.98), rgba(255,255,255,0.45));
+      box-shadow: 0 6px 18px rgba(0,0,0,0.55);
+      border:1px solid rgba(0,0,0,0.35);
+    }
+
+    .toggles{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .switch{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px;
+      border-radius:12px;
+      border:1px solid var(--soft);
+      background: var(--soft2);
+      flex: 1 1 200px;
+      min-width: 180px;
+    }
+
+    .switch .meta{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .switch .meta .small{
+      font-size:11px;
+      color:rgba(255,255,255,0.60);
+    }
+
+    .checkbox{
+      width:42px;
+      height:26px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      position:relative;
+      flex: 0 0 auto;
+      cursor:pointer;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25);
+    }
+    .checkbox::after{
+      content:"";
+      position:absolute;
+      top:3px;
+      left:3px;
+      width:20px;
+      height:20px;
+      border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.98), rgba(255,255,255,0.40));
+      box-shadow: 0 6px 16px rgba(0,0,0,0.55);
+      transition: transform 160ms ease, opacity 160ms ease;
+      opacity:0.92;
+    }
+    .checkbox.on{
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.18);
+    }
+    .checkbox.on::after{
+      transform: translateX(16px);
+      opacity:1;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.86);
+      font-size:12px;
+      letter-spacing:0.2px;
+      cursor:pointer;
+      flex: 1 1 200px;
+      min-width: 180px;
+      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.16);
+    }
+    .btn:active{
+      transform: translateY(0px);
+    }
+    .btn.on{
+      background: rgba(255,255,255,0.11);
+      border-color: rgba(255,255,255,0.20);
+    }
+
+    .footer{
+      margin-top:10px;
+      color:rgba(255,255,255,0.55);
+      font-size:11px;
+      letter-spacing:0.2px;
+      line-height:1.35;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+
+  <div class="panel" role="group" aria-label="Simulation controls">
+    <div class="titleRow">
+      <div class="title">3D Tri-Lights</div>
+      <div class="hint">Course changes (axis + speed) at intervals; flux adds deeper “phase” shifts</div>
+    </div>
+
+    <div class="grid">
+      <div class="control">
+        <div class="row"><label for="speed">Spin Speed</label><div class="val" id="speedVal"></div></div>
+        <!-- Range extended for much higher top-end speed -->
+        <input id="speed" type="range" min="0" max="2" step="0.001" value="0.55"/>
+      </div>
+
+      <div class="control">
+        <div class="row"><label for="erratic">Erratic Motion</label><div class="val" id="erraticVal"></div></div>
+        <input id="erratic" type="range" min="0" max="1" step="0.001" value="0.32"/>
+      </div>
+
+      <div class="control">
+        <div class="row"><label for="flux">Quantum Flux</label><div class="val" id="fluxVal"></div></div>
+        <!-- Flux: additional “course events” + temporary phase drift, still continuous -->
+        <input id="flux" type="range" min="0" max="1" step="0.001" value="0.18"/>
+      </div>
+
+      <div class="control">
+        <div class="row"><label for="hue">Color</label><div class="val" id="hueVal"></div></div>
+        <input id="hue" type="range" min="0" max="360" step="0.1" value="205"/>
+      </div>
+
+      <div class="control">
+        <div class="row"><label for="intensity">Light Intensity</label><div class="val" id="intensityVal"></div></div>
+        <input id="intensity" type="range" min="0" max="1" step="0.001" value="0.70"/>
+      </div>
+
+      <div class="toggles">
+        <div class="switch" aria-label="Center light toggle">
+          <div class="meta">
+            <label>Center Light</label>
+            <div class="small">Small glow at the center point</div>
+          </div>
+          <div id="centerSwitch" class="checkbox on" role="switch" aria-checked="true" tabindex="0"></div>
+        </div>
+
+        <button id="starBtn" class="btn" type="button" aria-pressed="false">
+          Starfield Background: Off
+        </button>
+      </div>
+    </div>
+
+    <div class="footer">
+      Note: this is a visual meditation aid (not a theological model). The formation stays one triangle (one essence), expressed as three lights in relation.
+    </div>
+  </div>
+
+<script>
+(() => {
+  // ============================================================
+  // 3D TRIANGLE + COURSE CHANGES + "QUANTUM FLUX"
+  // ============================================================
+  // - The three points are vertices of an equilateral triangle in local space.
+  // - A quaternion orientation rotates the triangle in 3D.
+  // - "Erratic Motion" causes course changes at intervals: new targets for
+  //   rotation axis and angular speed are chosen, then smoothly approached.
+  // - "Quantum Flux" adds a second, rarer event channel that introduces deeper,
+  //   more dramatic (but still smooth) shifts: temporary phase drift, axis
+  //   precession surges, and gentle speed pulses. No per-frame random jitter.
+
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
+
+  // Offscreen buffer for trails + bloom so the starfield can remain stable.
+  const trailCanvas = document.createElement('canvas');
+  const tctx = trailCanvas.getContext('2d', { alpha: true, desynchronized: true });
+
+  let W=0, H=0, DPR=1;
+
+  function resize(){
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    W = Math.floor(window.innerWidth);
+    H = Math.floor(window.innerHeight);
+
+    canvas.width  = Math.floor(W * DPR);
+    canvas.height = Math.floor(H * DPR);
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+
+    trailCanvas.width  = Math.floor(W * DPR);
+    trailCanvas.height = Math.floor(H * DPR);
+    tctx.setTransform(DPR,0,0,DPR,0,0);
+
+    rebuildStarfield();
+  }
+  window.addEventListener('resize', resize, {passive:true});
+  resize();
+
+  // -----------------------------
+  // UI
+  // -----------------------------
+  const elSpeed = document.getElementById('speed');
+  const elErr   = document.getElementById('erratic');
+  const elFlux  = document.getElementById('flux');
+  const elHue   = document.getElementById('hue');
+  const elInt   = document.getElementById('intensity');
+
+  const speedVal = document.getElementById('speedVal');
+  const errVal   = document.getElementById('erraticVal');
+  const fluxVal  = document.getElementById('fluxVal');
+  const hueVal   = document.getElementById('hueVal');
+  const intVal   = document.getElementById('intensityVal');
+
+  const centerSwitch = document.getElementById('centerSwitch');
+  const starBtn = document.getElementById('starBtn');
+
+  const params = {
+    speed: +elSpeed.value,
+    erratic: +elErr.value,
+    flux: +elFlux.value,
+    hue: +elHue.value,
+    intensity: +elInt.value,
+    centerOn: true,
+    starfieldOn: false,
+  };
+
+  function fmt(x,d=2){ return Number(x).toFixed(d); }
+
+  function syncLabels(){
+    // Extended speed mapping label: degrees/second-ish
+    const degPerSec = (params.speed ** 1.35) * 520; // higher top-end, still usable low-end
+    speedVal.textContent = fmt(degPerSec,0) + ' °/s';
+    errVal.textContent   = fmt(params.erratic,2);
+    fluxVal.textContent  = fmt(params.flux,2);
+    hueVal.textContent   = fmt(params.hue,0) + '°';
+    intVal.textContent   = fmt(params.intensity,2);
+  }
+  function bind(el,key){
+    el.addEventListener('input', () => { params[key] = +el.value; syncLabels(); }, {passive:true});
+  }
+  bind(elSpeed,'speed');
+  bind(elErr,'erratic');
+  bind(elFlux,'flux');
+  bind(elHue,'hue');
+  bind(elInt,'intensity');
+  syncLabels();
+
+  function toggleCenter(){
+    params.centerOn = !params.centerOn;
+    centerSwitch.classList.toggle('on', params.centerOn);
+    centerSwitch.setAttribute('aria-checked', String(params.centerOn));
+  }
+  centerSwitch.addEventListener('click', toggleCenter);
+  centerSwitch.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCenter(); }
+  });
+
+  starBtn.addEventListener('click', () => {
+    params.starfieldOn = !params.starfieldOn;
+    starBtn.classList.toggle('on', params.starfieldOn);
+    starBtn.setAttribute('aria-pressed', String(params.starfieldOn));
+    starBtn.textContent = `Starfield Background: ${params.starfieldOn ? 'On' : 'Off'}`;
+  });
+
+  // -----------------------------
+  // Math helpers
+  // -----------------------------
+  const TAU = Math.PI*2;
+  const clamp = (x,a,b)=>Math.max(a,Math.min(b,x));
+  const mix = (a,b,t)=>a+(b-a)*t;
+
+  const len3 = (v)=>Math.hypot(v.x,v.y,v.z);
+  const norm3 = (v)=>{ const l=len3(v)||1; return {x:v.x/l,y:v.y/l,z:v.z/l}; };
+  const dot3 = (a,b)=>a.x*b.x+a.y*b.y+a.z*b.z;
+  const add3 = (a,b)=>({x:a.x+b.x,y:a.y+b.y,z:a.z+b.z});
+  const mul3 = (v,s)=>({x:v.x*s,y:v.y*s,z:v.z*s});
+
+  function expSlew(current, target, lambda, dt){
+    const k = 1 - Math.exp(-lambda*dt);
+    return current + (target-current)*k;
+  }
+
+  // Slerp for unit direction vectors (smooth axis steering)
+  function slerpDir(a,b,t){
+    const an = norm3(a), bn = norm3(b);
+    let c = clamp(dot3(an,bn), -1, 1);
+    const ang = Math.acos(c);
+    if (ang < 1e-5) return an;
+    const s = Math.sin(ang);
+    const w1 = Math.sin((1-t)*ang)/s;
+    const w2 = Math.sin(t*ang)/s;
+    return norm3(add3(mul3(an,w1), mul3(bn,w2)));
+  }
+
+  // -----------------------------
+  // Quaternions
+  // -----------------------------
+  const qNorm = (q)=>{
+    const l=Math.hypot(q.w,q.x,q.y,q.z)||1;
+    return {w:q.w/l,x:q.x/l,y:q.y/l,z:q.z/l};
+  };
+  const qMul = (a,b)=>({
+    w: a.w*b.w - a.x*b.x - a.y*b.y - a.z*b.z,
+    x: a.w*b.x + a.x*b.w + a.y*b.z - a.z*b.y,
+    y: a.w*b.y - a.x*b.z + a.y*b.w + a.z*b.x,
+    z: a.w*b.z + a.x*b.y - a.y*b.x + a.z*b.w,
+  });
+  const qFromAxisAngle = (axis, angle)=>{
+    const half = angle*0.5;
+    const s = Math.sin(half);
+    const a = norm3(axis);
+    return qNorm({w:Math.cos(half), x:a.x*s, y:a.y*s, z:a.z*s});
+  };
+  const qRotateVec = (q,v)=>{
+    const p = {w:0,x:v.x,y:v.y,z:v.z};
+    const qc = {w:q.w,x:-q.x,y:-q.y,z:-q.z};
+    const r = qMul(qMul(q,p),qc);
+    return {x:r.x,y:r.y,z:r.z};
+  };
+
+  // -----------------------------
+  // Deterministic PRNG
+  // -----------------------------
+  function mulberry32(seed){
+    return function(){
+      let t = seed += 0x6D2B79F5;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const rand = mulberry32((Date.now() ^ 0x9E3779B9) >>> 0);
+  const randRange = (a,b)=>a+(b-a)*rand();
+
+  function randomUnitVector(){
+    const u = rand()*2 - 1; // z
+    const t = rand()*TAU;
+    const r = Math.sqrt(Math.max(0, 1-u*u));
+    return {x:r*Math.cos(t), y:r*Math.sin(t), z:u};
+  }
+
+  // -----------------------------
+  // Triangle geometry
+  // -----------------------------
+  function equilateralTriangleVertices(side){
+    // centered on origin, in local XY plane
+    const R = side / Math.sqrt(3);
+    return [
+      {x: R, y: 0, z: 0},
+      {x: R*Math.cos(TAU/3), y: R*Math.sin(TAU/3), z: 0},
+      {x: R*Math.cos(2*TAU/3), y: R*Math.sin(2*TAU/3), z: 0},
+    ];
+  }
+  let localVerts = equilateralTriangleVertices(1);
+
+  // -----------------------------
+  // Starfield
+  // -----------------------------
+  let stars = [];
+  function rebuildStarfield(){
+    stars = [];
+    const count = Math.floor(clamp((W*H) / 6500, 120, 520));
+    for (let i=0;i<count;i++){
+      // depth in [0..1], where 1 is closest (bigger & brighter)
+      const d = rand() ** 1.7;
+      stars.push({
+        x: rand(), y: rand(),
+        d,
+        tw: randRange(0.6, 1.4),
+        ph: randRange(0, TAU),
+      });
+    }
+  }
+
+  function drawStarfield(now){
+    // Gentle “drift” to avoid feeling static; not tied to triangle motion directly.
+    const t = now * 0.00002;
+    const dx = 0.020 * Math.sin(t*13.1);
+    const dy = 0.018 * Math.cos(t*11.7);
+
+    for (const s of stars){
+      const depth = 0.35 + 0.85*s.d;
+      const tw = 0.55 + 0.45*Math.sin(s.ph + now*0.0012*s.tw);
+      const a = 0.05 + 0.28*depth*tw; // subtle
+
+      const x = ((s.x + dx*depth) % 1 + 1) % 1;
+      const y = ((s.y + dy*depth) % 1 + 1) % 1;
+
+      const px = x * W;
+      const py = y * H;
+
+      const r = 0.6 + 1.7*depth;
+      ctx.fillStyle = `rgba(255,255,255,${a.toFixed(3)})`;
+      ctx.beginPath();
+      ctx.arc(px, py, r, 0, TAU);
+      ctx.fill();
+    }
+  }
+
+  // -----------------------------
+  // Rendering helpers (glow)
+  // -----------------------------
+  function hsl(h,s,l,a=1){
+    return `hsla(${h.toFixed(2)}, ${s.toFixed(2)}%, ${l.toFixed(2)}%, ${a.toFixed(3)})`;
+  }
+
+  function drawVignette(){
+    const g = ctx.createRadialGradient(W*0.5, H*0.55, Math.min(W,H)*0.05, W*0.5, H*0.55, Math.max(W,H)*0.75);
+    g.addColorStop(0.00, 'rgba(0,0,0,0.00)');
+    g.addColorStop(0.58, 'rgba(0,0,0,0.20)');
+    g.addColorStop(1.00, 'rgba(0,0,0,0.62)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,W,H);
+  }
+
+  function fadeTrails(intensity){
+    // Trails buffer only; starfield stays crisp on the main canvas.
+    const a = 0.11 + (1-intensity)*0.085;
+    tctx.globalCompositeOperation = 'source-over';
+    tctx.fillStyle = `rgba(0,0,0,${a.toFixed(3)})`;
+    tctx.fillRect(0,0,W,H);
+  }
+
+  function drawGlow2D(x,y,r,hue,intensity, depthScale, isCenter=false){
+    const ds = clamp(depthScale, 0.65, 1.7);
+    const baseAlpha = (0.16 + 0.62*intensity) * (0.72 + 0.28*ds);
+    const hotAlpha  = (0.22 + 0.70*intensity) * (0.68 + 0.32*ds);
+
+    // Center light is intentionally smaller and calmer.
+    const centerK = isCenter ? 0.62 : 1.00;
+
+    // Outer bloom
+    {
+      const R = r * (2.6 + 2.0*intensity) * ds * centerK;
+      const g = tctx.createRadialGradient(x,y,0,x,y,R);
+      g.addColorStop(0.00, hsl(hue,95,70,0.00));
+      g.addColorStop(0.10, hsl(hue,95,70,baseAlpha*0.55));
+      g.addColorStop(0.45, hsl(hue,95,55,baseAlpha*0.22));
+      g.addColorStop(1.00, hsl(hue,95,45,0.00));
+      tctx.fillStyle = g;
+      tctx.beginPath(); tctx.arc(x,y,R,0,TAU); tctx.fill();
+    }
+
+    // Mid glow
+    {
+      const R = r * (1.25 + 1.35*intensity) * ds * centerK;
+      const g = tctx.createRadialGradient(x,y,0,x,y,R);
+      g.addColorStop(0.00, hsl(hue,100,72,hotAlpha*0.25));
+      g.addColorStop(0.20, hsl(hue,100,68,hotAlpha*0.60));
+      g.addColorStop(0.60, hsl(hue,100,55,hotAlpha*0.22));
+      g.addColorStop(1.00, hsl(hue,100,50,0.00));
+      tctx.fillStyle = g;
+      tctx.beginPath(); tctx.arc(x,y,R,0,TAU); tctx.fill();
+    }
+
+    // Core
+    {
+      const R = r * (0.40 + 0.34*intensity) * ds * centerK;
+      const g = tctx.createRadialGradient(x,y,0,x,y,R);
+      g.addColorStop(0.00, hsl(hue,100,92,0.95));
+      g.addColorStop(0.35, hsl(hue,100,80,0.65));
+      g.addColorStop(1.00, hsl(hue,100,60,0.00));
+      tctx.fillStyle = g;
+      tctx.beginPath(); tctx.arc(x,y,R,0,TAU); tctx.fill();
+    }
+  }
+
+  // Perspective projection
+  function project(v, camDist, fov){
+    const zc = camDist - v.z;
+    const s = fov / Math.max(0.001, zc);
+    return { x: v.x*s, y: v.y*s, s, z: v.z };
+  }
+
+  // -----------------------------
+  // Motion state (orientation + targets)
+  // -----------------------------
+  // Main orientation
+  let q = {w:1,x:0,y:0,z:0};
+
+  // Course (axis + speed multiplier)
+  let axisCur = norm3({x: 0.25, y: 0.88, z: 0.40});
+  let axisTgt = axisCur;
+
+  let omegaMulCur = 1.0, omegaMulTgt = 1.0;
+
+  let courseTimer = 0;
+  let coursePeriod = 1.2;
+
+  // "Flux" channel: a second event stream that creates deeper, rarer changes.
+  let fluxTimer = 0;
+  let fluxPeriod = 4.0;
+
+  // Flux pulse state (decays smoothly)
+  let fluxPulse = 0;         // temporary intensity multiplier for motion
+  let fluxPulseTgt = 0;
+
+  // Phase drift is a controlled extra quaternion applied gradually.
+  // It helps create a sense of “impossible” re-orientation without teleporting.
+  let phaseAxisCur = norm3({x:-0.6,y:0.2,z:0.78});
+  let phaseAxisTgt = phaseAxisCur;
+  let phaseRateCur = 0, phaseRateTgt = 0;
+
+  function chooseNewCourse(err){
+    // Direction changes occur at adjustable intervals, not per frame.
+    // Erratic controls how far we steer from the current axis.
+    const dev = 0.05 + 0.92*err;
+    axisTgt = slerpDir(axisCur, randomUnitVector(), dev);
+
+    // Speed multiplier stays bounded for coherence.
+    const speedWander = 0.08 + 0.65*err;
+    omegaMulTgt = clamp(1.0 + randRange(-1,1)*speedWander, 0.20, 2.60);
+  }
+
+  function chooseFluxEvent(err, flux){
+    // Flux event: deeper but still intentional shift.
+    // - Stronger axis deviation
+    // - A temporary speed pulse
+    // - A phase drift axis/rate that decays
+    const dev = clamp(0.35 + 0.55*flux + 0.25*err, 0.35, 0.95);
+    axisTgt = slerpDir(axisCur, randomUnitVector(), dev);
+
+    // Speed pulse (short-lived)
+    fluxPulseTgt = clamp(0.25 + 1.25*flux, 0, 1.6);
+
+    // Phase drift target (slow extra rotation layered on top)
+    phaseAxisTgt = slerpDir(phaseAxisCur, randomUnitVector(), clamp(0.25 + 0.55*flux, 0, 0.9));
+    phaseRateTgt = (0.15 + 1.8*flux) * (rand() < 0.5 ? -1 : 1); // rad/sec-ish (small)
+  }
+
+  // -----------------------------
+  // Animation loop
+  // -----------------------------
+  let last = performance.now();
+  // Initialize trails buffer as black
+  tctx.fillStyle = '#000';
+  tctx.fillRect(0,0,W,H);
+
+  function frame(now){
+    const dt = Math.min(0.033, (now-last)/1000);
+    last = now;
+
+    const e = params.erratic;
+    const f = params.flux;
+
+    const cx = W*0.5;
+    const cy = H*0.52;
+
+    // Geometry sizing
+    const baseSide = Math.min(W,H) * 0.44;
+    localVerts = equilateralTriangleVertices(baseSide);
+
+    // Background (main canvas): crisp each frame
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0,0,W,H);
+
+    // Optional starfield
+    if (params.starfieldOn){
+      drawStarfield(now);
+    }
+
+    // Subtle center “anchor haze” (drawn behind trails)
+    {
+      const R = Math.min(W,H) * 0.30;
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+      const a = 0.010 + 0.028*params.intensity;
+      g.addColorStop(0.00, `rgba(255,255,255,${a.toFixed(4)})`);
+      g.addColorStop(0.30, `rgba(255,255,255,${(a*0.35).toFixed(4)})`);
+      g.addColorStop(1.00, 'rgba(255,255,255,0.0000)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,W,H);
+    }
+
+    // Trails buffer fade (only affects lights/trails)
+    fadeTrails(params.intensity);
+
+    // -----------------------------
+    // Timing for course changes and flux events
+    // -----------------------------
+    // Erratic: more frequent course changes
+    coursePeriod = mix(2.6, 0.18, e);
+
+    // Flux: separate event stream; more flux => more frequent “phase shifts”
+    fluxPeriod = mix(7.0, 0.55, f);
+
+    courseTimer += dt;
+    if (courseTimer >= coursePeriod){
+      courseTimer -= coursePeriod;
+      chooseNewCourse(e);
+    }
+
+    fluxTimer += dt;
+    if (fluxTimer >= fluxPeriod){
+      fluxTimer -= fluxPeriod;
+      // Flux event is influenced by both erratic and flux
+      chooseFluxEvent(e, f);
+    }
+
+    // Smooth steering toward targets
+    const steer = mix(2.2, 10.5, e) + 2.0*f;
+    axisCur = slerpDir(axisCur, axisTgt, 1 - Math.exp(-steer*dt));
+    omegaMulCur = expSlew(omegaMulCur, omegaMulTgt, steer*0.9, dt);
+
+    // Flux pulse smoothly rises then decays back to 0 (continuous, not jitter)
+    fluxPulse = expSlew(fluxPulse, fluxPulseTgt, 8.0, dt);
+    fluxPulseTgt = expSlew(fluxPulseTgt, 0, 1.8, dt);
+
+    // Phase drift steering (a secondary “hidden” rotation layer)
+    phaseAxisCur = slerpDir(phaseAxisCur, phaseAxisTgt, 1 - Math.exp(-2.8*dt));
+    phaseRateCur = expSlew(phaseRateCur, phaseRateTgt, 2.2, dt);
+    phaseRateTgt = expSlew(phaseRateTgt, 0, 0.85, dt);
+
+    // -----------------------------
+    // Integrate orientation in 3D
+    // -----------------------------
+    // Base angular speed: extended range and a “turbo” top-end
+    const baseOmega = (params.speed ** 1.25) * 9.6; // rad/sec
+
+    // Flux slightly amplifies the feel without turning into chaos:
+    // A gentle multiplier plus the decaying pulse.
+    const fluxBoost = 1.0 + 0.22*f + 0.20*fluxPulse;
+    const omega = baseOmega * omegaMulCur * fluxBoost;
+
+    // Apply main rotation
+    const dq = qFromAxisAngle(axisCur, omega * dt);
+    q = qNorm(qMul(dq, q));
+
+    // Apply secondary phase drift (small, continuous)
+    if (f > 0.0005 || Math.abs(phaseRateCur) > 1e-4){
+      const dqp = qFromAxisAngle(phaseAxisCur, phaseRateCur * dt);
+      q = qNorm(qMul(dqp, q));
+    }
+
+    // -----------------------------
+    // Color (unified hue for all three lights)
+    // -----------------------------
+    const hueBreath = 7.0*(0.12 + 0.88*(e+f)/2) * Math.sin(now*0.00035);
+    const hue = (params.hue + hueBreath + 360) % 360;
+
+    // Camera: fixed distance with a mild drift (depth cue).
+    const camBase = Math.min(W,H) * 1.35;
+    const camWob = (0.05 + 0.22*e + 0.18*f) * Math.sin(now*0.00022);
+    const camDist = camBase * (1.0 + camWob);
+    const fov = Math.min(W,H) * 0.92;
+
+    // Rotate local vertices into world space
+    const world = localVerts.map(v => qRotateVec(q, v));
+    const proj = world.map(v => {
+      const p = project(v, camDist, fov);
+      return { x: cx + p.x, y: cy + p.y, depthScale: p.s, z: v.z };
+    });
+
+    // Depth-sort for nicer overlap
+    const idx = [0,1,2].sort((i,j)=>proj[i].z - proj[j].z);
+
+    // Light sizing (depth-cued)
+    const baseDot = Math.max(3.8, Math.min(8.4, Math.min(W,H)*0.0085));
+    const dotR = baseDot * (0.82 + 1.40*params.intensity);
+
+    // Edges: faint “energy” triangle to emphasize unity/structure
+    {
+      const a = 0.02 + 0.10*params.intensity;
+      tctx.globalCompositeOperation = 'source-over';
+      tctx.lineWidth = 1.0;
+      tctx.strokeStyle = hsl(hue, 90, 60, a);
+      tctx.beginPath();
+      tctx.moveTo(proj[0].x, proj[0].y);
+      tctx.lineTo(proj[1].x, proj[1].y);
+      tctx.lineTo(proj[2].x, proj[2].y);
+      tctx.closePath();
+      tctx.stroke();
+    }
+
+    // Additive bloom pass (trails buffer)
+    tctx.save();
+    tctx.globalCompositeOperation = 'lighter';
+
+    for (const i of idx){
+      drawGlow2D(proj[i].x, proj[i].y, dotR*4.0, hue, params.intensity, proj[i].depthScale, false);
+    }
+
+    // Optional center light (small, calm)
+    if (params.centerOn){
+      // Depth scale ~1 for center, but give it a slight breathing so it feels alive.
+      const centerDepth = 1.0 + 0.06*Math.sin(now*0.0011);
+      const centerR = dotR*3.1 * (0.55 + 0.35*params.intensity);
+      drawGlow2D(cx, cy, centerR, hue, params.intensity*0.85, centerDepth, true);
+    }
+
+    tctx.restore();
+
+    // Core highlights (trails buffer) for crispness
+    {
+      const coreA = 0.52 + 0.36*params.intensity;
+      tctx.globalCompositeOperation = 'source-over';
+      tctx.fillStyle = hsl(hue, 100, 92, coreA);
+      for (const i of idx){
+        const r = dotR*0.56 * clamp(proj[i].depthScale, 0.75, 1.35);
+        tctx.beginPath(); tctx.arc(proj[i].x, proj[i].y, r, 0, TAU); tctx.fill();
+      }
+      if (params.centerOn){
+        const r = dotR*0.42;
+        tctx.beginPath(); tctx.arc(cx, cy, r, 0, TAU); tctx.fill();
+      }
+    }
+
+    // Composite trails buffer onto main canvas
+    ctx.globalCompositeOperation = 'screen';
+    ctx.drawImage(trailCanvas, 0, 0, W, H);
+    ctx.globalCompositeOperation = 'source-over';
+
+    // Vignette on top
+    drawVignette();
+
+    requestAnimationFrame(frame);
+  }
+
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
