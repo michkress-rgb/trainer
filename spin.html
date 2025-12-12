@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tri-Light Rotation — Generative Glow</title>
+  <style>
+    :root{
+      --panel-bg: rgba(12, 14, 18, 0.72);
+      --panel-stroke: rgba(255,255,255,0.08);
+      --text: rgba(255,255,255,0.88);
+      --muted: rgba(255,255,255,0.60);
+      --accent: rgba(255,255,255,0.16);
+      --shadow: 0 18px 60px rgba(0,0,0,0.55);
+      --radius: 16px;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: #07080c;
+      overflow: hidden;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+    }
+
+    #wrap {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      grid-template-rows: 1fr;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: radial-gradient(1200px 900px at 50% 55%, rgba(14,18,28,0.95), rgba(7,8,12,1) 60%, rgba(0,0,0,1) 100%);
+    }
+
+    /* Control panel */
+    .panel {
+      position: fixed;
+      left: 18px;
+      bottom: 18px;
+      width: min(420px, calc(100vw - 36px));
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 14px 14px 12px 14px;
+    }
+
+    .titleRow{
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .title{
+      font-weight: 650;
+      font-size: 14px;
+      letter-spacing: 0.2px;
+      color: rgba(255,255,255,0.92);
+    }
+    .hint{
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+
+    .grid{
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .control {
+      padding: 10px 10px 8px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.82);
+      letter-spacing: 0.25px;
+    }
+
+    .val {
+      font-variant-numeric: tabular-nums;
+      font-size: 12px;
+      color: rgba(255,255,255,0.72);
+    }
+
+    input[type="range"]{
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 14px;
+      background: transparent;
+      outline: none;
+    }
+
+    /* Track */
+    input[type="range"]::-webkit-slider-runnable-track{
+      height: 10px;
+      border-radius: 999px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08));
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    input[type="range"]::-moz-range-track{
+      height: 10px;
+      border-radius: 999px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08));
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    /* Thumb */
+    input[type="range"]::-webkit-slider-thumb{
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      margin-top: -5px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.98), rgba(255,255,255,0.45));
+      box-shadow: 0 6px 18px rgba(0,0,0,0.55);
+      border: 1px solid rgba(0,0,0,0.35);
+    }
+    input[type="range"]::-moz-range-thumb{
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.98), rgba(255,255,255,0.45));
+      box-shadow: 0 6px 18px rgba(0,0,0,0.55);
+      border: 1px solid rgba(0,0,0,0.35);
+    }
+
+    .footer {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      color: rgba(255,255,255,0.55);
+      font-size: 11px;
+      letter-spacing: 0.2px;
+    }
+
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.04);
+      padding: 3px 8px;
+      border-radius: 999px;
+      color: rgba(255,255,255,0.70);
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.65);
+      box-shadow: 0 0 14px rgba(255,255,255,0.35);
+    }
+  </style>
+</head>
+<body>
+  <div id="wrap">
+    <canvas id="c"></canvas>
+  </div>
+
+  <div class="panel" role="group" aria-label="Simulation controls">
+    <div class="titleRow">
+      <div class="title">Tri-Light Rotation</div>
+      <div class="hint">Organic, coherent motion</div>
+    </div>
+
+    <div class="grid">
+      <div class="control">
+        <div class="row">
+          <label for="speed">Spin Speed</label>
+          <div class="val" id="speedVal"></div>
+        </div>
+        <input id="speed" type="range" min="0" max="1" step="0.001" value="0.38" />
+      </div>
+
+      <div class="control">
+        <div class="row">
+          <label for="erratic">Erratic Motion</label>
+          <div class="val" id="erraticVal"></div>
+        </div>
+        <input id="erratic" type="range" min="0" max="1" step="0.001" value="0.22" />
+      </div>
+
+      <div class="control">
+        <div class="row">
+          <label for="hue">Color</label>
+          <div class="val" id="hueVal"></div>
+        </div>
+        <input id="hue" type="range" min="0" max="360" step="0.1" value="200" />
+      </div>
+
+      <div class="control">
+        <div class="row">
+          <label for="intensity">Light Intensity</label>
+          <div class="val" id="intensityVal"></div>
+        </div>
+        <input id="intensity" type="range" min="0" max="1" step="0.001" value="0.62" />
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="kbd"><span class="dot"></span> Runs locally (Canvas 2D)</span>
+      <span>Resize the window for crisp rendering</span>
+    </div>
+  </div>
+
+  <script>
+  (() => {
+    // -----------------------------
+    // Canvas setup (HiDPI aware)
+    // -----------------------------
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
+
+    let W = 0, H = 0, DPR = 1;
+
+    function resize() {
+      DPR = Math.min(2, window.devicePixelRatio || 1); // cap DPR for stable performance
+      W = Math.floor(window.innerWidth);
+      H = Math.floor(window.innerHeight);
+      canvas.width = Math.floor(W * DPR);
+      canvas.height = Math.floor(H * DPR);
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    }
+    window.addEventListener('resize', resize, { passive: true });
+    resize();
+
+    // -----------------------------
+    // UI controls
+    // -----------------------------
+    const elSpeed = document.getElementById('speed');
+    const elErratic = document.getElementById('erratic');
+    const elHue = document.getElementById('hue');
+    const elIntensity = document.getElementById('intensity');
+
+    const speedVal = document.getElementById('speedVal');
+    const erraticVal = document.getElementById('erraticVal');
+    const hueVal = document.getElementById('hueVal');
+    const intensityVal = document.getElementById('intensityVal');
+
+    const params = {
+      speed: parseFloat(elSpeed.value),
+      erratic: parseFloat(elErratic.value),
+      hue: parseFloat(elHue.value),
+      intensity: parseFloat(elIntensity.value),
+    };
+
+    function fmt(x, digits = 2) { return Number(x).toFixed(digits); }
+
+    function syncLabels() {
+      // Present speed as degrees/sec-ish for intuitive feel
+      const degPerSec = (params.speed ** 1.6) * 260; // non-linear mapping for better control near low speeds
+      speedVal.textContent = fmt(degPerSec, 0) + ' °/s';
+      erraticVal.textContent = fmt(params.erratic, 2);
+      hueVal.textContent = fmt(params.hue, 0) + '°';
+      intensityVal.textContent = fmt(params.intensity, 2);
+    }
+
+    function bind(el, key, parse = parseFloat) {
+      el.addEventListener('input', () => {
+        params[key] = parse(el.value);
+        syncLabels();
+      }, { passive: true });
+    }
+
+    bind(elSpeed, 'speed');
+    bind(elErratic, 'erratic');
+    bind(elHue, 'hue');
+    bind(elIntensity, 'intensity');
+    syncLabels();
+
+    // -----------------------------
+    // Motion model
+    // -----------------------------
+    // We keep the triangle rigid: the three lights are the vertices of an equilateral
+    // triangle with constant radius from the center. Only its rotation changes.
+    //
+    // Erratic motion is implemented as *piecewise-smooth targets*:
+    // - At adjustable intervals, we choose new target values for:
+    //   (a) angular velocity multiplier,
+    //   (b) a subtle wobble phase and amplitude (adds organic drift),
+    //   (c) a tiny "precession" rate (slowly changes the rotation feel).
+    // - Between these interval events, we ease current values toward targets, so
+    //   direction changes are continuous and never teleport.
+    //
+    // This preserves coherence even at high erratic settings.
+
+    const TAU = Math.PI * 2;
+
+    // Deterministic pseudo-random generator (stable across frames)
+    function mulberry32(seed) {
+      return function() {
+        let t = seed += 0x6D2B79F5;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+    const rand = mulberry32((Date.now() ^ 0x9E3779B9) >>> 0);
+
+    function randRange(a, b) { return a + (b - a) * rand(); }
+    function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+    function mix(a, b, t) { return a + (b - a) * t; }
+
+    // Smoothstep easing
+    function smoothstep(t) { return t * t * (3 - 2 * t); }
+
+    // Exponential smoothing (frame-rate independent)
+    function expSlew(current, target, lambda, dt) {
+      // lambda ~ responsiveness; higher -> faster convergence
+      const k = 1 - Math.exp(-lambda * dt);
+      return current + (target - current) * k;
+    }
+
+    // A tiny 1D "value noise" via smoothly transitioning random targets.
+    // This avoids per-frame randomness while still feeling organic.
+    class SmoothNoise1D {
+      constructor() {
+        this.t = 0;
+        this.period = 1.2;
+        this.a = randRange(-1, 1);
+        this.b = randRange(-1, 1);
+      }
+      setPeriod(p) { this.period = Math.max(0.08, p); }
+      step(dt) {
+        this.t += dt;
+        while (this.t >= this.period) {
+          this.t -= this.period;
+          this.a = this.b;
+          this.b = randRange(-1, 1);
+        }
+        const u = smoothstep(this.t / this.period);
+        return mix(this.a, this.b, u);
+      }
+    }
+
+    // Noise channels for different aspects of motion
+    const nVel = new SmoothNoise1D();     // affects angular velocity
+    const nWob = new SmoothNoise1D();     // affects wobble phase
+    const nPre = new SmoothNoise1D();     // affects precession/drift
+
+    // State
+    let time = 0;
+    let angle = 0;
+
+    // "Current" vs "target" parameters we ease between
+    let velMul = 1.0, velMulTarget = 1.0;
+    let wobAmp = 0.0, wobAmpTarget = 0.0;
+    let wobFreq = 0.9, wobFreqTarget = 0.9;
+    let preRate = 0.0, preRateTarget = 0.0;
+
+    // -----------------------------
+    // Rendering helpers
+    // -----------------------------
+    // HSL to CSS string
+    function hsl(h, s, l, a = 1) {
+      return `hsla(${h.toFixed(2)}, ${s.toFixed(2)}%, ${l.toFixed(2)}%, ${a.toFixed(3)})`;
+    }
+
+    // Radial falloff "glow sprite" (drawn per light).
+    function drawGlow(x, y, radius, hue, intensity) {
+      // intensity controls bloom and brightness.
+      // We layer multiple gradients for a richer bloom.
+      const baseAlpha = 0.18 + 0.62 * intensity;
+      const hotAlpha  = 0.22 + 0.70 * intensity;
+
+      // Outer bloom
+      {
+        const r = radius * (2.6 + 2.0 * intensity);
+        const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+        g.addColorStop(0.00, hsl(hue, 95, 70, 0.00));
+        g.addColorStop(0.10, hsl(hue, 95, 70, baseAlpha * 0.55));
+        g.addColorStop(0.45, hsl(hue, 95, 55, baseAlpha * 0.22));
+        g.addColorStop(1.00, hsl(hue, 95, 45, 0.00));
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, TAU);
+        ctx.fill();
+      }
+
+      // Mid glow
+      {
+        const r = radius * (1.25 + 1.35 * intensity);
+        const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+        g.addColorStop(0.00, hsl(hue, 100, 72, hotAlpha * 0.25));
+        g.addColorStop(0.20, hsl(hue, 100, 68, hotAlpha * 0.60));
+        g.addColorStop(0.60, hsl(hue, 100, 55, hotAlpha * 0.22));
+        g.addColorStop(1.00, hsl(hue, 100, 50, 0.00));
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, TAU);
+        ctx.fill();
+      }
+
+      // Core (a small hot center)
+      {
+        const r = radius * (0.38 + 0.35 * intensity);
+        const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+        g.addColorStop(0.00, hsl(hue, 100, 92, 0.95));
+        g.addColorStop(0.35, hsl(hue, 100, 80, 0.65));
+        g.addColorStop(1.00, hsl(hue, 100, 60, 0.00));
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, TAU);
+        ctx.fill();
+      }
+    }
+
+    function drawSoftTrailFade(intensity) {
+      // Instead of fully clearing, we gently fade to create subtle trails.
+      // Keeping alpha low maintains stable frame rate and avoids smear.
+      const a = 0.10 + (1 - intensity) * 0.08; // brighter glow -> slightly longer trails
+      ctx.fillStyle = `rgba(0,0,0,${a.toFixed(3)})`;
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    function drawBackgroundVignette() {
+      // Subtle vignette to emphasize center.
+      const g = ctx.createRadialGradient(W * 0.5, H * 0.55, Math.min(W,H) * 0.05,
+                                        W * 0.5, H * 0.55, Math.max(W,H) * 0.70);
+      g.addColorStop(0.0, 'rgba(0,0,0,0.00)');
+      g.addColorStop(0.55, 'rgba(0,0,0,0.18)');
+      g.addColorStop(1.0, 'rgba(0,0,0,0.55)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    // -----------------------------
+    // Main loop
+    // -----------------------------
+    let last = performance.now();
+
+    // One-time black clear (then we use trail fading)
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, W, H);
+
+    function frame(now) {
+      const dt = Math.min(0.033, (now - last) / 1000);
+      last = now;
+      time += dt;
+
+      // Center point
+      const cx = W * 0.5;
+      const cy = H * 0.52;
+
+      // Geometry: set triangle radius so it fits comfortably on screen
+      // The distance between points is constant by construction.
+      const baseR = Math.min(W, H) * 0.22;
+      const radius = baseR;
+
+      // Map UI speed to base angular velocity (rad/sec).
+      // Nonlinear mapping: good low-speed resolution + plenty of range.
+      const baseOmega = (params.speed ** 1.6) * 4.5; // up to ~4.5 rad/s
+
+      // Erratic setting influences:
+      // 1) how often "new targets" are chosen (interval length),
+      // 2) how far targets can deviate,
+      // 3) how strongly we apply wobble and precession.
+      const e = params.erratic;
+
+      // Interval: more erratic => more frequent target changes.
+      // We set noise periods (not per-frame randomness).
+      const velPeriod = mix(1.60, 0.20, e);   // seconds
+      const wobPeriod = mix(2.20, 0.30, e);
+      const prePeriod = mix(3.50, 0.45, e);
+
+      nVel.setPeriod(velPeriod);
+      nWob.setPeriod(wobPeriod);
+      nPre.setPeriod(prePeriod);
+
+      // Step the noise channels (value in [-1, 1] and smoothly interpolated over the period).
+      const nv = nVel.step(dt);
+      const nw = nWob.step(dt);
+      const np = nPre.step(dt);
+
+      // Choose new targets from noise (smoothly changes each period).
+      // The magnitudes scale with erratic but remain bounded to keep the motion coherent.
+      velMulTarget = 1.0 + nv * (0.07 + 0.55 * e);         // angular speed modulation
+      wobAmpTarget = (0.02 + 0.25 * e) * (0.5 + 0.5 * Math.abs(nw)); // wobble amplitude
+      wobFreqTarget = 0.65 + (0.35 * (1 - e)) + 1.8 * e * (0.5 + 0.5 * Math.abs(nw)); // wobble rate
+      preRateTarget = np * (0.04 + 0.65 * e);              // precession/drift contribution
+
+      // Ease current values toward targets (continuous changes, no teleporting)
+      // Higher erratic => slightly faster responsiveness.
+      const slew = mix(2.2, 6.0, e);
+      velMul = expSlew(velMul, velMulTarget, slew, dt);
+      wobAmp = expSlew(wobAmp, wobAmpTarget, slew, dt);
+      wobFreq = expSlew(wobFreq, wobFreqTarget, slew, dt);
+      preRate = expSlew(preRate, preRateTarget, slew * 0.8, dt);
+
+      // Build a coherent rotation signal:
+      // - Primary rotation: angle += omega * dt
+      // - Wobble: a small additional angular perturbation that varies smoothly
+      // - Precession: a slow, smooth drift to keep it organic at high erratic
+      const omega = baseOmega * velMul;
+      const wobble = wobAmp * Math.sin(time * wobFreq * TAU + nw * 2.3);
+      angle += (omega + preRate) * dt;
+
+      // Render: fade slightly for trails, then draw the three glows.
+      drawSoftTrailFade(params.intensity);
+
+      // Optional: a faint "halo" around center to anchor the eye
+      // (very subtle; it supports the hypnotic feel without clutter).
+      {
+        const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 1.05);
+        const a = 0.012 + 0.030 * params.intensity;
+        g.addColorStop(0.00, `rgba(255,255,255,${a.toFixed(4)})`);
+        g.addColorStop(0.25, `rgba(255,255,255,${(a * 0.35).toFixed(4)})`);
+        g.addColorStop(1.00, 'rgba(255,255,255,0.0000)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius * 1.05, 0, TAU);
+        ctx.fill();
+      }
+
+      // Compute triangle vertex angles (equilateral: 120° apart).
+      const a0 = angle + wobble;
+      const a1 = a0 + TAU / 3;
+      const a2 = a0 + 2 * TAU / 3;
+
+      // Light size responds gently to intensity and screen size.
+      const baseDot = Math.max(3.5, Math.min(7.0, Math.min(W,H) * 0.008));
+      const dotR = baseDot * (0.85 + 1.35 * params.intensity);
+
+      // Color: user sets hue; add a tiny, smooth breathing shift tied to motion
+      // so it feels alive while remaining unified across all three lights.
+      const hueBreath = 6.0 * (0.15 + 0.85 * e) * Math.sin(time * 0.35);
+      const hue = (params.hue + hueBreath + 360) % 360;
+
+      // Slight per-light variation in lightness (NOT hue) for depth, but still unified.
+      const lightJitter = 3.0 * (0.10 + 0.60 * e) * Math.sin(time * 0.9);
+      const hues = [hue, hue, hue]; // unified hue (as requested)
+
+      // Positions (rigid radius, same center)
+      const p0 = { x: cx + Math.cos(a0) * radius, y: cy + Math.sin(a0) * radius };
+      const p1 = { x: cx + Math.cos(a1) * radius, y: cy + Math.sin(a1) * radius };
+      const p2 = { x: cx + Math.cos(a2) * radius, y: cy + Math.sin(a2) * radius };
+
+      // Draw connecting faint "energy" lines (very subtle, enhances coherence).
+      // Opacity scaled down at low intensity to avoid clutter.
+      {
+        const lineA = 0.02 + 0.08 * params.intensity;
+        ctx.lineWidth = 1.0;
+        ctx.strokeStyle = hsl(hue, 90, 60, lineA);
+        ctx.beginPath();
+        ctx.moveTo(p0.x, p0.y);
+        ctx.lineTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.closePath();
+        ctx.stroke();
+      }
+
+      // Draw glows (additive feel)
+      // Using "lighter" yields pleasing bloom without WebGL.
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+
+      drawGlow(p0.x, p0.y, dotR * 4.0, hues[0], params.intensity);
+      drawGlow(p1.x, p1.y, dotR * 4.0, hues[1], params.intensity);
+      drawGlow(p2.x, p2.y, dotR * 4.0, hues[2], params.intensity);
+
+      // Optional: a tiny highlight point to sharpen the core
+      ctx.globalCompositeOperation = 'source-over';
+      const coreA = 0.55 + 0.35 * params.intensity;
+      ctx.fillStyle = hsl(hue, 100, 92, coreA);
+      ctx.beginPath(); ctx.arc(p0.x, p0.y, dotR * 0.55, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(p1.x, p1.y, dotR * 0.55, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(p2.x, p2.y, dotR * 0.55, 0, TAU); ctx.fill();
+
+      ctx.restore();
+
+      // Vignette overlay (subtle)
+      drawBackgroundVignette();
+
+      requestAnimationFrame(frame);
+    }
+
+    requestAnimationFrame(frame);
+  })();
+  </script>
+</body>
+</html>
