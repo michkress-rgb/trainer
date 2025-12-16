@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grammatik-Meister - Das ultimative Deutsch-Training</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 3px solid #e9ecef;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .topic-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 3px solid transparent;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .topic-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .topic-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .topic-description {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .difficulty-selector {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .difficulty-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .difficulty-btn.easy {
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+        }
+
+        .difficulty-btn.medium {
+            background: linear-gradient(135deg, #FFD89B 0%, #19547b 100%);
+        }
+
+        .difficulty-btn.hard {
+            background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
+        }
+
+        .difficulty-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .difficulty-btn.selected {
+            box-shadow: 0 0 0 4px white, 0 0 0 6px #667eea;
+        }
+
+        .quiz-container {
+            display: none;
+        }
+
+        .quiz-container.active {
+            display: block;
+        }
+
+        .question-box {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            border: 3px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .answer-options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .answer-option {
+            padding: 15px;
+            background: white;
+            border: 3px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1em;
+        }
+
+        .answer-option:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+        }
+
+        .answer-option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .answer-option.correct {
+            background: #51cf66;
+            color: white;
+            border-color: #51cf66;
+        }
+
+        .answer-option.incorrect {
+            background: #ff6b6b;
+            color: white;
+            border-color: #ff6b6b;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 1.1em;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #d3f9d8;
+            color: #2b8a3e;
+            border: 2px solid #51cf66;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background: #ffe3e3;
+            color: #c92a2a;
+            border: 2px solid #ff6b6b;
+            display: block;
+        }
+
+        .badges-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .badge {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+
+        .badge.earned {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+        }
+
+        .badge:hover {
+            transform: scale(1.05);
+        }
+
+        .badge-icon {
+            font-size: 2.5em;
+            margin-bottom: 5px;
+        }
+
+        .badge-name {
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .start-section {
+            text-align: center;
+        }
+
+        .hint {
+            background: #fff3bf;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            border-left: 4px solid #ffd43b;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: #868e96;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            background: #495057;
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(-5deg); }
+            75% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        .celebrating {
+            animation: celebrate 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Grammatik-Meister</h1>
+            <p>Werde zum Deutsch-Champion!</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-value" id="totalPoints">0</div>
+                <div class="stat-label">Gesamtpunkte</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="correctAnswers">0</div>
+                <div class="stat-label">Richtige Antworten</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="badgeCount">0/15</div>
+                <div class="stat-label">Abzeichen</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="streak">0🔥</div>
+                <div class="stat-label">Serie</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div id="startSection" class="start-section">
+                <h2 style="margin-bottom: 20px;">Wähle ein Grammatikthema:</h2>
+                <div class="topic-grid" id="topicGrid">
+                    <!-- Topics will be inserted here -->
+                </div>
+
+                <h2 style="margin: 30px 0 20px 0;">Wähle den Schwierigkeitsgrad:</h2>
+                <div class="difficulty-selector">
+                    <button class="difficulty-btn easy" data-difficulty="easy">
+                        😊 Leicht<br><small>+5 Punkte</small>
+                    </button>
+                    <button class="difficulty-btn medium" data-difficulty="medium">
+                        🤔 Mittel<br><small>+10 Punkte</small>
+                    </button>
+                    <button class="difficulty-btn hard" data-difficulty="hard">
+                        🔥 Schwer<br><small>+20 Punkte</small>
+                    </button>
+                </div>
+
+                <button class="submit-btn" id="startQuizBtn" style="margin-top: 30px;" disabled>
+                    Quiz starten!
+                </button>
+            </div>
+
+            <div id="quizSection" class="quiz-container">
+                <button class="back-btn" id="backBtn">← Zurück zur Auswahl</button>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill">0%</div>
+                </div>
+
+                <div class="question-box">
+                    <div class="question-text" id="questionText"></div>
+                    <div id="answerArea"></div>
+                    <div class="feedback" id="feedback"></div>
+                </div>
+
+                <button class="submit-btn" id="submitBtn">Antwort prüfen</button>
+                <button class="submit-btn" id="nextBtn" style="display:none; background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);">
+                    Nächste Frage →
+                </button>
+            </div>
+
+            <div id="badgesSection" style="margin-top: 40px;">
+                <h2>🏆 Deine Abzeichen</h2>
+                <div class="badges-container" id="badgesContainer">
+                    <!-- Badges will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            totalPoints: 0,
+            correctAnswers: 0,
+            streak: 0,
+            maxStreak: 0,
+            badges: [],
+            selectedTopic: null,
+            selectedDifficulty: null,
+            currentQuestion: 0,
+            questionsAnswered: 0,
+            currentQuestions: [],
+            topicStats: {}
+        };
+
+        // Topics and their questions
+        const topics = {
+            grossschreibung: {
+                title: "Großschreibung von Nomen",
+                description: "Nomen immer groß!",
+                icon: "✍️",
+                questions: {
+                    easy: [
+                        {
+                            text: "Welches Wort muss großgeschrieben werden?",
+                            sentence: "Ich gehe heute in die {schule}.",
+                            correct: "Schule",
+                            type: "input"
+                        },
+                        {
+                            text: "Welches Wort muss großgeschrieben werden?",
+                            sentence: "Der {hund} bellt laut.",
+                            correct: "Hund",
+                            type: "input"
+                        },
+                        {
+                            text: "Welches Wort muss großgeschrieben werden?",
+                            sentence: "Meine {mutter} kocht Abendessen.",
+                            correct: "Mutter",
+                            type: "input"
+                        },
+                        {
+                            text: "Welches Wort muss großgeschrieben werden?",
+                            sentence: "Das {buch} ist sehr spannend.",
+                            correct: "Buch",
+                            type: "input"
+                        },
+                        {
+                            text: "Welches Wort muss großgeschrieben werden?",
+                            sentence: "Die {sonne} scheint hell.",
+                            correct: "Sonne",
+                            type: "input"
+                        }
+                    ],
+                    medium: [
+                        {
+                            text: "Korrigiere die Großschreibung in diesem Satz:",
+                            sentence: "Der lehrer erklärt den schülern die aufgabe.",
+                            correct: "Der Lehrer erklärt den Schülern die Aufgabe.",
+                            type: "input",
+                            hint: "Drei Nomen müssen großgeschrieben werden!"
+                        },
+                        {
+                            text: "Korrigiere die Großschreibung:",
+                            sentence: "Meine schwester spielt gerne mit ihren freunden.",
+                            correct: "Meine Schwester spielt gerne mit ihren Freunden.",
+                            type: "input",
+                            hint: "Zwei Nomen!"
+                        },
+                        {
+                            text: "Welche Wörter sind Nomen und müssen großgeschrieben werden?",
+                            sentence: "der schnelle läufer gewann das rennen.",
+                            correct: "Der schnelle Läufer gewann das Rennen.",
+                            type: "input"
+                        }
+                    ],
+                    hard: [
+                        {
+                            text: "Substantivierte Verben: Was ist richtig?",
+                            options: ["Das Laufen macht Spaß.", "Das laufen macht Spaß.", "das Laufen macht Spaß.", "Das laufen macht spaß."],
+                            correct: "Das Laufen macht Spaß.",
+                            type: "multiple",
+                            explanation: "Substantivierte Verben (Verben, die zu Nomen werden) schreibt man groß!"
+                        },
+                        {
+                            text: "Substantivierte Adjektive: Was ist richtig?",
+                            options: ["Etwas Schönes erleben", "etwas schönes erleben", "Etwas schönes erleben", "etwas Schönes erleben"],
+                            correct: "etwas Schönes erleben",
+                            type: "multiple",
+                            explanation: "Nach 'etwas', 'nichts', 'viel', 'wenig' werden Adjektive großgeschrieben!"
+                        },
+                        {
+                            text: "Korrigiere alle Fehler:",
+                            sentence: "beim kochen hat meine tante das beste rezept für leckere kuchen.",
+                            correct: "Beim Kochen hat meine Tante das beste Rezept für leckere Kuchen.",
+                            type: "input",
+                            hint: "Substantiviertes Verb + drei weitere Nomen!"
+                        }
+                    ]
+                }
+            },
+            rechtschreibung: {
+                title: "Rechtschreibung",
+                description: "ss, ß, ck, tz richtig schreiben",
+                icon: "📝",
+                questions: {
+                    easy: [
+                        {
+                            text: "Wie schreibt man das Wort richtig?",
+                            options: ["Straße", "Strasse", "Straße", "Strase"],
+                            correct: "Straße",
+                            type: "multiple",
+                            explanation: "Nach langem Vokal kommt ß!"
+                        },
+                        {
+                            text: "Wie schreibt man das Wort richtig?",
+                            options: ["Wasser", "Waßer", "Waser", "Wasßer"],
+                            correct: "Wasser",
+                            type: "multiple",
+                            explanation: "Nach kurzem Vokal kommt ss!"
+                        },
+                        {
+                            text: "Wie schreibt man das Wort richtig?",
+                            options: ["Brücke", "Brüke", "Brückke", "Bruecke"],
+                            correct: "Brücke",
+                            type: "multiple"
+                        },
+                        {
+                            text: "Wie schreibt man das Wort richtig?",
+                            options: ["sitzen", "sizen", "sizzen", "siezen"],
+                            correct: "sitzen",
+                            type: "multiple"
+                        }
+                    ],
+                    medium: [
+                        {
+                            text: "Ergänze: Ich mu__ noch meine Hausaufgaben machen.",
+                            options: ["ss", "ß", "s"],
+                            correct: "ss",
+                            type: "multiple",
+                            explanation: "Nach kurzem Vokal: ss"
+                        },
+                        {
+                            text: "Ergänze: Der Flu__ ist sehr breit.",
+                            options: ["ss", "ß", "s"],
+                            correct: "ss",
+                            type: "multiple",
+                            explanation: "Nach kurzem Vokal: ss"
+                        },
+                        {
+                            text: "Ergänze: Wir gehen über die Stra__e.",
+                            options: ["ss", "ß", "s"],
+                            correct: "ß",
+                            type: "multiple",
+                            explanation: "Nach langem Vokal: ß"
+                        },
+                        {
+                            text: "Ergänze: Die Ka__e miaut laut.",
+                            options: ["tz", "z", "zz"],
+                            correct: "tz",
+                            type: "multiple"
+                        }
+                    ],
+                    hard: [
+                        {
+                            text: "Schreibe das Wort richtig: [gemas] (wie in: 'Es war sehr gemäß')",
+                            correct: "gemäß",
+                            type: "input",
+                            hint: "Nach langem Vokal kommt ß!"
+                        },
+                        {
+                            text: "Korrigiere: 'Der Fusball rollt über die Strasse.'",
+                            correct: "Der Fußball rollt über die Straße.",
+                            type: "input"
+                        },
+                        {
+                            text: "Korrigiere: 'Beim Schwimmen mus man aufpassen.'",
+                            correct: "Beim Schwimmen muss man aufpassen.",
+                            type: "input"
+                        }
+                    ]
+                }
+            },
+            artikel: {
+                title: "Artikel (der, die, das)",
+                description: "Der richtige Artikel",
+                icon: "🎯",
+                questions: {
+                    easy: [
+                        {
+                            text: "Welcher Artikel ist richtig?",
+                            word: "Tisch",
+                            options: ["der", "die", "das"],
+                            correct: "der",
+                            type: "multiple"
+                        },
+                        {
+                            text: "Welcher Artikel ist richtig?",
+                            word: "Katze",
+                            options: ["der", "die", "das"],
+                            correct: "die",
+                            type: "multiple"
+                        },
+                        {
+                            text: "Welcher Artikel ist richtig?",
+                            word: "Haus",
+                            options: ["der", "die", "das"],
+                            correct: "das",
+                            type: "multiple"
+                        },
+                        {
+                            text: "Welcher Artikel ist richtig?",
+                            word: "Buch",
+                            options: ["der", "die", "das"],
+                            correct: "das",
+                            type: "multiple"
+                        }
+                    ],
+                    medium: [
+                        {
+                            text: "Welcher Artikel ist richtig?",
+                            word: "Mädchen",
+                            options: ["der", "die", "das"],
+                            correct: "das",
+                            type: "multiple",
+                            explanation: "Alle Wörter auf -chen sind neutral (das)!"
+                        },
+                        {
+                            text: "Welcher Artikel ist richtig?",
+                            word: "Freiheit",
+                            options: ["der", "die", "das"],
+                            correct: "die",
+                            type: "multiple",
+                            explanation: "Wörter auf -heit sind immer feminin (die)!"
+                        },
+                        {
+                            text: "Welcher Artikel ist richtig?",
+                            word: "Lehrling",
+                            options: ["der", "die", "das"],
+                            correct: "der",
+                            type: "multiple",
+                            explanation: "Wörter auf -ling sind maskulin (der)!"
+                        }
+                    ],
+                    hard: [
+                        {
+                            text: "Welche Artikel-Regel stimmt?",
+                            options: [
+                                "Wörter auf -ung sind immer feminin (die)",
+                                "Wörter auf -ung sind immer maskulin (der)",
+                                "Wörter auf -ung sind immer neutral (das)"
+                            ],
+                            correct: "Wörter auf -ung sind immer feminin (die)",
+                            type: "multiple"
+                        },
+                        {
+                            text: "Ergänze: ___ Sonne, ___ Mond, ___ Sterne",
+                            correct: "die Sonne, der Mond, die Sterne",
+                            type: "input"
+                        }
+                    ]
+                }
+            },
+            faelle: {
+                title: "Die vier Fälle",
+                description: "Nominativ, Genitiv, Dativ, Akkusativ",
+                icon: "📊",
+                questions: {
+                    easy: [
+                        {
+                            text: "Welcher Fall? 'Der Hund bellt.'",
+                            options: ["Nominativ (Wer-Fall)", "Genitiv (Wes-Fall)", "Dativ (Wem-Fall)", "Akkusativ (Wen-Fall)"],
+                            correct: "Nominativ (Wer-Fall)",
+                            type: "multiple",
+                            explanation: "Wer bellt? Der Hund."
+                        },
+                        {
+                            text: "Welcher Fall? 'Ich sehe den Hund.'",
+                            options: ["Nominativ", "Genitiv", "Dativ", "Akkusativ"],
+                            correct: "Akkusativ",
+                            type: "multiple",
+                            explanation: "Wen sehe ich? Den Hund."
+                        },
+                        {
+                            text: "Welcher Fall? 'Ich helfe dem Mann.'",
+                            options: ["Nominativ", "Genitiv", "Dativ", "Akkusativ"],
+                            correct: "Dativ",
+                            type: "multiple",
+                            explanation: "Wem helfe ich? Dem Mann."
+                        }
+                    ],
+                    medium: [
+                        {
+                            text: "Setze in den Dativ: der Hund",
+                            correct: "dem Hund",
+                            type: "input",
+                            hint: "Wem-Fall!"
+                        },
+                        {
+                            text: "Setze in den Akkusativ: die Katze",
+                            correct: "die Katze",
+                            type: "input",
+                            hint: "Wen-Fall!"
+                        },
+                        {
+                            text: "Ergänze richtig: 'Ich gebe ___ Lehrer das Heft.' (der Lehrer)",
+                            correct: "dem Lehrer",
+                            type: "input",
+                            hint: "Wem gebe ich?"
+                        }
+                    ],
+                    hard: [
+                        {
+                            text: "Bestimme alle Fälle: 'Der Lehrer gibt dem Schüler das Buch.'",
+                            correct: "Nominativ: der Lehrer, Dativ: dem Schüler, Akkusativ: das Buch",
+                            type: "input",
+                            hint: "Wer? Wem? Was?"
+                        },
+                        {
+                            text: "Genitiv: Ergänze 'Das Haus ___ Mannes' (der Mann)",
+                            correct: "des Mannes",
+                            type: "input",
+                            explanation: "Genitiv maskulin: des + -es/-s"
+                        }
+                    ]
+                }
+            },
+            zeitformen: {
+                title: "Zeitformen der Verben",
+                description: "Präsens, Präteritum, Perfekt, Plusquamperfekt",
+                icon: "⏰",
+                questions: {
+                    easy: [
+                        {
+                            text: "Welche Zeitform? 'Ich gehe zur Schule.'",
+                            options: ["Präsens (Gegenwart)", "Präteritum (1. Vergangenheit)", "Perfekt (2. Vergangenheit)", "Futur (Zukunft)"],
+                            correct: "Präsens (Gegenwart)",
+                            type: "multiple"
+                        },
+                        {
+                            text: "Welche Zeitform? 'Ich ging zur Schule.'",
+                            options: ["Präsens", "Präteritum", "Perfekt", "Futur"],
+                            correct: "Präteritum",
+                            type: "multiple"
+                        },
+                        {
+                            text: "Bilde das Perfekt: 'machen' (ich)",
+                            correct: "ich habe gemacht",
+                            type: "input",
+                            hint: "haben + ge...t"
+                        }
+                    ],
+                    medium: [
+                        {
+                            text: "Bilde das Präteritum: 'schreiben' (er)",
+                            correct: "er schrieb",
+                            type: "input"
+                        },
+                        {
+                            text: "Bilde das Perfekt: 'laufen' (sie)",
+                            correct: "sie ist gelaufen",
+                            type: "input",
+                            hint: "Bewegungsverben mit 'sein'!"
+                        },
+                        {
+                            text: "Bilde das Perfekt: 'essen' (wir)",
+                            correct: "wir haben gegessen",
+                            type: "input"
+                        }
+                    ],
+                    hard: [
+                        {
+                            text: "Bilde das Plusquamperfekt: 'gehen' (ich)",
+                            correct: "ich war gegangen",
+                            type: "input",
+                            explanation: "Vorvergangenheit: war/hatte + Partizip II"
+                        },
+                        {
+                            text: "Wandle um: 'Ich las das Buch.' → Perfekt",
+                            correct: "Ich habe das Buch gelesen.",
+                            type: "input"
+                        }
+                    ]
+                }
+            },
+            kommasetzung: {
+                title: "Kommasetzung",
+                description: "Kommas richtig setzen",
+                icon: "🔸",
+                questions: {
+                    easy: [
+                        {
+                            text: "Wo muss das Komma hin?",
+                            options: [
+                                "Ich mag Pizza, Pasta und Salat.",
+                                "Ich mag Pizza Pasta, und Salat.",
+                                "Ich mag Pizza Pasta und, Salat."
+                            ],
+                            correct: "Ich mag Pizza, Pasta und Salat.",
+                            type: "multiple",
+                            explanation: "Bei Aufzählungen vor 'und' kein Komma!"
+                        },
+                        {
+                            text: "Wo muss das Komma hin?",
+                            options: [
+                                "Anna isst gerne Äpfel Birnen und Orangen.",
+                                "Anna isst gerne Äpfel, Birnen und Orangen.",
+                                "Anna isst gerne Äpfel Birnen, und Orangen."
+                            ],
+                            correct: "Anna isst gerne Äpfel, Birnen und Orangen.",
+                            type: "multiple"
+                        }
+                    ],
+                    medium: [
+                        {
+                            text: "Setze das Komma: 'Ich gehe nach Hause weil ich müde bin.'",
+                            correct: "Ich gehe nach Hause, weil ich müde bin.",
+                            type: "input",
+                            hint: "Vor Nebensätzen (weil, dass, wenn...) kommt ein Komma!"
+                        },
+                        {
+                            text: "Setze das Komma: 'Er sagt dass er morgen kommt.'",
+                            correct: "Er sagt, dass er morgen kommt.",
+                            type: "input"
+                        },
+                        {
+                            text: "Setze das Komma: 'Obwohl es regnet gehen wir spazieren.'",
+                            correct: "Obwohl es regnet, gehen wir spazieren.",
+                            type: "input"
+                        }
+                    ],
+                    hard: [
+                        {
+                            text: "Setze alle Kommas: 'Der Mann der dort steht ist mein Vater.'",
+                            correct: "Der Mann, der dort steht, ist mein Vater.",
+                            type: "input",
+                            hint: "Relativsätze mit Kommas einschließen!"
+                        },
+                        {
+                            text: "Setze alle Kommas: 'Ich hoffe dass du kommst und dass wir Spaß haben werden.'",
+                            correct: "Ich hoffe, dass du kommst und dass wir Spaß haben werden.",
+                            type: "input"
+                        }
+                    ]
+                }
+            },
+            wortarten: {
+                title: "Wortarten",
+                description: "Nomen, Verben, Adjektive...",
+                icon: "🏷️",
+                questions: {
+                    easy: [
+                        {
+                            text: "Welche Wortart ist 'schön'?",
+                            options: ["Nomen", "Verb", "Adjektiv", "Präposition"],
+                            correct: "Adjektiv",
+                            type: "multiple"
+                        },
+                        {
+                            text: "Welche Wortart ist 'laufen'?",
+                            options: ["Nomen", "Verb", "Adjektiv", "Artikel"],
+                            correct: "Verb",
+                            type: "multiple"
+                        },
+                        {
+                            text: "Welche Wortart ist 'Tisch'?",
+                            options: ["Nomen", "Verb", "Adjektiv", "Pronomen"],
+                            correct: "Nomen",
+                            type: "multiple"
+                        }
+                    ],
+                    medium: [
+                        {
+                            text: "Bestimme die Wortart: 'Das schnelle Auto fährt.'",
+                            word: "schnelle",
+                            options: ["Nomen", "Verb", "Adjektiv", "Adverb"],
+                            correct: "Adjektiv",
+                            type: "multiple",
+                            hint: "Wie-Wort!"
+                        },
+                        {
+                            text: "Welche Wortarten sind das? 'Der kluge Schüler lernt fleißig.'",
+                            correct: "Artikel, Adjektiv, Nomen, Verb, Adverb",
+                            type: "input"
+                        }
+                    ],
+                    hard: [
+                        {
+                            text: "Was ist 'trotzdem' für eine Wortart?",
+                            options: ["Konjunktion", "Präposition", "Adverb", "Adjektiv"],
+                            correct: "Adverb",
+                            type: "multiple"
+                        },
+                        {
+                            text: "Bestimme: 'während' in 'während des Unterrichts'",
+                            options: ["Konjunktion", "Präposition", "Adverb", "Artikel"],
+                            correct: "Präposition",
+                            type: "multiple"
+                        }
+                    ]
+                }
+            },
+            satzglieder: {
+                title: "Satzglieder",
+                description: "Subjekt, Prädikat, Objekt...",
+                icon: "🧩",
+                questions: {
+                    easy: [
+                        {
+                            text: "Was ist das Subjekt? 'Der Hund bellt laut.'",
+                            options: ["Der Hund", "bellt", "laut"],
+                            correct: "Der Hund",
+                            type: "multiple",
+                            explanation: "Subjekt = Wer oder Was?"
+                        },
+                        {
+                            text: "Was ist das Prädikat? 'Die Kinder spielen Ball.'",
+                            options: ["Die Kinder", "spielen", "Ball"],
+                            correct: "spielen",
+                            type: "multiple",
+                            explanation: "Prädikat = Was tut jemand?"
+                        }
+                    ],
+                    medium: [
+                        {
+                            text: "Bestimme: 'Der Lehrer erklärt den Schülern die Aufgabe.'",
+                            question: "Was ist das Akkusativobjekt?",
+                            correct: "die Aufgabe",
+                            type: "input",
+                            hint: "Wen oder Was?"
+                        },
+                        {
+                            text: "Bestimme: 'Der Lehrer erklärt den Schülern die Aufgabe.'",
+                            question: "Was ist das Dativobjekt?",
+                            correct: "den Schülern",
+                            type: "input",
+                            hint: "Wem?"
+                        }
+                    ],
+                    hard: [
+                        {
+                            text: "Bestimme alle Satzglieder: 'Der fleißige Schüler gibt dem Lehrer das Heft.'",
+                            correct: "Subjekt: Der fleißige Schüler, Prädikat: gibt, Dativobjekt: dem Lehrer, Akkusativobjekt: das Heft",
+                            type: "input"
+                        }
+                    ]
+                }
+            }
+        };
+
+        // Badges
+        const badges = [
+            { id: "first_correct", name: "Erste Richtige", icon: "🌟", condition: () => gameState.correctAnswers >= 1 },
+            { id: "streak_3", name: "3er Serie", icon: "🔥", condition: () => gameState.streak >= 3 },
+            { id: "streak_5", name: "5er Serie", icon: "⚡", condition: () => gameState.streak >= 5 },
+            { id: "points_50", name: "50 Punkte", icon: "💎", condition: () => gameState.totalPoints >= 50 },
+            { id: "points_100", name: "100 Punkte", icon: "👑", condition: () => gameState.totalPoints >= 100 },
+            { id: "points_200", name: "200 Punkte", icon: "🏆", condition: () => gameState.totalPoints >= 200 },
+            { id: "all_topics", name: "Alles probiert", icon: "🎯", condition: () => Object.keys(gameState.topicStats).length >= 8 },
+            { id: "perfektionist", name: "Perfektionist", icon: "✨", condition: () => gameState.streak >= 10 },
+            { id: "grossschreibung_meister", name: "Groß-Meister", icon: "✍️", condition: () => (gameState.topicStats.grossschreibung?.correct || 0) >= 5 },
+            { id: "rechtschreibung_profi", name: "Rechtschreib-Profi", icon: "📝", condition: () => (gameState.topicStats.rechtschreibung?.correct || 0) >= 5 },
+            { id: "artikel_kenner", name: "Artikel-Kenner", icon: "🎯", condition: () => (gameState.topicStats.artikel?.correct || 0) >= 5 },
+            { id: "fall_experte", name: "Fall-Experte", icon: "📊", condition: () => (gameState.topicStats.faelle?.correct || 0) >= 5 },
+            { id: "zeit_meister", name: "Zeit-Meister", icon: "⏰", condition: () => (gameState.topicStats.zeitformen?.correct || 0) >= 5 },
+            { id: "komma_konig", name: "Komma-König", icon: "🔸", condition: () => (gameState.topicStats.kommasetzung?.correct || 0) >= 5 },
+            { id: "grammatik_genie", name: "Grammatik-Genie", icon: "🧠", condition: () => gameState.totalPoints >= 500 }
+        ];
+
+        // Load game state from localStorage
+        function loadGameState() {
+            const saved = localStorage.getItem('grammatikMeister');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                gameState = { ...gameState, ...parsed };
+                updateStats();
+                renderBadges();
+            }
+        }
+
+        // Save game state
+        function saveGameState() {
+            localStorage.setItem('grammatikMeister', JSON.stringify(gameState));
+        }
+
+        // Initialize
+        function init() {
+            loadGameState();
+            renderTopics();
+            renderBadges();
+            setupEventListeners();
+        }
+
+        // Render topics
+        function renderTopics() {
+            const grid = document.getElementById('topicGrid');
+            grid.innerHTML = '';
+            
+            Object.keys(topics).forEach(topicId => {
+                const topic = topics[topicId];
+                const card = document.createElement('div');
+                card.className = 'topic-card';
+                card.dataset.topic = topicId;
+                
+                const stats = gameState.topicStats[topicId] || { correct: 0, total: 0 };
+                const percentage = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+                
+                card.innerHTML = `
+                    <div class="topic-title">${topic.icon} ${topic.title}</div>
+                    <div class="topic-description">${topic.description}</div>
+                    <div style="margin-top: 10px; font-size: 0.8em; color: #666;">
+                        ${stats.correct}/${stats.total} richtig (${percentage}%)
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => selectTopic(topicId));
+                grid.appendChild(card);
+            });
+        }
+
+        // Select topic
+        function selectTopic(topicId) {
+            document.querySelectorAll('.topic-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            event.target.closest('.topic-card').classList.add('selected');
+            gameState.selectedTopic = topicId;
+            checkStartButton();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    gameState.selectedDifficulty = btn.dataset.difficulty;
+                    checkStartButton();
+                });
+            });
+
+            document.getElementById('startQuizBtn').addEventListener('click', startQuiz);
+            document.getElementById('submitBtn').addEventListener('click', checkAnswer);
+            document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+            document.getElementById('backBtn').addEventListener('click', backToSelection);
+        }
+
+        // Check if start button should be enabled
+        function checkStartButton() {
+            const btn = document.getElementById('startQuizBtn');
+            btn.disabled = !(gameState.selectedTopic && gameState.selectedDifficulty);
+        }
+
+        // Start quiz
+        function startQuiz() {
+            const topic = topics[gameState.selectedTopic];
+            gameState.currentQuestions = [...topic.questions[gameState.selectedDifficulty]];
+            gameState.currentQuestion = 0;
+            gameState.questionsAnswered = 0;
+            
+            document.getElementById('startSection').style.display = 'none';
+            document.getElementById('quizSection').classList.add('active');
+            
+            loadQuestion();
+        }
+
+        // Load question
+        function loadQuestion() {
+            if (gameState.currentQuestion >= gameState.currentQuestions.length) {
+                endQuiz();
+                return;
+            }
+
+            const question = gameState.currentQuestions[gameState.currentQuestion];
+            const questionText = document.getElementById('questionText');
+            const answerArea = document.getElementById('answerArea');
+            const feedback = document.getElementById('feedback');
+            
+            feedback.style.display = 'none';
+            feedback.className = 'feedback';
+            
+            document.getElementById('submitBtn').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('submitBtn').disabled = false;
+
+            // Update progress
+            const progress = ((gameState.currentQuestion + 1) / gameState.currentQuestions.length) * 100;
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = progress + '%';
+            progressFill.textContent = `Frage ${gameState.currentQuestion + 1}/${gameState.currentQuestions.length}`;
+
+            // Display question
+            if (question.sentence) {
+                questionText.innerHTML = `
+                    <strong>${question.text}</strong><br><br>
+                    <em>${question.sentence.replace('{', '<u>').replace('}', '</u>')}</em>
+                `;
+            } else if (question.word) {
+                questionText.innerHTML = `
+                    <strong>${question.text}</strong><br><br>
+                    <em>${question.word}</em>
+                `;
+            } else {
+                questionText.innerHTML = `<strong>${question.text}</strong>`;
+            }
+
+            // Add hint if available
+            if (question.hint) {
+                questionText.innerHTML += `<div class="hint">💡 Tipp: ${question.hint}</div>`;
+            }
+
+            // Create answer area
+            if (question.type === 'multiple') {
+                answerArea.innerHTML = '<div class="answer-options"></div>';
+                const optionsDiv = answerArea.querySelector('.answer-options');
+                
+                question.options.forEach((option, index) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'answer-option';
+                    optionDiv.textContent = option;
+                    optionDiv.dataset.answer = option;
+                    optionDiv.addEventListener('click', () => selectOption(optionDiv));
+                    optionsDiv.appendChild(optionDiv);
+                });
+            } else {
+                answerArea.innerHTML = '<input type="text" class="answer-input" id="answerInput" placeholder="Deine Antwort...">';
+                document.getElementById('answerInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') checkAnswer();
+                });
+            }
+        }
+
+        // Select option
+        function selectOption(optionDiv) {
+            document.querySelectorAll('.answer-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            optionDiv.classList.add('selected');
+        }
+
+        // Check answer
+        function checkAnswer() {
+            const question = gameState.currentQuestions[gameState.currentQuestion];
+            const feedback = document.getElementById('feedback');
+            let userAnswer = '';
+            let isCorrect = false;
+
+            if (question.type === 'multiple') {
+                const selected = document.querySelector('.answer-option.selected');
+                if (!selected) return;
+                userAnswer = selected.dataset.answer;
+            } else {
+                userAnswer = document.getElementById('answerInput').value.trim();
+                if (!userAnswer) return;
+            }
+
+            // Check correctness
+            isCorrect = normalizeAnswer(userAnswer) === normalizeAnswer(question.correct);
+
+            // Update stats
+            const topicId = gameState.selectedTopic;
+            if (!gameState.topicStats[topicId]) {
+                gameState.topicStats[topicId] = { correct: 0, total: 0 };
+            }
+            gameState.topicStats[topicId].total++;
+
+            if (isCorrect) {
+                gameState.topicStats[topicId].correct++;
+                gameState.correctAnswers++;
+                gameState.streak++;
+                
+                // Award points
+                const points = {easy: 5, medium: 10, hard: 20}[gameState.selectedDifficulty];
+                gameState.totalPoints += points;
+
+                // Show feedback
+                feedback.className = 'feedback correct';
+                feedback.innerHTML = `
+                    ✅ <strong>Richtig!</strong> +${points} Punkte<br>
+                    ${question.explanation ? `<small>${question.explanation}</small>` : ''}
+                `;
+
+                // Check for new badges
+                checkBadges();
+                
+                // Celebrate
+                document.querySelector('.container').classList.add('celebrating');
+                setTimeout(() => {
+                    document.querySelector('.container').classList.remove('celebrating');
+                }, 500);
+            } else {
+                gameState.streak = 0;
+                feedback.className = 'feedback incorrect';
+                feedback.innerHTML = `
+                    ❌ <strong>Leider falsch!</strong><br>
+                    Richtige Antwort: <strong>${question.correct}</strong><br>
+                    ${question.explanation ? `<small>${question.explanation}</small>` : ''}
+                `;
+            }
+
+            // Show feedback
+            feedback.style.display = 'block';
+
+            // Update display and mark options
+            if (question.type === 'multiple') {
+                document.querySelectorAll('.answer-option').forEach(opt => {
+                    if (opt.dataset.answer === question.correct) {
+                        opt.classList.add('correct');
+                    } else if (opt.classList.contains('selected') && !isCorrect) {
+                        opt.classList.add('incorrect');
+                    }
+                    opt.style.pointerEvents = 'none';
+                });
+            }
+
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'block';
+
+            updateStats();
+            saveGameState();
+        }
+
+        // Normalize answer for comparison
+        function normalizeAnswer(answer) {
+            return answer.toLowerCase()
+                .replace(/\s+/g, ' ')
+                .trim()
+                .replace(/\./g, '')
+                .replace(/,/g, '');
+        }
+
+        // Next question
+        function nextQuestion() {
+            gameState.currentQuestion++;
+            gameState.questionsAnswered++;
+            loadQuestion();
+        }
+
+        // End quiz
+        function endQuiz() {
+            const quizSection = document.getElementById('quizSection');
+            quizSection.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <h2 style="font-size: 2.5em; margin-bottom: 20px;">🎉 Quiz beendet! 🎉</h2>
+                    <p style="font-size: 1.3em; margin-bottom: 30px;">
+                        Du hast <strong>${gameState.topicStats[gameState.selectedTopic].correct}</strong> von 
+                        <strong>${gameState.questionsAnswered}</strong> Fragen richtig beantwortet!
+                    </p>
+                    <button class="submit-btn" onclick="backToSelection()">
+                        Zurück zur Auswahl
+                    </button>
+                </div>
+            `;
+        }
+
+        // Back to selection
+        function backToSelection() {
+            document.getElementById('startSection').style.display = 'block';
+            document.getElementById('quizSection').classList.remove('active');
+            gameState.selectedTopic = null;
+            gameState.selectedDifficulty = null;
+            document.querySelectorAll('.topic-card').forEach(card => card.classList.remove('selected'));
+            document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('selected'));
+            checkStartButton();
+            renderTopics(); // Update stats display
+        }
+
+        // Update stats display
+        function updateStats() {
+            document.getElementById('totalPoints').textContent = gameState.totalPoints;
+            document.getElementById('correctAnswers').textContent = gameState.correctAnswers;
+            document.getElementById('streak').textContent = gameState.streak + '🔥';
+            
+            const earnedBadges = badges.filter(b => gameState.badges.includes(b.id)).length;
+            document.getElementById('badgeCount').textContent = `${earnedBadges}/${badges.length}`;
+        }
+
+        // Check badges
+        function checkBadges() {
+            let newBadges = [];
+            badges.forEach(badge => {
+                if (!gameState.badges.includes(badge.id) && badge.condition()) {
+                    gameState.badges.push(badge.id);
+                    newBadges.push(badge);
+                }
+            });
+
+            if (newBadges.length > 0) {
+                renderBadges();
+                // Could show a notification here
+            }
+        }
+
+        // Render badges
+        function renderBadges() {
+            const container = document.getElementById('badgesContainer');
+            container.innerHTML = '';
+            
+            badges.forEach(badge => {
+                const badgeDiv = document.createElement('div');
+                badgeDiv.className = 'badge';
+                if (gameState.badges.includes(badge.id)) {
+                    badgeDiv.classList.add('earned');
+                }
+                
+                badgeDiv.innerHTML = `
+                    <div class="badge-icon">${badge.icon}</div>
+                    <div class="badge-name">${badge.name}</div>
+                `;
+                
+                container.appendChild(badgeDiv);
+            });
+        }
+
+        // Initialize when page loads
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
