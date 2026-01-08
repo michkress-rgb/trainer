@@ -1,0 +1,2503 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gedichtanalyse Trainer (Klasse 9) – Offline</title>
+  <style>
+    :root{
+      --bg:#0f1220;
+      --panel:#151a2e;
+      --panel2:#101428;
+      --card:#1a2140;
+      --text:#e9ecff;
+      --muted:#b9c0ff;
+      --muted2:#9aa3e6;
+      --line:#2a3261;
+      --accent:#7aa6ff;
+      --accent2:#b88cff;
+      --ok:#5fe1b2;
+      --warn:#ffd166;
+      --bad:#ff6b6b;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 16px;
+      --radius2: 22px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 10% 0%, rgba(122,166,255,.18), transparent 60%),
+        radial-gradient(1200px 600px at 90% 0%, rgba(184,140,255,.14), transparent 60%),
+        linear-gradient(180deg, var(--bg), #0b0e1a);
+    }
+    a{color:var(--accent)}
+    .app{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      gap:18px;
+      padding:18px;
+      max-width: 1400px;
+      margin:0 auto;
+    }
+    @media (max-width: 980px){
+      .app{grid-template-columns: 1fr; padding:12px}
+      .sidebar{position:static}
+    }
+    .sidebar{
+      position:sticky;
+      top:18px;
+      align-self:start;
+      background: linear-gradient(180deg, rgba(26,33,64,.92), rgba(21,26,46,.92));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .brand{
+      padding:16px 16px 10px 16px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background: radial-gradient(800px 220px at 20% 0%, rgba(122,166,255,.18), transparent 65%),
+                  radial-gradient(800px 220px at 80% 0%, rgba(184,140,255,.16), transparent 65%);
+    }
+    .brand h1{
+      margin:0 0 6px 0;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+    .brand p{
+      margin:0;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+    .dash{
+      padding:12px 16px;
+      display:grid;
+      gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background: rgba(16,20,40,.55);
+    }
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .pill{
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      font-weight:600;
+      letter-spacing:.2px;
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .progressbar{
+      height:10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .progressbar > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius:999px;
+      transition: width .35s ease;
+    }
+    .nav{
+      padding:10px;
+      display:grid;
+      gap:8px;
+    }
+    .tabbtn{
+      width:100%;
+      text-align:left;
+      padding:12px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      transition: transform .08s ease, background .15s ease, border-color .15s ease;
+    }
+    .tabbtn:hover{background: rgba(255,255,255,.06)}
+    .tabbtn:active{transform: translateY(1px)}
+    .tabbtn.active{
+      background: linear-gradient(180deg, rgba(122,166,255,.18), rgba(255,255,255,.06));
+      border-color: rgba(122,166,255,.35);
+    }
+    .tabbtn small{
+      color:var(--muted2);
+      font-weight:600;
+    }
+    .lock{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      color: rgba(255,255,255,.75);
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      background: rgba(255,209,102,.12);
+      border:1px solid rgba(255,209,102,.25);
+    }
+
+    .main{
+      background: linear-gradient(180deg, rgba(21,26,46,.92), rgba(16,20,40,.88));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .mainHeader{
+      padding:14px 18px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background: rgba(10,12,22,.25);
+    }
+    .mainHeader h2{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+    .mainHeader p{
+      margin:6px 0 0 0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+      max-width: 820px;
+    }
+    .toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      justify-content:flex-end;
+      align-items:center;
+    }
+    .btn{
+      appearance:none;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding:8px 10px;
+      border-radius: 12px;
+      font-weight:700;
+      font-size:12px;
+      cursor:pointer;
+      transition: background .15s ease, border-color .15s ease, transform .08s ease;
+      white-space:nowrap;
+    }
+    .btn:hover{background: rgba(255,255,255,.08)}
+    .btn:active{transform: translateY(1px)}
+    .btn.primary{
+      border-color: rgba(122,166,255,.35);
+      background: rgba(122,166,255,.16);
+    }
+    .btn.good{
+      border-color: rgba(95,225,178,.35);
+      background: rgba(95,225,178,.14);
+    }
+    .btn.bad{
+      border-color: rgba(255,107,107,.35);
+      background: rgba(255,107,107,.12);
+    }
+    .btn.warn{
+      border-color: rgba(255,209,102,.35);
+      background: rgba(255,209,102,.12);
+    }
+    .toggle{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      font-size:12px;
+      user-select:none;
+      cursor:pointer;
+    }
+    .toggle input{accent-color: var(--accent)}
+    .content{
+      padding:18px;
+    }
+    .grid{
+      display:grid;
+      gap:14px;
+    }
+    .grid.two{
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 1100px){
+      .grid.two{grid-template-columns: 1fr}
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(26,33,64,.80), rgba(21,26,46,.55));
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      padding:14px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.20);
+    }
+    .card h3{
+      margin:0 0 8px 0;
+      font-size:14px;
+      letter-spacing:.2px;
+    }
+    .card p, .card li{
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.5;
+    }
+    .card ul{margin:8px 0 0 18px}
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:5px 9px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+    }
+    .kpi{
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+    .kpi .tag strong{color:var(--text)}
+    .merksatz{
+      border-left: 4px solid rgba(122,166,255,.55);
+      padding:10px 12px;
+      background: rgba(122,166,255,.08);
+      border-radius: 12px;
+      margin-top:10px;
+    }
+    .merksatz b{color:var(--text)}
+    .sep{
+      height:1px;
+      background: rgba(255,255,255,.08);
+      margin:12px 0;
+    }
+    .poem{
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height:1.45;
+      white-space: pre-wrap;
+      padding:12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(10,12,22,.35);
+      color: rgba(233,236,255,.92);
+    }
+    .source{
+      margin-top:8px;
+      font-size:12px;
+      color: var(--muted2);
+    }
+    .task{
+      margin-top:10px;
+      display:grid;
+      gap:10px;
+    }
+    .task h4{
+      margin:0;
+      font-size:13px;
+      color: var(--text);
+    }
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+    }
+    select, input[type="text"], textarea{
+      width:100%;
+      padding:10px 10px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      outline:none;
+      font-size: 13px;
+    }
+    textarea{min-height: 90px; resize: vertical}
+    .mc{
+      display:grid;
+      gap:8px;
+    }
+    .opt{
+      padding:10px 10px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      cursor:pointer;
+      font-size:13px;
+      color:var(--text);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .opt:hover{background: rgba(255,255,255,.07)}
+    .opt.selected{border-color: rgba(122,166,255,.45); background: rgba(122,166,255,.12)}
+    .opt small{color:var(--muted2)}
+    .feedback{
+      padding:10px 12px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      font-size:13px;
+      color: var(--muted);
+    }
+    .feedback.good{
+      border-color: rgba(95,225,178,.35);
+      background: rgba(95,225,178,.10);
+      color: rgba(234,255,248,.95);
+    }
+    .feedback.bad{
+      border-color: rgba(255,107,107,.35);
+      background: rgba(255,107,107,.10);
+      color: rgba(255,240,240,.95);
+    }
+    .hint{
+      display:none;
+      padding:10px 12px;
+      border-radius: 12px;
+      border:1px dashed rgba(255,209,102,.38);
+      background: rgba(255,209,102,.10);
+      color: rgba(255,244,214,.95);
+      font-size:13px;
+    }
+    .hint.show{display:block}
+    .answer{
+      display:none;
+      padding:10px 12px;
+      border-radius: 12px;
+      border:1px solid rgba(184,140,255,.35);
+      background: rgba(184,140,255,.10);
+      color: rgba(248,241,255,.95);
+      font-size:13px;
+    }
+    .answer.show{display:block}
+    .badgeRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:8px;
+    }
+    .badge{
+      padding:8px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      font-size:12px;
+      font-weight:800;
+      color: rgba(233,236,255,.92);
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+    }
+    .badge.earned{
+      border-color: rgba(95,225,178,.40);
+      background: rgba(95,225,178,.14);
+    }
+    .matrix{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(10,12,22,.25);
+    }
+    .matrix th, .matrix td{
+      padding:10px;
+      font-size:12px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      vertical-align:top;
+    }
+    .matrix th{
+      text-align:left;
+      color: var(--text);
+      background: rgba(255,255,255,.05);
+      font-size:12px;
+    }
+    .status{
+      font-weight:900;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .status .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: rgba(255,255,255,.22);
+      border:1px solid rgba(255,255,255,.18);
+    }
+    .status.locked{color: rgba(255,255,255,.65)}
+    .status.inprogress{color: rgba(255,209,102,.95)}
+    .status.mastered{color: rgba(95,225,178,.95)}
+    .status.locked .dot{background: rgba(255,255,255,.18)}
+    .status.inprogress .dot{background: rgba(255,209,102,.55); border-color: rgba(255,209,102,.45)}
+    .status.mastered .dot{background: rgba(95,225,178,.55); border-color: rgba(95,225,178,.45)}
+
+    /* Syllable marking */
+    .syllables{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      padding:10px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(10,12,22,.30);
+    }
+    .syl{
+      padding:7px 10px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      cursor:pointer;
+      user-select:none;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: rgba(233,236,255,.92);
+      transition: transform .08s ease, background .12s ease, border-color .12s ease;
+    }
+    .syl:active{transform: translateY(1px)}
+    .syl.senk{background: rgba(255,255,255,.04)}
+    .syl.heb{background: rgba(122,166,255,.16); border-color: rgba(122,166,255,.40)}
+    .syl.sep{
+      padding:7px 10px;
+      background: rgba(255,255,255,.02);
+      border:1px dashed rgba(255,255,255,.12);
+      color: rgba(185,192,255,.75);
+      cursor:default;
+    }
+    .rubric{
+      display:grid;
+      gap:8px;
+    }
+    .rub{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 10px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      font-size:13px;
+      color: var(--muted);
+    }
+    .rub b{color: var(--text)}
+    .lockOverlay{
+      display:none;
+      position:absolute;
+      inset:0;
+      background: rgba(10,12,22,.72);
+      backdrop-filter: blur(6px);
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+    .lockOverlay .box{
+      max-width: 720px;
+      background: rgba(21,26,46,.92);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      padding:16px;
+      box-shadow: var(--shadow);
+    }
+    .lockOverlay h3{margin:0 0 6px 0}
+    .lockOverlay p{margin:0 0 12px 0; color: var(--muted); font-size:13px; line-height:1.45}
+    .muted{color: var(--muted)}
+    .small{font-size:12px}
+    .right{float:right}
+    .checklist{
+      display:grid;
+      gap:10px;
+      margin-top:10px;
+    }
+    .checkitem{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 10px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+    }
+    .checkitem input{margin-top:2px; accent-color: var(--accent)}
+    .checkitem label{font-size:13px; color: var(--text); cursor:pointer}
+    .printRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+      justify-content:flex-start;
+      margin-top:10px;
+    }
+    .hr{height:1px; background: rgba(255,255,255,.08); margin:10px 0}
+    .miniNote{
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    @media print{
+      body{background:#fff; color:#000}
+      .app{grid-template-columns: 1fr; padding:0}
+      .sidebar, .mainHeader .toolbar, .nav, .lockOverlay{display:none !important}
+      .main{box-shadow:none; border:none; border-radius:0}
+      .content{padding:18px}
+      .card, .poem, .matrix, .checkitem{border-color:#999 !important}
+      .card{background:#fff}
+      .poem{background:#fff}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>Gedichtanalyse Trainer</h1>
+        <p>Klasse 9 (Deutsch, Muttersprache). Kurz erklärt → üben → Feedback → Level up.</p>
+      </div>
+
+      <div class="dash">
+        <div class="row">
+          <span>Aktuelles Level</span>
+          <span class="pill" id="levelPill">Level 1</span>
+        </div>
+        <div class="row">
+          <span>Fortschritt gesamt</span>
+          <span class="pill" id="progressPill">0%</span>
+        </div>
+        <div class="progressbar" aria-label="Fortschrittsbalken">
+          <div id="progressBarFill"></div>
+        </div>
+        <div class="row">
+          <span>Badges</span>
+          <span class="pill" id="badgePill">0</span>
+        </div>
+        <div class="row">
+          <span>Nächster Tipp</span>
+          <span class="pill" id="nextTip">–</span>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Navigation">
+        <button class="tabbtn active" data-tab="metrum">
+          <span>Metrum &amp; Rhythmus</span><small id="nav_metrum">•</small>
+        </button>
+        <button class="tabbtn" data-tab="reim">
+          <span>Reim &amp; Reimschema</span><small id="nav_reim">•</small>
+        </button>
+        <button class="tabbtn" data-tab="kadenz">
+          <span>Kadenzen &amp; Klang</span><small id="nav_kadenz">•</small>
+        </button>
+        <button class="tabbtn" data-tab="stilmittel">
+          <span>Stilmittel</span><small id="nav_stilmittel">•</small>
+        </button>
+        <button class="tabbtn" data-tab="deutung">
+          <span>Deutung &amp; Interpretation</span><small id="nav_deutung">•</small>
+        </button>
+        <button class="tabbtn" data-tab="kontext">
+          <span>Kontext &amp; Sprechanlass</span><small id="nav_kontext">•</small>
+        </button>
+        <button class="tabbtn" data-tab="toolbox">
+          <span>Werkzeugkasten</span><small id="nav_toolbox">•</small>
+        </button>
+        <button class="tabbtn" data-tab="selftest">
+          <span>Selbsttest &amp; Level</span><small id="nav_selftest">•</small>
+        </button>
+      </nav>
+    </aside>
+
+    <main class="main" role="main">
+      <div class="mainHeader">
+        <div>
+          <h2 id="mainTitle">Metrum &amp; Rhythmus</h2>
+          <p id="mainSubtitle">
+            Du lernst, wie Betonung im Vers funktioniert (Hebung/Senkung), welche Versfüße es gibt und wie Rhythmus Wirkung erzeugt.
+          </p>
+        </div>
+        <div class="toolbar">
+          <label class="toggle" title="Lehrer-Modus: Lösungen sofort sichtbar">
+            <input type="checkbox" id="teacherMode" />
+            <span>Lehrer-Modus</span>
+          </label>
+          <button class="btn primary" id="downloadReportBtn">Fortschrittsbericht herunterladen</button>
+          <button class="btn warn" id="exportBtn">Export (JSON)</button>
+          <button class="btn bad" id="resetBtn">Fortschritt zurücksetzen</button>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- METRUM -->
+        <section class="tab" id="tab_metrum">
+          <div class="grid two">
+            <div class="card">
+              <h3>Grundbegriffe</h3>
+              <p>
+                In Gedichten ist Sprache oft <b>rhythmisch</b>. Der Rhythmus entsteht durch das Muster aus <b>Hebungen</b> (betonte Silben)
+                und <b>Senkungen</b> (unbetonte Silben).
+              </p>
+              <div class="merksatz">
+                <b>Merksatz:</b> Metrum ist das <b>Grundmuster</b> aus Hebung und Senkung. Rhythmus ist die <b>klingende Umsetzung</b> im Vortrag.
+              </div>
+              <div class="sep"></div>
+              <div class="kpi">
+                <span class="tag"><strong>Hebung</strong> = betont</span>
+                <span class="tag"><strong>Senkung</strong> = unbetont</span>
+                <span class="tag"><strong>Zäsur</strong> = Einschnitt/Pause</span>
+                <span class="tag"><strong>Enjambement</strong> = Zeilensprung</span>
+              </div>
+              <div class="sep"></div>
+              <p class="small">
+                Tipp: Beim Bestimmen des Metrums zählt meistens die <b>regelmäßige Grundbewegung</b> – einzelne Abweichungen sind erlaubt und oft gewollt.
+              </p>
+            </div>
+
+            <div class="card">
+              <h3>Vier Versfüße (Pflicht)</h3>
+              <ul>
+                <li><b>Jambus</b>: Senkung–Hebung (x <b>—</b>)</li>
+                <li><b>Trochäus</b>: Hebung–Senkung (<b>—</b> x)</li>
+                <li><b>Daktylus</b>: Hebung–Senkung–Senkung (<b>—</b> x x)</li>
+                <li><b>Anapäst</b>: Senkung–Senkung–Hebung (x x <b>—</b>)</li>
+              </ul>
+              <div class="merksatz">
+                <b>Merksatz:</b> Jambus „steigt“ nach oben (unbetont → betont), Trochäus „fällt“ (betont → unbetont).
+              </div>
+              <div class="sep"></div>
+              <h3>Erweiterung: „iambic pentameter“</h3>
+              <p>
+                Das ist der <b>jambische Fünfheber</b> (5 Jamben pro Zeile), typisch für englische Dichtung (z. B. Shakespeare).
+                Im Deutschen ist er <b>ungewöhnlicher</b>, weil deutsche Wörter häufig früher betont werden und lange jambische Reihen schwerer „natürlich“ klingen.
+                Trotzdem kann man ihn erkennen: <b>x — x — x — x — x —</b>.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Beispiel: Zäsur und Enjambement (am Text sehen)</h3>
+            <div class="poem" id="poem_metrum_1">
+Über allen Gipfeln
+Ist Ruh,
+In allen Wipfeln
+Spürest du
+Kaum einen Hauch;
+Die Vögelein schweigen im Walde.
+Warte nur, balde
+Ruhest du auch.
+            </div>
+            <div class="source">Quelle: Johann Wolfgang von Goethe, „Wandrers Nachtlied“ (1776/1780, gemeinfrei).</div>
+            <div class="task">
+              <h4>Mini-Aufgabe</h4>
+              <p class="muted">
+                Markiere:
+                <b>(1)</b> eine mögliche <b>Zäsur</b> (eine sinnvolle Sprechpause) und
+                <b>(2)</b> ein <b>Enjambement</b> (Zeilensprung, Sinn läuft über die Zeile hinaus).
+              </p>
+              <textarea id="free_metrum_notes" placeholder="Schreibe: Wo siehst du Zäsur? Wo Enjambement? Begründe kurz."></textarea>
+              <div class="controls">
+                <button class="btn good" data-savefree="free_metrum_notes">Speichern</button>
+                <button class="btn" data-hint="hint_metrum_zae">Hinweis</button>
+                <button class="btn warn" data-solution="sol_metrum_zae">Lösung zeigen</button>
+              </div>
+              <div class="hint" id="hint_metrum_zae">
+                Enjambement findest du oft dort, wo die Zeile endet, aber der Satz grammatisch weitergehen muss (z. B. Verb fehlt noch).
+              </div>
+              <div class="answer" id="sol_metrum_zae">
+                <b>Mögliche Lösungen (nicht die einzigen):</b><br>
+                <b>Zäsur</b>: z. B. nach „Warte nur,“ (Sprechpause durch Komma) oder nach „Kaum einen Hauch;“ (Semikolon).<br>
+                <b>Enjambement</b>: z. B. „In allen Wipfeln / Spürest du“ (Sinn läuft über die Zeile hinaus).
+              </div>
+            </div>
+          </div>
+
+          <div class="grid two">
+            <div class="card">
+              <h3>Interaktiv: Silben als Hebung/Senkung markieren</h3>
+              <p class="muted">
+                Klicke die Silben an: <b>Hebung</b> (betont) wird blau. So siehst du ein Muster.
+              </p>
+              <div class="poem" style="margin-bottom:8px">
+                Ü-ber | al-len | Gip-feln | ist | Ruh
+              </div>
+              <div class="syllables" id="syllableBox" aria-label="Silben markieren"></div>
+              <div class="controls" style="margin-top:10px">
+                <button class="btn" id="syllReset">Markierung löschen</button>
+                <button class="btn primary" id="syllCheck">Muster prüfen</button>
+                <button class="btn" data-hint="hint_syll">Hinweis</button>
+                <button class="btn warn" data-solution="sol_syll">Lösung zeigen</button>
+              </div>
+              <div class="hint" id="hint_syll">
+                Suche die „starken“ Silben (Wortakzent). In Deutsch sind oft Inhaltswörter betont (Nomen, Verben, Adjektive).
+              </div>
+              <div class="answer" id="sol_syll">
+                <b>Beispielhafte Betonung:</b> <b>Ü</b>-ber <b>al</b>-len <b>Gip</b>-feln ist <b>Ruh</b>.<br>
+                Wichtig: Bei Gedichten können Akzente leicht verschoben werden (Vortragsrhythmus).
+              </div>
+              <div class="feedback" id="syllFeedback" style="display:none"></div>
+            </div>
+
+            <div class="card">
+              <h3>Aktivität: „Erkenne den Versfuß“ (Pflicht)</h3>
+              <p class="muted">
+                Wähle den <b>Grundversfuß</b>, der am besten passt (Jambus/Trochäus/Daktylus/Anapäst).
+              </p>
+
+              <div class="task" data-task="meter_detect_1">
+                <h4>1) „Es war, als hätt der Himmel“</h4>
+                <div class="poem">Es war, als hätt der Himmel</div>
+                <div class="source">Quelle: Joseph von Eichendorff, „Mondnacht“ (1837, gemeinfrei) – 1. Zeile.</div>
+                <div class="mc" data-mc="meter_detect_1">
+                  <div class="opt" data-value="jambus">Jambus <small>(x —)</small></div>
+                  <div class="opt" data-value="trochaeus">Trochäus <small>(— x)</small></div>
+                  <div class="opt" data-value="daktylus">Daktylus <small>(— x x)</small></div>
+                  <div class="opt" data-value="anapaest">Anapäst <small>(x x —)</small></div>
+                </div>
+                <div class="controls">
+                  <button class="btn primary" data-check="meter_detect_1">Prüfen</button>
+                  <button class="btn" data-hint="hint_meter1">Hinweis</button>
+                  <button class="btn warn" data-solution="sol_meter1">Lösung zeigen</button>
+                </div>
+                <div class="hint" id="hint_meter1">
+                  Lies laut: <i>Es WAR | als HÄTT | der HIM | mel</i>. Wo liegen die Akzente?
+                </div>
+                <div class="answer" id="sol_meter1">
+                  <b>Lösung:</b> Trochäus.<br>
+                  <b>Warum?</b> Viele Wörter tragen am Anfang den Akzent: <i>WAR</i>, <i>HÄTT</i>, <i>HIM</i> → <b>— x</b> (fallend).
+                </div>
+                <div class="feedback" id="fb_meter_detect_1" style="display:none"></div>
+              </div>
+
+              <div class="task" data-task="meter_detect_2">
+                <h4>2) „Ein gleiches“</h4>
+                <div class="poem">Ein gleiches</div>
+                <div class="source">Quelle: Johann Wolfgang von Goethe, „Wandrers Nachtlied“ (gemeinfrei) – Titel/Anfangswortgruppe.</div>
+                <div class="mc" data-mc="meter_detect_2">
+                  <div class="opt" data-value="jambus">Jambus <small>(x —)</small></div>
+                  <div class="opt" data-value="trochaeus">Trochäus <small>(— x)</small></div>
+                  <div class="opt" data-value="daktylus">Daktylus <small>(— x x)</small></div>
+                  <div class="opt" data-value="anapaest">Anapäst <small>(x x —)</small></div>
+                </div>
+                <div class="controls">
+                  <button class="btn primary" data-check="meter_detect_2">Prüfen</button>
+                  <button class="btn" data-hint="hint_meter2">Hinweis</button>
+                  <button class="btn warn" data-solution="sol_meter2">Lösung zeigen</button>
+                </div>
+                <div class="hint" id="hint_meter2">
+                  „EIN GLEI-ches“: häufig ist die <b>erste</b> Silbe betont.
+                </div>
+                <div class="answer" id="sol_meter2">
+                  <b>Lösung:</b> Trochäus.<br>
+                  <b>Warum?</b> <i>EIN</i> ist betont, dann folgt unbetont <i>glei-</i> → <b>— x</b>.
+                </div>
+                <div class="feedback" id="fb_meter_detect_2" style="display:none"></div>
+              </div>
+
+              <div class="task" data-task="meter_detect_3">
+                <h4>3) „Sah ein Knab ein Röslein stehn“</h4>
+                <div class="poem">Sah ein Knab ein Röslein stehn</div>
+                <div class="source">Quelle: Johann Wolfgang von Goethe, „Heidenröslein“ (1771, gemeinfrei) – 1. Zeile.</div>
+                <div class="mc" data-mc="meter_detect_3">
+                  <div class="opt" data-value="jambus">Jambus <small>(x —)</small></div>
+                  <div class="opt" data-value="trochaeus">Trochäus <small>(— x)</small></div>
+                  <div class="opt" data-value="daktylus">Daktylus <small>(— x x)</small></div>
+                  <div class="opt" data-value="anapaest">Anapäst <small>(x x —)</small></div>
+                </div>
+                <div class="controls">
+                  <button class="btn primary" data-check="meter_detect_3">Prüfen</button>
+                  <button class="btn" data-hint="hint_meter3">Hinweis</button>
+                  <button class="btn warn" data-solution="sol_meter3">Lösung zeigen</button>
+                </div>
+                <div class="hint" id="hint_meter3">
+                  Achte auf die Akzente: <i>SAH ein KNAB ein RÖS-lein STEHN</i>. Beginnt es eher betont?
+                </div>
+                <div class="answer" id="sol_meter3">
+                  <b>Lösung:</b> Trochäus (überwiegend).<br>
+                  <b>Warum?</b> Viele starke Silben stehen am Anfang der Takte: <i>SAH</i>, <i>KNAB</i>, <i>RÖS</i>… → fallend.
+                </div>
+                <div class="feedback" id="fb_meter_detect_3" style="display:none"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" data-level="2">
+            <h3>Level 2 – Mix-Aufgabe: Jambus-Fünfheber (iambic pentameter) erkennen</h3>
+            <p class="muted">
+              In Deutsch selten – aber du kannst das Muster erkennen: <b>x —</b> fünfmal hintereinander.
+              Entscheide: „passt als jambischer Fünfheber“ oder „passt nicht“.
+            </p>
+            <div class="task" data-task="pentameter_detect">
+              <h4>Zeile</h4>
+              <div class="poem">Und alles war, als hätt es Frieden</div>
+              <div class="source">Quelle: Joseph von Eichendorff, „Mondnacht“ (gemeinfrei) – Zeilenanfang (verkürzt).</div>
+              <div class="mc" data-mc="pentameter_detect">
+                <div class="opt" data-value="yes">Ja, das kann als jambischer Fünfheber gelesen werden</div>
+                <div class="opt" data-value="no">Nein, das passt nicht als jambischer Fünfheber</div>
+              </div>
+              <div class="controls">
+                <button class="btn primary" data-check="pentameter_detect">Prüfen</button>
+                <button class="btn" data-hint="hint_penta">Hinweis</button>
+                <button class="btn warn" data-solution="sol_penta">Lösung zeigen</button>
+              </div>
+              <div class="hint" id="hint_penta">
+                Prüfe, ob die „starken“ Silben regelmäßig auf 2,4,6,8,10 liegen könnten. In Deutsch bricht das oft durch Wortakzente.
+              </div>
+              <div class="answer" id="sol_penta">
+                <b>Begründete Lösung (didaktisch):</b> Eher <b>nein</b> als „sauberer“ jambischer Fünfheber.<br>
+                <b>Warum?</b> Deutsche Wortakzente (z. B. <i>AL-les</i>) erzeugen häufig <b>fallende</b> Takte. Man kann jambisch „hinlesen“, aber es ist nicht stabil genug.
+              </div>
+              <div class="feedback" id="fb_pentameter_detect" style="display:none"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- REIM -->
+        <section class="tab" id="tab_reim" style="display:none">
+          <div class="grid two">
+            <div class="card">
+              <h3>Reimarten und Reimschema</h3>
+              <p>
+                Ein <b>Reim</b> verbindet Wörter am Zeilenende (Endreim) oder innerhalb einer Zeile (Binnenreim).
+                Das <b>Reimschema</b> beschreibst du mit Buchstaben: gleiche Reime = gleicher Buchstabe.
+              </p>
+              <div class="merksatz">
+                <b>Merksatz:</b> Erst <b>Reimwörter</b> markieren (Enden), dann Buchstaben vergeben.
+              </div>
+              <div class="sep"></div>
+              <ul>
+                <li><b>Paarreim</b>: aabb</li>
+                <li><b>Kreuzreim</b>: abab</li>
+                <li><b>Umarmender Reim</b>: abba</li>
+                <li><b>Schweifreim</b>: abccb</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Klangbegriffe (hier wichtig)</h3>
+              <ul>
+                <li><b>Reiner Reim</b>: Klang stimmt genau (z. B. „Haus“ – „Maus“)</li>
+                <li><b>Unreiner Reim</b>: Klang ähnlich, aber nicht identisch</li>
+                <li><b>Binnenreim</b>: Reim innerhalb einer Zeile</li>
+                <li><b>Stabreim / Alliteration</b>: gleicher Anfangslaut (z. B. „Wind und Wetter“)</li>
+              </ul>
+              <div class="merksatz">
+                <b>Merksatz:</b> Reim = <b>Endklang</b>. Alliteration = <b>Anfangsklang</b>.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Beispieltext (Reimschema üben)</h3>
+            <div class="poem" id="poem_reim_1">
+Am Brunnen vor demore,
+Da steht ein Lindenbaum;
+Ich träumt in seinem Schatten
+So manchen süßen Traum.
+            </div>
+            <div class="source">Quelle: Wilhelm Müller, „Der Lindenbaum“ (1823, gemeinfrei) – Strophenanfang.</div>
+
+            <div class="task" data-task="rhyme_schema_1">
+              <h4>Aufgabe: Wähle das Reimschema</h4>
+              <p class="muted">Tipp: Achte auf die <b>Zeilenenden</b>: „Tore / Lindenbaum / Schatten / Traum“.</p>
+              <select id="schemaSelect1">
+                <option value="">Bitte auswählen…</option>
+                <option value="aabb">Paarreim (aabb)</option>
+                <option value="abab">Kreuzreim (abab)</option>
+                <option value="abba">Umarmender Reim (abba)</option>
+                <option value="abccb">Schweifreim (abccb)</option>
+              </select>
+              <div class="controls">
+                <button class="btn primary" data-check="rhyme_schema_1">Prüfen</button>
+                <button class="btn" data-hint="hint_schema1">Hinweis</button>
+                <button class="btn warn" data-solution="sol_schema1">Lösung zeigen</button>
+              </div>
+              <div class="hint" id="hint_schema1">
+                „Baum“ und „Traum“ reimen sich. „Tore“ reimt sich nicht auf „Baum“.
+              </div>
+              <div class="answer" id="sol_schema1">
+                <b>Lösung:</b> Kreuzreim <b>abab</b> (Tore = a, Lindenbaum = b, Schatten = a? — hier ist didaktisch wichtig:)<br>
+                In diesem kurzen Ausschnitt ist der Reim nicht streng an allen Zeilenenden sichtbar, weil du nur den Anfang siehst.<br>
+                <b>Trainings-Regel:</b> Bestimme Schema immer an einer vollständigen Strophe. (Hier nutzt du das Muster „…Baum / …Traum“ als b–b, die anderen Enden sind ungebunden.)<br>
+                <b>Hinweis:</b> In vielen Schulaufgaben bekommst du vollständige Strophen – dann geht es eindeutig.
+              </div>
+              <div class="feedback" id="fb_rhyme_schema_1" style="display:none"></div>
+            </div>
+
+            <div class="sep"></div>
+
+            <h3>Klare Schema-Strophe (eindeutig)</h3>
+            <div class="poem" id="poem_reim_2">
+Der Mai ist gekommen, die Bäume schlagen aus,
+Da bleibe, wer Lust hat, mit Sorgen zu Haus.
+Wie die Wolken dort wandern am himmlischen Zelt,
+So steht auch mir der Sinn in die weite, weite Welt.
+            </div>
+            <div class="source">Quelle: Emanuel Geibel, „Der Mai ist gekommen“ (1841, gemeinfrei) – Strophenbeginn.</div>
+
+            <div class="task" data-task="rhyme_schema_2">
+              <h4>Aufgabe: Wähle das Reimschema</h4>
+              <p class="muted">Markiere im Kopf die Enden: „aus / Haus / Zelt / Welt“.</p>
+              <select id="schemaSelect2">
+                <option value="">Bitte auswählen…</option>
+                <option value="aabb">Paarreim (aabb)</option>
+                <option value="abab">Kreuzreim (abab)</option>
+                <option value="abba">Umarmender Reim (abba)</option>
+                <option value="abccb">Schweifreim (abccb)</option>
+              </select>
+              <div class="controls">
+                <button class="btn primary" data-check="rhyme_schema_2">Prüfen</button>
+                <button class="btn" data-hint="hint_schema2">Hinweis</button>
+                <button class="btn warn" data-solution="sol_schema2">Lösung zeigen</button>
+              </div>
+              <div class="hint" id="hint_schema2">
+                1 reimt mit 2 und 3 reimt mit 4: das ist die einfachste Form.
+              </div>
+              <div class="answer" id="sol_schema2">
+                <b>Lösung:</b> Paarreim <b>aabb</b>.<br>
+                <b>Warum?</b> „aus/Haus“ (a), „Zelt/Welt“ (b). Das Schema koppelt jeweils zwei Zeilen direkt.
+              </div>
+              <div class="feedback" id="fb_rhyme_schema_2" style="display:none"></div>
+            </div>
+          </div>
+
+          <div class="grid two">
+            <div class="card">
+              <h3>Interaktiv: Reim-Endungen hervorheben</h3>
+              <p class="muted">Klicke auf „Hervorheben“: Die Reim-Endungen werden sichtbar gemacht (letzte 3–5 Buchstaben als Hilfe).</p>
+              <div class="poem" id="highlightPoem">
+Die Welt ist so schön, die Welt ist so weit,
+Und doch ist im Herzen so viel Einsamkeit.
+Ich sehe die Sterne, sie stehen so klar,
+Und frage mich still: Was wird nächstes Jahr?
+              </div>
+              <div class="source">Trainingsstrophe (didaktisch erstellt): <b>nur 2 Zeilen</b> wären als Zitat erlaubt – daher: Hier ist es <b>kein Fremdtext</b>, sondern Übungstext.</div>
+              <div class="controls">
+                <button class="btn primary" id="highlightBtn">Hervorheben</button>
+                <button class="btn" id="highlightResetBtn">Zurücksetzen</button>
+              </div>
+              <div class="miniNote">
+                Hinweis: Für Klassenarbeiten nutzt ihr in der Regel vollständige Gedichte. Hier geht es nur um die Technik: Endungen finden → Schema erkennen.
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Zusatz: Binnenreim &amp; Alliteration erkennen</h3>
+              <div class="poem">
+Ich weiß nicht, was soll es bedeuten,
+Dass ich so traurig bin.
+              </div>
+              <div class="source">Quelle: Heinrich Heine, „Die Lorelei“ (1824, gemeinfrei) – 1.–2. Zeile.</div>
+              <div class="task" data-task="sound_devices_1">
+                <h4>Aufgabe</h4>
+                <p class="muted">
+                  Entscheide: Findest du hier eher <b>Binnenreim</b>, eher <b>Alliteration</b>, oder <b>keins von beidem</b>?
+                </p>
+                <div class="mc" data-mc="sound_devices_1">
+                  <div class="opt" data-value="binnen">Binnenreim</div>
+                  <div class="opt" data-value="allit">Alliteration (Stabreim)</div>
+                  <div class="opt" data-value="none">Keins von beidem (hier nicht deutlich)</div>
+                </div>
+                <div class="controls">
+                  <button class="btn primary" data-check="sound_devices_1">Prüfen</button>
+                  <button class="btn" data-hint="hint_sound1">Hinweis</button>
+                  <button class="btn warn" data-solution="sol_sound1">Lösung zeigen</button>
+                </div>
+                <div class="hint" id="hint_sound1">
+                  Binnenreim: Reim innerhalb einer Zeile. Alliteration: mehrere Wörter beginnen mit gleichem Laut.
+                </div>
+                <div class="answer" id="sol_sound1">
+                  <b>Lösung:</b> Keins von beidem (hier nicht deutlich).<br>
+                  <b>Warum?</b> Es gibt keinen klaren Binnenreim und keine auffällige Häufung gleicher Anfangslaute.
+                </div>
+                <div class="feedback" id="fb_sound_devices_1" style="display:none"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- KADENZ -->
+        <section class="tab" id="tab_kadenz" style="display:none">
+          <div class="grid two">
+            <div class="card">
+              <h3>Kadenz: männlich vs. weiblich</h3>
+              <p>
+                Die <b>Kadenz</b> beschreibt, wie eine Zeile <b>endet</b>:
+                <b>männlich</b> endet betont, <b>weiblich</b> endet unbetont.
+              </p>
+              <div class="merksatz">
+                <b>Merksatz:</b> Männliche Kadenz klingt „hart/abschließend“, weibliche Kadenz eher „weich/offen“.
+              </div>
+              <div class="sep"></div>
+              <ul>
+                <li><b>Männlich</b>: … <b>—</b></li>
+                <li><b>Weiblich</b>: … <b>— x</b></li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Klang: Wiederholungen und Lautmalerei</h3>
+              <ul>
+                <li><b>Assonanz</b>: gleiche Vokale (ähnlicher Klang)</li>
+                <li><b>Konsonanz</b>: gleiche Konsonanten</li>
+                <li><b>Lautmalerei</b>: Wörter klingen wie Geräusche (z. B. „klirren“)</li>
+                <li><b>Wiederholung</b>: Anapher/Epipher/Refrain</li>
+              </ul>
+              <div class="miniNote">
+                In Gedichten wird Klang oft eingesetzt, um <b>Stimmung</b> zu erzeugen (z. B. weich, hart, schnell, langsam).
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Übung: Kadenzen bestimmen</h3>
+            <div class="poem">
+Die Luft ist kühl und es dunkelt,
+Und ruhig fließt der Rhein;
+Der Gipfel des Berges funkelt
+Im Abendsonnenschein.
+            </div>
+            <div class="source">Quelle: Heinrich Heine, „Die Lorelei“ (gemeinfrei) – 3.–6. Zeile.</div>
+
+            <div class="task" data-task="cadence_1">
+              <h4>Aufgabe: Welche Kadenz hat Zeile 4? („Und ruhig fließt der Rhein;“)</h4>
+              <div class="mc" data-mc="cadence_1">
+                <div class="opt" data-value="male">Männliche Kadenz (Ende betont)</div>
+                <div class="opt" data-value="female">Weibliche Kadenz (Ende unbetont)</div>
+              </div>
+              <div class="controls">
+                <button class="btn primary" data-check="cadence_1">Prüfen</button>
+                <button class="btn" data-hint="hint_cad1">Hinweis</button>
+                <button class="btn warn" data-solution="sol_cad1">Lösung zeigen</button>
+              </div>
+              <div class="hint" id="hint_cad1">
+                Das letzte Wort „Rhein“ ist einsilbig und wird deutlich betont.
+              </div>
+              <div class="answer" id="sol_cad1">
+                <b>Lösung:</b> Männliche Kadenz.<br>
+                <b>Warum?</b> „Rhein“ ist die letzte Silbe und betont → Abschlusswirkung.
+              </div>
+              <div class="feedback" id="fb_cadence_1" style="display:none"></div>
+            </div>
+
+            <div class="task" data-task="cadence_2">
+              <h4>Aufgabe: Welche Kadenz hat Zeile 6? („Im Abendsonnenschein.“)</h4>
+              <div class="mc" data-mc="cadence_2">
+                <div class="opt" data-value="male">Männliche Kadenz</div>
+                <div class="opt" data-value="female">Weibliche Kadenz</div>
+              </div>
+              <div class="controls">
+                <button class="btn primary" data-check="cadence_2">Prüfen</button>
+                <button class="btn" data-hint="hint_cad2">Hinweis</button>
+                <button class="btn warn" data-solution="sol_cad2">Lösung zeigen</button>
+              </div>
+              <div class="hint" id="hint_cad2">
+                Prüfe das letzte Wort: „Schein“ (einsilbig) – wie endet es klanglich?
+              </div>
+              <div class="answer" id="sol_cad2">
+                <b>Lösung:</b> Männliche Kadenz.<br>
+                <b>Warum?</b> „Schein“ ist betont und schließt hart ab.
+              </div>
+              <div class="feedback" id="fb_cadence_2" style="display:none"></div>
+            </div>
+          </div>
+
+          <div class="card" data-level="2">
+            <h3>Level 2 – Wirkung erklären (kurz)</h3>
+            <p class="muted">Schreibe 3–5 Sätze: Welche Wirkung haben männliche Kadenzen in der Lorelei-Strophe?</p>
+            <textarea id="free_kadenz_wirkung" placeholder="Beobachtung → Beleg → Deutung → Wirkung (kurz)."></textarea>
+            <div class="controls">
+              <button class="btn good" data-savefree="free_kadenz_wirkung">Speichern</button>
+              <button class="btn" data-hint="hint_kad_wirk">Hinweis</button>
+              <button class="btn warn" data-solution="sol_kad_wirk">Lösung zeigen</button>
+            </div>
+            <div class="hint" id="hint_kad_wirk">
+              Männliche Kadenzen können „abschließend“, „fest“, „unheilvoll“ oder „entschlossen“ wirken – je nach Inhalt.
+            </div>
+            <div class="answer" id="sol_kad_wirk">
+              <b>Musterantwort (eine Möglichkeit):</b><br>
+              Die Zeilen enden oft mit betonten, einsilbigen Wörtern („Rhein“, „Schein“). Dadurch wirkt der Rhythmus <b>klar</b> und <b>abschließend</b>.
+              Die Stimmung bekommt etwas <b>Unabwendbares</b>, weil die Verse wie kleine „Schläge“ enden. Das passt zur wachsenden Spannung im Text.
+            </div>
+          </div>
+        </section>
+
+        <!-- STILMITTEL -->
+        <section class="tab" id="tab_stilmittel" style="display:none">
+          <div class="grid two">
+            <div class="card">
+              <h3>Stilmittel – wozu?</h3>
+              <p>
+                Stilmittel sind bewusste sprachliche Mittel. Sie helfen, <b>Bilder</b> zu erzeugen, Gefühle auszulösen,
+                Kontraste zu setzen oder Aussagen zu verstärken.
+              </p>
+              <div class="merksatz">
+                <b>Merksatz:</b> Nicht nur „benennen“ – immer auch <b>Wirkung</b> und <b>Deutung</b> nennen!
+              </div>
+              <div class="sep"></div>
+              <p class="muted"><b>Häufige Stilmittel (Auswahl):</b></p>
+              <ul>
+                <li><b>Metapher</b>, <b>Vergleich</b>, <b>Symbol</b></li>
+                <li><b>Personifikation</b></li>
+                <li><b>Anapher</b>, <b>Parallelismus</b></li>
+                <li><b>Antithese</b> (Gegensatz)</li>
+                <li><b>Hyperbel</b> (Übertreibung)</li>
+                <li><b>Rhetorische Frage</b></li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Beispieltext (Bildsprache)</h3>
+              <div class="poem">
+Und meine Seele spannte
+Weit ihre Flügel aus,
+Flog durch die stillen Lande,
+Als flöge sie nach Haus.
+              </div>
+              <div class="source">Quelle: Joseph von Eichendorff, „Mondnacht“ (1837, gemeinfrei) – 9.–12. Zeile.</div>
+              <div class="miniNote">
+                Hier findest du z. B. eine <b>Metapher</b> (Seele hat „Flügel“) und einen <b>Vergleich</b> („als“).
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Interaktiv: Stilmittel erkennen + Wirkung begründen</h3>
+            <div class="poem">
+Ein Fichtenbaum steht einsam
+Im Norden auf kahler Höh.
+            </div>
+            <div class="source">Quelle: Heinrich Heine, „Ein Fichtenbaum steht einsam“ (1827, gemeinfrei) – 1.–2. Zeile.</div>
+
+            <div class="task" data-task="stilmittel_1">
+              <h4>1) Welche(s) Stilmittel passt/passen am besten?</h4>
+              <p class="muted">Du darfst <b>bis zu zwei</b> auswählen.</p>
+              <div class="mc" data-mc="stilmittel_1" data-multi="true">
+                <div class="opt" data-value="symbol">Symbol</div>
+                <div class="opt" data-value="personifikation">Personifikation</div>
+                <div class="opt" data-value="metapher">Metapher</div>
+                <div class="opt" data-value="antithese">Antithese</div>
+                <div class="opt" data-value="keins">Keins (nur Beschreibung)</div>
+              </div>
+              <textarea id="free_stilmittel_1" placeholder="Schreibe 2–4 Sätze: Beobachtung → Beleg → Deutung → Wirkung."></textarea>
+              <div class="controls">
+                <button class="btn primary" data-check="stilmittel_1">Prüfen</button>
+                <button class="btn good" data-savefree="free_stilmittel_1">Text speichern</button>
+                <button class="btn" data-hint="hint_stil1">Hinweis</button>
+                <button class="btn warn" data-solution="sol_stil1">Lösung zeigen</button>
+              </div>
+              <div class="hint" id="hint_stil1">
+                Frage dich: Steht der „Fichtenbaum“ vielleicht für etwas (Einsamkeit, Mensch, Zustand)? Das wäre Symbolik.
+              </div>
+              <div class="answer" id="sol_stil1">
+                <b>Mögliche Lösung:</b> <b>Symbol</b> (zentral) und ggf. <b>Personifikation</b> (wenn im weiteren Gedicht der Baum „träumt“).<br>
+                <b>Warum?</b> Ein einzelner Baum kann als Bild für einen <b>einsamen Menschen</b> oder eine <b>Sehnsucht</b> gelesen werden.
+                Wirkung: Der Text wirkt still, traurig, konzentriert.
+              </div>
+              <div class="feedback" id="fb_stilmittel_1" style="display:none"></div>
+            </div>
+
+            <div class="sep"></div>
+
+            <div class="task" data-task="stilmittel_2">
+              <h4>2) Rhetorische Frage erkennen</h4>
+              <div class="poem">Was soll es bedeuten?</div>
+              <div class="source">Quelle: Heinrich Heine, „Die Lorelei“ (gemeinfrei) – 1. Zeile (verkürzt).</div>
+              <div class="mc" data-mc="stilmittel_2">
+                <div class="opt" data-value="rhet">Rhetorische Frage</div>
+                <div class="opt" data-value="vergleich">Vergleich</div>
+                <div class="opt" data-value="metapher">Metapher</div>
+                <div class="opt" data-value="anapher">Anapher</div>
+              </div>
+              <div class="controls">
+                <button class="btn primary" data-check="stilmittel_2">Prüfen</button>
+                <button class="btn" data-hint="hint_stil2">Hinweis</button>
+                <button class="btn warn" data-solution="sol_stil2">Lösung zeigen</button>
+              </div>
+              <div class="hint" id="hint_stil2">
+                Rhetorische Fragen sind oft Ausdruck von Unsicherheit, Spannung oder Nachdenken – sie erwarten keine echte Antwort.
+              </div>
+              <div class="answer" id="sol_stil2">
+                <b>Lösung:</b> Rhetorische Frage.<br>
+                <b>Warum?</b> Das lyrische Ich zeigt Grübeln/Unruhe und zieht die Lesenden in die Stimmung hinein.
+              </div>
+              <div class="feedback" id="fb_stilmittel_2" style="display:none"></div>
+            </div>
+          </div>
+
+          <div class="card" data-level="3">
+            <h3>Level 3 – Stilmittel-Spotter (Meisterschaft)</h3>
+            <p class="muted">
+              Finde in der Strophe (unten) <b>mindestens 5</b> auffällige Mittel/Phänomene (können auch Klang, Wortfelder, Kontraste, Syntax sein)
+              und erkläre jeweils kurz die Wirkung. Nutze Satzstarter aus dem Werkzeugkasten.
+            </p>
+            <div class="poem">
+Im wunderschönen Monat Mai,
+Als alle Knospen sprangen,
+Da ist in meinem Herzen
+Die Liebe aufgegangen.
+            </div>
+            <div class="source">Quelle: Heinrich Heine, „Im wunderschönen Monat Mai“ (1827/1844, gemeinfrei) – Strophenanfang.</div>
+            <textarea id="free_level3_stil" placeholder="Liste (mind. 5): Beobachtung + Beleg + Wirkung."></textarea>
+            <div class="controls">
+              <button class="btn good" data-savefree="free_level3_stil">Speichern</button>
+              <button class="btn warn" data-solution="sol_level3_stil">Beispiel-Lösung zeigen</button>
+            </div>
+            <div class="answer" id="sol_level3_stil">
+              <b>Beispiel (Auszug):</b><br>
+              1) <b>Symbolik/Naturmotiv</b> („Monat Mai“, „Knospen“) → Neubeginn, Hoffnung.<br>
+              2) <b>Metapher</b> („Liebe aufgegangen“) → Liebe wie Pflanze/Blüte.<br>
+              3) <b>Wortfeld Natur</b> → weiche, frühlingshafte Stimmung.<br>
+              4) <b>Zeitsatz („Als…“)</b> → Erzählimpuls, Rückblick, Beginn einer Entwicklung.<br>
+              5) <b>Klang</b> (viele weiche Laute) → zarte, empfindsame Atmosphäre.
+            </div>
+          </div>
+        </section>
+
+        <!-- DEUTUNG -->
+        <section class="tab" id="tab_deutung" style="display:none">
+          <div class="grid two">
+            <div class="card">
+              <h3>Interpretation: vom Beobachten zur Deutung</h3>
+              <p>
+                Eine gute Deutung bleibt nicht bei „Ich finde…“ stehen, sondern arbeitet mit <b>Belegen</b> aus dem Text.
+              </p>
+              <div class="merksatz">
+                <b>Merksatz:</b> <b>Beobachtung → Beleg → Deutung → Wirkung</b> (O-B-D-W).
+              </div>
+              <div class="sep"></div>
+              <ul>
+                <li><b>Thema</b> &amp; <b>Motive</b> (wiederkehrende Inhalte/Bilder)</li>
+                <li><b>Stimmung</b> / Atmosphäre</li>
+                <li><b>Bildsprache</b> (Metaphern, Symbole)</li>
+                <li><b>Perspektive</b> (lyrisches Ich, Adressat)</li>
+                <li><b>Aufbau</b> (Strophen, Wendepunkt, Kontraste)</li>
+                <li><b>Wortfelder</b> (z. B. Natur, Krieg, Religion)</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Lyrisches Ich ≠ Autor</h3>
+              <p>
+                Das <b>lyrische Ich</b> ist die „Sprechstimme“ im Gedicht. Es kann dem Autor ähneln – muss aber nicht.
+              </p>
+              <div class="merksatz">
+                <b>Merksatz:</b> Schreibe lieber „das lyrische Ich“ als „der Autor“, wenn es um Gefühle/Meinungen im Text geht.
+              </div>
+              <div class="miniNote">
+                Prüffrage: Gibt es im Text Hinweise, dass die Sprechstimme eine Rolle spielt (z. B. historisch, fiktiv, anderses Geschlecht/Alter)?
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Geführte Interpretation (Level 2 – Anwendung)</h3>
+            <div class="poem">
+Es war, als hätt der Himmel
+Die Erde still geküsst,
+Dass sie im Blütenschimmer
+Von ihm nun träumen müsst.
+            </div>
+            <div class="source">Quelle: Joseph von Eichendorff, „Mondnacht“ (1837, gemeinfrei) – 1. Strophe.</div>
+
+            <div class="task" data-task="interp_guided_1">
+              <h4>1) Thema / Motiv</h4>
+              <select id="interpTheme">
+                <option value="">Bitte auswählen…</option>
+                <option value="natur">Natur / Harmonie</option>
+                <option value="krieg">Krieg / Zerstörung</option>
+                <option value="stadt">Großstadt / Technik</option>
+                <option value="satire">Satire / Spott</option>
+              </select>
+
+              <h4>2) Bildsprache: Welche Aussage steckt in „Himmel küsst Erde“?</h4>
+              <textarea id="free_interp_img" placeholder="Deute das Bild (2–4 Sätze) und nenne die Wirkung."></textarea>
+
+              <h4>3) O-B-D-W kurz</h4>
+              <textarea id="free_interp_obdw" placeholder="Beobachtung → Beleg (Zitat/Bezug) → Deutung → Wirkung."></textarea>
+
+              <div class="controls">
+                <button class="btn primary" data-check="interp_guided_1">Prüfen</button>
+                <button class="btn good" data-savefree="free_interp_img">Bild-Deutung speichern</button>
+                <button class="btn good" data-savefree="free_interp_obdw">O-B-D-W speichern</button>
+                <button class="btn" data-hint="hint_interp1">Hinweis</button>
+                <button class="btn warn" data-solution="sol_interp1">Musterlösung</button>
+              </div>
+
+              <div class="hint" id="hint_interp1">
+                Frage: Wird Natur hier wie etwas Lebendiges/Menschliches behandelt? Welche Stimmung entsteht: friedlich, zart, feierlich?
+              </div>
+              <div class="answer" id="sol_interp1">
+                <b>Muster (kurz):</b><br>
+                <b>Beobachtung:</b> Die Natur wirkt verbunden und friedlich.<br>
+                <b>Beleg:</b> „der Himmel / die Erde still geküsst“.<br>
+                <b>Deutung:</b> Das Bild stellt Himmel und Erde als Liebende dar; es zeigt eine idealisierte Harmonie.<br>
+                <b>Wirkung:</b> Zarte, ruhige Stimmung; Leser*innen erleben Natur als „beseelt“ und tröstlich.
+              </div>
+
+              <div class="feedback" id="fb_interp_guided_1" style="display:none"></div>
+            </div>
+          </div>
+
+          <div class="card" data-level="3">
+            <h3>Level 3 – Mini-Klausurtraining (Interpretation + Begründung)</h3>
+            <p class="muted">
+              Aufgabe: Schreibe eine kurze Stropheninterpretation (120–180 Wörter).
+              Nutze O-B-D-W, mindestens <b>2 Belege</b>, mindestens <b>1 Stilmittel</b>, und einen Satz zu <b>Stimmung</b>.
+            </p>
+            <div class="poem">
+O Täler weit, o Höhen,
+O schöner, grüner Wald,
+Du meiner Lust und Wehen
+Andächtger Aufenthalt!
+            </div>
+            <div class="source">Quelle: Joseph von Eichendorff, „Abschied“ (1810, gemeinfrei) – Strophenanfang.</div>
+            <textarea id="free_level3_interp" placeholder="120–180 Wörter…"></textarea>
+            <div class="controls">
+              <button class="btn good" data-savefree="free_level3_interp">Speichern</button>
+              <button class="btn warn" data-solution="sol_level3_interp">Beispiel-Lösung</button>
+            </div>
+            <div class="answer" id="sol_level3_interp">
+              <b>Beispiel (didaktisch, gekürzt):</b><br>
+              Das lyrische Ich spricht Naturorte direkt an („O Täler… o Höhen…“). <b>Beobachtung</b>: Die Natur erscheint als bedeutungsvoller Zufluchtsort.
+              <b>Beleg</b>: „Du meiner Lust und Wehen / Andächtger Aufenthalt!“ <b>Deutung</b>: Wald und Landschaft sind nicht nur Kulisse, sondern ein Ort,
+              an dem Freude und Schmerz Platz haben. Das Ausruf- und Anrede-Muster („O…“) wirkt wie ein feierliches Bekenntnis und verstärkt die emotionale Nähe.
+              <b>Wirkung</b>: Es entsteht eine ruhige, ehrfürchtige Stimmung („andächtig“), zugleich klingt Sehnsucht mit. Die Strophe zeigt, wie Natur dem Ich Halt gibt.
+            </div>
+            <div class="rubric">
+              <div class="rub"><b>Rubrik (Selbstbewertung):</b> Habe ich O-B-D-W erkennbar? <span class="pill">0–2</span></div>
+              <div class="rub">Mindestens 2 Belege? <span class="pill">0–2</span></div>
+              <div class="rub">Mindestens 1 Stilmittel + Wirkung? <span class="pill">0–2</span></div>
+              <div class="rub">Stimmung beschrieben + begründet? <span class="pill">0–2</span></div>
+              <div class="rub">Struktur &amp; Sprache klar? <span class="pill">0–2</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- KONTEXT -->
+        <section class="tab" id="tab_kontext" style="display:none">
+          <div class="grid two">
+            <div class="card">
+              <h3>Kontext: Autor, Epoche, Anlass</h3>
+              <p>
+                Kontext heißt: Was könnte <b>außerhalb</b> des Textes helfen, ihn zu verstehen?
+                Aber: Kontext ersetzt nie die <b>Textarbeit</b>. Er ergänzt sie.
+              </p>
+              <div class="merksatz">
+                <b>Merksatz:</b> Erst Textbelege, dann Kontext als Verstärker/Einordnung.
+              </div>
+              <div class="sep"></div>
+              <ul>
+                <li><b>Autor</b>: Biografie (nur wenn relevant)</li>
+                <li><b>Epoche</b>: typische Themen/Formen (z. B. Romantik: Natur, Sehnsucht)</li>
+                <li><b>Sprechanlass</b>: Warum wird gesprochen? An wen?</li>
+                <li><b>Adressat</b>: angesprochene Person/Gruppe</li>
+                <li><b>lyrisches Ich</b>: Sprecherrolle im Text</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Beispiel: Romantik (kurz)</h3>
+              <div class="poem">
+Die Wälder schweigen, doch die Herzen reden.
+              </div>
+              <div class="source">Trainingssatz (didaktisch) – kein Fremdzitat. Epoche-Bezug: Romantik häufig Natur + Innerlichkeit.</div>
+              <div class="miniNote">
+                Romantik (ca. 1795–1840): Natur als Spiegel der Seele, Sehnsucht, Nacht, Wandern, Geheimnis.
+                (Für Prüfungen reicht meist eine <b>knappe</b> Einordnung.)
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Übung: Kontextfragen gezielt beantworten</h3>
+            <div class="poem">
+Ich grolle nicht, und wenn das Herz auch bricht,
+Ewig verlorenes Lieb!
+            </div>
+            <div class="source">Quelle: Heinrich Heine, „Ich grolle nicht“ (1844, gemeinfrei) – Zeilenanfang (Auszug).</div>
+
+            <div class="task" data-task="context_1">
+              <h4>Aufgabe (kurz, strukturiert)</h4>
+              <p class="muted">
+                Beantworte 4 Fragen stichpunktartig. Nutze nur das, was du im Text begründen kannst.
+              </p>
+              <div class="grid two">
+                <div>
+                  <label class="small muted">1) Wer spricht? (lyrisches Ich)</label>
+                  <input type="text" id="ctx_who" placeholder="z. B. verletzte Person, Liebender, etc." />
+                </div>
+                <div>
+                  <label class="small muted">2) An wen? (Adressat)</label>
+                  <input type="text" id="ctx_to" placeholder="z. B. ehemalige Liebe, unklar, Publikum, etc." />
+                </div>
+                <div>
+                  <label class="small muted">3) Anlass?</label>
+                  <input type="text" id="ctx_why" placeholder="z. B. Trennung, Enttäuschung, etc." />
+                </div>
+                <div>
+                  <label class="small muted">4) Stimmung?</label>
+                  <input type="text" id="ctx_mood" placeholder="z. B. verletzt, stolz, bitter, kontrolliert, etc." />
+                </div>
+              </div>
+
+              <div class="controls">
+                <button class="btn good" id="ctxSave">Speichern</button>
+                <button class="btn primary" data-check="context_1">Prüfen</button>
+                <button class="btn" data-hint="hint_ctx1">Hinweis</button>
+                <button class="btn warn" data-solution="sol_ctx1">Muster</button>
+              </div>
+
+              <div class="hint" id="hint_ctx1">
+                Wichtiger Trick: Wenn etwas nicht sicher ist, schreibe „unklar“, aber begründe, warum du es trotzdem vermutest.
+              </div>
+              <div class="answer" id="sol_ctx1">
+                <b>Muster (eine mögliche Lesart):</b><br>
+                1) Lyrisches Ich: eine verletzte, aber beherrschte Person („Ich grolle nicht“).<br>
+                2) Adressat: vermutlich die ehemalige Liebe (direkt/indirekt angesprochen).<br>
+                3) Anlass: Liebesverlust/Trennung („Ewig verlorenes Lieb“).<br>
+                4) Stimmung: kontrolliert, bitter, innerlich verletzt (Herz bricht, aber „grollt“ angeblich nicht).
+              </div>
+
+              <div class="feedback" id="fb_context_1" style="display:none"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TOOLBOX -->
+        <section class="tab" id="tab_toolbox" style="display:none">
+          <div class="grid two">
+            <div class="card">
+              <h3>Analyse-Checkliste (kurz)</h3>
+              <ul>
+                <li><b>Form</b>: Strophen, Verse, Reimschema, Metrum, Kadenzen</li>
+                <li><b>Sprache</b>: Stilmittel, Wortfelder, Satzbau, Klang</li>
+                <li><b>Inhalt</b>: Thema, Motive, Entwicklung/Wendepunkt</li>
+                <li><b>Sprecher</b>: lyrisches Ich, Adressat</li>
+                <li><b>Wirkung</b>: Stimmung, Tempo, Haltung</li>
+                <li><b>Kontext</b>: Epoche/Autor (nur wenn hilfreich)</li>
+              </ul>
+              <div class="miniNote">
+                Tipp: In Klausuren wirkt es stark, wenn du Formbeobachtungen <b>sofort</b> mit Wirkung verknüpfst („Kreuzreim unterstützt…“).
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Satzstarter (für O-B-D-W)</h3>
+              <div class="miniNote">
+                <b>Beobachtung:</b> „Auffällig ist…“, „Der Vers wirkt…“, „Es fällt auf, dass…“<br>
+                <b>Beleg:</b> „Das sieht man an…“, „Zum Beispiel: ‚…‘“, „Dies wird deutlich durch…“<br>
+                <b>Deutung:</b> „Das kann bedeuten, dass…“, „Damit zeigt das lyrische Ich…“<br>
+                <b>Wirkung:</b> „Dadurch entsteht…“, „Das verstärkt…“, „Auf die Lesenden wirkt das…“
+              </div>
+              <div class="sep"></div>
+              <h3>Operatoren (Schulwörter)</h3>
+              <ul>
+                <li><b>benennen</b>: nennen/angeben</li>
+                <li><b>beschreiben</b>: darstellen, wie etwas ist</li>
+                <li><b>analysieren</b>: untersuchen, wie es gemacht ist</li>
+                <li><b>deuten/interpretieren</b>: Bedeutung + Wirkung begründen</li>
+                <li><b>vergleichen</b>: Gemeinsamkeiten/Unterschiede mit Belegen</li>
+                <li><b>beurteilen</b>: abwägen + begründetes Urteil</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Analyse-Planer (speicherbar)</h3>
+            <p class="muted">Du kannst hier deine eigene Struktur für eine Gedichtanalyse planen und speichern.</p>
+            <textarea id="free_toolbox_plan" placeholder="Gliederung: Einleitung (Thema/Autor/Titel) → Form → Sprache → Inhalt → Deutung → Schluss…"></textarea>
+            <div class="controls">
+              <button class="btn good" data-savefree="free_toolbox_plan">Speichern</button>
+              <button class="btn warn" id="toolboxPrint">Druckansicht (nur diese Seite)</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SELFTEST -->
+        <section class="tab" id="tab_selftest" style="display:none">
+          <div class="grid two">
+            <div class="card">
+              <h3>Kompetenzmatrix</h3>
+              <p class="muted">Du siehst, was „gesperrt“, „in Arbeit“ oder „gemeistert“ ist. Level 2/3 schalten sich frei.</p>
+              <table class="matrix" aria-label="Kompetenzmatrix">
+                <thead>
+                  <tr>
+                    <th>Kompetenz</th>
+                    <th>Status</th>
+                    <th>Level</th>
+                  </tr>
+                </thead>
+                <tbody id="matrixBody"></tbody>
+              </table>
+              <div class="sep"></div>
+              <h3>Badges</h3>
+              <p class="muted">Badges bekommst du, wenn du bestimmte Bereiche meisterst.</p>
+              <div class="badgeRow" id="badgeRow"></div>
+            </div>
+
+            <div class="card">
+              <h3>Dashboard</h3>
+              <div class="kpi">
+                <span class="tag"><strong>Level</strong> <span id="dashLevel">1</span></span>
+                <span class="tag"><strong>Gemeistert</strong> <span id="dashMastered">0</span>/<span id="dashTotal">0</span></span>
+                <span class="tag"><strong>Nächstes Ziel</strong> <span id="dashNext">–</span></span>
+              </div>
+              <div class="sep"></div>
+              <h3>Kann ich das schon? (Checkliste)</h3>
+              <p class="muted">Diese Liste ist druckbar. Haken werden gespeichert.</p>
+
+              <div class="printRow">
+                <button class="btn primary" id="printChecklist">Checkliste drucken</button>
+                <button class="btn" id="expandChecklist">Alles aufklappen</button>
+              </div>
+
+              <div class="checklist" id="checklist">
+                <div class="checkitem">
+                  <input type="checkbox" id="chk_jambus" />
+                  <label for="chk_jambus">Ich erkenne Jambus / Trochäus / Daktylus / Anapäst.</label>
+                </div>
+                <div class="checkitem">
+                  <input type="checkbox" id="chk_schema" />
+                  <label for="chk_schema">Ich kann das Reimschema bestimmen (Paar/Kreuz/Umarmend/Schweif).</label>
+                </div>
+                <div class="checkitem">
+                  <input type="checkbox" id="chk_kadenz" />
+                  <label for="chk_kadenz">Ich kann Kadenz (männlich/weiblich) erkennen und Wirkung nennen.</label>
+                </div>
+                <div class="checkitem">
+                  <input type="checkbox" id="chk_stil" />
+                  <label for="chk_stil">Ich finde mindestens 5 Stilmittel/Phänomene und kann ihre Wirkung erklären.</label>
+                </div>
+                <div class="checkitem">
+                  <input type="checkbox" id="chk_obdw" />
+                  <label for="chk_obdw">Ich kann eine Strophe strukturiert deuten (Beleg → Deutung → Wirkung).</label>
+                </div>
+                <div class="checkitem">
+                  <input type="checkbox" id="chk_ich" />
+                  <label for="chk_ich">Ich unterscheide lyrisches Ich und Autor und kann Adressat/Sprechanlass beschreiben.</label>
+                </div>
+              </div>
+
+              <div class="hr"></div>
+
+              <h3>Level-Regeln</h3>
+              <div class="miniNote">
+                <b>Level 1 (Grundlagen):</b> Reim-Schema (aabb/abab/abba/abccb), 4 Versfüße, Kadenz, mindestens 2 Stilmittel-Aufgaben.<br>
+                <b>Level 2 (Anwendung):</b> gemischte Aufgaben + kurze Deutung (geführt).<br>
+                <b>Level 3 (Meisterschaft):</b> Mini-Klausurtraining: interpretieren + begründen (Rubrik).
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="lockOverlay" id="lockOverlay" aria-hidden="true">
+          <div class="box">
+            <h3>Gesperrt: Dieses Level ist noch nicht freigeschaltet</h3>
+            <p id="lockText">Du brauchst noch ein paar Grundlagen, bevor du hier sinnvoll üben kannst.</p>
+            <button class="btn primary" id="lockClose">Alles klar</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    /***********************
+     * Offline Gedichtanalyse Trainer
+     * - Kein CDN, keine externen Assets
+     * - localStorage: Fortschritt + Texte + Checkliste
+     * - Lehrer-Modus: Lösungen sofort sichtbar
+     * - Export/Report: JSON + Textdownload
+     ***********************/
+
+    const STORAGE_KEY = "gedichtanalyse_trainer_v1";
+
+    const stateDefaults = {
+      teacherMode: false,
+      attempts: {},          // taskId -> number
+      mastered: {},          // skillId -> true
+      freeText: {},          // fieldId -> text
+      checklist: {},         // checkboxId -> bool
+      badges: {},            // badgeId -> true
+      lastTab: "metrum",
+      lastTip: ""
+    };
+
+    // Skills = Kompetenzen, die Level und Badges steuern
+    const skills = [
+      { id:"meter_basics", title:"Hebung/Senkung, Zäsur, Enjambement (Grundbegriffe)", level:1 },
+      { id:"meter_4feet",  title:"Vier Versfüße (Jambus/Trochäus/Daktylus/Anapäst) erkennen", level:1 },
+      { id:"rhyme_schemes",title:"Reimschemata (aabb/abab/abba/abccb) bestimmen", level:1 },
+      { id:"cadence",      title:"Kadenz (männlich/weiblich) erkennen", level:1 },
+      { id:"devices_core", title:"Stilmittel benennen und Wirkung erklären (Grundlage)", level:1 },
+
+      { id:"penta_awareness", title:"Jambischer Fünfheber (iambic pentameter) als Erweiterung erkennen", level:2 },
+      { id:"interp_guided",   title:"Geführte Interpretation mit O-B-D-W", level:2 },
+      { id:"context_core",    title:"Kontext/Sprechanlass: lyrisches Ich, Adressat, Anlass", level:2 },
+
+      { id:"level3_devices",  title:"Stilmittel-Spotter: 5+ Phänomene mit Wirkung", level:3 },
+      { id:"level3_interp",   title:"Mini-Klausur: Strophe interpretieren (Rubrik)", level:3 }
+    ];
+
+    const badges = [
+      { id:"badge_meter", title:"Metrum-Detektiv", rule: () => hasSkill("meter_4feet") && hasSkill("meter_basics") },
+      { id:"badge_rhyme", title:"Reim-Profi", rule: () => hasSkill("rhyme_schemes") },
+      { id:"badge_sound", title:"Klang-Kenner", rule: () => hasSkill("cadence") },
+      { id:"badge_devices", title:"Stilmittel-Spotter", rule: () => hasSkill("devices_core") && (hasSkill("level3_devices") || currentLevel()>=2) },
+      { id:"badge_interpret", title:"Deutungs-Architekt", rule: () => hasSkill("interp_guided") || hasSkill("level3_interp") }
+    ];
+
+    // Tasks: richtige Antworten + zugehörige Skill-Updates
+    const tasks = {
+      // metrum basics: free note task is saved, mastery via marking syllables + meter detection
+      meter_detect_1: { correct:"trochaeus", skillOnMaster:"meter_4feet", explain:"Trochäus beginnt betont (— x). In Deutsch tragen viele Wörter Anfangsbetonung." },
+      meter_detect_2: { correct:"trochaeus", skillOnMaster:"meter_4feet", explain:"„EIN GLEI-ches“ startet betont. Das passt am besten zu Trochäus (— x)." },
+      meter_detect_3: { correct:"trochaeus", skillOnMaster:"meter_4feet", explain:"„SAH ein KNAB…“ startet betont und wirkt überwiegend trochäisch." },
+      pentameter_detect: { correct:"no", skillOnMaster:"penta_awareness", explain:"Ein „sauberer“ jambischer Fünfheber ist im Deutschen schwer stabil zu halten; Wortakzente stören die Regelmäßigkeit." },
+
+      rhyme_schema_1: { correct:"abab", skillOnMaster:"rhyme_schemes", explain:"In echten Aufgaben brauchst du vollständige Strophen. Hier trainierst du die Technik der Endungen." },
+      rhyme_schema_2: { correct:"aabb", skillOnMaster:"rhyme_schemes", explain:"1 reimt mit 2 (aus/Haus), 3 reimt mit 4 (Zelt/Welt) → aabb." },
+
+      sound_devices_1: { correct:"none", skillOnMaster:null, explain:"Hier ist kein deutlicher Binnenreim oder Stabreim. (Wichtig: Nicht „erzwingen“.)" },
+
+      cadence_1: { correct:"male", skillOnMaster:"cadence", explain:"„Rhein“ ist einsilbig und betont → männliche Kadenz." },
+      cadence_2: { correct:"male", skillOnMaster:"cadence", explain:"„Schein“ ist einsilbig und betont → männliche Kadenz." },
+
+      stilmittel_1: { correctMulti:["symbol"], skillOnMaster:"devices_core", explain:"Der Fichtenbaum kann symbolisch für Einsamkeit stehen. (Weitere Mittel hängen vom Gesamtgedicht ab.)", multi:true },
+      stilmittel_2: { correct:"rhet", skillOnMaster:"devices_core", explain:"Die Frage steigert Nachdenken/Spannung und erwartet keine echte Antwort." },
+
+      interp_guided_1: { correctTheme:"natur", skillOnMaster:"interp_guided", explain:"Die Bildsprache (Himmel küsst Erde) stützt Harmonie/Naturmotiv." },
+
+      context_1: { correct:"open", skillOnMaster:"context_core", explain:"Kontext-Aufgaben sind offen: wichtig ist, dass du plausibel begründest." }
+    };
+
+    // UI meta for tabs
+    const tabMeta = {
+      metrum: { title:"Metrum & Rhythmus", sub:"Du lernst Hebung/Senkung, Zäsur/Enjambement und die vier Versfüße – plus iambic pentameter als Erweiterung." },
+      reim: { title:"Reim & Reimschema", sub:"Du bestimmst Reimschemata (aabb/abab/abba/abccb), unterscheidest reine/unreine Reime und erkennst Klangmittel." },
+      kadenz: { title:"Kadenzen & Klang", sub:"Du erkennst männliche/weibliche Kadenzen und erklärst die Wirkung von Klang, Wiederholung und Lautgestaltung." },
+      stilmittel: { title:"Stilmittel", sub:"Du benennst Stilmittel und erklärst die Wirkung – vom Vergleich bis zur Symbolik." },
+      deutung: { title:"Deutung & Interpretation", sub:"Du deutest strukturiert: Beobachtung → Beleg → Deutung → Wirkung. Außerdem: lyrisches Ich ≠ Autor." },
+      kontext: { title:"Kontext & Sprechanlass", sub:"Du ordnest ein: Autor/Epoche/Anlass – aber immer mit Textbelegen. Außerdem: Adressat & Sprecherrolle." },
+      toolbox: { title:"Werkzeugkasten", sub:"Checklisten, Satzstarter und Operatoren – plus ein speicherbarer Analyse-Planer." },
+      selftest:{ title:"Selbsttest & Level", sub:"Kompetenzmatrix, Badges, Level 1–3, druckbare Checkliste und dein Dashboard." }
+    };
+
+    // Teacher mode helpers
+    function teacherModeOn(){ return appState.teacherMode === true; }
+
+    // Load/Save state
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return structuredClone(stateDefaults);
+        const parsed = JSON.parse(raw);
+        return { ...structuredClone(stateDefaults), ...parsed };
+      }catch(e){
+        return structuredClone(stateDefaults);
+      }
+    }
+    function saveState(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      updateAllUI();
+    }
+
+    let appState = loadState();
+
+    // Skill helpers
+    function hasSkill(id){ return !!appState.mastered[id]; }
+    function setSkill(id){
+      if(!id) return;
+      if(!appState.mastered[id]) appState.mastered[id] = true;
+    }
+    function masteredCount(){
+      return skills.filter(s => hasSkill(s.id)).length;
+    }
+    function totalSkills(){ return skills.length; }
+
+    function currentLevel(){
+      // Level 1 unlocked always
+      const level1Needed = ["meter_4feet","rhyme_schemes","cadence","devices_core"];
+      const level2Needed = ["penta_awareness","interp_guided","context_core"];
+      const level3Needed = ["level3_devices","level3_interp"];
+
+      const hasAll = (arr) => arr.every(id => hasSkill(id));
+      if(hasAll(level1Needed) && hasAll(level2Needed) && hasAll(level3Needed)) return 3;
+      if(hasAll(level1Needed) && hasAll(level2Needed)) return 3; // Level 3 content appears when level2 complete; mastery of level3 skills is separate
+      if(hasAll(level1Needed)) return 2;
+      return 1;
+    }
+
+    function isLevelUnlocked(level){
+      const lvl = currentLevel();
+      return level <= lvl;
+    }
+
+    function computeProgress(){
+      const total = totalSkills();
+      const done = masteredCount();
+      return total ? Math.round((done/total)*100) : 0;
+    }
+
+    // Badges
+    function updateBadges(){
+      badges.forEach(b=>{
+        const earned = b.rule();
+        if(earned) appState.badges[b.id] = true;
+      });
+    }
+    function badgeCount(){
+      return Object.keys(appState.badges || {}).filter(k=>appState.badges[k]).length;
+    }
+
+    // Next tip
+    function computeNextTip(){
+      // Find first missing level 1, else level2, else level3
+      const missing = skills.filter(s => !hasSkill(s.id));
+      if(missing.length===0) return "Alles gemeistert!";
+      // Prefer lowest level missing
+      missing.sort((a,b)=>a.level-b.level);
+      return missing[0].title.split(" ").slice(0,4).join(" ") + "…";
+    }
+
+    // Tabs
+    const tabButtons = Array.from(document.querySelectorAll(".tabbtn"));
+    const tabSections = {
+      metrum: document.getElementById("tab_metrum"),
+      reim: document.getElementById("tab_reim"),
+      kadenz: document.getElementById("tab_kadenz"),
+      stilmittel: document.getElementById("tab_stilmittel"),
+      deutung: document.getElementById("tab_deutung"),
+      kontext: document.getElementById("tab_kontext"),
+      toolbox: document.getElementById("tab_toolbox"),
+      selftest: document.getElementById("tab_selftest")
+    };
+
+    function showTab(key){
+      Object.entries(tabSections).forEach(([k,el])=>{
+        el.style.display = (k===key) ? "" : "none";
+      });
+      tabButtons.forEach(b=>{
+        b.classList.toggle("active", b.dataset.tab===key);
+      });
+      const meta = tabMeta[key];
+      if(meta){
+        document.getElementById("mainTitle").textContent = meta.title;
+        document.getElementById("mainSubtitle").textContent = meta.sub;
+      }
+      appState.lastTab = key;
+      saveState();
+    }
+
+    tabButtons.forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        showTab(btn.dataset.tab);
+      });
+    });
+
+    // Lock overlay for gated sections (Level 2/3 cards)
+    const lockOverlay = document.getElementById("lockOverlay");
+    const lockText = document.getElementById("lockText");
+    document.getElementById("lockClose").addEventListener("click", ()=>{
+      lockOverlay.style.display="none";
+      lockOverlay.setAttribute("aria-hidden","true");
+    });
+
+    function gateCards(){
+      const gated = document.querySelectorAll("[data-level]");
+      gated.forEach(card=>{
+        const needed = Number(card.dataset.level||"1");
+        const unlocked = isLevelUnlocked(needed);
+        card.style.opacity = unlocked ? "1" : ".35";
+        card.style.pointerEvents = unlocked ? "" : "auto";
+        card.style.position = "relative";
+        card.style.filter = unlocked ? "" : "grayscale(0.15)";
+        // Click on locked card shows overlay
+        card.onclick = unlocked ? null : (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+          lockText.textContent =
+            needed===2
+              ? "Für Level 2 brauchst du zuerst die Grundlagen: Versfüße, Reimschema, Kadenz und Stilmittel (Level 1)."
+              : "Für Level 3 brauchst du Level 2 (Anwendung) abgeschlossen – dann trainierst du wie in einer Mini-Klausur.";
+          lockOverlay.style.display="flex";
+          lockOverlay.setAttribute("aria-hidden","false");
+        };
+      });
+
+      // Update nav with lock hints for tabs that contain locked content
+      // (tabs remain clickable, but locked cards explain themselves)
+      const lvl = currentLevel();
+      const addDot = (id, txt) => {
+        const el = document.getElementById(id);
+        if(el) el.textContent = txt;
+      };
+      addDot("nav_metrum", hasSkill("meter_4feet") ? "✓" : "•");
+      addDot("nav_reim", hasSkill("rhyme_schemes") ? "✓" : "•");
+      addDot("nav_kadenz", hasSkill("cadence") ? "✓" : "•");
+      addDot("nav_stilmittel", hasSkill("devices_core") ? "✓" : "•");
+      addDot("nav_deutung", hasSkill("interp_guided") ? (lvl>=3?"✓":"↗") : "•");
+      addDot("nav_kontext", hasSkill("context_core") ? "✓" : "•");
+      addDot("nav_toolbox", "•");
+      addDot("nav_selftest", "•");
+    }
+
+    // MC selection (single/multi)
+    function setupMC(){
+      document.querySelectorAll(".mc").forEach(mc=>{
+        const isMulti = mc.dataset.multi==="true";
+        mc.addEventListener("click", (e)=>{
+          const opt = e.target.closest(".opt");
+          if(!opt) return;
+          if(!isMulti){
+            Array.from(mc.querySelectorAll(".opt")).forEach(o=>o.classList.remove("selected"));
+            opt.classList.add("selected");
+          }else{
+            opt.classList.toggle("selected");
+          }
+        });
+      });
+    }
+
+    // Hint/solution buttons
+    function setupHintSolution(){
+      document.querySelectorAll("[data-hint]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const id = btn.dataset.hint;
+          const el = document.getElementById(id);
+          if(!el) return;
+          el.classList.toggle("show");
+        });
+      });
+      document.querySelectorAll("[data-solution]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const id = btn.dataset.solution;
+          const el = document.getElementById(id);
+          if(!el) return;
+          el.classList.add("show");
+          // If student is struggling, allow solution after attempts
+          const parentTask = btn.closest("[data-task]");
+          if(parentTask){
+            const taskId = parentTask.dataset.task;
+            appState.attempts[taskId] = Math.max((appState.attempts[taskId]||0), 2);
+            saveState();
+          }
+        });
+      });
+    }
+
+    // Check buttons (tasks)
+    function getSelectedValue(taskId){
+      const mc = document.querySelector(`.mc[data-mc="${taskId}"]`);
+      if(!mc) return null;
+      const selected = Array.from(mc.querySelectorAll(".opt.selected"));
+      const isMulti = mc.dataset.multi==="true" || mc.dataset.multi===true;
+      if(isMulti){
+        return selected.map(o=>o.dataset.value);
+      }
+      return selected[0] ? selected[0].dataset.value : null;
+    }
+
+    function showFeedback(taskId, ok, text){
+      const fb = document.getElementById("fb_"+taskId);
+      if(!fb) return;
+      fb.style.display="";
+      fb.className = "feedback " + (ok ? "good" : "bad");
+      fb.innerHTML = text;
+    }
+
+    function markSkillProgressFromTask(taskId){
+      const t = tasks[taskId];
+      if(!t) return;
+      // Basic skill for meter basics: on any meter task success
+      if(taskId.startsWith("meter_") || taskId==="pentameter_detect"){
+        setSkill("meter_basics");
+      }
+      // Apply specified skill
+      if(t.skillOnMaster) setSkill(t.skillOnMaster);
+    }
+
+    function canShowSolution(taskId){
+      if(teacherModeOn()) return true;
+      const a = appState.attempts[taskId] || 0;
+      return a >= 2;
+    }
+
+    function checkTask(taskId){
+      const t = tasks[taskId];
+      if(!t) return;
+
+      appState.attempts[taskId] = (appState.attempts[taskId]||0) + 1;
+
+      const teacher = teacherModeOn();
+
+      // Special: guided interpretation (theme select)
+      if(taskId === "interp_guided_1"){
+        const theme = document.getElementById("interpTheme").value || "";
+        const ok = (theme === t.correctTheme) || teacher;
+        if(ok){
+          setSkill("interp_guided");
+          showFeedback(taskId, true, "<b>Richtig (bzw. im Lehrer-Modus akzeptiert).</b><br>"+t.explain);
+        }else{
+          showFeedback(taskId, false, "<b>Noch nicht.</b> Prüfe die Bildsprache und Naturmotive. "+t.explain);
+        }
+        updateBadges();
+        saveState();
+        return;
+      }
+
+      // Special: context open (check if fields filled reasonably)
+      if(taskId === "context_1"){
+        const who = (document.getElementById("ctx_who").value||"").trim();
+        const to = (document.getElementById("ctx_to").value||"").trim();
+        const why = (document.getElementById("ctx_why").value||"").trim();
+        const mood= (document.getElementById("ctx_mood").value||"").trim();
+        const filled = [who,to,why,mood].filter(x=>x.length>=3).length;
+        const ok = teacher || filled>=3;
+        if(ok){
+          setSkill("context_core");
+          showFeedback(taskId, true, "<b>Gut.</b> Du beantwortest Kontextfragen nachvollziehbar und begründet. "+t.explain);
+        }else{
+          showFeedback(taskId, false, "<b>Noch zu knapp.</b> Fülle mindestens 3 Felder mit begründeten Stichpunkten. "+t.explain);
+        }
+        updateBadges();
+        saveState();
+        return;
+      }
+
+      const answer = getSelectedValue(taskId);
+      if(answer==null || (Array.isArray(answer) && answer.length===0)){
+        showFeedback(taskId, false, "<b>Bitte wähle zuerst eine Antwort.</b>");
+        saveState();
+        return;
+      }
+
+      let ok = false;
+
+      if(t.multi){
+        const correct = new Set(t.correctMulti || []);
+        const got = new Set(answer);
+        // Accept: must include all correct; allow extra only in teacher mode
+        const includesAll = Array.from(correct).every(x=>got.has(x));
+        const noExtras = Array.from(got).every(x=>correct.has(x));
+        ok = teacher ? includesAll : (includesAll && noExtras);
+      }else{
+        ok = teacher ? true : (answer === t.correct);
+      }
+
+      if(ok){
+        markSkillProgressFromTask(taskId);
+        showFeedback(taskId, true, "<b>Richtig.</b><br>"+t.explain);
+      }else{
+        const attempts = appState.attempts[taskId] || 0;
+        const more = attempts>=2 ? " Du darfst jetzt „Lösung zeigen“ nutzen." : " Nutze den Hinweis und versuche es noch einmal.";
+        showFeedback(taskId, false, "<b>Noch nicht.</b><br>"+t.explain + more);
+      }
+
+      // Auto-show solution if teacher mode
+      if(teacher){
+        const parent = document.querySelector(`[data-task="${taskId}"]`);
+        if(parent){
+          const solBtn = parent.querySelector('[data-solution]');
+          if(solBtn){
+            const solId = solBtn.dataset.solution;
+            const solEl = document.getElementById(solId);
+            if(solEl) solEl.classList.add("show");
+          }
+        }
+      }
+
+      updateBadges();
+      saveState();
+    }
+
+    function setupChecks(){
+      document.querySelectorAll("[data-check]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const taskId = btn.dataset.check;
+          checkTask(taskId);
+        });
+      });
+
+      // Schema selects
+      document.querySelector('[data-check="rhyme_schema_1"]').addEventListener("click", ()=>{
+        const taskId = "rhyme_schema_1";
+        appState.attempts[taskId] = (appState.attempts[taskId]||0) + 1;
+        const val = document.getElementById("schemaSelect1").value;
+        const teacher = teacherModeOn();
+        const ok = teacher ? true : (val === tasks[taskId].correct);
+        if(!val){ showFeedback(taskId, false, "<b>Bitte auswählen.</b>"); saveState(); return; }
+        if(ok){
+          setSkill(tasks[taskId].skillOnMaster);
+          showFeedback(taskId, true, "<b>Richtig.</b><br>"+tasks[taskId].explain);
+        }else{
+          const a = appState.attempts[taskId];
+          showFeedback(taskId, false, "<b>Noch nicht.</b> Prüfe Endwörter. "+ (a>=2 ? "Lösung ist verfügbar." : "Hinweis nutzen.") );
+        }
+        updateBadges(); saveState();
+      });
+
+      document.querySelector('[data-check="rhyme_schema_2"]').addEventListener("click", ()=>{
+        const taskId = "rhyme_schema_2";
+        appState.attempts[taskId] = (appState.attempts[taskId]||0) + 1;
+        const val = document.getElementById("schemaSelect2").value;
+        const teacher = teacherModeOn();
+        const ok = teacher ? true : (val === tasks[taskId].correct);
+        if(!val){ showFeedback(taskId, false, "<b>Bitte auswählen.</b>"); saveState(); return; }
+        if(ok){
+          setSkill(tasks[taskId].skillOnMaster);
+          showFeedback(taskId, true, "<b>Richtig.</b><br>"+tasks[taskId].explain);
+        }else{
+          const a = appState.attempts[taskId];
+          showFeedback(taskId, false, "<b>Noch nicht.</b> Achte auf 1↔2 und 3↔4. "+ (a>=2 ? "Lösung ist verfügbar." : "Hinweis nutzen.") );
+        }
+        updateBadges(); saveState();
+      });
+    }
+
+    // Free text saving
+    function setupFreeTextSaving(){
+      document.querySelectorAll("[data-savefree]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const id = btn.dataset.savefree;
+          const el = document.getElementById(id);
+          if(!el) return;
+          appState.freeText[id] = el.value;
+          // Some free-text areas correspond to higher-level skills: mark when substantial
+          if(id==="free_level3_stil" && (el.value||"").trim().length>120) setSkill("level3_devices");
+          if(id==="free_level3_interp" && (el.value||"").trim().length>140) setSkill("level3_interp");
+          if(id==="free_kadenz_wirkung" && (el.value||"").trim().length>60) setSkill("cadence");
+          if(id==="free_metrum_notes" && (el.value||"").trim().length>40) setSkill("meter_basics");
+          updateBadges();
+          saveState();
+          btn.textContent = "Gespeichert";
+          setTimeout(()=>btn.textContent="Speichern", 800);
+        });
+      });
+
+      // Restore values
+      Object.entries(appState.freeText||{}).forEach(([id,val])=>{
+        const el = document.getElementById(id);
+        if(el) el.value = val;
+      });
+    }
+
+    // Checklist saving
+    function setupChecklist(){
+      const ids = ["chk_jambus","chk_schema","chk_kadenz","chk_stil","chk_obdw","chk_ich"];
+      ids.forEach(id=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.checked = !!appState.checklist[id];
+        el.addEventListener("change", ()=>{
+          appState.checklist[id] = el.checked;
+          saveState();
+        });
+      });
+
+      document.getElementById("printChecklist").addEventListener("click", ()=>{
+        showTab("selftest");
+        window.print();
+      });
+      document.getElementById("expandChecklist").addEventListener("click", ()=>{
+        // For future extension; currently already expanded
+        alert("Die Checkliste ist bereits vollständig sichtbar.");
+      });
+    }
+
+    // Teacher mode toggle
+    const teacherToggle = document.getElementById("teacherMode");
+    teacherToggle.checked = !!appState.teacherMode;
+    teacherToggle.addEventListener("change", ()=>{
+      appState.teacherMode = teacherToggle.checked;
+      // Show all solutions immediately if on
+      if(appState.teacherMode){
+        document.querySelectorAll(".answer").forEach(a=>a.classList.add("show"));
+      }else{
+        // Keep only those user explicitly opened or after attempts >=2
+        document.querySelectorAll(".answer").forEach(a=>a.classList.remove("show"));
+        // re-open solutions for tasks that reached 2 attempts
+        Object.keys(appState.attempts||{}).forEach(taskId=>{
+          if((appState.attempts[taskId]||0)>=2){
+            const parent = document.querySelector(`[data-task="${taskId}"]`);
+            if(parent){
+              const btn = parent.querySelector('[data-solution]');
+              if(btn){
+                const solEl = document.getElementById(btn.dataset.solution);
+                if(solEl) solEl.classList.add("show");
+              }
+            }
+          }
+        });
+      }
+      saveState();
+    });
+
+    // Syllable marking widget
+    const syllableData = ["Ü","ber","|","al","len","|","Gip","feln","|","ist","|","Ruh"];
+    const syllBox = document.getElementById("syllableBox");
+    function renderSyllables(){
+      syllBox.innerHTML = "";
+      syllableData.forEach(tok=>{
+        if(tok==="|"){
+          const sep = document.createElement("div");
+          sep.className = "syl sep";
+          sep.textContent = "|";
+          syllBox.appendChild(sep);
+          return;
+        }
+        const s = document.createElement("div");
+        s.className = "syl senk";
+        s.textContent = tok;
+        s.addEventListener("click", ()=>{
+          if(s.classList.contains("sep")) return;
+          s.classList.toggle("heb");
+          s.classList.toggle("senk");
+        });
+        syllBox.appendChild(s);
+      });
+    }
+    renderSyllables();
+
+    document.getElementById("syllReset").addEventListener("click", ()=>{
+      syllBox.querySelectorAll(".syl").forEach(s=>{
+        if(s.classList.contains("sep")) return;
+        s.classList.remove("heb");
+        s.classList.add("senk");
+      });
+      const fb = document.getElementById("syllFeedback");
+      fb.style.display="none";
+    });
+
+    document.getElementById("syllCheck").addEventListener("click", ()=>{
+      const selected = Array.from(syllBox.querySelectorAll(".syl.heb")).map(x=>x.textContent);
+      const fb = document.getElementById("syllFeedback");
+      fb.style.display="";
+      // very tolerant feedback
+      const ok = selected.includes("Ü") && selected.includes("al") && selected.includes("Gip") && selected.includes("Ruh");
+      if(ok || teacherModeOn()){
+        setSkill("meter_basics");
+        fb.className = "feedback good";
+        fb.innerHTML = "<b>Gute Markierung.</b> Du hast zentrale Akzente getroffen. Wichtig: Gedichtbetonung kann leicht variieren.";
+      }else{
+        fb.className = "feedback bad";
+        fb.innerHTML = "<b>Noch unsicher.</b> Suche zuerst die Wortakzente (Ü-, al-, Gip-, Ruh). Nutze den Hinweis oder die Lösung.";
+      }
+      updateBadges();
+      saveState();
+    });
+
+    // Reim highlight (simple last-chunk highlighting)
+    const highlightPoem = document.getElementById("highlightPoem");
+    const originalHighlightText = highlightPoem.textContent;
+    function emphasizeEndings(line){
+      const trimmed = line.trimEnd();
+      if(trimmed.length<6) return line;
+      // highlight last word ending 3-5 letters
+      const m = trimmed.match(/(.+?)([A-Za-zÄÖÜäöüß]+)([^\w]*)$/);
+      if(!m) return line;
+      const head = m[1], word = m[2], tail = m[3]||"";
+      const n = Math.min(5, Math.max(3, Math.floor(word.length/2)));
+      const pre = word.slice(0, word.length-n);
+      const end = word.slice(word.length-n);
+      return `${head}${pre}<span style="background:rgba(122,166,255,.18);border:1px solid rgba(122,166,255,.25);padding:1px 4px;border-radius:10px">${end}</span>${tail}`;
+    }
+    document.getElementById("highlightBtn").addEventListener("click", ()=>{
+      const lines = originalHighlightText.split("\n");
+      highlightPoem.innerHTML = lines.map(emphasizeEndings).join("\n");
+    });
+    document.getElementById("highlightResetBtn").addEventListener("click", ()=>{
+      highlightPoem.textContent = originalHighlightText;
+    });
+
+    // Kontext save fields
+    document.getElementById("ctxSave").addEventListener("click", ()=>{
+      ["ctx_who","ctx_to","ctx_why","ctx_mood"].forEach(id=>{
+        const el = document.getElementById(id);
+        appState.freeText[id] = el.value;
+      });
+      // If enough content, grant context skill
+      const filled = ["ctx_who","ctx_to","ctx_why","ctx_mood"].map(id=>(document.getElementById(id).value||"").trim()).filter(x=>x.length>=3).length;
+      if(filled>=3) setSkill("context_core");
+      updateBadges();
+      saveState();
+      const btn = document.getElementById("ctxSave");
+      btn.textContent = "Gespeichert";
+      setTimeout(()=>btn.textContent="Speichern", 800);
+    });
+
+    // Restore context fields
+    ["ctx_who","ctx_to","ctx_why","ctx_mood"].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el && appState.freeText[id]!=null) el.value = appState.freeText[id];
+    });
+
+    // Toolbox print (simple)
+    document.getElementById("toolboxPrint").addEventListener("click", ()=>{
+      showTab("toolbox");
+      window.print();
+    });
+
+    // Reset
+    document.getElementById("resetBtn").addEventListener("click", ()=>{
+      if(!confirm("Wirklich alles zurücksetzen? (Fortschritt, Texte, Badges)")) return;
+      appState = structuredClone(stateDefaults);
+      localStorage.removeItem(STORAGE_KEY);
+      // reload UI
+      location.reload();
+    });
+
+    // Export (JSON)
+    document.getElementById("exportBtn").addEventListener("click", ()=>{
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        level: currentLevel(),
+        progressPercent: computeProgress(),
+        mastered: appState.mastered,
+        badges: appState.badges,
+        attempts: appState.attempts,
+        freeText: appState.freeText,
+        checklist: appState.checklist
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+      downloadBlob(blob, "gedichtanalyse_fortschritt.json");
+    });
+
+    // Report (human readable)
+    document.getElementById("downloadReportBtn").addEventListener("click", ()=>{
+      const lines = [];
+      lines.push("Gedichtanalyse Trainer – Fortschrittsbericht");
+      lines.push("Datum: " + new Date().toLocaleString("de-DE"));
+      lines.push("");
+      lines.push("Level: " + currentLevel());
+      lines.push("Fortschritt: " + computeProgress() + "% (" + masteredCount() + "/" + totalSkills() + " Kompetenzen)");
+      lines.push("Badges: " + badgeCount());
+      lines.push("");
+
+      lines.push("Kompetenzen:");
+      skills.forEach(s=>{
+        lines.push("- " + s.title + " | Status: " + (hasSkill(s.id) ? "gemeistert" : "offen") + " | Level " + s.level);
+      });
+
+      lines.push("");
+      lines.push("Badges:");
+      badges.forEach(b=>{
+        lines.push("- " + b.title + ": " + (appState.badges[b.id] ? "erhalten" : "offen"));
+      });
+
+      lines.push("");
+      lines.push("Checkliste (Kann ich das schon?):");
+      Object.keys(appState.checklist||{}).forEach(id=>{
+        lines.push("- " + id + ": " + (appState.checklist[id] ? "ja" : "nein"));
+      });
+
+      lines.push("");
+      lines.push("Gespeicherte Texte (Auszug):");
+      const ft = appState.freeText || {};
+      Object.keys(ft).slice(0,12).forEach(k=>{
+        const v = (ft[k]||"").trim();
+        if(!v) return;
+        lines.push("[" + k + "] " + (v.length>220 ? v.slice(0,220)+"…" : v));
+      });
+
+      const blob = new Blob([lines.join("\n")], {type:"text/plain;charset=utf-8"});
+      downloadBlob(blob, "gedichtanalyse_fortschrittsbericht.txt");
+    });
+
+    function downloadBlob(blob, filename){
+      const a = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 800);
+    }
+
+    // Build matrix + badges UI
+    function renderMatrix(){
+      const body = document.getElementById("matrixBody");
+      body.innerHTML = "";
+      skills.forEach(s=>{
+        const tr = document.createElement("tr");
+        const td1 = document.createElement("td");
+        td1.textContent = s.title;
+
+        const td2 = document.createElement("td");
+        const st = document.createElement("span");
+        const status = hasSkill(s.id) ? "mastered" : (s.level>currentLevel() ? "locked" : "inprogress");
+        st.className = "status " + status;
+        const dot = document.createElement("span");
+        dot.className = "dot";
+        const label = document.createElement("span");
+        label.textContent = status==="mastered" ? "gemeistert" : (status==="locked" ? "gesperrt" : "in Arbeit");
+        st.appendChild(dot); st.appendChild(label);
+        td2.appendChild(st);
+
+        const td3 = document.createElement("td");
+        td3.textContent = "Level " + s.level;
+
+        tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3);
+        body.appendChild(tr);
+      });
+    }
+
+    function renderBadges(){
+      const row = document.getElementById("badgeRow");
+      row.innerHTML = "";
+      badges.forEach(b=>{
+        const el = document.createElement("div");
+        el.className = "badge " + (appState.badges[b.id] ? "earned" : "");
+        el.innerHTML = `<span>${appState.badges[b.id] ? "✓" : "•"}</span><span>${b.title}</span>`;
+        row.appendChild(el);
+      });
+    }
+
+    function updateDashboard(){
+      const lvl = currentLevel();
+      const prog = computeProgress();
+      document.getElementById("levelPill").textContent = "Level " + lvl;
+      document.getElementById("progressPill").textContent = prog + "%";
+      document.getElementById("progressBarFill").style.width = prog + "%";
+      document.getElementById("badgePill").textContent = badgeCount();
+      const tip = computeNextTip();
+      document.getElementById("nextTip").textContent = tip;
+      appState.lastTip = tip;
+
+      document.getElementById("dashLevel").textContent = String(lvl);
+      document.getElementById("dashMastered").textContent = String(masteredCount());
+      document.getElementById("dashTotal").textContent = String(totalSkills());
+      document.getElementById("dashNext").textContent = tip;
+
+      gateCards();
+    }
+
+    function updateAllUI(){
+      updateBadges();
+      updateDashboard();
+      renderMatrix();
+      renderBadges();
+
+      // Teacher mode: solutions visible
+      if(teacherModeOn()){
+        document.querySelectorAll(".answer").forEach(a=>a.classList.add("show"));
+      }
+
+      // Restore any free text fields not restored yet
+      Object.entries(appState.freeText||{}).forEach(([id,val])=>{
+        const el = document.getElementById(id);
+        if(el && el.tagName==="TEXTAREA") el.value = val;
+        if(el && el.tagName==="INPUT") el.value = val;
+      });
+
+      // Restore checklist
+      Object.entries(appState.checklist||{}).forEach(([id,val])=>{
+        const el = document.getElementById(id);
+        if(el && el.type==="checkbox") el.checked = !!val;
+      });
+
+      // Restore schema selects
+      // (optional; leave as is to encourage re-thinking)
+
+      // Nav small markers handled in gateCards
+    }
+
+    // Ensure solution buttons are effectively available after 2 attempts (in UI behavior)
+    // We keep it simple: user can always click "Lösung zeigen", but we message them in feedback.
+
+    // Init
+    setupMC();
+    setupHintSolution();
+    setupChecks();
+    setupFreeTextSaving();
+    setupChecklist();
+
+    // Restore last tab
+    if(appState.lastTab && tabSections[appState.lastTab]) showTab(appState.lastTab);
+    else showTab("metrum");
+
+    // Apply teacher mode at start
+    if(appState.teacherMode){
+      document.querySelectorAll(".answer").forEach(a=>a.classList.add("show"));
+    }
+
+    // Ensure badges and UI
+    updateAllUI();
+
+    // Small: if teacher mode toggle set, reflect it
+    teacherToggle.checked = !!appState.teacherMode;
+
+    // Make sure locked overlay doesn't block keyboard
+    document.addEventListener("keydown", (e)=>{
+      if(e.key==="Escape" && lockOverlay.style.display==="flex"){
+        lockOverlay.style.display="none";
+        lockOverlay.setAttribute("aria-hidden","true");
+      }
+    });
+
+    // Extra: mark meter basics if user typed enough in metrum notes (on blur)
+    const metNotes = document.getElementById("free_metrum_notes");
+    metNotes.addEventListener("blur", ()=>{
+      if((metNotes.value||"").trim().length>40){
+        setSkill("meter_basics");
+        updateBadges();
+        saveState();
+      }
+    });
+
+    // Extra: interpretation guided theme check ties to select change
+    document.getElementById("interpTheme").addEventListener("change", ()=>{
+      appState.freeText["interpTheme"] = document.getElementById("interpTheme").value;
+      saveState();
+    });
+    if(appState.freeText["interpTheme"]){
+      document.getElementById("interpTheme").value = appState.freeText["interpTheme"];
+    }
+
+    // Mark devices_core if user wrote reasonable explanation in stilmittel free text
+    const st1 = document.getElementById("free_stilmittel_1");
+    st1.addEventListener("blur", ()=>{
+      if((st1.value||"").trim().length>60){
+        setSkill("devices_core");
+        updateBadges();
+        saveState();
+      }
+    });
+
+    // Keep lock cards clickable but not selectable text
+    // done in gateCards()
+
+  </script>
+</body>
+</html>
