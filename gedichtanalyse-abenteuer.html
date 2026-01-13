@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gedichtanalyse-Abenteuer | Klasse 6-8</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Space+Mono:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg-light: #fef3c7;
+            --text-dark: #1e293b;
+            --shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .progress-bar-container {
+            background: rgba(255,255,255,0.2);
+            height: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success) 0%, var(--secondary) 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .badge-display {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.9);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: var(--text-dark);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .content {
+            padding: 30px;
+            min-height: 400px;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-family: 'Fredoka', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        button:hover:not(.btn-disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .grade-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .grade-card {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .grade-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .grade-card h3 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .world-map {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .world-card {
+            background: white;
+            border: 3px solid #e0e0e0;
+            border-radius: 20px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .world-card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #f5f5f5;
+        }
+
+        .world-card.completed {
+            border-color: var(--success);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+        }
+
+        .world-card:hover:not(.locked) {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary);
+        }
+
+        .world-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .world-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .world-progress {
+            display: flex;
+            gap: 5px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.completed {
+            background: var(--success);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+
+        .lesson-content {
+            background: var(--bg-light);
+            padding: 25px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .lesson-content h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .example-box {
+            background: white;
+            padding: 20px;
+            border-left: 4px solid var(--primary);
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .poem-text {
+            font-family: 'Space Mono', monospace;
+            line-height: 1.8;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 8px;
+        }
+
+        .poem-citation {
+            text-align: right;
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .activity {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .activity-question {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .answer-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .answer-option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            background: white;
+        }
+
+        .answer-option:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .answer-option.selected {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.2);
+            font-weight: bold;
+        }
+
+        .answer-option.correct {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .answer-option.incorrect {
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .feedback {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            animation: slideIn 0.3s ease;
+        }
+
+        .feedback.success {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success);
+            color: var(--success);
+        }
+
+        .feedback.error {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--danger);
+            color: var(--danger);
+        }
+
+        .feedback.hint {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--secondary);
+            color: #d97706;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .score-display {
+            display: flex;
+            justify-content: space-around;
+            background: var(--bg-light);
+            padding: 15px 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-weight: bold;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .score-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1em;
+        }
+
+        .file-controls {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .file-controls h3 {
+            margin-bottom: 15px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-label {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin: 5px;
+        }
+
+        .file-upload-label:hover {
+            background: #4f46e5;
+            transform: translateY(-2px);
+        }
+
+        .admin-panel {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            padding: 20px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .admin-panel h3 {
+            color: #92400e;
+            margin-bottom: 15px;
+        }
+
+        .syllable-box {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+            font-size: 1.1em;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .syllable-box:hover {
+            border-color: var(--primary);
+        }
+
+        .syllable-box.stressed {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            font-weight: bold;
+        }
+
+        .syllable-box.unstressed {
+            background: var(--bg-light);
+            border-color: #cbd5e1;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-family: 'Fredoka', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .answer-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎭 Gedichtanalyse-Abenteuer</h1>
+            <div id="headerStats" class="hidden">
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="overallProgress">0%</div>
+                </div>
+                <div class="badge-display" id="badgeDisplay"></div>
+            </div>
+        </header>
+
+        <div class="content">
+            <!-- Welcome Screen -->
+            <div id="welcomeScreen" class="screen active">
+                <div class="text-center">
+                    <h2>Willkommen zum Gedichtanalyse-Abenteuer!</h2>
+                    <p style="font-size: 1.1em; margin: 20px 0;">
+                        Entdecke die faszinierende Welt der Lyrik durch spannende Lektionen, interaktive Übungen und lustige Spiele!
+                    </p>
+                    <div class="grade-selector">
+                        <div class="grade-card" onclick="selectGrade(6)">
+                            <h3>Klasse 6</h3>
+                            <p>🌱 Grundlagen der Gedichtanalyse</p>
+                            <p style="margin-top: 10px;">Lerne Rhythmus, einfache Reime und erste Stilmittel kennen!</p>
+                        </div>
+                        <div class="grade-card" onclick="selectGrade(7)">
+                            <h3>Klasse 7</h3>
+                            <p>🌿 Vertiefung der Kenntnisse</p>
+                            <p style="margin-top: 10px;">Mehr Versmaße, Reimarten und Strophenformen warten auf dich!</p>
+                        </div>
+                        <div class="grade-card" onclick="selectGrade(8)">
+                            <h3>Klasse 8</h3>
+                            <p>🌳 Meisterschaft der Analyse</p>
+                            <p style="margin-top: 10px;">Vollständige Gedichtanalyse mit allen sprachlichen Mitteln!</p>
+                        </div>
+                    </div>
+                    <div class="file-controls mt-20">
+                        <h3>Fortschritt verwalten</h3>
+                        <button class="btn-primary" onclick="exportProgress()">📥 Fortschritt exportieren</button>
+                        <label class="file-upload-label">
+                            📤 Fortschritt importieren
+                            <input type="file" id="importFile" accept=".json" onchange="importProgress(event)">
+                        </label>
+                    </div>
+                    <button class="btn-secondary mt-20" onclick="toggleAdmin()">⚙️ Admin-Panel</button>
+                    <div id="adminPanel" class="admin-panel hidden">
+                        <h3>Admin-Funktionen</h3>
+                        <button class="btn-danger" onclick="resetProgress()">🔄 Fortschritt zurücksetzen</button>
+                        <button class="btn-primary" onclick="viewProgressSummary()">📊 Fortschrittsübersicht</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- World Map Screen -->
+            <div id="worldMapScreen" class="screen">
+                <h2 class="text-center" style="margin-bottom: 20px;">Deine Lernreise</h2>
+                <div id="worldMap" class="world-map"></div>
+                <div class="nav-buttons mt-20">
+                    <button class="btn-secondary" onclick="showWelcome()">← Zurück zur Startseite</button>
+                </div>
+            </div>
+
+            <!-- Lesson Screen -->
+            <div id="lessonScreen" class="screen">
+                <div id="lessonContent"></div>
+                <div class="nav-buttons mt-20">
+                    <button class="btn-secondary" onclick="showWorldMap()">← Zurück zur Weltkarte</button>
+                    <button class="btn-primary" onclick="startPractice()">Übung starten →</button>
+                </div>
+            </div>
+
+            <!-- Practice Screen -->
+            <div id="practiceScreen" class="screen">
+                <div class="score-display">
+                    <div class="score-item">
+                        <span>✓ Richtig: <span id="correctCount">0</span></span>
+                    </div>
+                    <div class="score-item">
+                        <span>✗ Falsch: <span id="incorrectCount">0</span></span>
+                    </div>
+                    <div class="score-item">
+                        <span>🎯 <span id="practiceProgress">0</span>/<span id="practiceTotal">0</span></span>
+                    </div>
+                </div>
+                <div id="practiceContent"></div>
+                <div id="feedbackArea"></div>
+                <div class="nav-buttons mt-20">
+                    <button class="btn-secondary" onclick="backToLesson()">← Zur Lektion</button>
+                    <button class="btn-primary" id="checkAnswerBtn" onclick="checkAnswer()">Antwort prüfen</button>
+                    <button class="btn-success hidden" id="nextQuestionBtn" onclick="nextQuestion()">Nächste Frage →</button>
+                </div>
+            </div>
+
+            <!-- Mastery Test Screen -->
+            <div id="masteryScreen" class="screen">
+                <div class="score-display">
+                    <div class="score-item">
+                        <span>⏱️ Zeit: <span id="testTimer">0:00</span></span>
+                    </div>
+                    <div class="score-item">
+                        <span>🎯 Frage: <span id="testProgress">0</span>/<span id="testTotal">0</span></span>
+                    </div>
+                </div>
+                <div id="masteryContent"></div>
+                <div id="masteryFeedback"></div>
+                <div class="nav-buttons mt-20">
+                    <button class="btn-secondary" onclick="showWorldMap()">← Abbrechen</button>
+                    <button class="btn-primary" id="checkMasteryBtn" onclick="checkMasteryAnswer()">Antwort prüfen</button>
+                    <button class="btn-success hidden" id="nextMasteryBtn" onclick="nextMasteryQuestion()">Weiter →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+// Continue in next message due to length...
+        // ============================================
+        // DATA SECTION - Poems and Content
+        // ============================================
+        const POEMS = {
+            eichendorff_mondnacht: {
+                title: "Mondnacht",
+                author: "Joseph von Eichendorff",
+                year: "1835",
+                text: "Es war, als hätt' der Himmel\nDie Erde still geküsst,\nDass sie im Blütenschimmer\nVon ihm nun träumen müsst'.\n\nDie Luft ging durch die Felder,\nDie Ähren wogten sacht,\nEs rauschten leis die Wälder,\nSo sternklar war die Nacht.\n\nUnd meine Seele spannte\nWeit ihre Flügel aus,\nFlog durch die stillen Lande,\nAls flöge sie nach Haus."
+            },
+            goethe_gefunden: {
+                title: "Gefunden",
+                author: "Johann Wolfgang von Goethe",
+                year: "1813",
+                text: "Ich ging im Walde\nSo für mich hin,\nUnd nichts zu suchen,\nDas war mein Sinn.\n\nIm Schatten sah ich\nEin Blümchen stehn,\nWie Sterne leuchtend,\nWie Äuglein schön.\n\nIch wollt es brechen;\nDa sagt' es fein:\nSoll ich zum Welken\nGebrochen sein?\n\nIch grub's mit allen\nDen Würzlein aus,\nZum Garten trug ich's\nAm hübschen Haus.\n\nUnd pflanzt es wieder\nAm stillen Ort;\nNun zweigt es immer\nUnd blüht so fort."
+            },
+            moerike_er_ists: {
+                title: "Er ist's",
+                author: "Eduard Mörike",
+                year: "1829",
+                text: "Frühling lässt sein blaues Band\nWieder flattern durch die Lüfte;\nSüße, wohlbekannte Düfte\nStreifen ahnungsvoll das Land.\n\nVeilchen träumen schon,\nWollen balde kommen.\n— Horch, von fern ein leiser Harfenton! —\nFrühling, ja du bist's!\nDich hab' ich vernommen!"
+            },
+            heine_loreley: {
+                title: "Die Loreley",
+                author: "Heinrich Heine",
+                year: "1824",
+                text: "Ich weiß nicht, was soll es bedeuten,\nDass ich so traurig bin;\nEin Märchen aus alten Zeiten,\nDas kommt mir nicht aus dem Sinn.\n\nDie Luft ist kühl, und es dunkelt,\nUnd ruhig fließt der Rhein;\nDer Gipfel des Berges funkelt\nIm Abendsonnenschein."
+            },
+            claudius_abendlied: {
+                title: "Abendlied",
+                author: "Matthias Claudius",
+                year: "1779",
+                text: "Der Mond ist aufgegangen,\nDie goldnen Sternlein prangen\nAm Himmel hell und klar;\nDer Wald steht schwarz und schweiget,\nUnd aus den Wiesen steiget\nDer weiße Nebel wunderbar."
+            }
+        };
+
+        const WORLDS = {
+            klang_rhythmus: {
+                id: 'klang_rhythmus',
+                icon: '🎵',
+                title: 'Klang & Rhythmus',
+                description: 'Entdecke Metrum, Versmaß und Kadenz',
+                lessons: ['metrum_basics', 'kadenz'],
+                requiredForNext: null
+            },
+            reim_form: {
+                id: 'reim_form',
+                icon: '🎭',
+                title: 'Reim & Form',
+                description: 'Lerne Reimschema und Strophenformen',
+                lessons: ['reimschema', 'reimarten'],
+                requiredForNext: 'klang_rhythmus'
+            },
+            stilmittel: {
+                id: 'stilmittel',
+                icon: '✨',
+                title: 'Bilder & Stilmittel',
+                description: 'Erkenne Metaphern, Vergleiche und mehr',
+                lessons: ['klangfiguren', 'bildliche_sprache'],
+                requiredForNext: 'reim_form'
+            },
+            interpretation: {
+                id: 'interpretation',
+                icon: '🔍',
+                title: 'Interpretation & Wirkung',
+                description: 'Analysiere Gedichte vollständig',
+                lessons: ['grundbegriffe', 'analyse_schritte'],
+                requiredForNext: 'stilmittel'
+            }
+        };
+
+        const LESSONS = {
+            metrum_basics: {
+                id: 'metrum_basics',
+                title: 'Versmaß und Betonung',
+                world: 'klang_rhythmus',
+                minGrade: 6,
+                content: `
+                    <h3>Was ist ein Versmaß?</h3>
+                    <p>Das <strong>Versmaß</strong> (Metrum) beschreibt den Rhythmus eines Gedichts. Es zeigt, welche Silben betont (X) und welche unbetont (x) sind.</p>
+                    <div class="example-box">
+                        <h4>Die vier wichtigsten Versmaße:</h4>
+                        <ul style="line-height: 2;">
+                            <li><strong>Jambus (xX):</strong> unbetont-betont → "Ich <u>ging</u> im <u>Wal</u>-de"</li>
+                            <li><strong>Trochäus (Xx):</strong> betont-unbetont → "<u>Freu</u>-de, <u>schö</u>-ner"</li>
+                            <li><strong>Daktylus (Xxx):</strong> betont-unbetont-unbetont → "<u>Ein</u>-sam wan-dert"</li>
+                            <li><strong>Anapäst (xxX):</strong> unbetont-unbetont-betont → "In der <u>Fer</u>-ne"</li>
+                        </ul>
+                    </div>
+                    <div class="example-box">
+                        <h4>Beispiel aus "Gefunden" von Goethe:</h4>
+                        <div class="poem-text">
+                            Ich ging im Walde<br>
+                            So für mich hin
+                        </div>
+                        <div class="poem-citation">— Johann Wolfgang von Goethe, „Gefunden" (1813)</div>
+                        <p style="margin-top: 15px;"><strong>Dies ist ein Trochäus:</strong> Betont-unbetont (Xx). Lies es laut und klatsche beim betonten Teil!</p>
+                    </div>
+                `
+            },
+            kadenz: {
+                id: 'kadenz',
+                title: 'Kadenz - Der Versschluss',
+                world: 'klang_rhythmus',
+                minGrade: 6,
+                content: `
+                    <h3>Was ist die Kadenz?</h3>
+                    <p>Die <strong>Kadenz</strong> beschreibt, wie ein Vers endet - wo die letzte Betonung liegt.</p>
+                    <div class="example-box">
+                        <h4>Die drei Arten:</h4>
+                        <ul style="line-height: 2;">
+                            <li><strong>Männlich/stumpf:</strong> Betonung auf der letzten Silbe → im <u>Wald</u>, die <u>Nacht</u></li>
+                            <li><strong>Weiblich/klingend:</strong> Betonung auf der vorletzten Silbe → <u>Lie</u>-be, <u>Stun</u>-den</li>
+                            <li><strong>Gleitend:</strong> Betonung auf der drittletzten Silbe (selten) → <u>herr</u>-li-che</li>
+                        </ul>
+                    </div>
+                    <div class="example-box">
+                        <h4>Beispiel aus "Mondnacht" von Eichendorff:</h4>
+                        <div class="poem-text">
+                            Es war, als hätt' der Himmel<br>
+                            Die Erde still geküsst,<br>
+                            Dass sie im Blütenschimmer<br>
+                            Von ihm nun träumen müsst'.
+                        </div>
+                        <div class="poem-citation">— Joseph von Eichendorff, „Mondnacht" (1835)</div>
+                        <p style="margin-top: 15px;">Die Verse 2 und 4 haben eine weibliche Kadenz ("geküsst", "müsst").</p>
+                    </div>
+                `
+            },
+            reimschema: {
+                id: 'reimschema',
+                title: 'Reimschema erkennen',
+                world: 'reim_form',
+                minGrade: 6,
+                content: `
+                    <h3>Was ist ein Reimschema?</h3>
+                    <p>Das <strong>Reimschema</strong> zeigt, welche Verse sich reimen. Wir markieren es mit Buchstaben (a, b, c...).</p>
+                    <div class="example-box">
+                        <h4>Die wichtigsten Reimschemata:</h4>
+                        <ul style="line-height: 2;">
+                            <li><strong>Paarreim (aabb):</strong> Zwei aufeinanderfolgende Verse reimen sich</li>
+                            <li><strong>Kreuzreim (abab):</strong> Reimpaare wechseln sich ab</li>
+                            <li><strong>Umarmender Reim (abba):</strong> Die äußeren umschließen die inneren</li>
+                            <li><strong>Schweifreim (aabccb):</strong> Drei Reimpaare</li>
+                            <li><strong>Freie Verse:</strong> Kein festes Reimschema</li>
+                        </ul>
+                    </div>
+                    <div class="example-box">
+                        <h4>Beispiel - Kreuzreim:</h4>
+                        <div class="poem-text">
+                            Es war, als hätt' der Himmel (a)<br>
+                            Die Erde still geküsst, (b)<br>
+                            Dass sie im Blütenschimmer (a)<br>
+                            Von ihm nun träumen müsst'. (b)
+                        </div>
+                        <div class="poem-citation">— Joseph von Eichendorff, „Mondnacht" (1835)</div>
+                        <p style="margin-top: 15px;">Dies ist ein Kreuzreim (abab): "Himmel" - "Blütenschimmer", "geküsst" - "müsst".</p>
+                    </div>
+                `
+            },
+            reimarten: {
+                id: 'reimarten',
+                title: 'Reimarten nach Qualität',
+                world: 'reim_form',
+                minGrade: 7,
+                content: `
+                    <h3>Verschiedene Arten von Reimen</h3>
+                    <p>Reime können unterschiedlich "rein" sein und verschiedene Laute betonen.</p>
+                    <div class="example-box">
+                        <h4>Reimarten:</h4>
+                        <ul style="line-height: 2;">
+                            <li><strong>Reiner Reim:</strong> Vollständige Übereinstimmung ab betontem Vokal<br>
+                                Beispiel: Haus - Maus</li>
+                            <li><strong>Unreiner Reim:</strong> Ähnliche, aber nicht identische Laute<br>
+                                Beispiel: Leben - geben</li>
+                            <li><strong>Stabreim (Alliteration):</strong> Gleicher Anfangskonsonant<br>
+                                Beispiel: Wind und Wetter</li>
+                            <li><strong>Assonanz:</strong> Nur die Vokale sind gleich<br>
+                                Beispiel: schlafen - Wagen</li>
+                        </ul>
+                    </div>
+                `
+            },
+            klangfiguren: {
+                id: 'klangfiguren',
+                title: 'Klangfiguren',
+                world: 'stilmittel',
+                minGrade: 6,
+                content: `
+                    <h3>Klangfiguren - Spiel mit Lauten</h3>
+                    <p>Dichter nutzen besondere Klänge, um Stimmungen zu erzeugen.</p>
+                    <div class="example-box">
+                        <h4>Wichtige Klangfiguren:</h4>
+                        <ul style="line-height: 2;">
+                            <li><strong>Alliteration:</strong> Gleicher Anfangslaut → "bei Wind und Wetter"</li>
+                            <li><strong>Onomatopoesie:</strong> Lautmalerei → plätschern, knarren, summen</li>
+                            <li><strong>Euphonie:</strong> Wohlklang durch weiche Laute (l, m, n)</li>
+                            <li><strong>Kakophonie:</strong> Missklang durch harte Laute (k, t, tz)</li>
+                        </ul>
+                    </div>
+                `
+            },
+            bildliche_sprache: {
+                id: 'bildliche_sprache',
+                title: 'Bildliche Sprache',
+                world: 'stilmittel',
+                minGrade: 7,
+                content: `
+                    <h3>Metaphern, Vergleiche und mehr</h3>
+                    <p>Bildliche Sprache macht Gedichte lebendig und bedeutungsreich.</p>
+                    <div class="example-box">
+                        <h4>Wichtige Stilmittel:</h4>
+                        <ul style="line-height: 2;">
+                            <li><strong>Metapher:</strong> Bildlicher Vergleich ohne "wie" → "Flamme der Liebe"</li>
+                            <li><strong>Vergleich:</strong> Mit "wie" oder "als" → "weiß wie Schnee"</li>
+                            <li><strong>Personifikation:</strong> Vermenschlichung → "Der Wind flüstert"</li>
+                            <li><strong>Symbol:</strong> Gegenstand mit tieferer Bedeutung → Rose = Liebe</li>
+                        </ul>
+                    </div>
+                `
+            },
+            grundbegriffe: {
+                id: 'grundbegriffe',
+                title: 'Grundbegriffe der Lyrik',
+                world: 'interpretation',
+                minGrade: 6,
+                content: `
+                    <h3>Wichtige Begriffe</h3>
+                    <p>Um über Gedichte zu sprechen, brauchen wir die richtigen Begriffe.</p>
+                    <div class="example-box">
+                        <h4>Grundbegriffe:</h4>
+                        <ul style="line-height: 2;">
+                            <li><strong>Lyrisches Ich:</strong> Der Sprecher im Gedicht (≠ Autor!)</li>
+                            <li><strong>Vers:</strong> Eine einzelne Zeile im Gedicht</li>
+                            <li><strong>Strophe:</strong> Eine zusammenhängende Versgruppe</li>
+                            <li><strong>Zäsur:</strong> Einschnitt/Pause innerhalb eines Verses</li>
+                            <li><strong>Motiv:</strong> Wiederkehrendes thematisches Element</li>
+                            <li><strong>Atmosphäre:</strong> Stimmung, emotionale Wirkung</li>
+                        </ul>
+                    </div>
+                `
+            },
+            analyse_schritte: {
+                id: 'analyse_schritte',
+                title: 'Schritte der Gedichtanalyse',
+                world: 'interpretation',
+                minGrade: 7,
+                content: `
+                    <h3>Wie analysiert man ein Gedicht?</h3>
+                    <p>Eine Gedichtanalyse folgt bestimmten Schritten:</p>
+                    <div class="example-box">
+                        <h4>Die 6 Schritte:</h4>
+                        <ol style="line-height: 2;">
+                            <li><strong>Erster Eindruck:</strong> Thema, Stimmung, spontane Wirkung</li>
+                            <li><strong>Formale Analyse:</strong> Strophen, Verse, Metrum, Reim, Kadenz</li>
+                            <li><strong>Inhaltliche Analyse:</strong> Aufbau, Handlung, lyrisches Ich</li>
+                            <li><strong>Sprachanalyse:</strong> Wortwahl, Satzbau, sprachliche Mittel</li>
+                            <li><strong>Interpretation:</strong> Bedeutung, Intention, Wirkung</li>
+                            <li><strong>Schluss:</strong> Zusammenfassung, eigene Bewertung</li>
+                        </ol>
+                    </div>
+                `
+            }
+        };
+
+        // ============================================
+        // GLOBAL STATE
+        // ============================================
+        let currentGrade = null;
+        let currentWorld = null;
+        let currentLesson = null;
+        let practiceState = {
+            currentQuestion: 0,
+            correctCount: 0,
+            incorrectCount: 0,
+            questions: [],
+            currentAnswer: null,
+            attemptCount: 0
+        };
+        let masteryState = {
+            currentQuestion: 0,
+            questions: [],
+            answers: [],
+            startTime: null,
+            timerInterval: null
+        };
+
+        // ============================================
+        // PROGRESS TRACKING
+        // ============================================
+        function getProgress() {
+            const saved = localStorage.getItem('gedichtanalyse_progress');
+            if (saved) {
+                return JSON.parse(saved);
+            }
+            return {
+                grade: null,
+                worlds: {},
+                badges: [],
+                completedLessons: [],
+                masteryTests: {}
+            };
+        }
+
+        function saveProgress(progress) {
+            localStorage.setItem('gedichtanalyse_progress', JSON.stringify(progress));
+            updateHeaderStats();
+        }
+
+        function updateHeaderStats() {
+            const progress = getProgress();
+            document.getElementById('headerStats').classList.remove('hidden');
+            
+            const totalLessons = Object.keys(LESSONS).filter(id => LESSONS[id].minGrade <= currentGrade).length;
+            const completedLessons = progress.completedLessons.filter(id => LESSONS[id].minGrade <= currentGrade).length;
+            const percentage = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+            
+            document.getElementById('overallProgress').style.width = percentage + '%';
+            document.getElementById('overallProgress').textContent = percentage + '%';
+            
+            const badgeDisplay = document.getElementById('badgeDisplay');
+            badgeDisplay.innerHTML = progress.badges.map(badge => 
+                `<div class="badge"><span style="margin-right: 5px;">${badge.icon}</span>${badge.name}</div>`
+            ).join('');
+        }
+
+        function awardBadge(name, icon) {
+            const progress = getProgress();
+            if (!progress.badges.find(b => b.name === name)) {
+                progress.badges.push({ name, icon });
+                saveProgress(progress);
+                showConfetti();
+                showFeedback('success', `🎉 Neues Abzeichen verdient: ${icon} ${name}!`);
+            }
+        }
+
+        // ============================================
+        // CONFETTI ANIMATION
+        // ============================================
+        function showConfetti() {
+            const colors = ['#f59e0b', '#ef4444', '#3b82f6', '#10b981', '#a855f7'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // ============================================
+        // SCREEN NAVIGATION
+        // ============================================
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function showWelcome() {
+            showScreen('welcomeScreen');
+        }
+
+        function selectGrade(grade) {
+            currentGrade = grade;
+            const progress = getProgress();
+            progress.grade = grade;
+            saveProgress(progress);
+            showWorldMap();
+        }
+
+        function showWorldMap() {
+            showScreen('worldMapScreen');
+            renderWorldMap();
+        }
+
+        function renderWorldMap() {
+            const progress = getProgress();
+            const worldMap = document.getElementById('worldMap');
+            worldMap.innerHTML = '';
+
+            Object.values(WORLDS).forEach(world => {
+                const isLocked = world.requiredForNext && !progress.worlds[world.requiredForNext]?.completed;
+                
+                const allLessonsCompleted = world.lessons.every(lessonId => 
+                    LESSONS[lessonId].minGrade <= currentGrade && 
+                    progress.completedLessons.includes(lessonId)
+                );
+                
+                const card = document.createElement('div');
+                card.className = `world-card ${isLocked ? 'locked' : ''} ${allLessonsCompleted ? 'completed' : ''}`;
+                
+                if (!isLocked) {
+                    card.onclick = () => selectWorld(world.id);
+                }
+                
+                card.innerHTML = `
+                    <div class="world-icon">${world.icon}</div>
+                    <div class="world-title">${world.title}</div>
+                    <div class="world-description" style="color: #666; margin-bottom: 15px;">${world.description}</div>
+                    ${isLocked ? '<p style="color: #ef4444; font-weight: bold;">🔒 Gesperrt</p>' : ''}
+                    <div class="world-progress">
+                        ${world.lessons.filter(id => LESSONS[id].minGrade <= currentGrade).map(lessonId => 
+                            `<div class="progress-dot ${progress.completedLessons.includes(lessonId) ? 'completed' : ''}"></div>`
+                        ).join('')}
+                    </div>
+                `;
+                
+                worldMap.appendChild(card);
+            });
+        }
+
+        function selectWorld(worldId) {
+            currentWorld = worldId;
+            const world = WORLDS[worldId];
+            const firstLesson = world.lessons.find(id => LESSONS[id].minGrade <= currentGrade);
+            if (firstLesson) {
+                startLesson(firstLesson);
+            }
+        }
+
+        // ============================================
+        // LESSON DISPLAY
+        // ============================================
+        function startLesson(lessonId) {
+            currentLesson = lessonId;
+            showScreen('lessonScreen');
+            renderLesson();
+        }
+
+        function renderLesson() {
+            const lesson = LESSONS[currentLesson];
+            const lessonContent = document.getElementById('lessonContent');
+            lessonContent.innerHTML = `
+                <h2 style="margin-bottom: 20px;">${lesson.title}</h2>
+                <div class="lesson-content">${lesson.content}</div>
+            `;
+        }
+
+        function backToLesson() {
+            showScreen('lessonScreen');
+        }
+
+        // ============================================
+        // PRACTICE ACTIVITIES
+        // ============================================
+        function startPractice() {
+            showScreen('practiceScreen');
+            practiceState = {
+                currentQuestion: 0,
+                correctCount: 0,
+                incorrectCount: 0,
+                questions: generatePracticeQuestions(currentLesson),
+                currentAnswer: null,
+                attemptCount: 0
+            };
+            
+            document.getElementById('correctCount').textContent = '0';
+            document.getElementById('incorrectCount').textContent = '0';
+            document.getElementById('practiceTotal').textContent = practiceState.questions.length;
+            
+            renderPracticeQuestion();
+        }
+
+        function generatePracticeQuestions(lessonId) {
+            const questions = [];
+            
+            switch(lessonId) {
+                case 'metrum_basics':
+                    questions.push({
+                        type: 'multiple_choice',
+                        question: 'Welches Versmaß hat das Muster "xX xX xX xX"?',
+                        options: ['Jambus', 'Trochäus', 'Daktylus', 'Anapäst'],
+                        correct: 0,
+                        hint: 'Achte auf unbetont-betont: xX'
+                    });
+                    questions.push({
+                        type: 'multiple_choice',
+                        question: 'Lies: "Freude, schöner Götterfunken". Welches Metrum ist das?',
+                        options: ['Jambus', 'Trochäus', 'Daktylus', 'Anapäst'],
+                        correct: 1,
+                        hint: 'Die Betonung beginnt gleich am Anfang: Xx'
+                    });
+                    questions.push({
+                        type: 'stress_marking',
+                        question: 'Markiere die betonten Silben:',
+                        syllables: ['Ich', 'ging', 'im', 'Wal', 'de'],
+                        correctStress: [false, true, false, true, false],
+                        hint: 'Lies laut vor und achte auf den natürlichen Rhythmus!'
+                    });
+                    break;
+                    
+                case 'kadenz':
+                    questions.push({
+                        type: 'multiple_choice',
+                        question: 'Welche Kadenz hat das Wort "Wald"?',
+                        options: ['Männlich/stumpf', 'Weiblich/klingend', 'Gleitend'],
+                        correct: 0,
+                        hint: 'Die Betonung liegt auf der letzten Silbe.'
+                    });
+                    questions.push({
+                        type: 'multiple_choice',
+                        question: 'Welche Kadenz hat das Wort "Liebe"?',
+                        options: ['Männlich/stumpf', 'Weiblich/klingend', 'Gleitend'],
+                        correct: 1,
+                        hint: 'Die Betonung liegt auf der vorletzten Silbe.'
+                    });
+                    break;
+                    
+                case 'reimschema':
+                    questions.push({
+                        type: 'multiple_choice',
+                        question: 'Welches Reimschema ist "abab"?',
+                        options: ['Paarreim', 'Kreuzreim', 'Umarmender Reim', 'Schweifreim'],
+                        correct: 1,
+                        hint: 'Die Reime wechseln sich ab wie ein Kreuz.'
+                    });
+                    questions.push({
+                        type: 'multiple_choice',
+                        question: 'Welches Reimschema ist "aabb"?',
+                        options: ['Paarreim', 'Kreuzreim', 'Umarmender Reim', 'Schweifreim'],
+                        correct: 0,
+                        hint: 'Zwei Verse reimen sich nacheinander.'
+                    });
+                    break;
+                    
+                case 'reimarten':
+                    questions.push({
+                        type: 'multiple_choice',
+                        question: '"Wind und Wetter" ist ein Beispiel für:',
+                        options: ['Reiner Reim', 'Stabreim', 'Assonanz', 'Unreiner Reim'],
+                        correct: 1,
+                        hint: 'Achte auf die Anfangslaute!'
+                    });
+                    break;
+                    
+                case 'klangfiguren':
+                    questions.push({
+                        type: 'multiple_choice',
+                        question: 'Welches Stilmittel liegt vor: "Das Wasser plätschert leise"?',
+                        options: ['Alliteration', 'Onomatopoesie', 'Euphonie', 'Kakophonie'],
+                        correct: 1,
+                        hint: '"Plätschert" klingt wie das, was es beschreibt!'
+                    });
+                    break;
+                    
+                case 'bildliche_sprache':
+                    questions.push({
+                        type: 'multiple_choice',
+                        question: 'Was ist eine Personifikation?',
+                        options: ['Ein Vergleich mit "wie"', 'Vermenschlichung von Dingen', 'Ein bildlicher Ausdruck', 'Eine Wiederholung'],
+                        correct: 1,
+                        hint: 'Das Wort kommt von "Person"!'
+                    });
+                    questions.push({
+                        type: 'multiple_choice',
+                        question: '"Der Wind flüstert" ist ein Beispiel für:',
+                        options: ['Metapher', 'Vergleich', 'Personifikation', 'Symbol'],
+                        correct: 2,
+                        hint: 'Der Wind bekommt menschliche Eigenschaften.'
+                    });
+                    break;
+                    
+                case 'grundbegriffe':
+                    questions.push({
+                        type: 'multiple_choice',
+                        question: 'Wer ist das "lyrische Ich"?',
+                        options: ['Der Autor', 'Der Sprecher im Gedicht', 'Der Leser', 'Eine Person im Gedicht'],
+                        correct: 1,
+                        hint: 'Es ist nicht der Autor selbst!'
+                    });
+                    questions.push({
+                        type: 'multiple_choice',
+                        question: 'Was ist ein Vers?',
+                        options: ['Eine Strophe', 'Eine Zeile', 'Ein Reim', 'Ein Gedicht'],
+                        correct: 1,
+                        hint: 'Es ist der kleinste Teil eines Gedichts.'
+                    });
+                    break;
+                    
+                case 'analyse_schritte':
+                    questions.push({
+                        type: 'multiple_choice',
+                        question: 'Was kommt zuerst bei der Gedichtanalyse?',
+                        options: ['Formale Analyse', 'Erster Eindruck', 'Sprachanalyse', 'Interpretation'],
+                        correct: 1,
+                        hint: 'Beginne mit deinem spontanen Gefühl!'
+                    });
+                    break;
+            }
+            
+            return questions.slice(0, 8);
+        }
+
+        function renderPracticeQuestion() {
+            const question = practiceState.questions[practiceState.currentQuestion];
+            const content = document.getElementById('practiceContent');
+            document.getElementById('practiceProgress').textContent = practiceState.currentQuestion + 1;
+            document.getElementById('feedbackArea').innerHTML = '';
+            document.getElementById('checkAnswerBtn').classList.remove('hidden');
+            document.getElementById('nextQuestionBtn').classList.add('hidden');
+            
+            practiceState.currentAnswer = null;
+            practiceState.attemptCount = 0;
+            
+            let html = `<div class="activity"><div class="activity-question">${question.question}</div>`;
+            
+            if (question.type === 'multiple_choice') {
+                html += '<div class="answer-options">';
+                question.options.forEach((option, index) => {
+                    html += `<div class="answer-option" onclick="selectAnswer(${index})">${option}</div>`;
+                });
+                html += '</div>';
+            } else if (question.type === 'stress_marking') {
+                html += '<div style="margin: 20px 0;">';
+                question.syllables.forEach((syllable, index) => {
+                    html += `<div class="syllable-box" onclick="toggleStress(${index})">${syllable}</div>`;
+                });
+                html += '</div>';
+                html += '<p style="margin-top: 15px; font-size: 0.9em; color: #666;">Klicke auf die Silben, um sie als betont/unbetont zu markieren.</p>';
+            }
+            
+            html += '</div>';
+            content.innerHTML = html;
+        }
+
+        function selectAnswer(index) {
+            practiceState.currentAnswer = index;
+            document.querySelectorAll('.answer-option').forEach((opt, i) => {
+                opt.classList.toggle('selected', i === index);
+            });
+        }
+
+        function toggleStress(index) {
+            const boxes = document.querySelectorAll('.syllable-box');
+            const box = boxes[index];
+            
+            if (box.classList.contains('stressed')) {
+                box.classList.remove('stressed');
+                box.classList.add('unstressed');
+            } else if (box.classList.contains('unstressed')) {
+                box.classList.remove('unstressed');
+            } else {
+                box.classList.add('stressed');
+            }
+        }
+
+        function checkAnswer() {
+            const question = practiceState.questions[practiceState.currentQuestion];
+            practiceState.attemptCount++;
+            
+            let isCorrect = false;
+            
+            if (question.type === 'multiple_choice') {
+                isCorrect = practiceState.currentAnswer === question.correct;
+                if (isCorrect) {
+                    document.querySelectorAll('.answer-option')[question.correct].classList.add('correct');
+                } else {
+                    if (practiceState.currentAnswer !== null) {
+                        document.querySelectorAll('.answer-option')[practiceState.currentAnswer].classList.add('incorrect');
+                    }
+                    document.querySelectorAll('.answer-option')[question.correct].classList.add('correct');
+                }
+            } else if (question.type === 'stress_marking') {
+                const boxes = document.querySelectorAll('.syllable-box');
+                let allCorrect = true;
+                boxes.forEach((box, i) => {
+                    const isStressed = box.classList.contains('stressed');
+                    const shouldBeStressed = question.correctStress[i];
+                    if (isStressed !== shouldBeStressed) {
+                        allCorrect = false;
+                    }
+                });
+                isCorrect = allCorrect;
+            }
+            
+            if (isCorrect) {
+                practiceState.correctCount++;
+                document.getElementById('correctCount').textContent = practiceState.correctCount;
+                showFeedback('success', '🎉 Richtig! Gut gemacht!');
+                document.getElementById('checkAnswerBtn').classList.add('hidden');
+                document.getElementById('nextQuestionBtn').classList.remove('hidden');
+            } else {
+                practiceState.incorrectCount++;
+                document.getElementById('incorrectCount').textContent = practiceState.incorrectCount;
+                
+                if (practiceState.attemptCount < 2) {
+                    showFeedback('hint', `💡 Hinweis: ${question.hint}`);
+                } else {
+                    showFeedback('error', `❌ Nicht ganz richtig. Die korrekte Antwort wurde markiert.`);
+                    document.getElementById('checkAnswerBtn').classList.add('hidden');
+                    document.getElementById('nextQuestionBtn').classList.remove('hidden');
+                }
+            }
+        }
+
+        function nextQuestion() {
+            practiceState.currentQuestion++;
+            
+            if (practiceState.currentQuestion >= practiceState.questions.length) {
+                completePractice();
+            } else {
+                renderPracticeQuestion();
+            }
+        }
+
+        function completePractice() {
+            const successRate = practiceState.correctCount / practiceState.questions.length;
+            
+            if (successRate >= 0.7) {
+                showFeedback('success', `🎉 Übung abgeschlossen! Du hast ${practiceState.correctCount} von ${practiceState.questions.length} Fragen richtig beantwortet. Du kannst jetzt den Meisterschaftstest versuchen!`);
+                document.getElementById('nextQuestionBtn').textContent = 'Meisterschaftstest starten';
+                document.getElementById('nextQuestionBtn').onclick = () => startMasteryTest();
+            } else {
+                showFeedback('hint', `Du hast ${practiceState.correctCount} von ${practiceState.questions.length} Fragen richtig beantwortet. Übe noch ein wenig mehr!`);
+                document.getElementById('nextQuestionBtn').textContent = 'Nochmal üben';
+                document.getElementById('nextQuestionBtn').onclick = () => startPractice();
+            }
+        }
+
+        function showFeedback(type, message) {
+            const feedbackArea = document.getElementById('feedbackArea');
+            feedbackArea.innerHTML = `<div class="feedback ${type}">${message}</div>`;
+        }
+
+        // ============================================
+        // MASTERY TESTS
+        // ============================================
+        function startMasteryTest() {
+            showScreen('masteryScreen');
+            
+            masteryState = {
+                currentQuestion: 0,
+                questions: generatePracticeQuestions(currentLesson).slice(0, 5),
+                answers: [],
+                startTime: Date.now(),
+                timerInterval: null
+            };
+            
+            document.getElementById('testTotal').textContent = masteryState.questions.length;
+            masteryState.timerInterval = setInterval(updateTestTimer, 1000);
+            
+            renderMasteryQuestion();
+        }
+
+        function updateTestTimer() {
+            const elapsed = Math.floor((Date.now() - masteryState.startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            document.getElementById('testTimer').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function renderMasteryQuestion() {
+            const question = masteryState.questions[masteryState.currentQuestion];
+            const content = document.getElementById('masteryContent');
+            document.getElementById('testProgress').textContent = masteryState.currentQuestion + 1;
+            document.getElementById('masteryFeedback').innerHTML = '';
+            document.getElementById('checkMasteryBtn').classList.remove('hidden');
+            document.getElementById('nextMasteryBtn').classList.add('hidden');
+            
+            practiceState.currentAnswer = null;
+            
+            let html = `<div class="activity"><div class="activity-question">${question.question}</div>`;
+            
+            if (question.type === 'multiple_choice') {
+                html += '<div class="answer-options">';
+                question.options.forEach((option, index) => {
+                    html += `<div class="answer-option" onclick="selectAnswer(${index})">${option}</div>`;
+                });
+                html += '</div>';
+            } else if (question.type === 'stress_marking') {
+                html += '<div style="margin: 20px 0;">';
+                question.syllables.forEach((syllable, index) => {
+                    html += `<div class="syllable-box" onclick="toggleStress(${index})">${syllable}</div>`;
+                });
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            content.innerHTML = html;
+        }
+
+        function checkMasteryAnswer() {
+            const question = masteryState.questions[masteryState.currentQuestion];
+            let isCorrect = false;
+            
+            if (question.type === 'multiple_choice') {
+                isCorrect = practiceState.currentAnswer === question.correct;
+            } else if (question.type === 'stress_marking') {
+                const boxes = document.querySelectorAll('.syllable-box');
+                let allCorrect = true;
+                boxes.forEach((box, i) => {
+                    const isStressed = box.classList.contains('stressed');
+                    const shouldBeStressed = question.correctStress[i];
+                    if (isStressed !== shouldBeStressed) {
+                        allCorrect = false;
+                    }
+                });
+                isCorrect = allCorrect;
+            }
+            
+            masteryState.answers.push(isCorrect);
+            
+            document.getElementById('checkMasteryBtn').classList.add('hidden');
+            document.getElementById('nextMasteryBtn').classList.remove('hidden');
+            
+            if (isCorrect) {
+                showMasteryFeedback('success', '✓ Richtig!');
+            } else {
+                showMasteryFeedback('error', '✗ Nicht korrekt');
+            }
+        }
+
+        function showMasteryFeedback(type, message) {
+            const feedbackArea = document.getElementById('masteryFeedback');
+            feedbackArea.innerHTML = `<div class="feedback ${type}">${message}</div>`;
+        }
+
+        function nextMasteryQuestion() {
+            masteryState.currentQuestion++;
+            
+            if (masteryState.currentQuestion >= masteryState.questions.length) {
+                completeMasteryTest();
+            } else {
+                renderMasteryQuestion();
+            }
+        }
+
+        function completeMasteryTest() {
+            clearInterval(masteryState.timerInterval);
+            
+            const correct = masteryState.answers.filter(a => a).length;
+            const total = masteryState.answers.length;
+            const percentage = Math.round((correct / total) * 100);
+            
+            if (percentage >= 80) {
+                const progress = getProgress();
+                if (!progress.completedLessons.includes(currentLesson)) {
+                    progress.completedLessons.push(currentLesson);
+                }
+                progress.masteryTests[currentLesson] = {
+                    passed: true,
+                    score: percentage,
+                    date: new Date().toISOString()
+                };
+                
+                const lesson = LESSONS[currentLesson];
+                const badgeName = lesson.title;
+                awardBadge(badgeName, '🏆');
+                
+                // Check if world is completed
+                const world = WORLDS[lesson.world];
+                const allWorldLessonsCompleted = world.lessons.every(id => 
+                    LESSONS[id].minGrade <= currentGrade && 
+                    progress.completedLessons.includes(id)
+                );
+                if (allWorldLessonsCompleted) {
+                    if (!progress.worlds[lesson.world]) {
+                        progress.worlds[lesson.world] = {};
+                    }
+                    progress.worlds[lesson.world].completed = true;
+                }
+                
+                saveProgress(progress);
+                
+                showMasteryFeedback('success', 
+                    `🎉 Herzlichen Glückwunsch! Du hast den Test mit ${percentage}% bestanden!`);
+                
+                document.getElementById('nextMasteryBtn').textContent = 'Zur Weltkarte';
+                document.getElementById('nextMasteryBtn').onclick = () => showWorldMap();
+            } else {
+                showMasteryFeedback('hint', 
+                    `Du hast ${percentage}% erreicht. Du brauchst mindestens 80%, um zu bestehen. Übe noch ein wenig!`);
+                
+                document.getElementById('nextMasteryBtn').textContent = 'Nochmal üben';
+                document.getElementById('nextMasteryBtn').onclick = () => {
+                    backToLesson();
+                    startPractice();
+                };
+            }
+        }
+
+        // ============================================
+        // EXPORT/IMPORT
+        // ============================================
+        function exportProgress() {
+            const progress = getProgress();
+            const dataStr = JSON.stringify(progress, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `gedichtanalyse-fortschritt-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            
+            alert('Fortschritt wurde exportiert! 📥');
+        }
+
+        function importProgress(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const progress = JSON.parse(e.target.result);
+                    
+                    if (!progress.worlds || !progress.badges || !progress.completedLessons) {
+                        throw new Error('Ungültiges Dateiformat');
+                    }
+                    
+                    localStorage.setItem('gedichtanalyse_progress', JSON.stringify(progress));
+                    alert('Fortschritt wurde erfolgreich importiert! 📤');
+                    
+                    if (progress.grade) {
+                        currentGrade = progress.grade;
+                        showWorldMap();
+                    }
+                } catch (err) {
+                    alert('Fehler beim Importieren: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // ============================================
+        // ADMIN FUNCTIONS
+        // ============================================
+        function toggleAdmin() {
+            const panel = document.getElementById('adminPanel');
+            panel.classList.toggle('hidden');
+        }
+
+        function resetProgress() {
+            if (confirm('Bist du sicher, dass du den gesamten Fortschritt zurücksetzen möchtest?')) {
+                localStorage.removeItem('gedichtanalyse_progress');
+                alert('Fortschritt wurde zurückgesetzt!');
+                location.reload();
+            }
+        }
+
+        function viewProgressSummary() {
+            const progress = getProgress();
+            
+            let summary = '📊 FORTSCHRITTSÜBERSICHT\n\n';
+            summary += `Klasse: ${progress.grade || 'Nicht ausgewählt'}\n`;
+            summary += `Abgeschlossene Lektionen: ${progress.completedLessons.length}\n`;
+            summary += `Verdiente Abzeichen: ${progress.badges.length}\n\n`;
+            
+            summary += 'WELTEN:\n';
+            Object.keys(WORLDS).forEach(worldId => {
+                const world = WORLDS[worldId];
+                const completed = world.lessons.filter(id => progress.completedLessons.includes(id)).length;
+                const total = world.lessons.length;
+                summary += `${world.icon} ${world.title}: ${completed}/${total}\n`;
+            });
+            
+            summary += '\nABZEICHEN:\n';
+            progress.badges.forEach(badge => {
+                summary += `${badge.icon} ${badge.name}\n`;
+            });
+            
+            alert(summary);
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        window.onload = function() {
+            const progress = getProgress();
+            if (progress.grade) {
+                currentGrade = progress.grade;
+                updateHeaderStats();
+            }
+        };
+    </script>
+</body>
+</html>
