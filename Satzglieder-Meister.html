@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Satzglieder-Meister</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --header-blue: #2E86AB;
+      --light-blue: #E8F4F8;
+      --accent-green: #28A745;
+      --accent-orange: #F4A460;
+      --accent-purple: #9B59B6;
+      --accent-teal: #17A2B8;
+      --accent-red: #DC3545;
+      --accent-navy: #1E3A5F;
+      --light-yellow: #FFF9E6;
+      --light-green: #E8F5E9;
+      --light-purple: #F3E5F5;
+      --border-gray: #CCCCCC;
+      --text-dark: #333333;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, var(--light-blue) 0%, #fff 50%, var(--light-yellow) 100%);
+      min-height: 100vh;
+      color: var(--text-dark);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      background: var(--header-blue);
+      color: white;
+      padding: 25px;
+      border-radius: 15px;
+      text-align: center;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(46, 134, 171, 0.3);
+    }
+
+    .header h1 {
+      font-size: 2.2em;
+      margin-bottom: 5px;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 1.1em;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      display: flex;
+      justify-content: space-around;
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .stat {
+      text-align: center;
+      padding: 10px 20px;
+    }
+
+    .stat-value {
+      font-size: 1.8em;
+      font-weight: bold;
+      color: var(--header-blue);
+    }
+
+    .stat-label {
+      font-size: 0.85em;
+      color: #666;
+    }
+
+    /* Level indicator */
+    .level-display {
+      background: linear-gradient(135deg, var(--accent-orange) 0%, #e67e22 100%);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      display: inline-block;
+    }
+
+    /* XP Bar */
+    .xp-container {
+      background: #eee;
+      border-radius: 10px;
+      height: 20px;
+      margin: 15px 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .xp-bar {
+      background: linear-gradient(90deg, var(--accent-green) 0%, #20c997 100%);
+      height: 100%;
+      transition: width 0.5s ease;
+      border-radius: 10px;
+    }
+
+    .xp-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.75em;
+      font-weight: bold;
+      color: var(--text-dark);
+    }
+
+    /* Grade selector */
+    .grade-selector {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .grade-btn {
+      padding: 12px 25px;
+      border: 3px solid var(--header-blue);
+      background: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+
+    .grade-btn:hover {
+      background: var(--light-blue);
+      transform: translateY(-2px);
+    }
+
+    .grade-btn.active {
+      background: var(--header-blue);
+      color: white;
+    }
+
+    /* Main game area */
+    .game-area {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .question-type {
+      background: var(--light-purple);
+      color: var(--accent-purple);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9em;
+    }
+
+    .question-number {
+      color: #888;
+    }
+
+    .sentence-display {
+      background: var(--light-green);
+      padding: 25px;
+      border-radius: 12px;
+      font-size: 1.3em;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .sentence-display .word {
+      display: inline-block;
+      padding: 5px 10px;
+      margin: 3px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+    }
+
+    .sentence-display .word:hover {
+      background: rgba(46, 134, 171, 0.2);
+    }
+
+    .sentence-display .word.selected {
+      border-color: var(--header-blue);
+      background: var(--light-blue);
+    }
+
+    /* Marking colors matching worksheet */
+    .word.marked-subjekt {
+      border-bottom: 3px solid var(--accent-orange);
+      background: rgba(244, 164, 96, 0.2);
+    }
+
+    .word.marked-praedikat {
+      border-bottom: 6px double var(--accent-green);
+      background: rgba(40, 167, 69, 0.2);
+    }
+
+    .word.marked-objekt {
+      border-bottom: 3px dashed var(--accent-purple);
+      background: rgba(155, 89, 182, 0.2);
+    }
+
+    .word.marked-adverbial {
+      outline: 2px solid var(--accent-red);
+      background: rgba(220, 53, 69, 0.15);
+    }
+
+    .word.marked-praeposition {
+      position: relative;
+      color: var(--accent-teal);
+      font-weight: bold;
+    }
+
+    .word.marked-konjunktion {
+      border: 2px solid var(--header-blue);
+      border-radius: 50%;
+      padding: 5px 12px;
+    }
+
+    .word.marked-nebensatz {
+      background: var(--light-purple);
+      border-bottom: 2px solid var(--accent-navy);
+    }
+
+    /* Answer options */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .option-btn {
+      padding: 15px;
+      border: 2px solid var(--border-gray);
+      background: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .option-btn:hover {
+      border-color: var(--header-blue);
+      background: var(--light-blue);
+      transform: scale(1.02);
+    }
+
+    .option-btn.correct {
+      background: var(--light-green);
+      border-color: var(--accent-green);
+      animation: correctPulse 0.5s;
+    }
+
+    .option-btn.incorrect {
+      background: #ffe6e6;
+      border-color: var(--accent-red);
+      animation: shake 0.5s;
+    }
+
+    @keyframes correctPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    /* Marking tools */
+    .marking-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+
+    .mark-btn {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9em;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+
+    .mark-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+
+    .mark-btn.subjekt { background: var(--accent-orange); color: white; }
+    .mark-btn.praedikat { background: var(--accent-green); color: white; }
+    .mark-btn.objekt { background: var(--accent-purple); color: white; }
+    .mark-btn.adverbial { background: var(--accent-red); color: white; }
+    .mark-btn.praeposition { background: var(--accent-teal); color: white; }
+    .mark-btn.konjunktion { background: var(--header-blue); color: white; }
+    .mark-btn.nebensatz { background: var(--accent-navy); color: white; }
+    .mark-btn.clear { background: #6c757d; color: white; }
+
+    /* Submit button */
+    .submit-btn {
+      display: block;
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, var(--header-blue) 0%, var(--accent-teal) 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.2em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(46, 134, 171, 0.4);
+    }
+
+    .submit-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Feedback */
+    .feedback {
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 20px;
+      text-align: center;
+      font-size: 1.1em;
+      display: none;
+    }
+
+    .feedback.correct {
+      background: var(--light-green);
+      border: 2px solid var(--accent-green);
+      color: var(--accent-green);
+    }
+
+    .feedback.incorrect {
+      background: #ffe6e6;
+      border: 2px solid var(--accent-red);
+      color: var(--accent-red);
+    }
+
+    .feedback h3 {
+      margin-bottom: 10px;
+    }
+
+    /* Badges */
+    .badges-section {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .badges-section h2 {
+      color: var(--header-blue);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .badges-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 15px;
+    }
+
+    .badge {
+      text-align: center;
+      padding: 15px;
+      border-radius: 12px;
+      background: #f8f9fa;
+      transition: all 0.3s;
+    }
+
+    .badge.earned {
+      background: linear-gradient(135deg, var(--light-yellow) 0%, #fff3cd 100%);
+      box-shadow: 0 3px 10px rgba(255, 193, 7, 0.3);
+    }
+
+    .badge.earned .badge-icon {
+      filter: none;
+    }
+
+    .badge-icon {
+      font-size: 2.5em;
+      margin-bottom: 8px;
+      filter: grayscale(100%);
+      opacity: 0.4;
+    }
+
+    .badge.earned .badge-icon {
+      filter: none;
+      opacity: 1;
+      animation: badgeEarned 0.5s ease;
+    }
+
+    @keyframes badgeEarned {
+      0% { transform: scale(0) rotate(-180deg); }
+      50% { transform: scale(1.3) rotate(10deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    .badge-name {
+      font-size: 0.8em;
+      font-weight: bold;
+      color: var(--text-dark);
+    }
+
+    .badge-desc {
+      font-size: 0.7em;
+      color: #888;
+      margin-top: 3px;
+    }
+
+    /* Streak flame */
+    .streak-display {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .streak-flame {
+      font-size: 1.5em;
+      animation: flicker 0.5s infinite alternate;
+    }
+
+    @keyframes flicker {
+      from { transform: scale(1); }
+      to { transform: scale(1.1); }
+    }
+
+    /* Confetti effect */
+    .confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: fall 3s linear forwards;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* Toast notifications */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      z-index: 1001;
+      animation: slideIn 0.5s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toast.badge-toast {
+      border-left: 5px solid gold;
+    }
+
+    .toast.xp-toast {
+      border-left: 5px solid var(--accent-green);
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Menu screen */
+    .menu-screen {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .menu-screen h2 {
+      color: var(--header-blue);
+      margin-bottom: 30px;
+      font-size: 1.8em;
+    }
+
+    .play-btn {
+      padding: 20px 60px;
+      font-size: 1.4em;
+      background: linear-gradient(135deg, var(--accent-green) 0%, #20c997 100%);
+      color: white;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 20px;
+    }
+
+    .play-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+    }
+
+    /* Legend */
+    .legend {
+      background: var(--light-blue);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .legend h4 {
+      margin-bottom: 10px;
+      color: var(--header-blue);
+    }
+
+    .legend-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      font-size: 0.85em;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .legend-color {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .header h1 { font-size: 1.6em; }
+      .stats-bar { flex-direction: column; }
+      .sentence-display { font-size: 1.1em; padding: 15px; }
+      .options-grid { grid-template-columns: 1fr 1fr; }
+      .marking-tools { gap: 5px; }
+      .mark-btn { padding: 8px 10px; font-size: 0.8em; }
+    }
+
+    /* Hidden class */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>Satzglieder-Meister</h1>
+      <p>Werde zum Grammatik-Champion!</p>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="level-display">Level <span id="level">1</span></div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="score">0</div>
+        <div class="stat-label">Punkte</div>
+      </div>
+      <div class="stat streak-display">
+        <span class="streak-flame" id="streak-flame">🔥</span>
+        <div>
+          <div class="stat-value" id="streak">0</div>
+          <div class="stat-label">Serie</div>
+        </div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="accuracy">0%</div>
+        <div class="stat-label">Genauigkeit</div>
+      </div>
+    </div>
+
+    <!-- XP Bar -->
+    <div class="xp-container">
+      <div class="xp-bar" id="xp-bar" style="width: 0%"></div>
+      <div class="xp-text" id="xp-text">0 / 100 XP</div>
+    </div>
+
+    <!-- Grade Selector -->
+    <div class="grade-selector">
+      <button class="grade-btn" data-grade="4">Klasse 4</button>
+      <button class="grade-btn" data-grade="5">Klasse 5</button>
+      <button class="grade-btn" data-grade="6">Klasse 6</button>
+      <button class="grade-btn active" data-grade="78">Klasse 7/8</button>
+    </div>
+
+    <!-- Menu Screen -->
+    <div class="game-area menu-screen" id="menu-screen">
+      <h2>Wähle deine Klassenstufe und starte!</h2>
+      <p style="margin-bottom: 20px; color: #666;">
+        Lerne Satzglieder durch interaktive Übungen. Je höher die Klasse, desto schwieriger die Aufgaben!
+      </p>
+      <div class="legend">
+        <h4>Markierungen</h4>
+        <div class="legend-items">
+          <div class="legend-item"><span class="legend-color" style="background: var(--accent-orange);"></span> Subjekt</div>
+          <div class="legend-item"><span class="legend-color" style="background: var(--accent-green);"></span> Prädikat</div>
+          <div class="legend-item"><span class="legend-color" style="background: var(--accent-purple);"></span> Objekt</div>
+          <div class="legend-item"><span class="legend-color" style="background: var(--accent-red);"></span> Adverbial</div>
+          <div class="legend-item"><span class="legend-color" style="background: var(--accent-teal);"></span> Präposition</div>
+          <div class="legend-item"><span class="legend-color" style="background: var(--header-blue);"></span> Konjunktion</div>
+          <div class="legend-item"><span class="legend-color" style="background: var(--accent-navy);"></span> Nebensatz</div>
+        </div>
+      </div>
+      <button class="play-btn" onclick="startGame()">Spiel starten!</button>
+    </div>
+
+    <!-- Game Area -->
+    <div class="game-area hidden" id="game-screen">
+      <div class="question-header">
+        <span class="question-type" id="question-type">Satzglied bestimmen</span>
+        <span class="question-number">Frage <span id="current-q">1</span> / <span id="total-q">10</span></span>
+      </div>
+
+      <div id="question-text" style="margin-bottom: 15px; font-size: 1.1em; color: var(--text-dark);"></div>
+
+      <div class="sentence-display" id="sentence-display"></div>
+
+      <div class="marking-tools hidden" id="marking-tools">
+        <button class="mark-btn subjekt" data-mark="subjekt">Subjekt</button>
+        <button class="mark-btn praedikat" data-mark="praedikat">Prädikat</button>
+        <button class="mark-btn objekt" data-mark="objekt">Objekt</button>
+        <button class="mark-btn adverbial" data-mark="adverbial">Adverbial</button>
+        <button class="mark-btn praeposition" data-mark="praeposition">Präposition</button>
+        <button class="mark-btn konjunktion" data-mark="konjunktion">Konjunktion</button>
+        <button class="mark-btn nebensatz hidden" data-mark="nebensatz">Nebensatz</button>
+        <button class="mark-btn clear" data-mark="clear">Löschen</button>
+      </div>
+
+      <div class="options-grid hidden" id="options-grid"></div>
+
+      <button class="submit-btn" id="submit-btn" onclick="checkAnswer()">Antwort prüfen</button>
+
+      <div class="feedback" id="feedback">
+        <h3 id="feedback-title"></h3>
+        <p id="feedback-text"></p>
+      </div>
+    </div>
+
+    <!-- Badges Section -->
+    <div class="badges-section">
+      <h2>Deine Abzeichen</h2>
+      <div class="badges-grid" id="badges-grid"></div>
+    </div>
+  </div>
+
+  <!-- Confetti container -->
+  <div class="confetti" id="confetti"></div>
+
+  <script>
+    // Game State
+    let gameState = {
+      grade: 78,
+      score: 0,
+      xp: 0,
+      level: 1,
+      streak: 0,
+      bestStreak: 0,
+      totalQuestions: 0,
+      correctAnswers: 0,
+      currentQuestion: 0,
+      questionsPerRound: 10,
+      selectedWords: [],
+      currentMarking: null,
+      wordMarkings: {},
+      badges: {
+        firstCorrect: false,
+        streak5: false,
+        streak10: false,
+        level5: false,
+        level10: false,
+        perfect: false,
+        grammar100: false,
+        allGrades: { 4: false, 5: false, 6: false, 78: false },
+        master: false
+      },
+      questionsAnswered: { 4: 0, 5: 0, 6: 0, 78: 0 }
+    };
+
+    // Question banks by grade
+    const questionBanks = {
+      4: [
+        {
+          type: 'identify',
+          sentence: 'Der Hund spielt im Garten.',
+          question: 'Was ist das Subjekt in diesem Satz?',
+          options: ['Der Hund', 'spielt', 'im Garten', 'Garten'],
+          correct: 0,
+          explanation: 'Das Subjekt antwortet auf die Frage "Wer oder was?" - Der Hund spielt.'
+        },
+        {
+          type: 'identify',
+          sentence: 'Das Mädchen malt ein Bild.',
+          question: 'Was ist das Verb (Prädikat) in diesem Satz?',
+          options: ['Das Mädchen', 'malt', 'ein Bild', 'Bild'],
+          correct: 1,
+          explanation: 'Das Verb sagt, was passiert. Hier: malt.'
+        },
+        {
+          type: 'identify',
+          sentence: 'Der Vater gibt dem Kind einen Apfel.',
+          question: 'Wem gibt der Vater den Apfel? (Dativobjekt)',
+          options: ['Der Vater', 'einen Apfel', 'dem Kind', 'gibt'],
+          correct: 2,
+          explanation: 'Das Dativobjekt antwortet auf die Frage "Wem?" - dem Kind.'
+        },
+        {
+          type: 'identify',
+          sentence: 'Am Morgen läuft der Junge zur Schule.',
+          question: 'Was ist die Präposition in "zur Schule"?',
+          options: ['Am', 'zur', 'Schule', 'läuft'],
+          correct: 1,
+          explanation: 'Präpositionen sind kleine Wörter wie "zu", "in", "auf".'
+        },
+        {
+          type: 'identify',
+          sentence: 'Die Katze und der Hund spielen zusammen.',
+          question: 'Was ist die Konjunktion in diesem Satz?',
+          options: ['Die', 'und', 'spielen', 'zusammen'],
+          correct: 1,
+          explanation: 'Konjunktionen verbinden Wörter oder Sätze. Hier: und.'
+        },
+        {
+          type: 'identify',
+          sentence: 'Das Mädchen malt ein schönes Bild.',
+          question: 'Was ist das Akkusativobjekt? (Wen oder was?)',
+          options: ['Das Mädchen', 'malt', 'ein schönes Bild', 'schönes'],
+          correct: 2,
+          explanation: 'Das Akkusativobjekt antwortet auf "Wen oder was malt sie?" - ein schönes Bild.'
+        },
+        {
+          type: 'mark',
+          sentence: 'Die Kinder spielen auf dem Spielplatz.',
+          question: 'Markiere das Subjekt und das Prädikat!',
+          correctMarkings: { 'Die': 'subjekt', 'Kinder': 'subjekt', 'spielen': 'praedikat' },
+          explanation: 'Subjekt: Die Kinder (Wer spielt?) - Prädikat: spielen (Was tun sie?)'
+        },
+        {
+          type: 'identify',
+          sentence: 'Der Lehrer erklärt den Schülern die Aufgabe.',
+          question: 'Wer ist das Subjekt?',
+          options: ['Der Lehrer', 'den Schülern', 'die Aufgabe', 'erklärt'],
+          correct: 0,
+          explanation: 'Das Subjekt antwortet auf "Wer erklärt?" - Der Lehrer.'
+        },
+        {
+          type: 'identify',
+          sentence: 'Im Park spielen viele Kinder.',
+          question: 'Wo spielen die Kinder? (Präpositionalgruppe)',
+          options: ['viele Kinder', 'spielen', 'Im Park', 'Kinder'],
+          correct: 2,
+          explanation: 'Die Präpositionalgruppe "Im Park" sagt, wo etwas passiert.'
+        },
+        {
+          type: 'identify',
+          sentence: 'Mama kauft Brot und Milch.',
+          question: 'Was verbindet "und" in diesem Satz?',
+          options: ['Mama und kauft', 'Brot und Milch', 'kauft und Brot', 'Nichts'],
+          correct: 1,
+          explanation: 'Die Konjunktion "und" verbindet hier Brot und Milch.'
+        }
+      ],
+      5: [
+        {
+          type: 'identify',
+          sentence: 'Der Junge gibt seiner Schwester das Buch.',
+          question: 'Was ist das Dativobjekt? (Wem?)',
+          options: ['Der Junge', 'seiner Schwester', 'das Buch', 'gibt'],
+          correct: 1,
+          explanation: 'Das Dativobjekt antwortet auf "Wem?" - seiner Schwester.'
+        },
+        {
+          type: 'identify',
+          sentence: 'Der Junge gibt seiner Schwester das Buch.',
+          question: 'Was ist das Akkusativobjekt? (Wen oder was?)',
+          options: ['Der Junge', 'seiner Schwester', 'das Buch', 'gibt'],
+          correct: 2,
+          explanation: 'Das Akkusativobjekt antwortet auf "Wen oder was gibt er?" - das Buch.'
+        },
+        {
+          type: 'identify',
+          sentence: 'Am Morgen fährt der Bus zur Schule.',
+          question: 'Was ist die temporale Bestimmung? (Wann?)',
+          options: ['der Bus', 'Am Morgen', 'zur Schule', 'fährt'],
+          correct: 1,
+          explanation: 'Die temporale Bestimmung antwortet auf "Wann?" - Am Morgen.'
+        },
+        {
+          type: 'identify',
+          sentence: 'Die Lehrerin erklärt den Kindern die Aufgabe geduldig.',
+          question: 'Welches Wort beschreibt, WIE sie erklärt?',
+          options: ['Die Lehrerin', 'den Kindern', 'die Aufgabe', 'geduldig'],
+          correct: 3,
+          explanation: '"Geduldig" ist eine modale Bestimmung und sagt, wie etwas geschieht.'
+        },
+        {
+          type: 'mark',
+          sentence: 'Im Garten spielt der Hund mit dem Ball.',
+          question: 'Markiere Subjekt, Prädikat und eine Präposition!',
+          correctMarkings: { 'der': 'subjekt', 'Hund': 'subjekt', 'spielt': 'praedikat', 'Im': 'praeposition', 'mit': 'praeposition' },
+          explanation: 'Subjekt: der Hund - Prädikat: spielt - Präpositionen: Im, mit'
+        },
+        {
+          type: 'identify',
+          sentence: 'Der Vater und die Mutter kochen zusammen.',
+          question: 'Was verbindet die Konjunktion "und"?',
+          options: ['Vater und Mutter', 'kochen und zusammen', 'Der und die', 'Nichts'],
+          correct: 0,
+          explanation: 'Die Konjunktion "und" verbindet hier zwei Subjekte: Vater und Mutter.'
+        },
+        {
+          type: 'identify',
+          sentence: 'Wegen des Regens bleiben wir zu Hause.',
+          question: 'Warum bleiben wir zu Hause? (Kausale Bestimmung)',
+          options: ['wir', 'Wegen des Regens', 'zu Hause', 'bleiben'],
+          correct: 1,
+          explanation: 'Die kausale Bestimmung antwortet auf "Warum?" - Wegen des Regens.'
+        },
+        {
+          type: 'identify',
+          sentence: 'Sie läuft schnell nach Hause.',
+          question: 'Wohin läuft sie? (Lokale Bestimmung)',
+          options: ['Sie', 'schnell', 'nach Hause', 'läuft'],
+          correct: 2,
+          explanation: '"Nach Hause" ist die lokale Bestimmung (Wohin?).'
+        },
+        {
+          type: 'identify',
+          sentence: 'Der Schüler arbeitet jeden Tag fleißig.',
+          question: 'Was ist "jeden Tag"?',
+          options: ['Subjekt', 'Prädikat', 'Temporale Bestimmung', 'Modale Bestimmung'],
+          correct: 2,
+          explanation: '"Jeden Tag" antwortet auf "Wann?" und ist eine temporale Bestimmung.'
+        },
+        {
+          type: 'mark',
+          sentence: 'Die Mutter schenkt dem Sohn ein Fahrrad.',
+          question: 'Markiere Subjekt, Dativobjekt und Akkusativobjekt!',
+          correctMarkings: { 'Die': 'subjekt', 'Mutter': 'subjekt', 'dem': 'objekt', 'Sohn': 'objekt', 'ein': 'objekt', 'Fahrrad': 'objekt' },
+          explanation: 'Subjekt: Die Mutter - Dativobjekt: dem Sohn - Akkusativobjekt: ein Fahrrad'
+        }
+      ],
+      6: [
+        {
+          type: 'identify',
+          sentence: 'Gestern hat der Lehrer den Schülern die Aufgabe erklärt.',
+          question: 'Was ist "Gestern"?',
+          options: ['Lokale Bestimmung', 'Temporale Bestimmung', 'Modale Bestimmung', 'Kausale Bestimmung'],
+          correct: 1,
+          explanation: '"Gestern" antwortet auf "Wann?" und ist eine temporale Bestimmung.'
+        },
+        {
+          type: 'identify',
+          sentence: 'Wegen des Sturms blieben die Kinder zu Hause.',
+          question: 'Was ist "Wegen des Sturms"?',
+          options: ['Lokale Bestimmung', 'Temporale Bestimmung', 'Modale Bestimmung', 'Kausale Bestimmung'],
+          correct: 3,
+          explanation: '"Wegen des Sturms" antwortet auf "Warum?" und ist eine kausale Bestimmung.'
+        },
+        {
+          type: 'identify',
+          sentence: 'Er erinnert sich gern an die Ferien.',
+          question: 'Was ist "an die Ferien"?',
+          options: ['Akkusativobjekt', 'Dativobjekt', 'Präpositionalobjekt', 'Lokale Bestimmung'],
+          correct: 2,
+          explanation: '"An die Ferien" ist ein Präpositionalobjekt - "sich erinnern an" verlangt diese Präposition.'
+        },
+        {
+          type: 'identify',
+          sentence: 'Die Mannschaft trainiert jeden Tag im Stadion sehr intensiv.',
+          question: 'Was ist "sehr intensiv"?',
+          options: ['Lokale Bestimmung', 'Temporale Bestimmung', 'Modale Bestimmung', 'Präpositionalobjekt'],
+          correct: 2,
+          explanation: '"Sehr intensiv" antwortet auf "Wie?" und ist eine modale Bestimmung.'
+        },
+        {
+          type: 'identify',
+          sentence: 'Sie gedachten der Verstorbenen.',
+          question: 'Was ist "der Verstorbenen"?',
+          options: ['Akkusativobjekt', 'Dativobjekt', 'Genitivobjekt', 'Präpositionalobjekt'],
+          correct: 2,
+          explanation: '"Der Verstorbenen" ist ein Genitivobjekt - "gedenken" verlangt den Genitiv.'
+        },
+        {
+          type: 'mark',
+          sentence: 'Am Wochenende besuchte die Familie ihre Großeltern auf dem Land.',
+          question: 'Markiere das Subjekt, das Prädikat und beide Adverbialen!',
+          correctMarkings: { 'die': 'subjekt', 'Familie': 'subjekt', 'besuchte': 'praedikat', 'Am': 'adverbial', 'Wochenende': 'adverbial', 'auf': 'adverbial', 'dem': 'adverbial', 'Land': 'adverbial' },
+          explanation: 'Subjekt: die Familie - Prädikat: besuchte - Adverbiale: Am Wochenende (temporal), auf dem Land (lokal)'
+        },
+        {
+          type: 'identify',
+          sentence: 'Der Arzt half dem Patienten mit großer Sorgfalt.',
+          question: 'Was ist "mit großer Sorgfalt"?',
+          options: ['Dativobjekt', 'Akkusativobjekt', 'Modale Bestimmung', 'Präpositionalobjekt'],
+          correct: 2,
+          explanation: '"Mit großer Sorgfalt" antwortet auf "Wie?" und ist eine modale Bestimmung.'
+        },
+        {
+          type: 'identify',
+          sentence: 'Er wartet auf seinen Freund.',
+          question: 'Was ist "auf seinen Freund"?',
+          options: ['Lokale Bestimmung', 'Akkusativobjekt', 'Präpositionalobjekt', 'Dativobjekt'],
+          correct: 2,
+          explanation: '"Auf seinen Freund" ist ein Präpositionalobjekt - "warten auf" ist fest verbunden.'
+        },
+        {
+          type: 'adverbial',
+          sentence: 'Welche Art von Adverbial ist "aus Versehen"?',
+          question: 'Bestimme die Art des Adverbials!',
+          options: ['lokal', 'temporal', 'modal', 'kausal'],
+          correct: 3,
+          explanation: '"Aus Versehen" gibt den Grund an und ist kausal.'
+        },
+        {
+          type: 'adverbial',
+          sentence: 'Welche Art von Adverbial ist "hinter dem Haus"?',
+          question: 'Bestimme die Art des Adverbials!',
+          options: ['lokal', 'temporal', 'modal', 'kausal'],
+          correct: 0,
+          explanation: '"Hinter dem Haus" gibt den Ort an und ist lokal.'
+        }
+      ],
+      78: [
+        {
+          type: 'nebensatz',
+          sentence: 'Er bleibt zu Hause, weil er krank ist.',
+          question: 'Welche Art von Nebensatz ist "weil er krank ist"?',
+          options: ['Kausalsatz', 'Konditionalsatz', 'Temporalsatz', 'Finalsatz'],
+          correct: 0,
+          explanation: 'Der Kausalsatz gibt den Grund an und wird mit "weil" oder "da" eingeleitet.'
+        },
+        {
+          type: 'nebensatz',
+          sentence: 'Wenn es regnet, bleiben wir drinnen.',
+          question: 'Welche Art von Nebensatz ist "Wenn es regnet"?',
+          options: ['Kausalsatz', 'Konditionalsatz', 'Temporalsatz', 'Konzessivsatz'],
+          correct: 1,
+          explanation: 'Der Konditionalsatz nennt eine Bedingung und wird mit "wenn", "falls" eingeleitet.'
+        },
+        {
+          type: 'nebensatz',
+          sentence: 'Nachdem er gegessen hatte, ging er spazieren.',
+          question: 'Welche Art von Nebensatz ist "Nachdem er gegessen hatte"?',
+          options: ['Finalsatz', 'Konditionalsatz', 'Temporalsatz', 'Konzessivsatz'],
+          correct: 2,
+          explanation: 'Der Temporalsatz gibt die Zeit an und wird mit "nachdem", "bevor", "während" etc. eingeleitet.'
+        },
+        {
+          type: 'nebensatz',
+          sentence: 'Er lernt fleißig, damit er die Prüfung besteht.',
+          question: 'Welche Art von Nebensatz ist "damit er die Prüfung besteht"?',
+          options: ['Kausalsatz', 'Konzessivsatz', 'Temporalsatz', 'Finalsatz'],
+          correct: 3,
+          explanation: 'Der Finalsatz nennt den Zweck/die Absicht und wird mit "damit" oder "um...zu" eingeleitet.'
+        },
+        {
+          type: 'nebensatz',
+          sentence: 'Obwohl sie müde war, arbeitete sie weiter.',
+          question: 'Welche Art von Nebensatz ist "Obwohl sie müde war"?',
+          options: ['Kausalsatz', 'Konditionalsatz', 'Konzessivsatz', 'Relativsatz'],
+          correct: 2,
+          explanation: 'Der Konzessivsatz drückt eine Einräumung aus und wird mit "obwohl", "obgleich" eingeleitet.'
+        },
+        {
+          type: 'nebensatz',
+          sentence: 'Das Buch, das ich gestern gekauft habe, ist spannend.',
+          question: 'Welche Art von Nebensatz ist "das ich gestern gekauft habe"?',
+          options: ['Kausalsatz', 'Temporalsatz', 'Finalsatz', 'Relativsatz'],
+          correct: 3,
+          explanation: 'Der Relativsatz bezieht sich auf ein Nomen und wird mit Relativpronomen eingeleitet.'
+        },
+        {
+          type: 'mark',
+          sentence: 'Der berühmte Wissenschaftler erklärte den Studenten gestern im Hörsaal die komplizierte Theorie.',
+          question: 'Markiere Subjekt, Prädikat, Dativobjekt und Akkusativobjekt!',
+          correctMarkings: { 'Der': 'subjekt', 'berühmte': 'subjekt', 'Wissenschaftler': 'subjekt', 'erklärte': 'praedikat', 'den': 'objekt', 'Studenten': 'objekt', 'die': 'objekt', 'komplizierte': 'objekt', 'Theorie': 'objekt' },
+          explanation: 'Subjekt: Der berühmte Wissenschaftler - Prädikat: erklärte - DatObj: den Studenten - AkkObj: die komplizierte Theorie'
+        },
+        {
+          type: 'identify',
+          sentence: 'Trotz des schlechten Wetters erinnerte sich die alte Frau gern an ihre Jugend.',
+          question: 'Was ist "Trotz des schlechten Wetters"?',
+          options: ['Kausale Bestimmung', 'Konzessive Bestimmung', 'Temporale Bestimmung', 'Präpositionalobjekt'],
+          correct: 1,
+          explanation: '"Trotz" leitet eine konzessive Bestimmung ein (Einräumung).'
+        },
+        {
+          type: 'konjunktion',
+          sentence: 'Wähle die richtige Konjunktion: Er kam nicht zur Schule, ___ er krank war.',
+          question: 'Welche Konjunktion passt?',
+          options: ['obwohl', 'damit', 'weil', 'wenn'],
+          correct: 2,
+          explanation: '"Weil" leitet einen Kausalsatz ein und gibt den Grund an.'
+        },
+        {
+          type: 'konjunktion',
+          sentence: 'Wähle die richtige Konjunktion: Sie trägt einen Regenschirm, ___ es nicht regnet.',
+          question: 'Welche Konjunktion passt?',
+          options: ['weil', 'obwohl', 'damit', 'nachdem'],
+          correct: 1,
+          explanation: '"Obwohl" leitet einen Konzessivsatz ein (Einräumung/Widerspruch).'
+        }
+      ]
+    };
+
+    // Badge definitions
+    const badgeDefinitions = [
+      { id: 'firstCorrect', icon: '⭐', name: 'Erster Erfolg', desc: 'Erste richtige Antwort' },
+      { id: 'streak5', icon: '🔥', name: 'Heiße Serie', desc: '5 richtige in Folge' },
+      { id: 'streak10', icon: '💥', name: 'Unaufhaltsam', desc: '10 richtige in Folge' },
+      { id: 'level5', icon: '🏆', name: 'Aufsteiger', desc: 'Level 5 erreicht' },
+      { id: 'level10', icon: '👑', name: 'Grammatik-König', desc: 'Level 10 erreicht' },
+      { id: 'perfect', icon: '💯', name: 'Perfektionist', desc: 'Runde ohne Fehler' },
+      { id: 'grammar100', icon: '📚', name: 'Fleißig', desc: '100 Fragen beantwortet' },
+      { id: 'master', icon: '🎓', name: 'Meister', desc: 'Alle Klassenstufen gespielt' }
+    ];
+
+    // Initialize
+    function init() {
+      loadGameState();
+      renderBadges();
+      updateUI();
+      setupGradeButtons();
+    }
+
+    // Setup grade buttons
+    function setupGradeButtons() {
+      document.querySelectorAll('.grade-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          gameState.grade = parseInt(btn.dataset.grade) || 78;
+          saveGameState();
+        });
+      });
+    }
+
+    // Start game
+    function startGame() {
+      gameState.currentQuestion = 0;
+      gameState.selectedWords = [];
+      gameState.wordMarkings = {};
+      document.getElementById('menu-screen').classList.add('hidden');
+      document.getElementById('game-screen').classList.remove('hidden');
+      
+      // Show nebensatz button for grade 7/8
+      const nebensatzBtn = document.querySelector('.mark-btn.nebensatz');
+      if (gameState.grade === 78) {
+        nebensatzBtn.classList.remove('hidden');
+      } else {
+        nebensatzBtn.classList.add('hidden');
+      }
+      
+      loadQuestion();
+    }
+
+    // Load question
+    function loadQuestion() {
+      const questions = questionBanks[gameState.grade];
+      if (gameState.currentQuestion >= gameState.questionsPerRound) {
+        endRound();
+        return;
+      }
+
+      const questionIndex = gameState.currentQuestion % questions.length;
+      const question = questions[questionIndex];
+      
+      document.getElementById('current-q').textContent = gameState.currentQuestion + 1;
+      document.getElementById('total-q').textContent = gameState.questionsPerRound;
+      document.getElementById('question-text').textContent = question.question;
+      document.getElementById('feedback').style.display = 'none';
+      document.getElementById('submit-btn').disabled = false;
+
+      // Set question type badge
+      const typeLabels = {
+        'identify': 'Satzglied bestimmen',
+        'mark': 'Markieren',
+        'nebensatz': 'Nebensatz bestimmen',
+        'adverbial': 'Adverbial bestimmen',
+        'konjunktion': 'Konjunktion wählen'
+      };
+      document.getElementById('question-type').textContent = typeLabels[question.type] || 'Übung';
+
+      // Render sentence
+      const sentenceDiv = document.getElementById('sentence-display');
+      const markingTools = document.getElementById('marking-tools');
+      const optionsGrid = document.getElementById('options-grid');
+
+      if (question.type === 'mark') {
+        // Marking question
+        sentenceDiv.innerHTML = question.sentence.split(' ').map((word, i) => 
+          `<span class="word" data-index="${i}" onclick="selectWord(${i})">${word}</span>`
+        ).join(' ');
+        markingTools.classList.remove('hidden');
+        optionsGrid.classList.add('hidden');
+        gameState.wordMarkings = {};
+        gameState.selectedWords = [];
+        setupMarkingTools();
+      } else {
+        // Multiple choice question
+        sentenceDiv.innerHTML = `<span style="font-style: italic;">${question.sentence}</span>`;
+        markingTools.classList.add('hidden');
+        optionsGrid.classList.remove('hidden');
+        optionsGrid.innerHTML = question.options.map((opt, i) => 
+          `<button class="option-btn" data-index="${i}" onclick="selectOption(${i})">${opt}</button>`
+        ).join('');
+        gameState.selectedOption = null;
+      }
+    }
+
+    // Setup marking tools
+    function setupMarkingTools() {
+      document.querySelectorAll('.mark-btn').forEach(btn => {
+        btn.onclick = () => {
+          const mark = btn.dataset.mark;
+          if (mark === 'clear') {
+            gameState.selectedWords.forEach(idx => {
+              const wordEl = document.querySelector(`.word[data-index="${idx}"]`);
+              wordEl.className = 'word';
+              delete gameState.wordMarkings[idx];
+            });
+            gameState.selectedWords = [];
+          } else if (gameState.selectedWords.length > 0) {
+            gameState.selectedWords.forEach(idx => {
+              const wordEl = document.querySelector(`.word[data-index="${idx}"]`);
+              wordEl.className = `word marked-${mark}`;
+              gameState.wordMarkings[idx] = mark;
+            });
+            gameState.selectedWords = [];
+            document.querySelectorAll('.word.selected').forEach(w => w.classList.remove('selected'));
+          }
+        };
+      });
+    }
+
+    // Select word for marking
+    function selectWord(index) {
+      const wordEl = document.querySelector(`.word[data-index="${index}"]`);
+      if (wordEl.classList.contains('selected')) {
+        wordEl.classList.remove('selected');
+        gameState.selectedWords = gameState.selectedWords.filter(i => i !== index);
+      } else {
+        wordEl.classList.add('selected');
+        gameState.selectedWords.push(index);
+      }
+    }
+
+    // Select option
+    function selectOption(index) {
+      document.querySelectorAll('.option-btn').forEach(btn => {
+        btn.classList.remove('selected');
+        btn.style.borderColor = 'var(--border-gray)';
+        btn.style.background = 'white';
+      });
+      const btn = document.querySelector(`.option-btn[data-index="${index}"]`);
+      btn.style.borderColor = 'var(--header-blue)';
+      btn.style.background = 'var(--light-blue)';
+      gameState.selectedOption = index;
+    }
+
+    // Check answer
+    function checkAnswer() {
+      const questions = questionBanks[gameState.grade];
+      const questionIndex = gameState.currentQuestion % questions.length;
+      const question = questions[questionIndex];
+      
+      let isCorrect = false;
+      const feedback = document.getElementById('feedback');
+      const feedbackTitle = document.getElementById('feedback-title');
+      const feedbackText = document.getElementById('feedback-text');
+
+      if (question.type === 'mark') {
+        // Check marking correctness (simplified check)
+        const words = question.sentence.split(' ');
+        let correctCount = 0;
+        let totalRequired = Object.keys(question.correctMarkings).length;
+        
+        Object.entries(question.correctMarkings).forEach(([word, expectedMark]) => {
+          const wordIndex = words.indexOf(word);
+          if (wordIndex !== -1 && gameState.wordMarkings[wordIndex] === expectedMark) {
+            correctCount++;
+          }
+        });
+        
+        isCorrect = correctCount >= totalRequired * 0.6; // 60% threshold
+      } else {
+        isCorrect = gameState.selectedOption === question.correct;
+        
+        // Show correct/incorrect on options
+        document.querySelectorAll('.option-btn').forEach((btn, i) => {
+          if (i === question.correct) {
+            btn.classList.add('correct');
+          } else if (i === gameState.selectedOption && !isCorrect) {
+            btn.classList.add('incorrect');
+          }
+        });
+      }
+
+      // Update stats
+      gameState.totalQuestions++;
+      gameState.questionsAnswered[gameState.grade]++;
+      
+      if (isCorrect) {
+        gameState.correctAnswers++;
+        gameState.streak++;
+        if (gameState.streak > gameState.bestStreak) {
+          gameState.bestStreak = gameState.streak;
+        }
+        
+        const xpGain = 10 + (gameState.streak * 2);
+        gameState.xp += xpGain;
+        gameState.score += xpGain;
+        
+        showToast(`+${xpGain} XP`, 'xp');
+        
+        feedbackTitle.textContent = getCorrectMessage();
+        feedbackText.textContent = question.explanation;
+        feedback.className = 'feedback correct';
+        
+        // Check level up
+        checkLevelUp();
+        
+        // Check badges
+        checkBadges();
+        
+        if (gameState.streak >= 5) {
+          createConfetti();
+        }
+      } else {
+        gameState.streak = 0;
+        
+        feedbackTitle.textContent = getIncorrectMessage();
+        feedbackText.textContent = question.explanation;
+        feedback.className = 'feedback incorrect';
+      }
+
+      feedback.style.display = 'block';
+      document.getElementById('submit-btn').disabled = true;
+      
+      updateUI();
+      saveGameState();
+
+      // Auto advance after delay
+      setTimeout(() => {
+        gameState.currentQuestion++;
+        loadQuestion();
+      }, 2500);
+    }
+
+    // Get random correct message
+    function getCorrectMessage() {
+      const messages = ['Super!', 'Richtig!', 'Sehr gut!', 'Perfekt!', 'Ausgezeichnet!', 'Toll gemacht!', 'Fantastisch!'];
+      return messages[Math.floor(Math.random() * messages.length)];
+    }
+
+    // Get random incorrect message
+    function getIncorrectMessage() {
+      const messages = ['Nicht ganz...', 'Leider falsch', 'Versuch es nochmal!', 'Fast richtig!', 'Noch nicht ganz'];
+      return messages[Math.floor(Math.random() * messages.length)];
+    }
+
+    // Check level up
+    function checkLevelUp() {
+      const xpNeeded = gameState.level * 100;
+      if (gameState.xp >= xpNeeded) {
+        gameState.xp -= xpNeeded;
+        gameState.level++;
+        showToast(`Level ${gameState.level} erreicht!`, 'badge');
+        createConfetti();
+      }
+    }
+
+    // Check badges
+    function checkBadges() {
+      let newBadge = null;
+
+      if (!gameState.badges.firstCorrect && gameState.correctAnswers >= 1) {
+        gameState.badges.firstCorrect = true;
+        newBadge = 'firstCorrect';
+      }
+      if (!gameState.badges.streak5 && gameState.streak >= 5) {
+        gameState.badges.streak5 = true;
+        newBadge = 'streak5';
+      }
+      if (!gameState.badges.streak10 && gameState.streak >= 10) {
+        gameState.badges.streak10 = true;
+        newBadge = 'streak10';
+      }
+      if (!gameState.badges.level5 && gameState.level >= 5) {
+        gameState.badges.level5 = true;
+        newBadge = 'level5';
+      }
+      if (!gameState.badges.level10 && gameState.level >= 10) {
+        gameState.badges.level10 = true;
+        newBadge = 'level10';
+      }
+      if (!gameState.badges.grammar100 && gameState.totalQuestions >= 100) {
+        gameState.badges.grammar100 = true;
+        newBadge = 'grammar100';
+      }
+      
+      // Check all grades played
+      gameState.badges.allGrades[gameState.grade] = true;
+      const allGradesPlayed = Object.values(gameState.badges.allGrades).every(v => v);
+      if (!gameState.badges.master && allGradesPlayed) {
+        gameState.badges.master = true;
+        newBadge = 'master';
+      }
+
+      if (newBadge) {
+        const badge = badgeDefinitions.find(b => b.id === newBadge);
+        showToast(`${badge.icon} ${badge.name} freigeschaltet!`, 'badge');
+        createConfetti();
+        renderBadges();
+      }
+    }
+
+    // End round
+    function endRound() {
+      const accuracy = Math.round((gameState.correctAnswers / gameState.totalQuestions) * 100);
+      
+      // Check perfect round badge
+      if (!gameState.badges.perfect && gameState.currentQuestion === gameState.questionsPerRound) {
+        const roundCorrect = gameState.questionsPerRound; // Simplified check
+        if (accuracy === 100) {
+          gameState.badges.perfect = true;
+          showToast('💯 Perfekte Runde!', 'badge');
+          createConfetti();
+          renderBadges();
+        }
+      }
+
+      document.getElementById('game-screen').classList.add('hidden');
+      document.getElementById('menu-screen').classList.remove('hidden');
+      
+      saveGameState();
+    }
+
+    // Update UI
+    function updateUI() {
+      document.getElementById('level').textContent = gameState.level;
+      document.getElementById('score').textContent = gameState.score;
+      document.getElementById('streak').textContent = gameState.streak;
+      
+      const accuracy = gameState.totalQuestions > 0 
+        ? Math.round((gameState.correctAnswers / gameState.totalQuestions) * 100) 
+        : 0;
+      document.getElementById('accuracy').textContent = `${accuracy}%`;
+
+      // XP bar
+      const xpNeeded = gameState.level * 100;
+      const xpPercent = (gameState.xp / xpNeeded) * 100;
+      document.getElementById('xp-bar').style.width = `${xpPercent}%`;
+      document.getElementById('xp-text').textContent = `${gameState.xp} / ${xpNeeded} XP`;
+
+      // Streak flame visibility
+      document.getElementById('streak-flame').style.display = gameState.streak > 0 ? 'inline' : 'none';
+    }
+
+    // Render badges
+    function renderBadges() {
+      const grid = document.getElementById('badges-grid');
+      grid.innerHTML = badgeDefinitions.map(badge => {
+        const earned = gameState.badges[badge.id];
+        return `
+          <div class="badge ${earned ? 'earned' : ''}">
+            <div class="badge-icon">${badge.icon}</div>
+            <div class="badge-name">${badge.name}</div>
+            <div class="badge-desc">${badge.desc}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Show toast
+    function showToast(message, type) {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}-toast`;
+      toast.innerHTML = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'slideIn 0.5s ease reverse';
+        setTimeout(() => toast.remove(), 500);
+      }, 2000);
+    }
+
+    // Create confetti
+    function createConfetti() {
+      const container = document.getElementById('confetti');
+      const colors = ['#2E86AB', '#28A745', '#F4A460', '#9B59B6', '#DC3545', '#17A2B8', '#FFD700'];
+      
+      for (let i = 0; i < 50; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = Math.random() * 0.5 + 's';
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        container.appendChild(piece);
+        
+        setTimeout(() => piece.remove(), 3000);
+      }
+    }
+
+    // Save game state
+    function saveGameState() {
+      localStorage.setItem('satzgliederMeister', JSON.stringify(gameState));
+    }
+
+    // Load game state
+    function loadGameState() {
+      const saved = localStorage.getItem('satzgliederMeister');
+      if (saved) {
+        const loaded = JSON.parse(saved);
+        gameState = { ...gameState, ...loaded };
+        
+        // Set active grade button
+        document.querySelectorAll('.grade-btn').forEach(btn => {
+          btn.classList.remove('active');
+          if (parseInt(btn.dataset.grade) === gameState.grade || 
+              (btn.dataset.grade === '78' && gameState.grade === 78)) {
+            btn.classList.add('active');
+          }
+        });
+      }
+    }
+
+    // Reset game (for testing)
+    function resetGame() {
+      localStorage.removeItem('satzgliederMeister');
+      location.reload();
+    }
+
+    // Initialize on load
+    init();
+  </script>
+</body>
+</html>
