@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klasse 6 – Übungsprogramm</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Nunito+Sans:wght@400;600&display=swap');
+
+  :root {
+    --primary: #4f46e5;
+    --primary-light: #ede9fe;
+    --primary-dark: #3730a3;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --amber: #d97706;
+    --amber-light: #fef3c7;
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+    --teal: #0d9488;
+    --teal-light: #ccfbf1;
+    --pink: #db2777;
+    --pink-light: #fce7f3;
+    --gray-50: #f8f7ff;
+    --gray-100: #f1f0f9;
+    --gray-200: #e2e1f0;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --shadow: 0 2px 8px rgba(0,0,0,0.10);
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito Sans', sans-serif;
+    background: linear-gradient(135deg, #ede9fe 0%, #e0f2fe 50%, #dcfce7 100%);
+    min-height: 100vh;
+    color: var(--gray-800);
+  }
+
+  h1, h2, h3, h4 { font-family: 'Nunito', sans-serif; }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--primary);
+    color: white;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    box-shadow: 0 4px 20px rgba(79,70,229,0.3);
+  }
+  .header h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
+  .header p { font-size: 0.9rem; opacity: 0.85; margin-top: 2px; }
+
+  /* ── SCOREBOARD ── */
+  .scoreboard {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .score-pill {
+    background: rgba(255,255,255,0.2);
+    border: 1.5px solid rgba(255,255,255,0.4);
+    border-radius: 999px;
+    padding: 0.35rem 1rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .score-pill .icon { font-size: 1.1rem; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar-wrap {
+    background: rgba(255,255,255,0.2);
+    height: 8px;
+    border-radius: 99px;
+    width: 100%;
+    margin-top: 0.75rem;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    background: #a5f3fc;
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.5s ease;
+  }
+
+  /* ── NAVIGATION ── */
+  .nav {
+    background: white;
+    padding: 0.8rem 2rem;
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    box-shadow: var(--shadow);
+    border-bottom: 2px solid var(--gray-200);
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    border: 2px solid var(--gray-200);
+    background: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    color: var(--gray-700);
+  }
+  .nav-btn:hover { border-color: var(--primary); color: var(--primary); }
+  .nav-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+  }
+  .nav-btn .badge {
+    display: inline-block;
+    background: var(--green);
+    color: white;
+    border-radius: 99px;
+    font-size: 0.7rem;
+    padding: 0 6px;
+    margin-left: 4px;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main { max-width: 860px; margin: 2rem auto; padding: 0 1rem 4rem; }
+
+  /* ── SECTION CARD ── */
+  .section-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 1.5px solid var(--gray-200);
+    display: none;
+  }
+  .section-card.active { display: block; }
+
+  .section-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+    margin-bottom: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-subtitle {
+    font-size: 0.88rem;
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1.5px solid var(--gray-200);
+  }
+
+  /* ── LERNZIEL BOX ── */
+  .lernziel {
+    background: var(--primary-light);
+    border-left: 4px solid var(--primary);
+    border-radius: 0 8px 8px 0;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--primary-dark);
+    font-weight: 600;
+  }
+
+  /* ── TIPP BOX ── */
+  .tipp {
+    background: var(--amber-light);
+    border-left: 4px solid var(--amber);
+    border-radius: 0 8px 8px 0;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.88rem;
+    color: #92400e;
+  }
+  .tipp strong { color: var(--amber); font-weight: 800; }
+
+  /* ── EXERCISE BLOCK ── */
+  .exercise {
+    background: var(--gray-50);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1.5px solid var(--gray-200);
+  }
+  .exercise-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--gray-800);
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .exercise-instr {
+    font-size: 0.88rem;
+    color: #4b5563;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+
+  /* ── FILL-IN BLANKS ── */
+  .fill-sentence {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 0.6rem;
+    font-size: 0.95rem;
+    line-height: 2;
+  }
+  .fill-sentence span { color: var(--gray-800); }
+  .blank-input {
+    border: none;
+    border-bottom: 2px solid var(--primary);
+    background: transparent;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    padding: 2px 4px;
+    outline: none;
+    color: var(--primary-dark);
+    font-weight: 700;
+    min-width: 80px;
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+  .blank-input:focus { border-bottom-color: var(--primary-dark); }
+  .blank-input.correct { border-bottom-color: var(--green); color: var(--green); }
+  .blank-input.wrong { border-bottom-color: var(--red); color: var(--red); }
+
+  /* ── MC QUESTIONS ── */
+  .mc-question { margin-bottom: 1.2rem; }
+  .mc-question p { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .mc-options { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .mc-opt {
+    padding: 0.4rem 1rem;
+    border: 2px solid var(--gray-200);
+    border-radius: 999px;
+    background: white;
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    transition: all 0.2s;
+    color: var(--gray-800);
+  }
+  .mc-opt:hover { border-color: var(--primary); color: var(--primary); }
+  .mc-opt.correct { background: var(--green-light); border-color: var(--green); color: var(--green); }
+  .mc-opt.wrong { background: var(--red-light); border-color: var(--red); color: var(--red); }
+  .mc-opt.reveal { background: var(--green-light); border-color: var(--green); color: var(--green); }
+
+  /* ── DRAG & DROP ── */
+  .word-bank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    border: 1.5px dashed var(--gray-200);
+    min-height: 52px;
+  }
+  .word-chip {
+    padding: 0.3rem 0.9rem;
+    background: var(--primary);
+    color: white;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    cursor: grab;
+    user-select: none;
+    transition: all 0.2s;
+    display: inline-block;
+  }
+  .word-chip:hover { background: var(--primary-dark); transform: translateY(-1px); }
+  .word-chip.used { opacity: 0.35; cursor: not-allowed; }
+
+  /* ── DROP ZONE ── */
+  .drop-zone {
+    display: inline-block;
+    border-bottom: 2px solid var(--primary);
+    min-width: 80px;
+    padding: 2px 4px;
+    font-weight: 700;
+    color: var(--primary-dark);
+    font-size: 0.95rem;
+    text-align: center;
+    cursor: pointer;
+    background: transparent;
+    transition: background 0.2s;
+  }
+  .drop-zone:hover { background: var(--primary-light); border-radius: 4px 4px 0 0; }
+  .drop-zone.filled { color: var(--primary-dark); }
+  .drop-zone.correct { color: var(--green); border-bottom-color: var(--green); }
+  .drop-zone.wrong { color: var(--red); border-bottom-color: var(--red); }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: none;
+  }
+  .feedback.success { background: var(--green-light); color: #15803d; display: block; }
+  .feedback.partial { background: var(--amber-light); color: #92400e; display: block; }
+  .feedback.error { background: var(--red-light); color: #b91c1c; display: block; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    padding: 0.55rem 1.3rem;
+    border-radius: 999px;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+  .btn-secondary { background: var(--gray-100); color: var(--gray-700); border: 1.5px solid var(--gray-200); }
+  .btn-secondary:hover { background: var(--gray-200); }
+  .btn-green { background: var(--green); color: white; }
+  .btn-green:hover { background: #15803d; }
+  .btn-row { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
+
+  /* ── VERB TABLE ── */
+  .verb-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  .verb-table th {
+    background: var(--primary);
+    color: white;
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+  }
+  .verb-table td {
+    padding: 0.5rem 0.8rem;
+    border-bottom: 1px solid var(--gray-200);
+    vertical-align: middle;
+  }
+  .verb-table tr:nth-child(even) td { background: var(--gray-50); }
+  .verb-table td:first-child { font-weight: 700; color: var(--primary-dark); }
+  .verb-table input {
+    border: none;
+    border-bottom: 2px solid var(--primary);
+    background: transparent;
+    font-size: 0.88rem;
+    padding: 2px 6px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    color: var(--primary-dark);
+    width: 100%;
+    outline: none;
+  }
+  .verb-table input.correct { border-bottom-color: var(--green); color: var(--green); }
+  .verb-table input.wrong { border-bottom-color: var(--red); color: var(--red); }
+
+  /* ── REFERENCE TABLE ── */
+  .ref-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-bottom: 1.5rem; }
+  .ref-table th { background: var(--primary-light); color: var(--primary-dark); padding: 0.6rem 0.8rem; font-weight: 700; text-align: left; border-bottom: 2px solid var(--primary); }
+  .ref-table td { padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--gray-200); }
+  .ref-table tr:nth-child(even) td { background: var(--gray-50); }
+
+  /* ── WORTSCHATZ LEVELS ── */
+  .wort-level {
+    background: white;
+    border-radius: 10px;
+    border: 2px solid var(--gray-200);
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .wort-level-header {
+    padding: 0.7rem 1rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .level-1 .wort-level-header { background: var(--green-light); color: #15803d; border-bottom: 2px solid #bbf7d0; }
+  .level-2 .wort-level-header { background: var(--amber-light); color: #92400e; border-bottom: 2px solid #fde68a; }
+  .level-3 .wort-level-header { background: var(--red-light); color: #991b1b; border-bottom: 2px solid #fecaca; }
+  .wort-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 0.6rem;
+    padding: 1rem;
+  }
+  .wort-card {
+    border-radius: 8px;
+    padding: 0.7rem;
+    border: 1.5px solid var(--gray-200);
+    background: var(--gray-50);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .wort-card:hover { border-color: var(--primary); background: var(--primary-light); }
+  .wort-card .base { font-size: 0.78rem; color: #6b7280; }
+  .wort-card .precise { font-weight: 700; font-family: 'Nunito', sans-serif; color: var(--primary-dark); font-size: 0.95rem; }
+
+  /* ── POETRY ── */
+  .poem-display {
+    background: var(--primary-light);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    font-style: italic;
+    line-height: 2.1;
+    color: var(--primary-dark);
+    font-size: 0.95rem;
+  }
+  .poem-line { display: block; }
+  .stilmittel-tag {
+    display: inline-block;
+    font-style: normal;
+    background: var(--primary);
+    color: white;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    padding: 1px 6px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+
+  /* ── HAIKU/ELFCHEN BUILDER ── */
+  .poem-builder { border-radius: 10px; padding: 1rem; background: var(--gray-50); border: 1.5px solid var(--gray-200); margin-bottom: 1rem; }
+  .poem-builder label { font-size: 0.8rem; color: #6b7280; font-weight: 600; display: block; margin-bottom: 4px; }
+  .poem-builder input {
+    width: 100%;
+    padding: 0.45rem 0.75rem;
+    border-radius: 8px;
+    border: 1.5px solid var(--gray-200);
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--gray-800);
+    outline: none;
+    margin-bottom: 0.6rem;
+    background: white;
+  }
+  .poem-builder input:focus { border-color: var(--primary); }
+  .syllable-count {
+    font-size: 0.75rem;
+    color: var(--primary);
+    font-weight: 700;
+    float: right;
+  }
+
+  /* ── SHOW DON'T TELL ── */
+  .sdt-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    align-items: center;
+  }
+  .sdt-tell {
+    padding: 0.6rem 0.8rem;
+    background: var(--red-light);
+    border-radius: 8px;
+    font-size: 0.88rem;
+    color: #991b1b;
+    border: 1.5px solid #fecaca;
+  }
+  .sdt-show-area {
+    padding: 0.5rem 0.75rem;
+    border: 2px dashed var(--green);
+    border-radius: 8px;
+    min-height: 48px;
+    background: var(--green-light);
+    font-size: 0.88rem;
+    color: #15803d;
+    outline: none;
+    font-family: 'Nunito Sans', sans-serif;
+  }
+  .sdt-show-area:focus { border-color: var(--primary); background: var(--primary-light); color: var(--primary-dark); }
+
+  /* ── LESETEXT ── */
+  .lese-text {
+    background: #fafaf8;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 1.5rem;
+    font-size: 0.92rem;
+    line-height: 1.85;
+    color: var(--gray-800);
+    margin-bottom: 1.5rem;
+  }
+  .lese-text h4 { font-size: 1rem; color: var(--primary-dark); margin-bottom: 0.75rem; text-align: center; font-style: italic; }
+
+  /* ── ACHIEVEMENT TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--primary-dark);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    z-index: 999;
+    animation: toastIn 0.4s ease;
+    max-width: 320px;
+  }
+  .toast.show { display: flex; }
+  @keyframes toastIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .toast-icon { font-size: 1.8rem; }
+
+  /* ── STAR ANIMATION ── */
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .spinning { display: inline-block; animation: spin 1s linear infinite; }
+
+  /* ── SECTION OVERVIEW ── */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .overview-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    border: 2px solid var(--gray-200);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .overview-card:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(79,70,229,0.15); }
+  .overview-card .ov-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .overview-card h3 { font-size: 0.95rem; color: var(--gray-800); font-weight: 800; margin-bottom: 0.25rem; }
+  .overview-card p { font-size: 0.78rem; color: #6b7280; }
+  .ov-progress { height: 6px; background: var(--gray-200); border-radius: 99px; margin-top: 0.75rem; overflow: hidden; }
+  .ov-progress-fill { height: 100%; border-radius: 99px; background: var(--primary); transition: width 0.5s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .header { padding: 1rem; }
+    .header h1 { font-size: 1.3rem; }
+    .main { padding: 0 0.75rem 4rem; }
+    .section-card { padding: 1.25rem; }
+    .sdt-pair { grid-template-columns: 1fr; }
+    .verb-table { font-size: 0.82rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <h1>🎓 Deutsch – Klasse 6</h1>
+    <p>Übungsprogramm zur Klassenarbeit</p>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="globalProgress" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="scoreboard">
+    <div class="score-pill"><span class="icon">⭐</span> <span id="pointsDisplay">0</span> Punkte</div>
+    <div class="score-pill"><span class="icon">🔥</span> <span id="streakDisplay">0</span> Streak</div>
+    <div class="score-pill"><span class="icon">✅</span> <span id="correctDisplay">0</span> Richtig</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="showSection('overview')">🏠 Start</button>
+  <button class="nav-btn" id="nav-prap" onclick="showSection('praep')">📍 Präpositionen</button>
+  <button class="nav-btn" id="nav-verb" onclick="showSection('verben')">⏰ Verbformen</button>
+  <button class="nav-btn" id="nav-wort" onclick="showSection('wortschatz')">📚 Wortschatz</button>
+  <button class="nav-btn" id="nav-ged" onclick="showSection('gedichte')">🌸 Gedichte</button>
+  <button class="nav-btn" id="nav-kreativ" onclick="showSection('kreativ')">✍️ Kreatives Schreiben</button>
+  <button class="nav-btn" id="nav-lese" onclick="showSection('lesen')">📖 Leseverständnis</button>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- ════════════════════ OVERVIEW ════════════════════ -->
+  <div class="section-card active" id="section-overview">
+    <div class="section-title">🏆 Willkommen zum Übungsprogramm!</div>
+    <div class="section-subtitle">Klicke auf einen Bereich und sammle Punkte. Schaffe alle Abschnitte für die Klassenarbeit am 24. März!</div>
+    <div class="overview-grid">
+      <div class="overview-card" onclick="showSection('praep')">
+        <div class="ov-icon">📍</div>
+        <h3>Präpositionen</h3>
+        <p>Akkusativ, Dativ, Wechsel</p>
+        <div class="ov-progress"><div class="ov-progress-fill" id="ov-praep" style="width:0%"></div></div>
+      </div>
+      <div class="overview-card" onclick="showSection('verben')">
+        <div class="ov-icon">⏰</div>
+        <h3>Verbformen</h3>
+        <p>Präteritum & Perfekt</p>
+        <div class="ov-progress"><div class="ov-progress-fill" id="ov-verb" style="width:0%"></div></div>
+      </div>
+      <div class="overview-card" onclick="showSection('wortschatz')">
+        <div class="ov-icon">📚</div>
+        <h3>Wortschatz</h3>
+        <p>Präzise Verben & Adjektive</p>
+        <div class="ov-progress"><div class="ov-progress-fill" id="ov-wort" style="width:0%"></div></div>
+      </div>
+      <div class="overview-card" onclick="showSection('gedichte')">
+        <div class="ov-icon">🌸</div>
+        <h3>Gedichte</h3>
+        <p>Haiku, Elfchen, Stilmittel</p>
+        <div class="ov-progress"><div class="ov-progress-fill" id="ov-ged" style="width:0%"></div></div>
+      </div>
+      <div class="overview-card" onclick="showSection('kreativ')">
+        <div class="ov-icon">✍️</div>
+        <h3>Kreatives Schreiben</h3>
+        <p>Show, don't tell & Kurzgeschichte</p>
+        <div class="ov-progress"><div class="ov-progress-fill" id="ov-kreativ" style="width:0%"></div></div>
+      </div>
+      <div class="overview-card" onclick="showSection('lesen')">
+        <div class="ov-icon">📖</div>
+        <h3>Leseverständnis</h3>
+        <p>Text lesen & Fragen beantworten</p>
+        <div class="ov-progress"><div class="ov-progress-fill" id="ov-lese" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════ PRÄPOSITIONEN ════════════════════ -->
+  <div class="section-card" id="section-praep">
+    <div class="section-title">📍 Präpositionen</div>
+    <div class="section-subtitle">Akkusativ · Dativ · Wechselpräpositionen</div>
+
+    <div class="lernziel">🎯 Lernziel: Du erkennst Präpositionen, ordnest den richtigen Kasus zu und wendest Wechselpräpositionen korrekt an.</div>
+
+    <table class="ref-table">
+      <thead><tr><th>Kasus</th><th>Präpositionen</th><th>Frage</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Akkusativ</strong></td><td>bis, durch, für, gegen, ohne, um, entlang, wider</td><td>Wen? Was? Wohin?</td></tr>
+        <tr><td><strong>Dativ</strong></td><td>ab, aus, außer, bei, gegenüber, mit, nach, seit, von, zu</td><td>Wem? Wo?</td></tr>
+        <tr><td><strong>Wechsel</strong></td><td>an, auf, hinter, in, neben, über, unter, vor, zwischen</td><td>Wohin? → Akk. / Wo? → Dat.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="tipp"><strong>🔑 Tipp:</strong> Bei Wechselpräpositionen: Bewegung/WOHIN? → Akkusativ. Ort/WO? → Dativ. Merkhilfe: <em>Wohin? = Akkusativ (A wie Action/Bewegung)</em></div>
+
+    <!-- Übung A: Präpositionen erkennen -->
+    <div class="exercise">
+      <div class="exercise-title">📝 Übung A – Kasus bestimmen</div>
+      <div class="exercise-instr">Welchen Kasus verlangt die fettgedruckte Präposition? Wähle: Akk / Dat / Wechsel</div>
+      <div id="praepMC"></div>
+      <div class="feedback" id="fb-praepMC"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="checkPraepMC()">✅ Prüfen</button>
+        <button class="btn btn-secondary" onclick="resetPraepMC()">🔄 Neu</button>
+      </div>
+    </div>
+
+    <!-- Übung B: Lückentext -->
+    <div class="exercise">
+      <div class="exercise-title">🧩 Übung B – Wörter einsetzen</div>
+      <div class="exercise-instr">Setze die richtige Präposition aus der Wortbank in die Lücke ein. Klicke auf ein Wort, dann auf die Lücke.</div>
+      <div class="word-bank" id="praepBank"></div>
+      <div id="praepFill"></div>
+      <div class="feedback" id="fb-praepFill"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="checkPraepFill()">✅ Prüfen</button>
+        <button class="btn btn-secondary" onclick="resetPraepFill()">🔄 Zurücksetzen</button>
+      </div>
+    </div>
+
+    <!-- Übung C: Wechselpräpositionen -->
+    <div class="exercise">
+      <div class="exercise-title">🔄 Übung C – Wechselpräpositionen: A oder D?</div>
+      <div class="exercise-instr">Entscheide: Akkusativ (A) = Bewegung/Wohin? oder Dativ (D) = Ort/Wo? Klicke auf A oder D.</div>
+      <div id="wechselQuiz"></div>
+      <div class="feedback" id="fb-wechsel"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="checkWechsel()">✅ Prüfen</button>
+        <button class="btn btn-secondary" onclick="resetWechsel()">🔄 Neu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════ VERBFORMEN ════════════════════ -->
+  <div class="section-card" id="section-verben">
+    <div class="section-title">⏰ Verbformen – Präteritum & Perfekt</div>
+    <div class="section-subtitle">Starke Verben · Zeitformen umwandeln</div>
+
+    <div class="lernziel">🎯 Lernziel: Du konjugierst starke Verben im Präteritum und Perfekt und wandelst Sätze zwischen den Zeitformen um.</div>
+
+    <div class="tipp"><strong>📖 Merke:</strong> <em>Präteritum</em> = Schriftsprache / Erzählung. <em>Perfekt</em> = gesprochene Sprache. Beide drücken Vergangenheit aus!</div>
+
+    <!-- Verbtabelle -->
+    <div class="exercise">
+      <div class="exercise-title">📋 Übung A – Verbtabelle ausfüllen</div>
+      <div class="exercise-instr">Trage die fehlenden Formen ein. Das erste Verb ist schon ausgefüllt als Beispiel.</div>
+      <table class="verb-table" id="verbTable">
+        <thead><tr><th>Infinitiv</th><th>Präteritum (er/sie)</th><th>Perfekt (er/sie)</th></tr></thead>
+        <tbody id="verbTableBody"></tbody>
+      </table>
+      <div class="feedback" id="fb-verbTable"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="checkVerbTable()">✅ Prüfen</button>
+        <button class="btn btn-secondary" onclick="resetVerbTable()">🔄 Neu laden</button>
+      </div>
+    </div>
+
+    <!-- Perfekt → Präteritum -->
+    <div class="exercise">
+      <div class="exercise-title">➡️ Übung B – Perfekt → Präteritum</div>
+      <div class="exercise-instr">Schreibe den Satz im Präteritum. Drücke Enter oder klicke "Prüfen".</div>
+      <div id="perfPraetExercise"></div>
+      <div class="feedback" id="fb-perfPraet"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="checkPerfPraet()">✅ Prüfen</button>
+        <button class="btn btn-secondary" onclick="resetPerfPraet()">🔄 Neue Sätze</button>
+      </div>
+    </div>
+
+    <!-- Präteritum → Perfekt -->
+    <div class="exercise">
+      <div class="exercise-title">⬅️ Übung C – Präteritum → Perfekt</div>
+      <div class="exercise-instr">Schreibe den Satz im Perfekt.</div>
+      <div id="praetPerfExercise"></div>
+      <div class="feedback" id="fb-praetPerf"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="checkPraetPerf()">✅ Prüfen</button>
+        <button class="btn btn-secondary" onclick="resetPraetPerf()">🔄 Neue Sätze</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════ WORTSCHATZ ════════════════════ -->
+  <div class="section-card" id="section-wortschatz">
+    <div class="section-title">📚 Wortschatz – Präzise Verben & Adjektive</div>
+    <div class="section-subtitle">Stufen 1–3 · Vom einfachen zum präzisen Ausdruck</div>
+
+    <div class="lernziel">🎯 Lernziel: Du verwendest präzise Verben und Adjektive statt allgemeiner Wörter, um lebendiger zu schreiben.</div>
+
+    <!-- Wortschatz Display -->
+    <div class="wort-level level-1">
+      <div class="wort-level-header">🟢 Stufe 1 – Einfache Wörter (immer richtig)</div>
+      <div class="wort-grid" id="wortGrid1"></div>
+    </div>
+    <div class="wort-level level-2">
+      <div class="wort-level-header">🟡 Stufe 2 – Bessere Wörter</div>
+      <div class="wort-grid" id="wortGrid2"></div>
+    </div>
+    <div class="wort-level level-3">
+      <div class="wort-level-header">🔴 Stufe 3 – Präzise & Ausdrucksstark</div>
+      <div class="wort-grid" id="wortGrid3"></div>
+    </div>
+
+    <!-- Quiz: präzises Verb wählen -->
+    <div class="exercise">
+      <div class="exercise-title">🎯 Übung A – Welches Wort passt besser?</div>
+      <div class="exercise-instr">Wähle das präziseste Wort für den Kontext. Lies den Satz genau!</div>
+      <div id="wortQuiz"></div>
+      <div class="feedback" id="fb-wort"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="checkWortQuiz()">✅ Prüfen</button>
+        <button class="btn btn-secondary" onclick="resetWortQuiz()">🔄 Neue Fragen</button>
+      </div>
+    </div>
+
+    <!-- Lückentext mit Verben -->
+    <div class="exercise">
+      <div class="exercise-title">🧩 Übung B – Präzise Verben einsetzen</div>
+      <div class="exercise-instr">Setze das passendste Verb ein. Beachte den Kontext!</div>
+      <div class="word-bank" id="verbBank"></div>
+      <div id="verbFill"></div>
+      <div class="feedback" id="fb-verbFill"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="checkVerbFill()">✅ Prüfen</button>
+        <button class="btn btn-secondary" onclick="resetVerbFill()">🔄 Zurücksetzen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════ GEDICHTE ════════════════════ -->
+  <div class="section-card" id="section-gedichte">
+    <div class="section-title">🌸 Gedichte – Formen & Stilmittel</div>
+    <div class="section-subtitle">Haiku · Elfchen · Akrostichon · Stilmittel</div>
+
+    <div class="lernziel">🎯 Lernziel: Du erkennst Gedichtformen und Stilmittel und schreibst eigene Haikus, Elfchen und Akrostichons.</div>
+
+    <!-- Stilmittel Quiz -->
+    <div class="exercise">
+      <div class="exercise-title">🔍 Übung A – Stilmittel erkennen</div>
+      <div class="exercise-instr">Welches Stilmittel wird im Beispielsatz verwendet?</div>
+      <div id="stilQuiz"></div>
+      <div class="feedback" id="fb-stil"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="checkStil()">✅ Prüfen</button>
+        <button class="btn btn-secondary" onclick="resetStil()">🔄 Neu</button>
+      </div>
+    </div>
+
+    <!-- Haiku Builder -->
+    <div class="exercise">
+      <div class="exercise-title">🌿 Übung B – Haiku schreiben (5-7-5 Silben)</div>
+      <div class="exercise-instr">Schreibe ein Haiku: Zeile 1 = 5 Silben, Zeile 2 = 7 Silben, Zeile 3 = 5 Silben. Thema: Jahreszeiten, Natur, Schule.</div>
+      <div class="poem-builder">
+        <label>Zeile 1 (5 Silben) <span class="syllable-count">z.B.: „Blät-ter fal-len sacht"</span></label>
+        <input type="text" id="haiku1" placeholder="5 Silben..." oninput="countSyl('haiku1','h1count')" />
+        <small id="h1count" style="color:var(--primary);font-weight:700;font-size:0.8rem;"></small>
+        <label style="margin-top:0.5rem;">Zeile 2 (7 Silben) <span class="syllable-count">z.B.: „Der Wind trägt sie weit von hier"</span></label>
+        <input type="text" id="haiku2" placeholder="7 Silben..." oninput="countSyl('haiku2','h2count')" />
+        <small id="h2count" style="color:var(--primary);font-weight:700;font-size:0.8rem;"></small>
+        <label style="margin-top:0.5rem;">Zeile 3 (5 Silben) <span class="syllable-count">z.B.: „Stille kehrt zu mir"</span></label>
+        <input type="text" id="haiku3" placeholder="5 Silben..." oninput="countSyl('haiku3','h3count')" />
+        <small id="h3count" style="color:var(--primary);font-weight:700;font-size:0.8rem;"></small>
+        <div class="btn-row">
+          <button class="btn btn-green" onclick="previewHaiku()">👁️ Vorschau</button>
+        </div>
+        <div id="haikuPreview" style="display:none; margin-top:1rem; padding:1rem; background:var(--primary-light); border-radius:8px; font-style:italic; color:var(--primary-dark); line-height:2;"></div>
+      </div>
+    </div>
+
+    <!-- Elfchen Builder -->
+    <div class="exercise">
+      <div class="exercise-title">🧝 Übung C – Elfchen schreiben (1-2-3-4-1)</div>
+      <div class="exercise-instr">Elfchen = 11 Wörter: Zeile 1 = 1 Wort, Zeile 2 = 2 Wörter, Zeile 3 = 3 Wörter, Zeile 4 = 4 Wörter, Zeile 5 = 1 Wort.</div>
+      <div class="poem-builder">
+        <label>Zeile 1 – 1 Wort (Farbe oder Adjektiv)</label>
+        <input type="text" id="el1" placeholder="z.B.: Blau" />
+        <label style="margin-top:0.4rem;">Zeile 2 – 2 Wörter (Wo oder Was?)</label>
+        <input type="text" id="el2" placeholder="z.B.: weiter Himmel" />
+        <label style="margin-top:0.4rem;">Zeile 3 – 3 Wörter (Was passiert?)</label>
+        <input type="text" id="el3" placeholder="z.B.: Vögel fliegen still" />
+        <label style="margin-top:0.4rem;">Zeile 4 – 4 Wörter (Gefühl oder Gedanke)</label>
+        <input type="text" id="el4" placeholder="z.B.: Ich träume von Freiheit" />
+        <label style="margin-top:0.4rem;">Zeile 5 – 1 abschließendes Wort</label>
+        <input type="text" id="el5" placeholder="z.B.: Sehnsucht" />
+        <div class="btn-row">
+          <button class="btn btn-green" onclick="previewElfchen()">👁️ Vorschau</button>
+        </div>
+        <div id="elfchenPreview" style="display:none; margin-top:1rem; padding:1rem; background:var(--teal-light); border-radius:8px; font-style:italic; color:#115e59; line-height:2;"></div>
+      </div>
+    </div>
+
+    <!-- Gedicht analysieren -->
+    <div class="exercise">
+      <div class="exercise-title">📜 Übung D – Gedicht analysieren</div>
+      <div class="exercise-instr">Lies das Gedicht und beantworte die Multiple-Choice-Fragen.</div>
+      <div class="poem-display">
+        <span class="poem-line">Der Morgen flüstert leise Worte, <span class="stilmittel-tag">?</span></span>
+        <span class="poem-line">die Sonne küsst die kalte Erde. <span class="stilmittel-tag">?</span></span>
+        <span class="poem-line">Die Bäume strecken ihre Arme aus,</span>
+        <span class="poem-line">als wollten sie den Tag umarmen. <span class="stilmittel-tag">?</span></span>
+        <span class="poem-line">Silbernes Licht tanzt auf dem See –</span>
+        <span class="poem-line">ein neuer Tag beginnt.</span>
+      </div>
+      <div id="gedichtQuiz"></div>
+      <div class="feedback" id="fb-gedicht"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="checkGedicht()">✅ Prüfen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════ KREATIVES SCHREIBEN ════════════════════ -->
+  <div class="section-card" id="section-kreativ">
+    <div class="section-title">✍️ Kreatives Schreiben</div>
+    <div class="section-subtitle">Show, don't tell · Satzanfänge · Kurzgeschichte</div>
+
+    <div class="lernziel">🎯 Lernziel: Du schreibst eine Kurzgeschichte mit klarer Struktur, beschreibenden Adjektiven, Dialog und verschiedenen Satzanfängen.</div>
+
+    <div class="tipp"><strong>✨ Tipp:</strong> „Show, don't tell" – Zeige Gefühle durch Körperreaktionen, Sinneseindrücke und Bilder, statt sie direkt zu benennen!</div>
+
+    <!-- Show don't tell -->
+    <div class="exercise">
+      <div class="exercise-title">🎭 Übung A – „Show, don't tell" erkennen</div>
+      <div class="exercise-instr">Welcher Satz ZEIGT das Gefühl, anstatt es zu erklären? Klicke auf den besseren Satz.</div>
+      <div id="sdtQuiz"></div>
+      <div class="feedback" id="fb-sdt"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="checkSdt()">✅ Prüfen</button>
+        <button class="btn btn-secondary" onclick="resetSdt()">🔄 Neue Fragen</button>
+      </div>
+    </div>
+
+    <!-- Umschreiben -->
+    <div class="exercise">
+      <div class="exercise-title">🖊️ Übung B – Sätze umschreiben: Zeigen statt Erklären</div>
+      <div class="exercise-instr">Schreibe den „Tell"-Satz so um, dass er das Gefühl ZEIGT. Sei kreativ!</div>
+      <div id="sdtWrite"></div>
+      <div class="btn-row">
+        <button class="btn btn-green" onclick="showSdtExamples()">💡 Beispiele zeigen</button>
+      </div>
+    </div>
+
+    <!-- Satzanfänge -->
+    <div class="exercise">
+      <div class="exercise-title">🎲 Übung C – Verschiedene Satzanfänge</div>
+      <div class="exercise-instr">Beginne die Sätze NICHT mit dem Subjekt. Wähle für jeden Satz einen anderen Anfang aus der Liste.</div>
+      <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1rem; padding:0.75rem; background:var(--primary-light); border-radius:8px;">
+        <span style="font-size:0.82rem; color:var(--primary-dark); font-weight:700;">Mögliche Anfänge:</span>
+        <span style="font-size:0.82rem; color:var(--primary-dark);">Plötzlich · Leise · Mit zitternden Händen · Am nächsten Morgen · Wie aus dem Nichts · Erschöpft · Als hätte die Zeit angehalten · In der Dunkelheit · Kaum hatte ich ... · Ohne ein Wort zu sagen</span>
+      </div>
+      <div id="satzanfaenge"></div>
+      <div class="btn-row">
+        <button class="btn btn-green" onclick="showSatzBeispiele()">💡 Beispiele zeigen</button>
+      </div>
+    </div>
+
+    <!-- Kurzgeschichte Checkliste -->
+    <div class="exercise">
+      <div class="exercise-title">📋 Übung D – Kurzgeschichten-Checkliste</div>
+      <div class="exercise-instr">Hast du alle Elemente in deiner Geschichte? Kreuze an, was du eingebaut hast.</div>
+      <div id="checklist"></div>
+    </div>
+  </div>
+
+  <!-- ════════════════════ LESEVERSTÄNDNIS ════════════════════ -->
+  <div class="section-card" id="section-lesen">
+    <div class="section-title">📖 Leseverständnis</div>
+    <div class="section-subtitle">Text lesen · Fragen beantworten · Schlüsse ziehen</div>
+
+    <div class="lernziel">🎯 Lernziel: Du liest aufmerksam und beantwortest verschiedene Fragentypen: Richtig/Falsch, Multiple Choice, Lückentext und eigene Antworten.</div>
+
+    <div class="lese-text">
+      <h4>Der geheime Garten</h4>
+      <p>An einem schwülen Augustnachmittag entdeckte der zwölfjährige Felix hinter dem alten Schuppen seines Großvaters eine verrostete Eisentür. Er musste mit beiden Händen drücken, bis sie quietschend nachgab. Was sich dahinter verbarg, verschlug ihm den Atem.</p>
+      <br>
+      <p>Ein verwilderter Garten erstreckte sich vor ihm – so groß wie ein halber Fußballplatz. Hohe Brennnesseln wuchsen neben blühenden Rosen, die sich um alte Steinmauern rankten. Mitten im Chaos stand ein verfallener Brunnen, dessen Rand mit grünem Moos bedeckt war. Auf dem Brunnenrand saß ein riesiger, graubrauner Kater und betrachtete Felix mit gelben Augen, als hätte er auf ihn gewartet.</p>
+      <br>
+      <p>„Wow", flüsterte Felix. Er trat einen Schritt näher. Der Kater bewegte sich nicht.</p>
+      <br>
+      <p>Felix kannte seinen Großvater als schweigsamen Mann, der nie über die Vergangenheit sprach. Doch in diesem Garten fand Felix etwas Unerwartetes: eine verwitterte Holztafel, auf der stand: <em>„Für meine Emma – dieser Garten gehörte ihr."</em> Emma – das war der Name von Felix' Urgroßmutter, die 1963 gestorben war.</p>
+      <br>
+      <p>Als Felix an diesem Abend beim Abendessen fragte: „Opa, wer hat den Garten angelegt?", legte sein Großvater die Gabel nieder. Lange schwieg er. Dann sagte er leise: „Das hat deine Urgroßmutter gemacht. Jede Pflanze, jeden Stein." Er stand auf und holte aus der Schublade ein vergilbtes Foto: Emma, jung und lachend, die Hände voller Erde.</p>
+      <br>
+      <p>In den folgenden Wochen arbeiteten Felix und sein Großvater Seite an Seite im Garten. Sie schnitten die Brennnesseln zurück, pflanzten neue Samen und reparierten den Brunnen. Der alte Mann sprach mehr als je zuvor – über Emma, über früher, über das Leben. Und der graue Kater beobachtete sie jeden Tag vom Brunnenrand aus.</p>
+      <br>
+      <p>Am Ende des Sommers blühte der Garten wieder. Nicht perfekt – aber lebendig, wie Emma es gewollt hatte.</p>
+    </div>
+
+    <!-- Richtig/Falsch -->
+    <div class="exercise">
+      <div class="exercise-title">✅ Übung A – Richtig oder Falsch?</div>
+      <div class="exercise-instr">Lies die Aussagen. Ist sie richtig (R) oder falsch (F)? Klicke auf R oder F.</div>
+      <div id="rfQuiz"></div>
+      <div class="feedback" id="fb-rf"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="checkRF()">✅ Prüfen</button>
+        <button class="btn btn-secondary" onclick="resetRF()">🔄 Neu</button>
+      </div>
+    </div>
+
+    <!-- Multiple Choice -->
+    <div class="exercise">
+      <div class="exercise-title">🔵 Übung B – Multiple Choice</div>
+      <div class="exercise-instr">Wähle die richtige Antwort.</div>
+      <div id="mcQuiz"></div>
+      <div class="feedback" id="fb-mc"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="checkMC()">✅ Prüfen</button>
+        <button class="btn btn-secondary" onclick="resetMC()">🔄 Neu</button>
+      </div>
+    </div>
+
+    <!-- Lückentext -->
+    <div class="exercise">
+      <div class="exercise-title">🧩 Übung C – Lückentext</div>
+      <div class="exercise-instr">Ergänze den Text mit den Wörtern aus der Wortbank.</div>
+      <div class="word-bank" id="leseBank"></div>
+      <div id="leseFill"></div>
+      <div class="feedback" id="fb-leseFill"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="checkLeseFill()">✅ Prüfen</button>
+        <button class="btn btn-secondary" onclick="resetLeseFill()">🔄 Zurücksetzen</button>
+      </div>
+    </div>
+
+    <!-- Textfragen -->
+    <div class="exercise">
+      <div class="exercise-title">💬 Übung D – Eigene Antworten</div>
+      <div class="exercise-instr">Beantworte in vollständigen Sätzen. Es gibt keine falschen Antworten – aber schreibe präzise!</div>
+      <div id="leseAntworten"></div>
+      <div class="btn-row">
+        <button class="btn btn-green" onclick="showLeseHinweise()">💡 Hinweise zeigen</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon">🎉</span>
+  <div>
+    <div id="toastTitle" style="font-size:1rem;">Super!</div>
+    <div id="toastMsg" style="font-size:0.82rem; opacity:0.85; font-weight:400; margin-top:2px;"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// GLOBAL STATE
+// ══════════════════════════════════════
+let points = 0, streak = 0, correct = 0;
+let sectionProgress = { praep:0, verb:0, wort:0, ged:0, kreativ:0, lese:0 };
+let selectedWord = null;
+
+function addPoints(n, msg, icon='⭐') {
+  points += n;
+  streak++;
+  correct++;
+  document.getElementById('pointsDisplay').textContent = points;
+  document.getElementById('streakDisplay').textContent = streak;
+  document.getElementById('correctDisplay').textContent = correct;
+  updateProgress();
+  showToast(icon, `+${n} Punkte!`, msg);
+}
+function resetStreak() {
+  streak = 0;
+  document.getElementById('streakDisplay').textContent = streak;
+}
+function updateProgress() {
+  let total = Object.values(sectionProgress).reduce((a,b)=>a+b,0);
+  let pct = Math.min(100, Math.round(total/6));
+  document.getElementById('globalProgress').style.width = pct+'%';
+}
+function setSectionProgress(sec, pct) {
+  sectionProgress[sec] = Math.min(100, (sectionProgress[sec]||0) + pct);
+  let el = document.getElementById('ov-'+sec);
+  if(el) el.style.width = Math.min(100,sectionProgress[sec])+'%';
+  updateProgress();
+}
+
+function showToast(icon, title, msg) {
+  let t = document.getElementById('toast');
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+function showSection(id) {
+  document.querySelectorAll('.section-card').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('section-'+id).classList.add('active');
+  let nb = document.querySelector(`[onclick="showSection('${id}')"]`);
+  if(nb) nb.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function setFeedback(id, type, msg) {
+  let el = document.getElementById(id);
+  if(!el) return;
+  el.className = 'feedback ' + type;
+  el.textContent = msg;
+}
+
+// ══════════════════════════════════════
+// PRÄPOSITIONEN
+// ══════════════════════════════════════
+const praepMCData = [
+  { q: 'Er läuft <strong>durch</strong> den Wald.', opts: ['Akkusativ','Dativ','Wechsel'], a: 0 },
+  { q: 'Sie wohnt <strong>bei</strong> ihrer Tante.', opts: ['Akkusativ','Dativ','Wechsel'], a: 1 },
+  { q: 'Das Buch liegt <strong>auf</strong> dem Tisch.', opts: ['Akkusativ','Dativ','Wechsel'], a: 2 },
+  { q: 'Ich kaufe ein Geschenk <strong>für</strong> meinen Bruder.', opts: ['Akkusativ','Dativ','Wechsel'], a: 0 },
+  { q: 'Er fährt <strong>mit</strong> dem Fahrrad.', opts: ['Akkusativ','Dativ','Wechsel'], a: 1 },
+  { q: 'Sie stellt die Lampe <strong>neben</strong> das Bett.', opts: ['Akkusativ','Dativ','Wechsel'], a: 2 },
+  { q: 'Das Café befindet sich <strong>gegenüber</strong> der Kirche.', opts: ['Akkusativ','Dativ','Wechsel'], a: 1 },
+  { q: 'Wir gehen <strong>um</strong> den See herum.', opts: ['Akkusativ','Dativ','Wechsel'], a: 0 },
+  { q: 'Er hängt das Bild <strong>über</strong> den Kamin.', opts: ['Akkusativ','Dativ','Wechsel'], a: 2 },
+  { q: 'Sie wartet <strong>seit</strong> zwei Stunden.', opts: ['Akkusativ','Dativ','Wechsel'], a: 1 },
+];
+
+function initPraepMC() {
+  let html = '';
+  praepMCData.forEach((q,i)=>{
+    html += `<div class="mc-question">
+      <p>${i+1}. ${q.q}</p>
+      <div class="mc-options">
+        ${q.opts.map((o,j)=>`<button class="mc-opt" id="praepMC_${i}_${j}" onclick="selectMC('praepMC',${i},${j})">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  document.getElementById('praepMC').innerHTML = html;
+}
+let praepMCSel = {};
+function selectMC(prefix, q, opt) {
+  let key = prefix+'_'+q;
+  praepMCSel[key] = opt;
+  let data = praepMCData;
+  document.querySelectorAll(`[id^="${prefix}_${q}_"]`).forEach(b=>b.classList.remove('correct','wrong'));
+  document.getElementById(`${prefix}_${q}_${opt}`).style.borderColor = 'var(--primary)';
+  document.getElementById(`${prefix}_${q}_${opt}`).style.color = 'var(--primary)';
+}
+function checkPraepMC() {
+  let score = 0;
+  praepMCData.forEach((q,i)=>{
+    let key = 'praepMC_'+i;
+    let sel = praepMCSel[key];
+    if(sel !== undefined) {
+      let btn = document.getElementById(`praepMC_${i}_${sel}`);
+      if(sel === q.a) { btn.className='mc-opt correct'; score++; }
+      else { btn.className='mc-opt wrong'; document.getElementById(`praepMC_${i}_${q.a}`).className='mc-opt reveal'; }
+    }
+  });
+  if(score === praepMCData.length) { addPoints(15,'Alle Präpositionen korrekt!','📍'); setSectionProgress('praep',30); setFeedback('fb-praepMC','success',`Perfekt! ${score}/${praepMCData.length} richtig! 🎉`); }
+  else if(score >= praepMCData.length/2) { addPoints(8,'Gut gemacht!','📍'); setSectionProgress('praep',15); setFeedback('fb-praepMC','partial',`${score}/${praepMCData.length} richtig. Schaue die roten Antworten an!`); }
+  else { resetStreak(); setFeedback('fb-praepMC','error',`${score}/${praepMCData.length} richtig. Lerne nochmal die Tabelle!`); }
+}
+function resetPraepMC() { praepMCSel={}; initPraepMC(); document.getElementById('fb-praepMC').className='feedback'; }
+
+// Fill exercise - Präpositionen
+const praepFillData = {
+  words: ['mit','für','in','nach','von','zu','ohne','auf','seit','an'],
+  sentences: [
+    { before:'Die Katze schläft', after:'dem Sofa.', ans:'auf' },
+    { before:'Ich fahre', after:'dem Zug nach Berlin.', ans:'mit' },
+    { before:'Das Geschenk ist', after:'meine Schwester.', ans:'für' },
+    { before:'Er kommt', after:'Österreich.', ans:'aus'},
+    { before:'Sie lernt', after:'drei Jahren Englisch.', ans:'seit' },
+    { before:'Wir gehen', after:'der Schule nach Hause.', ans:'nach' },
+    { before:'Ich warte', after:'dem Bahnhof.', ans:'an' },
+    { before:'Er geht', after:'Hause.', ans:'zu' },
+  ]
+};
+let praepFillSel = {};
+let praepBankWords = [];
+let praepDropSelected = null;
+
+function initPraepFill() {
+  praepFillSel = {};
+  praepDropSelected = null;
+  selectedWord = null;
+  praepBankWords = [...praepFillData.words];
+  let bank = document.getElementById('praepBank');
+  bank.innerHTML = praepBankWords.map(w=>`<span class="word-chip" id="chip_praep_${w}" onclick="selectPraepWord('${w}')">${w}</span>`).join('');
+  let html = '';
+  praepFillData.sentences.forEach((s,i)=>{
+    html += `<div class="fill-sentence">
+      <span>${i+1}. ${s.before}</span>
+      <span class="drop-zone" id="drop_praep_${i}" onclick="placeWord(${i})">${praepFillSel[i]||'______'}</span>
+      <span>${s.after}</span>
+    </div>`;
+  });
+  document.getElementById('praepFill').innerHTML = html;
+}
+
+function selectPraepWord(w) {
+  if(selectedWord) {
+    document.getElementById('chip_praep_'+selectedWord)?.style.setProperty('box-shadow','none');
+  }
+  selectedWord = w;
+  document.getElementById('chip_praep_'+w).style.boxShadow = '0 0 0 3px var(--amber)';
+}
+
+function placeWord(i) {
+  if(!selectedWord) return;
+  let prev = praepFillSel[i];
+  if(prev) { let pc = document.getElementById('chip_praep_'+prev); if(pc) pc.classList.remove('used'); }
+  praepFillSel[i] = selectedWord;
+  document.getElementById('drop_praep_'+i).textContent = selectedWord;
+  document.getElementById('drop_praep_'+i).classList.add('filled');
+  document.getElementById('chip_praep_'+selectedWord).classList.add('used');
+  document.getElementById('chip_praep_'+selectedWord).style.boxShadow = 'none';
+  selectedWord = null;
+}
+
+function checkPraepFill() {
+  let score = 0;
+  praepFillData.sentences.forEach((s,i)=>{
+    let dz = document.getElementById('drop_praep_'+i);
+    if(praepFillSel[i] === s.ans) { score++; dz.classList.add('correct'); }
+    else { dz.classList.add('wrong'); dz.title = `Richtig: ${s.ans}`; }
+  });
+  if(score === praepFillData.sentences.length) { addPoints(12,'Lückentext komplett!','🧩'); setSectionProgress('praep',25); setFeedback('fb-praepFill','success',`Alle ${score} richtig! Ausgezeichnet! 🎊`); }
+  else { resetStreak(); setFeedback('fb-praepFill','error',`${score}/${praepFillData.sentences.length} richtig. Rote Lücken = falsche Antwort.`); }
+}
+function resetPraepFill() { initPraepFill(); document.getElementById('fb-praepFill').className='feedback'; }
+
+// Wechselpräpositionen
+const wechselData = [
+  { s:'Die Lehrerin legt das Buch <strong>auf</strong> den Tisch.', ans:'A', expl:'Bewegung (legt) → Wohin? → Akkusativ' },
+  { s:'Das Buch liegt <strong>auf</strong> dem Tisch.', ans:'D', expl:'Position (liegt) → Wo? → Dativ' },
+  { s:'Felix stellt das Fahrrad <strong>neben</strong> die Garage.', ans:'A', expl:'Bewegung (stellt) → Wohin? → Akkusativ' },
+  { s:'Das Fahrrad steht <strong>neben</strong> der Garage.', ans:'D', expl:'Position (steht) → Wo? → Dativ' },
+  { s:'Die Kinder laufen <strong>in</strong> den Garten.', ans:'A', expl:'Bewegung (laufen + Richtung) → Wohin? → Akkusativ' },
+  { s:'Die Kinder spielen <strong>in</strong> dem Garten.', ans:'D', expl:'Position (spielen) → Wo? → Dativ' },
+  { s:'Er hängt das Poster <strong>an</strong> die Wand.', ans:'A', expl:'Bewegung (hängt) → Wohin? → Akkusativ' },
+  { s:'Das Poster hängt <strong>an</strong> der Wand.', ans:'D', expl:'Position (hängt) → Wo? → Dativ' },
+  { s:'Sie setzt sich <strong>zwischen</strong> ihre Freunde.', ans:'A', expl:'Bewegung (setzt sich) → Wohin? → Akkusativ' },
+  { s:'Sie sitzt <strong>zwischen</strong> ihren Freunden.', ans:'D', expl:'Position (sitzt) → Wo? → Dativ' },
+];
+let wechselSel = {};
+function initWechsel() {
+  wechselSel = {};
+  let html = '';
+  wechselData.forEach((w,i)=>{
+    html += `<div class="mc-question">
+      <p>${i+1}. ${w.s}</p>
+      <div class="mc-options">
+        <button class="mc-opt" id="wech_${i}_A" onclick="selectWechsel(${i},'A')">Akkusativ (A)</button>
+        <button class="mc-opt" id="wech_${i}_D" onclick="selectWechsel(${i},'D')">Dativ (D)</button>
+      </div>
+    </div>`;
+  });
+  document.getElementById('wechselQuiz').innerHTML = html;
+}
+function selectWechsel(i, v) {
+  wechselSel[i] = v;
+  ['A','D'].forEach(x=>{ let b=document.getElementById(`wech_${i}_${x}`); b.style.borderColor=''; b.style.color=''; });
+  let btn = document.getElementById(`wech_${i}_${v}`);
+  btn.style.borderColor = 'var(--primary)'; btn.style.color = 'var(--primary)';
+}
+function checkWechsel() {
+  let score = 0;
+  wechselData.forEach((w,i)=>{
+    let sel = wechselSel[i];
+    if(sel) {
+      let btn = document.getElementById(`wech_${i}_${sel}`);
+      if(sel === w.ans) { btn.className='mc-opt correct'; score++; }
+      else { btn.className='mc-opt wrong'; document.getElementById(`wech_${i}_${w.ans}`).className='mc-opt reveal'; }
+    }
+  });
+  if(score===wechselData.length){ addPoints(20,'Wechselpräpositionen gemeistert!','🔄'); setSectionProgress('praep',45); setFeedback('fb-wechsel','success',`Perfekt! ${score}/${wechselData.length}! 🏆`); }
+  else if(score>=5){ addPoints(10,'Gut!','🔄'); setSectionProgress('praep',20); setFeedback('fb-wechsel','partial',`${score}/${wechselData.length}. Merkhilfe: Bewegung=Akkusativ, Position=Dativ`); }
+  else { resetStreak(); setFeedback('fb-wechsel','error',`${score}/${wechselData.length}. Lerne die Merkhilfe: WOHIN? → A, WO? → D`); }
+}
+function resetWechsel(){ wechselSel={}; initWechsel(); document.getElementById('fb-wechsel').className='feedback'; }
+
+// ══════════════════════════════════════
+// VERBFORMEN
+// ══════════════════════════════════════
+const verbData = [
+  { inf:'sehen', praet:'sah', perf:'hat gesehen' },
+  { inf:'fahren', praet:'fuhr', perf:'ist gefahren' },
+  { inf:'schreiben', praet:'schrieb', perf:'hat geschrieben' },
+  { inf:'sprechen', praet:'sprach', perf:'hat gesprochen' },
+  { inf:'essen', praet:'aß', perf:'hat gegessen' },
+  { inf:'trinken', praet:'trank', perf:'hat getrunken' },
+  { inf:'finden', praet:'fand', perf:'hat gefunden' },
+  { inf:'nehmen', praet:'nahm', perf:'hat genommen' },
+  { inf:'laufen', praet:'lief', perf:'ist gelaufen' },
+  { inf:'helfen', praet:'half', perf:'hat geholfen' },
+  { inf:'kommen', praet:'kam', perf:'ist gekommen' },
+  { inf:'geben', praet:'gab', perf:'hat gegeben' },
+  { inf:'schlafen', praet:'schlief', perf:'hat geschlafen' },
+  { inf:'rufen', praet:'rief', perf:'hat gerufen' },
+];
+
+function initVerbTable() {
+  let body = document.getElementById('verbTableBody');
+  let rows = '<tr><td>gehen</td><td><em>ging</em> (Beispiel)</td><td><em>ist gegangen</em> (Beispiel)</td></tr>';
+  verbData.forEach((v,i)=>{
+    rows += `<tr><td>${v.inf}</td>
+      <td><input type="text" id="vt_praet_${i}" placeholder="..." /></td>
+      <td><input type="text" id="vt_perf_${i}" placeholder="hat/ist + ..." /></td>
+    </tr>`;
+  });
+  body.innerHTML = rows;
+}
+function checkVerbTable() {
+  let score = 0, total = verbData.length * 2;
+  verbData.forEach((v,i)=>{
+    let p = document.getElementById('vt_praet_'+i);
+    let pf = document.getElementById('vt_perf_'+i);
+    if(p.value.trim().toLowerCase() === v.praet) { p.className='correct'; score++; }
+    else { p.className='wrong'; p.title = v.praet; }
+    let pfVal = pf.value.trim().toLowerCase().replace(/\s+/g,' ');
+    if(pfVal === v.perf) { pf.className='correct'; score++; }
+    else { pf.className='wrong'; pf.title = v.perf; }
+  });
+  if(score>=total*0.9){ addPoints(25,'Verbtabelle fast perfekt!','⏰'); setSectionProgress('verb',40); setFeedback('fb-verbTable','success',`${score}/${total} richtig! Klasse! 🌟`); }
+  else if(score>=total*0.6){ addPoints(12,'Gut gemacht!','⏰'); setSectionProgress('verb',20); setFeedback('fb-verbTable','partial',`${score}/${total} richtig. Schaue auf die roten Felder!`); }
+  else { resetStreak(); setFeedback('fb-verbTable','error',`${score}/${total}. Lerne die starken Verben nochmal!`); }
+}
+function resetVerbTable(){ initVerbTable(); document.getElementById('fb-verbTable').className='feedback'; }
+
+const perfPraetData = [
+  { perf:'Ich habe das Fenster geöffnet.', praet:'Ich öffnete das Fenster.' },
+  { perf:'Wir sind in den Park gegangen.', praet:'Wir gingen in den Park.' },
+  { perf:'Sie hat einen Brief geschrieben.', praet:'Sie schrieb einen Brief.' },
+  { perf:'Er hat das Glas getrunken.', praet:'Er trank das Glas.' },
+  { perf:'Das Kind hat laut gerufen.', praet:'Das Kind rief laut.' },
+  { perf:'Wir haben das Essen gefunden.', praet:'Wir fanden das Essen.' },
+  { perf:'Er ist schnell gelaufen.', praet:'Er lief schnell.' },
+  { perf:'Sie hat ihrem Freund geholfen.', praet:'Sie half ihrem Freund.' },
+];
+function initPerfPraet() {
+  let html = '';
+  perfPraetData.forEach((s,i)=>{
+    html += `<div style="margin-bottom:0.75rem;">
+      <p style="font-size:0.88rem; color:#6b7280; margin-bottom:4px;">${i+1}. <em>${s.perf}</em></p>
+      <input type="text" id="pp_${i}" placeholder="Im Präteritum..." style="width:100%;padding:0.5rem 0.75rem;border-radius:8px;border:1.5px solid var(--gray-200);font-family:'Nunito Sans',sans-serif;font-size:0.9rem;outline:none;" />
+    </div>`;
+  });
+  document.getElementById('perfPraetExercise').innerHTML = html;
+}
+function checkPerfPraet() {
+  let score = 0;
+  perfPraetData.forEach((s,i)=>{
+    let inp = document.getElementById('pp_'+i);
+    if(inp.value.trim() === s.praet) { inp.style.borderColor='var(--green)'; inp.style.color='var(--green)'; score++; }
+    else { inp.style.borderColor='var(--red)'; inp.style.color='var(--red)'; inp.title=s.praet; }
+  });
+  if(score===perfPraetData.length){ addPoints(15,'Perfekt-Präteritum super!','⏰'); setSectionProgress('verb',30); setFeedback('fb-perfPraet','success','Alle richtig! Du beherrschst das Präteritum! 🎊'); }
+  else { setSectionProgress('verb',10); setFeedback('fb-perfPraet','partial',`${score}/${perfPraetData.length} richtig. Halte die Maus über rote Felder für die Lösung.`); }
+}
+function resetPerfPraet(){ initPerfPraet(); document.getElementById('fb-perfPraet').className='feedback'; }
+
+const praetPerfData = [
+  { praet:'Der Hund bellte die ganze Nacht.', perf:'Der Hund hat die ganze Nacht gebellt.' },
+  { praet:'Sie las das Buch in einer Stunde.', perf:'Sie hat das Buch in einer Stunde gelesen.' },
+  { praet:'Wir fuhren mit dem Auto nach Hamburg.', perf:'Wir sind mit dem Auto nach Hamburg gefahren.' },
+  { praet:'Er aß drei Stücke Kuchen.', perf:'Er hat drei Stücke Kuchen gegessen.' },
+  { praet:'Das Baby schlief den ganzen Tag.', perf:'Das Baby hat den ganzen Tag geschlafen.' },
+  { praet:'Sie kam spät nach Hause.', perf:'Sie ist spät nach Hause gekommen.' },
+];
+function initPraetPerf() {
+  let html = '';
+  praetPerfData.forEach((s,i)=>{
+    html += `<div style="margin-bottom:0.75rem;">
+      <p style="font-size:0.88rem; color:#6b7280; margin-bottom:4px;">${i+1}. <em>${s.praet}</em></p>
+      <input type="text" id="prap_${i}" placeholder="Im Perfekt..." style="width:100%;padding:0.5rem 0.75rem;border-radius:8px;border:1.5px solid var(--gray-200);font-family:'Nunito Sans',sans-serif;font-size:0.9rem;outline:none;" />
+    </div>`;
+  });
+  document.getElementById('praetPerfExercise').innerHTML = html;
+}
+function checkPraetPerf() {
+  let score = 0;
+  praetPerfData.forEach((s,i)=>{
+    let inp = document.getElementById('prap_'+i);
+    if(inp.value.trim() === s.perf) { inp.style.borderColor='var(--green)'; inp.style.color='var(--green)'; score++; }
+    else { inp.style.borderColor='var(--red)'; inp.style.color='var(--red)'; inp.title=s.perf; }
+  });
+  if(score===praetPerfData.length){ addPoints(15,'Perfekt gemeistert!','⏰'); setSectionProgress('verb',30); setFeedback('fb-praetPerf','success','Alle richtig! Du kennst das Perfekt auswendig! 🏆'); }
+  else { setSectionProgress('verb',10); setFeedback('fb-praetPerf','partial',`${score}/${praetPerfData.length}. Halte über rote Felder für die Lösung.`); }
+}
+function resetPraetPerf(){ initPraetPerf(); document.getElementById('fb-praetPerf').className='feedback'; }
+
+// ══════════════════════════════════════
+// WORTSCHATZ
+// ══════════════════════════════════════
+const wortData = {
+  verben: [
+    { base:'gehen', s1:'gehen', s2:'schlendern', s3:'trotten', ex:'Er schlendrte durch die Stadt.' },
+    { base:'sagen', s1:'sagen', s2:'berichten', s3:'flüstern / flehen', ex:'Sie flüsterte ihm sein Geheimnis ins Ohr.' },
+    { base:'sehen', s1:'sehen', s2:'beobachten', s3:'starren / erblicken', ex:'Er starrte fassungslos auf das Bild.' },
+    { base:'essen', s1:'essen', s2:'schlingen', s3:'verschlingen / knabbern', ex:'Das Kind verschlang den Kuchen in Sekunden.' },
+    { base:'lachen', s1:'lachen', s2:'kichern', s3:'schallend lachen / grinsen', ex:'Sie grinste von einem Ohr zum anderen.' },
+    { base:'weinen', s1:'weinen', s2:'schluchzen', s3:'heulen / in Tränen ausbrechen', ex:'Er schluchzte leise in sein Kissen.' },
+    { base:'rennen', s1:'rennen', s2:'stürmen', s3:'rasen / flitzen', ex:'Sie flitzte den Korridor entlang.' },
+    { base:'machen', s1:'machen', s2:'erstellen', s3:'anfertigen / vollbringen', ex:'Er fertigte in einer Nacht das ganze Projekt an.' },
+  ],
+  adj: [
+    { base:'groß', s2:'riesig', s3:'gewaltig / monumental' },
+    { base:'schön', s2:'prächtig', s3:'atemberaubend / malerisch' },
+    { base:'schlecht', s2:'miserabel', s3:'katastrophal / erbärmlich' },
+    { base:'interessant', s2:'fesselnd', s3:'packend / mitreißend' },
+    { base:'müde', s2:'erschöpft', s3:'ausgelaugt / abgekämpft' },
+    { base:'wütend', s2:'empört', s3:'rasend / außer sich' },
+  ]
+};
+
+function initWortGrids() {
+  let g1='', g2='', g3='';
+  wortData.verben.forEach(w=>{
+    g1 += `<div class="wort-card"><div class="base">Verben</div><div class="precise">${w.s1}</div></div>`;
+    g2 += `<div class="wort-card"><div class="base">statt "${w.s1}"</div><div class="precise">${w.s2}</div></div>`;
+    g3 += `<div class="wort-card" title="${w.ex}"><div class="base">statt "${w.s1}"</div><div class="precise">${w.s3}</div></div>`;
+  });
+  document.getElementById('wortGrid1').innerHTML = g1;
+  document.getElementById('wortGrid2').innerHTML = g2;
+  document.getElementById('wortGrid3').innerHTML = g3;
+}
+
+const wortQuizData = [
+  { s:'Die alte Dame ______ durch den Stadtpark, ohne es eilig zu haben.', opts:['ging','schlenderte','war'], a:1, ctx:'ohne es eilig zu haben = langsam, gemütlich → schlenderte' },
+  { s:'Das Feuer breitete sich ______ über das ganze Feld aus.', opts:['machte sich','rasend schnell','breitete'], a:1, ctx:'Feuer und Schnelligkeit → rasend schnell' },
+  { s:'Der kleine Junge ______ seinen Geburtstagskuchen in wenigen Augenblicken.', opts:['aß','verschlang','machte'], a:1, ctx:'sehr schnell und gierig essen → verschlang' },
+  { s:'Die Zuschauer ______ während der ganzen Vorstellung gebannt auf die Bühne.', opts:['schauten','starrten','sahen'], a:1, ctx:'gebannt, ohne wegzuschauen → starrten' },
+  { s:'Er ______ leise, damit ihn niemand aufweckte.', opts:['sprach','flüsterte','sagte'], a:1, ctx:'leise sprechen → flüsterte' },
+  { s:'Das Mädchen ______ vor Freude laut auf.', opts:['lachte','schrie','kicherte'], a:2, ctx:'laut und ausgelassen lachen → kicherte ist leiser, schreien zu abrupt → kicherte oder lachte schallend' },
+];
+let wortQuizSel = {};
+function initWortQuiz() {
+  wortQuizSel = {};
+  let html = '';
+  wortQuizData.forEach((q,i)=>{
+    html += `<div class="mc-question">
+      <p>${i+1}. ${q.s}</p>
+      <div class="mc-options">
+        ${q.opts.map((o,j)=>`<button class="mc-opt" id="wq_${i}_${j}" onclick="selectWQ(${i},${j})">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  document.getElementById('wortQuiz').innerHTML = html;
+}
+function selectWQ(q, opt) {
+  wortQuizSel['wq_'+q] = opt;
+  document.querySelectorAll(`[id^="wq_${q}_"]`).forEach(b=>{ b.style.borderColor=''; b.style.color=''; });
+  let btn = document.getElementById(`wq_${q}_${opt}`);
+  btn.style.borderColor = 'var(--primary)'; btn.style.color = 'var(--primary)';
+}
+function checkWortQuiz() {
+  let score = 0;
+  wortQuizData.forEach((q,i)=>{
+    let sel = wortQuizSel['wq_'+i];
+    if(sel!==undefined) {
+      let btn = document.getElementById(`wq_${i}_${sel}`);
+      if(sel===q.a){ btn.className='mc-opt correct'; score++; }
+      else { btn.className='mc-opt wrong'; document.getElementById(`wq_${i}_${q.a}`).className='mc-opt reveal'; }
+    }
+  });
+  if(score>=wortQuizData.length-1){ addPoints(15,'Wortschatz-Experte!','📚'); setSectionProgress('wort',40); setFeedback('fb-wort','success',`${score}/${wortQuizData.length} richtig! Dein Wortschatz ist stark! ✨`); }
+  else { setSectionProgress('wort',15); setFeedback('fb-wort','partial',`${score}/${wortQuizData.length}. Lese den Kontext genau!`); }
+}
+function resetWortQuiz(){ wortQuizSel={}; initWortQuiz(); document.getElementById('fb-wort').className='feedback'; }
+
+const verbFillData = {
+  words: ['verschlang','schlenderten','flüsterte','starrte','schluchzte','raste','kicherten','erblickte'],
+  sentences: [
+    { before:'Die beiden Freundinnen', after:'und lachten über den Witz.', ans:'kicherten' },
+    { before:'Er', after:'den ganzen Kuchen, ohne Pause zu machen.', ans:'verschlang' },
+    { before:'Sie', after:'ihm das Geheimnis ins Ohr, damit niemand es hörte.', ans:'flüsterte' },
+    { before:'Das Kind', after:'ungläubig auf den leeren Teller.', ans:'starrte' },
+    { before:'Sie', after:'leise in ihr Kissen, als alle schliefen.', ans:'schluchzte' },
+    { before:'Wir', after:'langsam durch den alten Stadtpark.', ans:'schlenderten' },
+  ]
+};
+let verbFillSel = {};
+let verbBankSel = null;
+
+function initVerbFill() {
+  verbFillSel = {};
+  verbBankSel = null;
+  selectedWord = null;
+  let bank = document.getElementById('verbBank');
+  bank.innerHTML = verbFillData.words.map(w=>`<span class="word-chip" id="vchip_${w}" onclick="selectVerbWord('${w}')">${w}</span>`).join('');
+  let html = '';
+  verbFillData.sentences.forEach((s,i)=>{
+    html += `<div class="fill-sentence">
+      <span>${i+1}. ${s.before}</span>
+      <span class="drop-zone" id="vdrop_${i}" onclick="placeVerbWord(${i})">${verbFillSel[i]||'______'}</span>
+      <span>${s.after}</span>
+    </div>`;
+  });
+  document.getElementById('verbFill').innerHTML = html;
+}
+function selectVerbWord(w) {
+  if(verbBankSel) document.getElementById('vchip_'+verbBankSel)?.style.setProperty('box-shadow','none');
+  verbBankSel = w;
+  document.getElementById('vchip_'+w).style.boxShadow = '0 0 0 3px var(--amber)';
+}
+function placeVerbWord(i) {
+  if(!verbBankSel) return;
+  let prev = verbFillSel[i];
+  if(prev){ let pc=document.getElementById('vchip_'+prev); if(pc) pc.classList.remove('used'); }
+  verbFillSel[i] = verbBankSel;
+  document.getElementById('vdrop_'+i).textContent = verbBankSel;
+  document.getElementById('vchip_'+verbBankSel).classList.add('used');
+  document.getElementById('vchip_'+verbBankSel).style.boxShadow = 'none';
+  verbBankSel = null;
+}
+function checkVerbFill() {
+  let score = 0;
+  verbFillData.sentences.forEach((s,i)=>{
+    let dz = document.getElementById('vdrop_'+i);
+    if(verbFillSel[i]===s.ans){ score++; dz.classList.add('correct'); }
+    else { dz.classList.add('wrong'); dz.title='Richtig: '+s.ans; }
+  });
+  if(score===verbFillData.sentences.length){ addPoints(12,'Präzise Verben super!','📚'); setSectionProgress('wort',40); setFeedback('fb-verbFill','success','Alle Lücken korrekt! Großartig! 🎉'); }
+  else { setSectionProgress('wort',15); setFeedback('fb-verbFill','error',`${score}/${verbFillData.sentences.length}. Lies den Satz genau für den richtigen Kontext.`); }
+}
+function resetVerbFill(){ initVerbFill(); document.getElementById('fb-verbFill').className='feedback'; }
+
+// ══════════════════════════════════════
+// GEDICHTE
+// ══════════════════════════════════════
+const stilData = [
+  { s:'"Das Meer singt sein altes Lied."', opts:['Metapher','Alliteration','Personifikation','Vergleich'], a:2, expl:'Das Meer bekommt menschliche Fähigkeit (singen) → Personifikation' },
+  { s:'"Peter pflückt pausenlos prächtige Pflaumen."', opts:['Metapher','Alliteration','Personifikation','Vergleich'], a:1, expl:'Mehrere Wörter beginnen mit P → Alliteration' },
+  { s:'"Das Leben ist ein langer Fluss."', opts:['Metapher','Alliteration','Personifikation','Vergleich'], a:0, expl:'Das Leben WIRD mit einem Fluss gleichgesetzt (kein "wie") → Metapher' },
+  { s:'"Ihr Haar war wie goldener Weizen."', opts:['Metapher','Alliteration','Personifikation','Vergleich'], a:3, expl:'"wie" ist das Zeichen → Vergleich' },
+  { s:'"Die Zeit rennt."', opts:['Metapher','Alliteration','Personifikation','Vergleich'], a:2, expl:'Zeit = Mensch (rennen) → Personifikation' },
+  { s:'"Still, starr, stumm stand sie da."', opts:['Metapher','Alliteration','Personifikation','Vergleich'], a:1, expl:'S-S-S-S → Alliteration' },
+  { s:'"Die Dunkelheit war ein schweres Tuch über der Stadt."', opts:['Metapher','Alliteration','Personifikation','Vergleich'], a:0, expl:'Dunkelheit = Tuch (direkte Gleichsetzung) → Metapher' },
+];
+let stilSel = {};
+function initStil() {
+  stilSel = {};
+  let html = '';
+  stilData.forEach((q,i)=>{
+    html += `<div class="mc-question">
+      <p>${i+1}. ${q.s}</p>
+      <div class="mc-options">
+        ${q.opts.map((o,j)=>`<button class="mc-opt" id="stil_${i}_${j}" onclick="selectStil(${i},${j})">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  document.getElementById('stilQuiz').innerHTML = html;
+}
+function selectStil(q, opt) {
+  stilSel['s'+q] = opt;
+  document.querySelectorAll(`[id^="stil_${q}_"]`).forEach(b=>{ b.style.borderColor=''; b.style.color=''; });
+  document.getElementById(`stil_${q}_${opt}`).style.borderColor='var(--primary)';
+  document.getElementById(`stil_${q}_${opt}`).style.color='var(--primary)';
+}
+function checkStil() {
+  let score = 0;
+  stilData.forEach((q,i)=>{
+    let sel = stilSel['s'+i];
+    if(sel!==undefined){
+      let btn = document.getElementById(`stil_${i}_${sel}`);
+      if(sel===q.a){ btn.className='mc-opt correct'; score++; }
+      else{ btn.className='mc-opt wrong'; document.getElementById(`stil_${i}_${q.a}`).className='mc-opt reveal'; btn.title=q.expl; }
+    }
+  });
+  if(score>=stilData.length-1){ addPoints(20,'Stilmittel-Experte!','🌸'); setSectionProgress('ged',40); setFeedback('fb-stil','success',`${score}/${stilData.length} – Du erkennst Stilmittel wie ein Profi! 🏆`); }
+  else { setSectionProgress('ged',15); setFeedback('fb-stil','partial',`${score}/${stilData.length}. Schaue auf die Erklärungen (rote Buttons). Personifikation = Mensch, Alliteration = gleicher Anfangsbuchstabe, Metapher = direkt gleichgesetzt, Vergleich = mit "wie".`); }
+}
+function resetStil(){ stilSel={}; initStil(); document.getElementById('fb-stil').className='feedback'; }
+
+function countSyl(inputId, outId) {
+  // Simple German syllable estimator
+  let val = document.getElementById(inputId).value;
+  let count = 0;
+  let v = val.toLowerCase();
+  let matches = v.match(/[aeiouäöüy]+/g);
+  count = matches ? matches.length : 0;
+  let out = document.getElementById(outId);
+  out.textContent = `~ ${count} Silbe(n)`;
+  out.style.color = count===0?'#9ca3af':'var(--primary)';
+}
+
+function previewHaiku() {
+  let l1 = document.getElementById('haiku1').value.trim();
+  let l2 = document.getElementById('haiku2').value.trim();
+  let l3 = document.getElementById('haiku3').value.trim();
+  if(!l1&&!l2&&!l3){ alert('Schreibe erst dein Haiku!'); return; }
+  let prev = document.getElementById('haikuPreview');
+  prev.innerHTML = `${l1}<br>${l2}<br>${l3}`;
+  prev.style.display = 'block';
+  addPoints(5,'Haiku verfasst!','🌿'); setSectionProgress('ged',20);
+  showToast('🌿','Haiku fertig!','Dein Gedicht wurde gespeichert!');
+}
+
+function previewElfchen() {
+  let lines = [1,2,3,4,5].map(i=>document.getElementById('el'+i).value.trim());
+  if(lines.every(l=>!l)){ alert('Schreibe erst dein Elfchen!'); return; }
+  let prev = document.getElementById('elfchenPreview');
+  prev.innerHTML = lines.map(l=>`<span style="display:block;">${l}</span>`).join('');
+  prev.style.display = 'block';
+  addPoints(5,'Elfchen fertig!','🧝'); setSectionProgress('ged',20);
+}
+
+const gedichtQuizData = [
+  { q:'Welches Stilmittel steckt in "Der Morgen flüstert leise Worte"?', opts:['Vergleich','Alliteration','Personifikation','Metapher'], a:2 },
+  { q:'Was bedeutet "Die Sonne küsst die kalte Erde" als Bild?', opts:['Die Sonne ist gefährlich','Die Sonne wärmt die Erde liebevoll','Es ist sehr kalt','Es regnet bald'], a:1 },
+  { q:'"als wollten sie den Tag umarmen" – welches Stilmittel?', opts:['Personifikation','Vergleich mit "als"','Metapher','Alliteration'], a:1 },
+  { q:'Was ist die Stimmung des Gedichts?', opts:['Düster und traurig','Hoffnungsvoll und ruhig','Aufgeregt und laut','Wütend und chaotisch'], a:1 },
+];
+let gedQuizSel = {};
+function initGedichtQuiz() {
+  gedQuizSel = {};
+  let html = '';
+  gedichtQuizData.forEach((q,i)=>{
+    html += `<div class="mc-question">
+      <p>${i+1}. ${q.q}</p>
+      <div class="mc-options">
+        ${q.opts.map((o,j)=>`<button class="mc-opt" id="gq_${i}_${j}" onclick="selGQ(${i},${j})">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  document.getElementById('gedichtQuiz').innerHTML = html;
+}
+function selGQ(q,opt){ gedQuizSel['g'+q]=opt; document.querySelectorAll(`[id^="gq_${q}_"]`).forEach(b=>{b.style.borderColor='';b.style.color='';}); document.getElementById(`gq_${q}_${opt}`).style.borderColor='var(--primary)'; document.getElementById(`gq_${q}_${opt}`).style.color='var(--primary)'; }
+function checkGedicht() {
+  let score = 0;
+  gedichtQuizData.forEach((q,i)=>{
+    let sel = gedQuizSel['g'+i];
+    if(sel!==undefined){ let btn=document.getElementById(`gq_${i}_${sel}`); if(sel===q.a){btn.className='mc-opt correct';score++;}else{btn.className='mc-opt wrong';document.getElementById(`gq_${i}_${q.a}`).className='mc-opt reveal';} }
+  });
+  if(score>=3){ addPoints(15,'Gedicht analysiert!','📜'); setSectionProgress('ged',30); setFeedback('fb-gedicht','success',`${score}/${gedichtQuizData.length} richtig! Du verstehst Gedichte! 🌸`); }
+  else { setFeedback('fb-gedicht','partial',`${score}/${gedichtQuizData.length}. Lies das Gedicht nochmal langsam durch.`); }
+}
+
+// ══════════════════════════════════════
+// KREATIVES SCHREIBEN
+// ══════════════════════════════════════
+const sdtQuizData = [
+  { tell:'Ich war sehr nervös.', show:'Meine Hände zitterten, und mein Herz hämmerte laut.', opts:['Ich war sehr nervös.','Meine Hände zitterten, und mein Herz hämmerte laut.'], a:1 },
+  { tell:'Es war sehr dunkel.', show:'Ich konnte meine eigene Hand nicht vor Augen sehen.', opts:['Es war sehr dunkel.','Ich konnte meine eigene Hand nicht vor Augen sehen.'], a:1 },
+  { tell:'Sie war wütend.', show:'Ihre Lippen wurden schmal, und die Adern an ihrem Hals traten hervor.', opts:['Sie war wütend.','Ihre Lippen wurden schmal, und die Adern an ihrem Hals traten hervor.'], a:1 },
+  { tell:'Das Essen war lecker.', show:'Beim ersten Bissen schloss er die Augen und seufzte vor Glück.', opts:['Das Essen war lecker.','Beim ersten Bissen schloss er die Augen und seufzte vor Glück.'], a:1 },
+  { tell:'Er war sehr müde.', show:'Mit bleiern schweren Lidern schleppte er sich die Treppen hinauf.', opts:['Er war sehr müde.','Mit bleiern schweren Lidern schleppte er sich die Treppen hinauf.'], a:1 },
+];
+let sdtSel = {};
+function initSdt() {
+  sdtSel = {};
+  let html = '';
+  sdtQuizData.forEach((q,i)=>{
+    html += `<div class="mc-question">
+      <p>${i+1}. Welcher Satz <strong>zeigt</strong> das Gefühl?</p>
+      <div class="mc-options">
+        ${q.opts.map((o,j)=>`<button class="mc-opt" id="sdt_${i}_${j}" onclick="selSDT(${i},${j})" style="text-align:left; white-space:normal; height:auto; padding:0.5rem 1rem; border-radius:8px; max-width:100%;">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  document.getElementById('sdtQuiz').innerHTML = html;
+}
+function selSDT(q,opt){ sdtSel['sdt'+q]=opt; document.querySelectorAll(`[id^="sdt_${q}_"]`).forEach(b=>{b.style.borderColor='';b.style.color='';}); document.getElementById(`sdt_${q}_${opt}`).style.borderColor='var(--primary)'; document.getElementById(`sdt_${q}_${opt}`).style.color='var(--primary)'; }
+function checkSdt() {
+  let score = 0;
+  sdtQuizData.forEach((q,i)=>{
+    let sel = sdtSel['sdt'+i];
+    if(sel!==undefined){ let btn=document.getElementById(`sdt_${i}_${sel}`); if(sel===q.a){btn.className='mc-opt correct';score++;}else{btn.className='mc-opt wrong';document.getElementById(`sdt_${i}_${q.a}`).className='mc-opt reveal';} }
+  });
+  if(score>=4){ addPoints(15,'Show don\'t tell verstanden!','✍️'); setSectionProgress('kreativ',40); setFeedback('fb-sdt','success',`${score}/${sdtQuizData.length} richtig! Du kannst zeigen statt erklären! 🎭`); }
+  else { setFeedback('fb-sdt','partial',`${score}/${sdtQuizData.length}. Suche nach Körperreaktionen und Sinneseindrücken!`); }
+}
+function resetSdt(){ sdtSel={}; initSdt(); document.getElementById('fb-sdt').className='feedback'; }
+
+function initSdtWrite() {
+  const tells = ['Ich freute mich riesig.','Der Raum war unheimlich.','Sie war sehr aufgeregt.','Er war verlegen.','Es war bitterkalt draußen.'];
+  let html = '';
+  tells.forEach((t,i)=>{
+    html += `<div class="sdt-pair">
+      <div class="sdt-tell">❌ ${t}</div>
+      <div class="sdt-show-area" contenteditable="true" id="sdtW_${i}" data-placeholder="Zeige es! Schreibe hier...">Zeige es! Schreibe hier...</div>
+    </div>`;
+  });
+  document.getElementById('sdtWrite').innerHTML = html;
+  document.querySelectorAll('.sdt-show-area').forEach(el=>{
+    el.addEventListener('focus',function(){ if(this.textContent.includes('Zeige es!')) this.textContent=''; });
+    el.addEventListener('blur',function(){ if(!this.textContent.trim()) this.textContent='Zeige es! Schreibe hier...'; else { addPoints(2,'','✍️'); setSectionProgress('kreativ',10); } });
+  });
+}
+
+const sdtExamples = ['→ Mein Herz hüpfte vor Freude, und ich musste das Lächeln mit beiden Händen zurückhalten.','→ Die Haare auf meinen Armen stellten sich auf. Eine kalte Stille breitete sich aus.','→ Sie tippte mit dem Fuß auf den Boden und blickte immer wieder zur Tür.','→ Seine Wangen glühten rot, und er schaute schnell weg.','→ Der Atem vor meinem Mund wurde zu kleinen Wölkchen. Ich konnte meine Finger kaum noch spüren.'];
+function showSdtExamples() {
+  let els = document.querySelectorAll('.sdt-show-area');
+  els.forEach((el,i)=>{ if(sdtExamples[i] && el.textContent.includes('Zeige es!')) el.textContent = sdtExamples[i]; });
+  showToast('💡','Beispiele eingeblendet!','Das sind mögliche Antworten – deine eigenen Ideen sind auch toll!');
+}
+
+function initSatzanfaenge() {
+  const aufgaben = [
+    'Beschreibe, wie ein Kind zur Schule rennt, weil es zu spät ist.',
+    'Beschreibe, wie jemand einen Brief öffnet und schlechte Nachrichten liest.',
+    'Beschreibe, wie zwei alte Freunde sich nach Jahren wiedertreffen.',
+    'Beschreibe, wie jemand nachts ein merkwürdiges Geräusch hört.',
+    'Beschreibe, wie jemand auf der Bühne steht und alle Augen auf ihn gerichtet sind.',
+  ];
+  let html = '';
+  aufgaben.forEach((a,i)=>{
+    html += `<div style="margin-bottom:1rem;">
+      <p style="font-size:0.88rem; font-style:italic; color:#4b5563; margin-bottom:4px;">${i+1}. ${a}</p>
+      <textarea id="satz_${i}" placeholder="Beginne NICHT mit dem Subjekt..." rows="2" style="width:100%;padding:0.5rem;border-radius:8px;border:1.5px solid var(--gray-200);font-family:'Nunito Sans',sans-serif;font-size:0.9rem;resize:vertical;outline:none;"></textarea>
+    </div>`;
+  });
+  document.getElementById('satzanfaenge').innerHTML = html;
+  document.querySelectorAll('textarea').forEach(ta=>{ ta.addEventListener('blur',function(){ if(this.value.trim().length>10){ addPoints(2,'Kreativ!','✍️'); setSectionProgress('kreativ',8); } }); });
+}
+
+const satzBeispiele = ['Atemlos, die Schultasche hin- und herschlagend, rannte er die Straße entlang.','Mit zitternden Fingern zog sie den Umschlag auf. Die Zeilen verschwammen vor ihren Augen.','Wie aus dem Nichts stand er vor ihr – älter, aber mit demselben Lachen wie früher.','Mitten in der Stille – ein Kratzen. Dann Stille. Dann wieder.','Unter dem grell weißen Scheinwerfer fühlte sie, wie tausend Augenpaare sie anstarrten.'];
+function showSatzBeispiele() {
+  document.querySelectorAll('#satzanfaenge textarea').forEach((ta,i)=>{ if(!ta.value.trim() && satzBeispiele[i]) ta.value=satzBeispiele[i]; });
+  showToast('💡','Beispiele eingefügt!','Das sind Muster – schreibe eigene!');
+}
+
+function initChecklist() {
+  const items = [
+    { label:'Einleitung: Wer? Wo? Wann?', id:'ck1' },
+    { label:'Hauptteil: Spannung aufgebaut', id:'ck2' },
+    { label:'Schluss: Überraschend oder offen', id:'ck3' },
+    { label:'Mindestens 3 Adjektive', id:'ck4' },
+    { label:'Mindestens ein Dialog', id:'ck5' },
+    { label:'Verschiedene Satzanfänge', id:'ck6' },
+    { label:'Show, don\'t tell benutzt', id:'ck7' },
+    { label:'Rechtschreibung überprüft', id:'ck8' },
+  ];
+  let html = '';
+  items.forEach(item=>{
+    html += `<label style="display:flex; align-items:center; gap:0.75rem; padding:0.5rem 0.75rem; margin-bottom:0.4rem; background:white; border-radius:8px; border:1.5px solid var(--gray-200); cursor:pointer; font-size:0.9rem;">
+      <input type="checkbox" id="${item.id}" style="width:18px;height:18px;accent-color:var(--green);cursor:pointer;" onchange="checklistUpdate()" />
+      ${item.label}
+    </label>`;
+  });
+  document.getElementById('checklist').innerHTML = html;
+}
+
+function checklistUpdate() {
+  let checked = document.querySelectorAll('#checklist input:checked').length;
+  let total = document.querySelectorAll('#checklist input').length;
+  if(checked===total){ addPoints(20,'Checkliste vollständig!','📋'); setSectionProgress('kreativ',30); showToast('🏆','Checkliste abgehakt!','Deine Geschichte hat alles!'); }
+  else if(checked>=4 && !window.cl4done){ window.cl4done=true; addPoints(5,'Guter Fortschritt!','📋'); setSectionProgress('kreativ',10); }
+}
+
+// ══════════════════════════════════════
+// LESEVERSTÄNDNIS
+// ══════════════════════════════════════
+const rfData = [
+  { s:'Felix fand die Eisentür hinter dem Schuppen seines Vaters.', ans:false, korr:'Richtig: hinter dem Schuppen seines GROSSVATERS.' },
+  { s:'Der Brunnen im Garten war mit grünem Moos bedeckt.', ans:true },
+  { s:'Ein schwarzer Hund beobachtete Felix im Garten.', ans:false, korr:'Richtig: Ein graubrauner KATER saß auf dem Brunnenrand.' },
+  { s:'Emma war Felix\' Urgroßmutter.', ans:true },
+  { s:'Emma starb im Jahr 1963.', ans:true },
+  { s:'Felix brachte den Brief sofort zur Polizei.', ans:false, korr:'Richtig: Felix brachte den Brief direkt zu Frau Müller (Bergstraße 7).' },
+  { s:'Felix und sein Großvater reparierten zusammen den Brunnen.', ans:true },
+  { s:'Frau Müller war Emmas Enkelin.', ans:false, korr:'Richtig: Frau Müller war Heinrichs Enkelin (nicht Emmas).' },
+];
+let rfSel = {};
+function initRF() {
+  rfSel = {};
+  let html = '';
+  rfData.forEach((q,i)=>{
+    html += `<div class="mc-question">
+      <p>${i+1}. ${q.s}</p>
+      <div class="mc-options">
+        <button class="mc-opt" id="rf_${i}_R" onclick="selRF(${i},'R')">R – Richtig</button>
+        <button class="mc-opt" id="rf_${i}_F" onclick="selRF(${i},'F')">F – Falsch</button>
+      </div>
+    </div>`;
+  });
+  document.getElementById('rfQuiz').innerHTML = html;
+}
+function selRF(i,v){ rfSel['rf'+i]=v; ['R','F'].forEach(x=>{let b=document.getElementById(`rf_${i}_${x}`);b.style.borderColor='';b.style.color='';}); document.getElementById(`rf_${i}_${v}`).style.borderColor='var(--primary)'; document.getElementById(`rf_${i}_${v}`).style.color='var(--primary)'; }
+function checkRF() {
+  let score = 0;
+  rfData.forEach((q,i)=>{
+    let sel = rfSel['rf'+i];
+    if(sel) {
+      let correct = (q.ans ? 'R' : 'F');
+      let rBtn = document.getElementById(`rf_${i}_${sel}`);
+      if(sel===correct){ rBtn.className='mc-opt correct'; score++; }
+      else { rBtn.className='mc-opt wrong'; document.getElementById(`rf_${i}_${correct}`).className='mc-opt reveal'; if(q.korr) document.getElementById(`rf_${i}_${correct}`).title=q.korr; }
+    }
+  });
+  if(score>=7){ addPoints(20,'Textverständnis super!','📖'); setSectionProgress('lese',35); setFeedback('fb-rf','success',`${score}/${rfData.length} richtig! Sehr aufmerksam gelesen! 🔍`); }
+  else { setSectionProgress('lese',15); setFeedback('fb-rf','partial',`${score}/${rfData.length}. Lies den Text nochmal für die falschen Antworten!`); }
+}
+function resetRF(){ rfSel={}; initRF(); document.getElementById('fb-rf').className='feedback'; }
+
+const mcData = [
+  { q:'Wo fand Felix die Eisentür?', opts:['Im Keller','Im Dachboden','Hinter dem Schuppen','Im Garten'], a:2 },
+  { q:'Was saß auf dem Brunnenrand?', opts:['Ein Hund','Ein Vogel','Eine Katze','Ein graubrauner Kater'], a:3 },
+  { q:'Wann starb Emma?', opts:['1942','1953','1963','1973'], a:2 },
+  { q:'Womit wurden Felix und sein Großvater enger verbunden?', opts:['Durch einen Brief','Durch die Gartenarbeit','Durch ein Foto','Durch eine alte Kiste'], a:1 },
+  { q:'Was bedeutet der Schlusssatz "Nicht perfekt – aber lebendig"?', opts:['Der Garten war misslungen','Emma wäre enttäuscht','Das Wichtigste ist der lebendige Geist','Es gab noch viel zu tun'], a:2 },
+];
+let mcSel = {};
+function initMC() {
+  mcSel = {};
+  let html = '';
+  mcData.forEach((q,i)=>{
+    html += `<div class="mc-question">
+      <p>${i+1}. ${q.q}</p>
+      <div class="mc-options">
+        ${q.opts.map((o,j)=>`<button class="mc-opt" id="mc_${i}_${j}" onclick="selMC(${i},${j})">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  document.getElementById('mcQuiz').innerHTML = html;
+}
+function selMC(i,j){ mcSel['mc'+i]=j; document.querySelectorAll(`[id^="mc_${i}_"]`).forEach(b=>{b.style.borderColor='';b.style.color='';}); document.getElementById(`mc_${i}_${j}`).style.borderColor='var(--primary)'; document.getElementById(`mc_${i}_${j}`).style.color='var(--primary)'; }
+function checkMC() {
+  let score = 0;
+  mcData.forEach((q,i)=>{
+    let sel = mcSel['mc'+i];
+    if(sel!==undefined){ let btn=document.getElementById(`mc_${i}_${sel}`); if(sel===q.a){btn.className='mc-opt correct';score++;}else{btn.className='mc-opt wrong';document.getElementById(`mc_${i}_${q.a}`).className='mc-opt reveal';} }
+  });
+  if(score>=4){ addPoints(15,'MC-Meister!','📖'); setSectionProgress('lese',30); setFeedback('fb-mc','success',`${score}/${mcData.length} richtig! 🌟`); }
+  else { setFeedback('fb-mc','partial',`${score}/${mcData.length}. Lese die Antwortmöglichkeiten genau!`); }
+}
+function resetMC(){ mcSel={}; initMC(); document.getElementById('fb-mc').className='feedback'; }
+
+const leseFillData = {
+  words: ['Brunnen','Kater','Garten','Großvater','Emma','Foto','Jahrzehnte','Schuppen'],
+  sentences: [
+    { before:'Felix fand die Tür hinter dem alten', after:'seines Großvaters.', ans:'Schuppen' },
+    { before:'Im Garten stand ein verfallener', after:', auf dem ein graubrauner Kater saß.', ans:'Brunnen' },
+    { before:'Der', after:'beobachtete Felix mit gelben Augen.', ans:'Kater' },
+    { before:'Die Holztafel war für seine', after:'bestimmt, die den Garten angelegt hatte.', ans:'Emma' },
+    { before:'Felix\' Großvater holte ein altes', after:'aus der Schublade.', ans:'Foto' },
+    { before:'Am Ende des Sommers blühte der', after:'wieder.', ans:'Garten' },
+  ]
+};
+let leseFillSel = {};
+let leseBankSel = null;
+
+function initLeseFill() {
+  leseFillSel = {};
+  leseBankSel = null;
+  let bank = document.getElementById('leseBank');
+  bank.innerHTML = leseFillData.words.map(w=>`<span class="word-chip" id="lchip_${w}" onclick="selectLeseWord('${w}')">${w}</span>`).join('');
+  let html = '';
+  leseFillData.sentences.forEach((s,i)=>{
+    html += `<div class="fill-sentence">
+      <span>${i+1}. ${s.before}</span>
+      <span class="drop-zone" id="ldrop_${i}" onclick="placeLeseWord(${i})">${leseFillSel[i]||'______'}</span>
+      <span>${s.after}</span>
+    </div>`;
+  });
+  document.getElementById('leseFill').innerHTML = html;
+}
+function selectLeseWord(w){ if(leseBankSel) document.getElementById('lchip_'+leseBankSel)?.style.setProperty('box-shadow','none'); leseBankSel=w; document.getElementById('lchip_'+w).style.boxShadow='0 0 0 3px var(--amber)'; }
+function placeLeseWord(i){ if(!leseBankSel)return; let prev=leseFillSel[i]; if(prev){let pc=document.getElementById('lchip_'+prev);if(pc)pc.classList.remove('used');} leseFillSel[i]=leseBankSel; document.getElementById('ldrop_'+i).textContent=leseBankSel; document.getElementById('lchip_'+leseBankSel).classList.add('used'); document.getElementById('lchip_'+leseBankSel).style.boxShadow='none'; leseBankSel=null; }
+function checkLeseFill() {
+  let score = 0;
+  leseFillData.sentences.forEach((s,i)=>{ let dz=document.getElementById('ldrop_'+i); if(leseFillSel[i]===s.ans){score++;dz.classList.add('correct');}else{dz.classList.add('wrong');dz.title='Richtig: '+s.ans;} });
+  if(score===leseFillData.sentences.length){ addPoints(12,'Lückentext perfekt!','📖'); setSectionProgress('lese',25); setFeedback('fb-leseFill','success','Alle Lücken richtig! Ausgezeichnet! 🎊'); }
+  else { setFeedback('fb-leseFill','error',`${score}/${leseFillData.sentences.length} richtig.`); }
+}
+function resetLeseFill(){ initLeseFill(); document.getElementById('fb-leseFill').className='feedback'; }
+
+function initLeseAntworten() {
+  const fragen = [
+    'Was findet Felix hinter dem Schuppen? Beschreibe den Garten mit 3 Details aus dem Text.',
+    'Warum ist der Garten für Felix\' Großvater wichtig? Erkläre mit eigenen Worten.',
+    'Wie verändert sich die Beziehung zwischen Felix und seinem Großvater durch den Garten?',
+    'Was könnte der graue Kater in der Geschichte symbolisieren?',
+    'Was ist die Botschaft/Moral der Geschichte? Schreibe 2–3 Sätze.',
+  ];
+  let html = '';
+  fragen.forEach((f,i)=>{
+    html += `<div style="margin-bottom:1rem;">
+      <p style="font-size:0.9rem; font-weight:600; color:var(--gray-800); margin-bottom:4px;">${i+1}. ${f}</p>
+      <textarea rows="3" placeholder="Antworte in vollständigen Sätzen..." style="width:100%;padding:0.5rem 0.75rem;border-radius:8px;border:1.5px solid var(--gray-200);font-family:'Nunito Sans',sans-serif;font-size:0.88rem;resize:vertical;outline:none;" onblur="if(this.value.trim().length>15){addPoints(3,'Antwort geschrieben!','📖');setSectionProgress('lese',8);}"></textarea>
+    </div>`;
+  });
+  document.getElementById('leseAntworten').innerHTML = html;
+}
+
+function showLeseHinweise() {
+  const tipps = [
+    'Tipp: "verwildert", "Brennnesseln und Rosen", "verfallener Brunnen mit Moos", "graubrauner Kater"',
+    'Tipp: Emma hat den Garten angelegt. Er erinnert den Großvater an sie.',
+    'Tipp: Sie arbeiten gemeinsam → der Großvater spricht mehr als je zuvor.',
+    'Tipp: Er ist immer da, beobachtet alles – wie ein stiller Wächter des Gartens.',
+    'Tipp: Verbindung über Generationen, Erinnerungen bewahren, gemeinsam trauern und heilen.',
+  ];
+  document.querySelectorAll('#leseAntworten textarea').forEach((ta,i)=>{
+    if(!ta.value.trim() && tipps[i]) { ta.placeholder = tipps[i]; }
+  });
+  showToast('💡','Hinweise eingeblendet!','Schaue auf die Tipp-Texte in den Feldern!');
+}
+
+// ══════════════════════════════════════
+// INIT ALL
+// ══════════════════════════════════════
+window.addEventListener('DOMContentLoaded', ()=>{
+  initPraepMC();
+  initPraepFill();
+  initWechsel();
+  initVerbTable();
+  initPerfPraet();
+  initPraetPerf();
+  initWortGrids();
+  initWortQuiz();
+  initVerbFill();
+  initStil();
+  initGedichtQuiz();
+  initSdt();
+  initSdtWrite();
+  initSatzanfaenge();
+  initChecklist();
+  initRF();
+  initMC();
+  initLeseFill();
+  initLeseAntworten();
+});
+</script>
+</body>
+</html>
