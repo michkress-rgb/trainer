@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deutsch Übungsprogramm – Klasse 7 & 8</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap');
+:root {
+  --p:#5b21b6; --pl:#ede9fe; --pd:#3b0764;
+  --g:#15803d; --gl:#dcfce7;
+  --r:#dc2626; --rl:#fee2e2;
+  --a:#d97706; --al:#fef3c7;
+  --b:#1d4ed8; --bl:#dbeafe;
+  --t:#0f766e; --tl:#ccfbf1;
+  --pk:#be185d; --pkl:#fce7f3;
+  --gray50:#f8f7ff; --gray100:#f1f0f9; --gray200:#e2e1f0; --gray700:#374151; --gray800:#1f2937;
+  --sh:0 2px 8px rgba(0,0,0,.10); --rad:12px;
+  --c7:#7c3aed; --c8:#0f766e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito Sans',sans-serif;background:linear-gradient(135deg,#ede9fe 0%,#e0f7fa 50%,#dcfce7 100%);min-height:100vh;color:var(--gray800)}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif}
+
+/* ── GRADE SELECT ── */
+#gradeSelect{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:2rem;text-align:center}
+#gradeSelect h1{font-size:2.2rem;font-weight:900;color:var(--pd);margin-bottom:.5rem}
+#gradeSelect p{color:#6b7280;font-size:1rem;margin-bottom:2.5rem}
+.grade-cards{display:flex;gap:2rem;flex-wrap:wrap;justify-content:center}
+.grade-card{background:white;border-radius:20px;padding:2.5rem 3rem;box-shadow:0 8px 40px rgba(0,0,0,.12);cursor:pointer;transition:all .3s;border:3px solid transparent;min-width:220px}
+.grade-card:hover{transform:translateY(-6px);box-shadow:0 16px 50px rgba(0,0,0,.18)}
+.grade-card.g7{border-color:var(--c7)}
+.grade-card.g8{border-color:var(--c8)}
+.grade-card .big{font-size:3.5rem;font-weight:900;margin-bottom:.5rem}
+.grade-card.g7 .big{color:var(--c7)}
+.grade-card.g8 .big{color:var(--c8)}
+.grade-card h2{font-size:1.2rem;font-weight:800;margin-bottom:.4rem}
+.grade-card p{font-size:.82rem;color:#6b7280;line-height:1.5}
+.grade-badge{display:inline-block;border-radius:999px;padding:.3rem .9rem;font-size:.78rem;font-weight:700;margin-top:.8rem}
+.g7 .grade-badge{background:var(--pl);color:var(--pd)}
+.g8 .grade-badge{background:var(--tl);color:var(--t)}
+
+/* ── MAIN APP (hidden until grade selected) ── */
+#app{display:none}
+
+/* ── HEADER ── */
+.header{background:var(--p);color:white;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;box-shadow:0 4px 20px rgba(91,33,182,.3)}
+.header.g8{background:var(--t);box-shadow:0 4px 20px rgba(15,118,110,.3)}
+.header-left h1{font-size:1.5rem;font-weight:900;letter-spacing:-.5px}
+.header-left p{font-size:.82rem;opacity:.85;margin-top:2px}
+.prog-bar{background:rgba(255,255,255,.2);height:7px;border-radius:99px;width:100%;margin-top:.6rem;overflow:hidden}
+.prog-fill{background:#a5f3fc;height:100%;border-radius:99px;transition:width .5s}
+.scoreboard{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.score-pill{background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.4);border-radius:999px;padding:.3rem .8rem;font-family:'Nunito',sans-serif;font-weight:700;font-size:.88rem;color:white;display:flex;align-items:center;gap:.3rem}
+.grade-switch-btn{background:rgba(255,255,255,.25);border:1.5px solid rgba(255,255,255,.5);border-radius:999px;padding:.3rem .9rem;font-family:'Nunito',sans-serif;font-weight:700;font-size:.8rem;color:white;cursor:pointer;transition:all .2s}
+.grade-switch-btn:hover{background:rgba(255,255,255,.4)}
+
+/* ── NAV ── */
+.nav{background:white;padding:.7rem 1.5rem;display:flex;gap:.4rem;overflow-x:auto;box-shadow:var(--sh);border-bottom:2px solid var(--gray200);scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav-btn{padding:.45rem .9rem;border-radius:999px;border:2px solid var(--gray200);background:white;font-family:'Nunito',sans-serif;font-weight:700;font-size:.8rem;cursor:pointer;white-space:nowrap;transition:all .2s;color:var(--gray700)}
+.nav-btn:hover{border-color:var(--p);color:var(--p)}
+.nav-btn.active{background:var(--p);border-color:var(--p);color:white}
+.app.g8 .nav-btn:hover{border-color:var(--t);color:var(--t)}
+.app.g8 .nav-btn.active{background:var(--t);border-color:var(--t)}
+
+/* ── MAIN ── */
+.main{max-width:880px;margin:1.5rem auto;padding:0 1rem 4rem}
+.section-card{background:white;border-radius:var(--rad);padding:1.75rem;margin-bottom:1.5rem;box-shadow:var(--sh);border:1.5px solid var(--gray200);display:none}
+.section-card.active{display:block}
+.sec-title{font-size:1.35rem;font-weight:900;color:var(--pd);margin-bottom:.2rem;display:flex;align-items:center;gap:.5rem}
+.app.g8 .sec-title{color:var(--t)}
+.sec-sub{font-size:.85rem;color:#6b7280;margin-bottom:1.4rem;padding-bottom:1.4rem;border-bottom:1.5px solid var(--gray200)}
+.lernziel{background:var(--pl);border-left:4px solid var(--p);border-radius:0 8px 8px 0;padding:.75rem 1rem;margin-bottom:1.25rem;font-size:.88rem;color:var(--pd);font-weight:600}
+.app.g8 .lernziel{background:var(--tl);border-color:var(--t);color:var(--t)}
+.tipp{background:var(--al);border-left:4px solid var(--a);border-radius:0 8px 8px 0;padding:.75rem 1rem;margin-bottom:1.25rem;font-size:.85rem;color:#92400e}
+.tipp strong{color:var(--a);font-weight:800}
+.neu-badge{display:inline-block;background:var(--pk);color:white;border-radius:4px;font-size:.7rem;padding:1px 6px;font-weight:800;margin-left:6px;vertical-align:middle}
+
+/* ── EXERCISE ── */
+.exercise{background:var(--gray50);border-radius:10px;padding:1.4rem;margin-bottom:1.4rem;border:1.5px solid var(--gray200)}
+.ex-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:.98rem;color:var(--gray800);margin-bottom:.35rem;display:flex;align-items:center;gap:.4rem}
+.ex-instr{font-size:.85rem;color:#4b5563;margin-bottom:.9rem;font-style:italic}
+
+/* ── INPUTS ── */
+.blank-input{border:none;border-bottom:2px solid var(--p);background:transparent;font-family:'Nunito',sans-serif;font-size:.93rem;padding:2px 4px;outline:none;color:var(--pd);font-weight:700;min-width:70px;text-align:center;transition:border-color .2s}
+.blank-input:focus{border-bottom-color:var(--pd)}
+.blank-input.correct{border-bottom-color:var(--g);color:var(--g)}
+.blank-input.wrong{border-bottom-color:var(--r);color:var(--r)}
+.app.g8 .blank-input{border-bottom-color:var(--t)}
+.app.g8 .blank-input:focus{border-bottom-color:var(--pd)}
+.txt-input{width:100%;padding:.45rem .7rem;border-radius:8px;border:1.5px solid var(--gray200);font-family:'Nunito Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s}
+.txt-input:focus{border-color:var(--p)}
+.txt-input.correct{border-color:var(--g);color:var(--g)}
+.txt-input.wrong{border-color:var(--r);color:var(--r)}
+
+/* ── MC ── */
+.mc-q{margin-bottom:1.1rem}
+.mc-q p{font-size:.93rem;font-weight:600;margin-bottom:.45rem}
+.mc-opts{display:flex;flex-wrap:wrap;gap:.45rem}
+.mc-opt{padding:.38rem .9rem;border:2px solid var(--gray200);border-radius:999px;background:white;cursor:pointer;font-size:.85rem;font-family:'Nunito',sans-serif;font-weight:600;transition:all .2s;color:var(--gray800);text-align:left}
+.mc-opt:hover{border-color:var(--p);color:var(--p)}
+.mc-opt.correct{background:var(--gl);border-color:var(--g);color:var(--g)}
+.mc-opt.wrong{background:var(--rl);border-color:var(--r);color:var(--r)}
+.mc-opt.reveal{background:var(--gl);border-color:var(--g);color:var(--g)}
+.app.g8 .mc-opt:hover{border-color:var(--t);color:var(--t)}
+
+/* ── WORD CHIPS ── */
+.word-bank{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:.9rem;padding:.9rem;background:white;border-radius:8px;border:1.5px dashed var(--gray200);min-height:50px}
+.chip{padding:.28rem .8rem;background:var(--p);color:white;border-radius:999px;font-size:.85rem;font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer;user-select:none;transition:all .2s}
+.chip:hover{background:var(--pd);transform:translateY(-1px)}
+.chip.used{opacity:.35;cursor:not-allowed}
+.chip.selected{box-shadow:0 0 0 3px var(--a)}
+.app.g8 .chip{background:var(--t)}
+.app.g8 .chip:hover{background:#0d6b63}
+.drop-zone{display:inline-block;border-bottom:2px solid var(--p);min-width:80px;padding:2px 4px;font-weight:700;color:var(--pd);font-size:.93rem;text-align:center;cursor:pointer;background:transparent;transition:background .2s}
+.drop-zone:hover{background:var(--pl);border-radius:4px 4px 0 0}
+.drop-zone.correct{color:var(--g);border-bottom-color:var(--g)}
+.drop-zone.wrong{color:var(--r);border-bottom-color:var(--r)}
+.fill-sentence{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:.55rem;font-size:.93rem;line-height:2}
+
+/* ── TABLES ── */
+.vtable{width:100%;border-collapse:collapse;font-size:.88rem}
+.vtable th{background:var(--p);color:white;padding:.55rem .75rem;text-align:left;font-family:'Nunito',sans-serif;font-weight:700}
+.app.g8 .vtable th{background:var(--t)}
+.vtable td{padding:.45rem .75rem;border-bottom:1px solid var(--gray200);vertical-align:middle}
+.vtable tr:nth-child(even) td{background:var(--gray50)}
+.vtable td:first-child{font-weight:700;color:var(--pd)}
+.app.g8 .vtable td:first-child{color:var(--t)}
+.vtable input{border:none;border-bottom:2px solid var(--p);background:transparent;font-size:.85rem;padding:2px 5px;font-family:'Nunito',sans-serif;font-weight:600;color:var(--pd);width:100%;outline:none}
+.vtable input.correct{border-bottom-color:var(--g);color:var(--g)}
+.vtable input.wrong{border-bottom-color:var(--r);color:var(--r)}
+.reftable{width:100%;border-collapse:collapse;font-size:.85rem;margin-bottom:1.25rem}
+.reftable th{background:var(--pl);color:var(--pd);padding:.55rem .75rem;font-weight:700;text-align:left;border-bottom:2px solid var(--p)}
+.reftable td{padding:.45rem .75rem;border-bottom:1px solid var(--gray200)}
+.reftable tr:nth-child(even) td{background:var(--gray50)}
+
+/* ── FEEDBACK ── */
+.feedback{margin-top:.9rem;padding:.65rem .9rem;border-radius:8px;font-weight:600;font-size:.88rem;display:none}
+.feedback.success{background:var(--gl);color:#15803d;display:block}
+.feedback.partial{background:var(--al);color:#92400e;display:block}
+.feedback.error{background:var(--rl);color:#b91c1c;display:block}
+
+/* ── BUTTONS ── */
+.btn{padding:.5rem 1.2rem;border-radius:999px;border:none;font-family:'Nunito',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.3rem}
+.btn-p{background:var(--p);color:white}
+.btn-p:hover{background:var(--pd);transform:translateY(-1px)}
+.btn-s{background:var(--gray100);color:var(--gray700);border:1.5px solid var(--gray200)}
+.btn-s:hover{background:var(--gray200)}
+.btn-g{background:var(--g);color:white}
+.btn-g:hover{background:#166534}
+.app.g8 .btn-p{background:var(--t)}
+.app.g8 .btn-p:hover{background:#0d6b63}
+.btn-row{display:flex;gap:.45rem;margin-top:.9rem;flex-wrap:wrap}
+
+/* ── WORT LEVELS ── */
+.wlevel{background:white;border-radius:10px;border:2px solid var(--gray200);overflow:hidden;margin-bottom:.9rem}
+.wlevel-hd{padding:.6rem .9rem;font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;display:flex;align-items:center;gap:.4rem}
+.lv1 .wlevel-hd{background:var(--gl);color:#166534;border-bottom:2px solid #bbf7d0}
+.lv2 .wlevel-hd{background:var(--al);color:#92400e;border-bottom:2px solid #fde68a}
+.lv3 .wlevel-hd{background:var(--rl);color:#991b1b;border-bottom:2px solid #fecaca}
+.lv4 .wlevel-hd{background:var(--pl);color:#3b0764;border-bottom:2px solid #ddd6fe}
+.lv5 .wlevel-hd{background:#fdf4ff;color:#7e22ce;border-bottom:2px solid #e9d5ff}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.5rem;padding:.9rem}
+.wcrd{border-radius:8px;padding:.6rem;border:1.5px solid var(--gray200);background:var(--gray50);cursor:pointer;transition:all .2s;text-align:center}
+.wcrd:hover{border-color:var(--p);background:var(--pl)}
+.wcrd .base{font-size:.75rem;color:#6b7280}
+.wcrd .precise{font-weight:700;font-family:'Nunito',sans-serif;color:var(--pd);font-size:.92rem}
+
+/* ── POEM BUILDER ── */
+.poem-builder{border-radius:10px;padding:.9rem;background:var(--gray50);border:1.5px solid var(--gray200);margin-bottom:.9rem}
+.poem-builder label{font-size:.78rem;color:#6b7280;font-weight:600;display:block;margin-bottom:3px}
+.poem-builder input{width:100%;padding:.42rem .7rem;border-radius:8px;border:1.5px solid var(--gray200);font-family:'Nunito Sans',sans-serif;font-size:.88rem;color:var(--gray800);outline:none;margin-bottom:.5rem;background:white}
+.poem-builder input:focus{border-color:var(--p)}
+.poem-prev{display:none;margin-top:.9rem;padding:1rem;border-radius:8px;font-style:italic;line-height:2.1;font-size:.92rem}
+.haiku-prev{background:var(--pl);color:var(--pd)}
+.elfchen-prev{background:var(--tl);color:var(--t)}
+
+/* ── OVERVIEW ── */
+.ov-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.9rem}
+.ov-card{background:white;border-radius:var(--rad);padding:1.4rem;border:2px solid var(--gray200);cursor:pointer;transition:all .2s;text-align:center;box-shadow:var(--sh)}
+.ov-card:hover{border-color:var(--p);transform:translateY(-3px);box-shadow:0 8px 25px rgba(91,33,182,.15)}
+.app.g8 .ov-card:hover{border-color:var(--t)}
+.ov-card .ov-icon{font-size:2.2rem;margin-bottom:.4rem}
+.ov-card h3{font-size:.9rem;color:var(--gray800);font-weight:800;margin-bottom:.2rem}
+.ov-card p{font-size:.75rem;color:#6b7280}
+.ov-prog{height:5px;background:var(--gray200);border-radius:99px;margin-top:.65rem;overflow:hidden}
+.ov-prog-fill{height:100%;border-radius:99px;background:var(--p);transition:width .5s}
+.app.g8 .ov-prog-fill{background:var(--t)}
+.app.g8 .ov-card:hover{border-color:var(--t);box-shadow:0 8px 25px rgba(15,118,110,.15)}
+
+/* ── STILMITTEL TABLE ── */
+.stiltable{width:100%;border-collapse:collapse;font-size:.82rem;margin-bottom:1rem}
+.stiltable th{background:var(--pl);color:var(--pd);padding:.5rem .7rem;font-weight:700;text-align:left;border-bottom:2px solid var(--p)}
+.app.g8 .stiltable th{background:var(--tl);color:var(--t);border-bottom-color:var(--t)}
+.stiltable td{padding:.45rem .7rem;border-bottom:1px solid var(--gray200);vertical-align:top}
+.stiltable tr:nth-child(even) td{background:var(--gray50)}
+
+/* ── POEM ANALYSE ── */
+.poem-display{background:var(--pl);border-radius:10px;padding:1.4rem;margin-bottom:.9rem;font-style:italic;line-height:2.2;color:var(--pd);font-size:.92rem}
+.app.g8 .poem-display{background:var(--tl);color:var(--t)}
+.poem-display .pline{display:block}
+.stiltag{display:inline-block;font-style:normal;background:var(--p);color:white;border-radius:4px;font-size:.68rem;padding:1px 5px;font-family:'Nunito',sans-serif;font-weight:700;vertical-align:middle;margin-left:4px}
+
+/* ── REIMSCHEMA ── */
+.reim-opt{display:inline-block;padding:.32rem .8rem;border:2px solid var(--gray200);border-radius:999px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:.82rem;margin:.2rem;transition:all .2s}
+.reim-opt:hover{border-color:var(--p);color:var(--p)}
+.reim-opt.sel{background:var(--p);border-color:var(--p);color:white}
+.reim-opt.correct{background:var(--gl);border-color:var(--g);color:var(--g)}
+.reim-opt.wrong{background:var(--rl);border-color:var(--r);color:var(--r)}
+
+/* ── PLUSQUAMPERFEKT ── */
+.pqp-box{background:var(--bl);border-radius:10px;padding:1rem;margin-bottom:1rem;border:1.5px solid #93c5fd}
+.pqp-box h4{font-size:.88rem;font-weight:700;color:var(--b);margin-bottom:.4rem}
+.pqp-box p{font-size:.85rem;color:#1e40af}
+
+/* ── LESE TEXT ── */
+.lese-text{background:#fafaf8;border:1.5px solid var(--gray200);border-radius:10px;padding:1.4rem;font-size:.9rem;line-height:1.85;color:var(--gray800);margin-bottom:1.4rem}
+.lese-text h4{font-size:1rem;color:var(--pd);margin-bottom:.75rem;text-align:center;font-style:italic}
+.app.g8 .lese-text h4{color:var(--t)}
+
+/* ── SDT ── */
+.sdt-pair{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:.65rem;align-items:start}
+.sdt-tell{padding:.55rem .75rem;background:var(--rl);border-radius:8px;font-size:.85rem;color:#991b1b;border:1.5px solid #fecaca}
+.sdt-write{padding:.45rem .7rem;border:2px dashed var(--g);border-radius:8px;min-height:46px;background:var(--gl);font-size:.85rem;color:#15803d;outline:none;font-family:'Nunito Sans',sans-serif}
+.sdt-write:focus{border-color:var(--p);background:var(--pl);color:var(--pd)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--pd);color:white;padding:.9rem 1.3rem;border-radius:var(--rad);box-shadow:0 8px 30px rgba(0,0,0,.2);font-family:'Nunito',sans-serif;font-weight:700;font-size:.95rem;display:none;align-items:center;gap:.65rem;z-index:999;max-width:300px;animation:toastIn .4s ease}
+.toast.show{display:flex}
+@keyframes toastIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.toast-icon{font-size:1.6rem}
+
+/* ── DIFF BADGE ── */
+.diff{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .65rem;border-radius:999px;font-size:.75rem;font-weight:700;margin-left:.5rem}
+.diff-7{background:var(--pl);color:var(--pd)}
+.diff-8{background:var(--tl);color:var(--t)}
+.diff-both{background:#fef3c7;color:#92400e}
+
+/* ── INNER MONOLOG ── */
+.im-example{background:var(--pkl);border-radius:8px;padding:.9rem;margin-bottom:.9rem;border:1.5px solid #f9a8d4}
+.im-example p{font-size:.85rem;color:#831843;font-style:italic;line-height:1.75}
+.im-example .label{font-size:.75rem;color:var(--pk);font-weight:700;margin-bottom:.3rem;font-style:normal}
+
+/* ── TEXTAREA ── */
+textarea{width:100%;padding:.5rem .75rem;border-radius:8px;border:1.5px solid var(--gray200);font-family:'Nunito Sans',sans-serif;font-size:.88rem;resize:vertical;outline:none;transition:border-color .2s}
+textarea:focus{border-color:var(--p)}
+
+/* ── GENITIV HIGHLIGHT ── */
+.gen{color:#7c3aed;font-weight:700}
+
+@media(max-width:600px){
+  .header{padding:.9rem}
+  .header-left h1{font-size:1.2rem}
+  .main{padding:0 .65rem 4rem}
+  .section-card{padding:1.1rem}
+  .sdt-pair{grid-template-columns:1fr}
+  .grade-cards{flex-direction:column;align-items:center}
+  .grade-card{padding:1.75rem 2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ GRADE SELECT SCREEN ══ -->
+<div id="gradeSelect">
+  <h1>🎓 Deutsch Übungsprogramm</h1>
+  <p>Wähle deine Klasse, um mit den richtigen Aufgaben zu üben.</p>
+  <div class="grade-cards">
+    <div class="grade-card g7" onclick="startApp(7)">
+      <div class="big">7</div>
+      <h2>Klasse 7</h2>
+      <p>Genitiv-Präpositionen · 20 Verben · Stufen 1–4 · Reimschema · Innerer Monolog</p>
+      <div class="grade-badge">Klassenarbeit: 24. März</div>
+    </div>
+    <div class="grade-card g8" onclick="startApp(8)">
+      <div class="big">8</div>
+      <h2>Klasse 8</h2>
+      <p>Plusquamperfekt · Stufen 1–5 · Vollständige Gedichtanalyse · Essay · Anapher & Hyperbel</p>
+      <div class="grade-badge">Klassenarbeit: 24. März</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MAIN APP ══ -->
+<div id="app">
+
+<div class="header" id="appHeader">
+  <div class="header-left">
+    <h1 id="appTitle">Deutsch – Klasse 7</h1>
+    <p id="appSub">Übungsprogramm zur Klassenarbeit</p>
+    <div class="prog-bar"><div class="prog-fill" id="globalProg" style="width:0%"></div></div>
+  </div>
+  <div class="scoreboard">
+    <div class="score-pill">⭐ <span id="pts">0</span> Punkte</div>
+    <div class="score-pill">🔥 <span id="streak">0</span></div>
+    <div class="score-pill">✅ <span id="corr">0</span></div>
+    <button class="grade-switch-btn" onclick="switchGrade()">🔄 Klasse wechseln</button>
+  </div>
+</div>
+
+<nav class="nav" id="appNav">
+  <button class="nav-btn active" onclick="showSec('overview')">🏠 Start</button>
+  <button class="nav-btn" onclick="showSec('praep')">📍 Präpositionen</button>
+  <button class="nav-btn" onclick="showSec('verben')">⏰ Verbformen</button>
+  <button class="nav-btn" onclick="showSec('wort')">📚 Wortschatz</button>
+  <button class="nav-btn" onclick="showSec('ged')">🌸 Gedichte</button>
+  <button class="nav-btn" onclick="showSec('kreativ')">✍️ Kreatives Schreiben</button>
+  <button class="nav-btn" onclick="showSec('lesen')">📖 Leseverständnis</button>
+</nav>
+
+<div class="main" id="appMain">
+
+<!-- ══ OVERVIEW ══ -->
+<div class="section-card active" id="sec-overview">
+  <div class="sec-title">🏆 Willkommen!</div>
+  <div class="sec-sub" id="ovSub">Klicke auf einen Bereich und sammle Punkte.</div>
+  <div class="ov-grid">
+    <div class="ov-card" onclick="showSec('praep')"><div class="ov-icon">📍</div><h3>Präpositionen</h3><p id="ov-praep-sub"></p><div class="ov-prog"><div class="ov-prog-fill" id="ovp-praep" style="width:0%"></div></div></div>
+    <div class="ov-card" onclick="showSec('verben')"><div class="ov-icon">⏰</div><h3>Verbformen</h3><p id="ov-verb-sub"></p><div class="ov-prog"><div class="ov-prog-fill" id="ovp-verb" style="width:0%"></div></div></div>
+    <div class="ov-card" onclick="showSec('wort')"><div class="ov-icon">📚</div><h3>Wortschatz</h3><p id="ov-wort-sub"></p><div class="ov-prog"><div class="ov-prog-fill" id="ovp-wort" style="width:0%"></div></div></div>
+    <div class="ov-card" onclick="showSec('ged')"><div class="ov-icon">🌸</div><h3>Gedichte</h3><p id="ov-ged-sub"></p><div class="ov-prog"><div class="ov-prog-fill" id="ovp-ged" style="width:0%"></div></div></div>
+    <div class="ov-card" onclick="showSec('kreativ')"><div class="ov-icon">✍️</div><h3>Kreatives Schreiben</h3><p id="ov-kreativ-sub"></p><div class="ov-prog"><div class="ov-prog-fill" id="ovp-kreativ" style="width:0%"></div></div></div>
+    <div class="ov-card" onclick="showSec('lesen')"><div class="ov-icon">📖</div><h3>Leseverständnis</h3><p id="ov-lesen-sub"></p><div class="ov-prog"><div class="ov-prog-fill" id="ovp-lesen" style="width:0%"></div></div></div>
+  </div>
+</div>
+
+<!-- ══ PRÄPOSITIONEN ══ -->
+<div class="section-card" id="sec-praep">
+  <div class="sec-title">📍 Präpositionen</div>
+  <div class="sec-sub" id="praep-sub">Akkusativ · Dativ · Genitiv · Wechselpräpositionen</div>
+  <div class="lernziel" id="praep-lz">🎯 Lernziel: Du erkennst alle Präpositions-Kasus inklusive Genitiv und wendest sie korrekt an.</div>
+  <table class="reftable">
+    <thead><tr><th>Kasus</th><th>Präpositionen</th><th>Frage</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Akkusativ</strong></td><td>bis, durch, für, gegen, ohne, um, entlang, wider</td><td>Wen? Was? Wohin?</td></tr>
+      <tr><td><strong>Dativ</strong></td><td>ab, aus, außer, bei, gegenüber, mit, nach, seit, von, zu</td><td>Wem? Wo?</td></tr>
+      <tr><td><strong>Wechsel</strong></td><td>an, auf, hinter, in, neben, über, unter, vor, zwischen</td><td>Wohin? (Akk.) / Wo? (Dat.)</td></tr>
+      <tr><td><strong class="gen">Genitiv</strong></td><td><span class="gen">trotz, während, wegen, statt/anstatt, innerhalb, außerhalb, aufgrund, infolge</span><span id="praep-extra-gen"></span></td><td>Wessen?</td></tr>
+    </tbody>
+  </table>
+  <div class="tipp"><strong>🔑 Genitiv-Tipp:</strong> <span id="genitiv-tipp-text"></span></div>
+
+  <!-- A: Kasus Quiz -->
+  <div class="exercise">
+    <div class="ex-title">🔍 Übung A – Welchen Kasus verlangt die Präposition?</div>
+    <div class="ex-instr">Wähle den richtigen Kasus für die fett markierte Präposition.</div>
+    <div id="praepMC"></div>
+    <div class="feedback" id="fb-praepMC"></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="checkPraepMC()">✅ Prüfen</button><button class="btn btn-s" onclick="initPraepMC()">🔄 Neu</button></div>
+  </div>
+
+  <!-- B: Genitiv Lückentext -->
+  <div class="exercise">
+    <div class="ex-title">🖊️ Übung B – Genitiv-Präpositionen einsetzen</div>
+    <div class="ex-instr">Setze die passende Genitiv-Präposition ein. Klicke auf ein Wort, dann auf die Lücke.</div>
+    <div class="word-bank" id="genBank"></div>
+    <div id="genFill"></div>
+    <div class="feedback" id="fb-genFill"></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="checkGenFill()">✅ Prüfen</button><button class="btn btn-s" onclick="initGenFill()">🔄 Zurücksetzen</button></div>
+  </div>
+
+  <!-- C: Wechsel A/D -->
+  <div class="exercise">
+    <div class="ex-title">🔄 Übung C – Wechselpräpositionen: Akkusativ oder Dativ?</div>
+    <div class="ex-instr">A = Bewegung/Wohin?, D = Ort/Wo?</div>
+    <div id="wechselQ"></div>
+    <div class="feedback" id="fb-wechsel"></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="checkWechsel()">✅ Prüfen</button><button class="btn btn-s" onclick="initWechsel()">🔄 Neu</button></div>
+  </div>
+
+  <!-- D: Fehlersuche (Klasse 8 only) -->
+  <div class="exercise" id="fehlersucheEx" style="display:none">
+    <div class="ex-title">🐛 Übung D – Fehlersuche <span class="diff diff-8">Klasse 8</span></div>
+    <div class="ex-instr">In jedem Satz steckt mindestens ein Grammatikfehler (falscher Kasus oder Präposition). Wähle die korrekte Version.</div>
+    <div id="fehlerQ"></div>
+    <div class="feedback" id="fb-fehler"></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="checkFehler()">✅ Prüfen</button><button class="btn btn-s" onclick="initFehler()">🔄 Neu</button></div>
+  </div>
+</div>
+
+<!-- ══ VERBFORMEN ══ -->
+<div class="section-card" id="sec-verben">
+  <div class="sec-title">⏰ Verbformen</div>
+  <div class="sec-sub" id="verb-sub">Präteritum · Perfekt · 20 starke Verben</div>
+  <div class="lernziel" id="verb-lz">🎯 Lernziel: Du konjugierst 20 starke Verben im Präteritum und Perfekt.</div>
+
+  <!-- Plusquamperfekt Erklärung (Klasse 8) -->
+  <div id="pqpInfo" style="display:none">
+    <div class="pqp-box">
+      <h4>🆕 Plusquamperfekt = Vorvergangenheit</h4>
+      <p>Das Plusquamperfekt drückt aus, was <em>vor</em> einem anderen vergangenen Ereignis passiert ist.<br>
+      Bildung: <strong>hatte/war + Partizip II</strong><br>
+      Beispiel: Nachdem er das Buch <strong>gelesen hatte</strong>, schlief er ein.</p>
+    </div>
+  </div>
+
+  <!-- Verbtabelle -->
+  <div class="exercise">
+    <div class="ex-title" id="vtTitle">📋 Übung A – Verbtabelle (20 Verben)</div>
+    <div class="ex-instr" id="vtInstr">Fülle alle Formen aus. Das erste Verb ist als Beispiel ausgefüllt.</div>
+    <table class="vtable"><thead><tr id="vtHead"></tr></thead><tbody id="vtBody"></tbody></table>
+    <div class="feedback" id="fb-vt"></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="checkVT()">✅ Prüfen</button><button class="btn btn-s" onclick="initVT()">🔄 Neu laden</button></div>
+  </div>
+
+  <!-- Umwandeln -->
+  <div class="exercise">
+    <div class="ex-title">➡️ Übung B – Perfekt → Präteritum</div>
+    <div class="ex-instr">Schreibe den Satz im Präteritum.</div>
+    <div id="ppEx"></div>
+    <div class="feedback" id="fb-pp"></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="checkPP()">✅ Prüfen</button><button class="btn btn-s" onclick="initPP()">🔄 Neu</button></div>
+  </div>
+
+  <!-- Nachdem-Sätze (Klasse 8) -->
+  <div class="exercise" id="nachdemEx" style="display:none">
+    <div class="ex-title">🔗 Übung C – „Nachdem"-Sätze mit Plusquamperfekt <span class="diff diff-8">Klasse 8</span></div>
+    <div class="ex-instr">Verbinde die Sätze mit „nachdem". Der Nebensatz bekommt das Plusquamperfekt (hatte/war + Partizip II).</div>
+    <div id="nachdemFill"></div>
+    <div class="feedback" id="fb-nachdem"></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="checkNachdem()">✅ Prüfen</button><button class="btn btn-s" onclick="initNachdem()">🔄 Neu</button></div>
+  </div>
+
+  <!-- Alle drei (Klasse 8) -->
+  <div class="exercise" id="dreiFormenEx" style="display:none">
+    <div class="ex-title">⚡ Übung D – Alle drei Zeitformen <span class="diff diff-8">Klasse 8</span></div>
+    <div class="ex-instr">Schreibe den Satz im Perfekt, Präteritum UND Plusquamperfekt.</div>
+    <div id="dreiFormenFill"></div>
+    <div class="feedback" id="fb-drei"></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="checkDrei()">✅ Prüfen</button></div>
+  </div>
+</div>
+
+<!-- ══ WORTSCHATZ ══ -->
+<div class="section-card" id="sec-wort">
+  <div class="sec-title">📚 Wortschatz</div>
+  <div class="sec-sub" id="wort-sub">Präzise Verben & Adjektive · Stufen 1–4</div>
+  <div class="lernziel" id="wort-lz">🎯 Lernziel: Du verwendest präzise Verben und Adjektive (Stufen 1–4) in deinen Texten.</div>
+
+  <div id="wortLevels"></div>
+
+  <div class="exercise">
+    <div class="ex-title">🎯 Übung A – Welches Wort passt?</div>
+    <div class="ex-instr">Wähle das präziseste Wort für den Kontext. Lese den Satz genau!</div>
+    <div id="wortQ"></div>
+    <div class="feedback" id="fb-wort"></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="checkWort()">✅ Prüfen</button><button class="btn btn-s" onclick="initWort()">🔄 Neu</button></div>
+  </div>
+
+  <div class="exercise">
+    <div class="ex-title">🧩 Übung B – Verben einsetzen</div>
+    <div class="ex-instr">Setze das kontextrichtige Verb ein.</div>
+    <div class="word-bank" id="wortBank"></div>
+    <div id="wortFill"></div>
+    <div class="feedback" id="fb-wortFill"></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="checkWortFill()">✅ Prüfen</button><button class="btn btn-s" onclick="initWortFill()">🔄 Zurücksetzen</button></div>
+  </div>
+
+  <!-- Textverbesserung -->
+  <div class="exercise">
+    <div class="ex-title">✏️ Übung C – Textverbesserung <span id="tv-diff" class="diff diff-7">Stufen 3–4</span></div>
+    <div class="ex-instr" id="tv-instr">Ersetze die GROSSGESCHRIEBENEN Wörter durch präzisere Alternativen (Stufe 3 oder 4).</div>
+    <div id="tvFill"></div>
+    <div class="feedback" id="fb-tv"></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="checkTV()">✅ Prüfen</button><button class="btn btn-s" onclick="initTV()">🔄 Neu</button></div>
+  </div>
+</div>
+
+<!-- ══ GEDICHTE ══ -->
+<div class="section-card" id="sec-ged">
+  <div class="sec-title">🌸 Gedichte</div>
+  <div class="sec-sub" id="ged-sub">Formen · Stilmittel · Reimschema · Analyse</div>
+  <div class="lernziel" id="ged-lz">🎯 Lernziel: Du erkennst Stilmittel und ihre Wirkung, bestimmst Reimschemata und schreibst eigene Gedichte.</div>
+
+  <table class="stiltable">
+    <thead><tr><th>Stilmittel</th><th>Erklärung</th><th>Beispiel</th></tr></thead>
+    <tbody id="stilTableBody"></tbody>
+  </table>
+
+  <!-- Stilmittel Quiz -->
+  <div class="exercise">
+    <div class="ex-title">🔍 Übung A – Stilmittel erkennen + Wirkung</div>
+    <div class="ex-instr" id="stil-instr">Wähle das richtige Stilmittel. Für Klasse 7 erkläre die Wirkung; für Klasse 8 auch den Beitrag zum Gesamtbild.</div>
+    <div id="stilQ"></div>
+    <div class="feedback" id="fb-stil"></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="checkStil()">✅ Prüfen</button><button class="btn btn-s" onclick="initStil()">🔄 Neu</button></div>
+  </div>
+
+  <!-- Reimschema -->
+  <div class="exercise">
+    <div class="ex-title">🎵 Übung B – Reimschema bestimmen</div>
+    <div class="ex-instr">Lies die Strophe. Welches Reimschema liegt vor?</div>
+    <div id="reimQ"></div>
+    <div class="feedback" id="fb-reim"></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="checkReim()">✅ Prüfen</button><button class="btn btn-s" onclick="initReim()">🔄 Neu</button></div>
+  </div>
+
+  <!-- Gedichtanalyse -->
+  <div class="exercise">
+    <div class="ex-title">📜 Übung C – Gedicht analysieren</div>
+    <div class="ex-instr" id="analyse-instr">Lies das Gedicht und beantworte die Fragen.</div>
+    <div class="poem-display" id="gedText"></div>
+    <div id="analyseQ"></div>
+    <div class="btn-row"><button class="btn btn-g" onclick="showAnalyseHints()">💡 Hinweise</button></div>
+  </div>
+
+  <!-- Haiku Builder -->
+  <div class="exercise">
+    <div class="ex-title">🌿 Übung D – Haiku schreiben (5-7-5)</div>
+    <div class="ex-instr" id="haiku-instr">Schreibe ein Haiku. Verwende ein Jahreszeitenwort (Kigo).</div>
+    <div class="poem-builder">
+      <label>Zeile 1 – 5 Silben</label><input id="hk1" placeholder="z.B.: Kirschblüten fallen"/><br>
+      <label>Zeile 2 – 7 Silben</label><input id="hk2" placeholder="z.B.: Der Wind trägt sie weit von hier"/><br>
+      <label>Zeile 3 – 5 Silben</label><input id="hk3" placeholder="z.B.: Stille bleibt allein"/>
+      <div class="btn-row"><button class="btn btn-g" onclick="prevHaiku()">👁️ Vorschau</button></div>
+      <div class="poem-prev haiku-prev" id="hkPrev"></div>
+    </div>
+  </div>
+
+  <!-- Elfchen -->
+  <div class="exercise">
+    <div class="ex-title">🧝 Übung E – Elfchen <span id="elfchen-diff"></span></div>
+    <div class="ex-instr" id="elfchen-instr">Schreibe ein Elfchen (1-2-3-4-1 Wörter = 11 Wörter gesamt).</div>
+    <div class="poem-builder">
+      <label>Zeile 1 – 1 Wort</label><input id="ef1" placeholder="Herbst"/>
+      <label>Zeile 2 – 2 Wörter</label><input id="ef2" placeholder="kühle Luft"/>
+      <label>Zeile 3 – 3 Wörter</label><input id="ef3" placeholder="Blätter fallen still"/>
+      <label>Zeile 4 – 4 Wörter</label><input id="ef4" placeholder="Ich stehe und schaue"/>
+      <label>Zeile 5 – 1 Wort</label><input id="ef5" placeholder="Sehnsucht"/>
+      <div class="btn-row"><button class="btn btn-g" onclick="prevElfchen()">👁️ Vorschau</button></div>
+      <div class="poem-prev elfchen-prev" id="efPrev"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ KREATIVES SCHREIBEN ══ -->
+<div class="section-card" id="sec-kreativ">
+  <div class="sec-title">✍️ Kreatives Schreiben</div>
+  <div class="sec-sub" id="kreativ-sub">Show, don't tell · Innerer Monolog · Spannungsaufbau</div>
+  <div class="lernziel" id="kreativ-lz">🎯 Lernziel: Du schreibst eine fesselnde Erzählung mit Stilmitteln, Dialog und innerem Monolog.</div>
+
+  <!-- SDT Quiz -->
+  <div class="exercise">
+    <div class="ex-title">🎭 Übung A – Show, don't tell erkennen</div>
+    <div class="ex-instr">Welcher Satz ZEIGT das Gefühl?</div>
+    <div id="sdtQ"></div>
+    <div class="feedback" id="fb-sdt"></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="checkSDT()">✅ Prüfen</button><button class="btn btn-s" onclick="initSDT()">🔄 Neu</button></div>
+  </div>
+
+  <!-- SDT Schreiben -->
+  <div class="exercise">
+    <div class="ex-title">🖊️ Übung B – Sätze umschreiben</div>
+    <div class="ex-instr">Schreibe den Satz so um, dass du das Gefühl ZEIGST.</div>
+    <div id="sdtWrite"></div>
+    <div class="btn-row"><button class="btn btn-g" onclick="showSDTEx()">💡 Beispiele</button></div>
+  </div>
+
+  <!-- Innerer Monolog (Kl 7 + 8, aber 8 tiefer) -->
+  <div class="exercise">
+    <div class="ex-title">💭 Übung C – Innerer Monolog <span id="im-diff"></span></div>
+    <div class="ex-instr" id="im-instr">Ein innerer Monolog zeigt die Gedanken und Gefühle einer Figur direkt, oft in der Ich-Form.</div>
+    <div class="im-example">
+      <div class="label">Beispiel – Innerer Monolog:</div>
+      <p id="im-example-text"></p>
+    </div>
+    <div id="imWrite"></div>
+    <div class="btn-row"><button class="btn btn-g" onclick="showIMHints()">💡 Tipps</button></div>
+  </div>
+
+  <!-- Checkliste -->
+  <div class="exercise">
+    <div class="ex-title">📋 Übung D – Erzähl-Checkliste</div>
+    <div class="ex-instr" id="check-instr">Hast du alle Elemente eingebaut?</div>
+    <div id="checklist"></div>
+  </div>
+</div>
+
+<!-- ══ LESEVERSTÄNDNIS ══ -->
+<div class="section-card" id="sec-lesen">
+  <div class="sec-title">📖 Leseverständnis</div>
+  <div class="sec-sub" id="lese-sub">Text lesen · Fragen beantworten · Symbolik</div>
+  <div class="lernziel" id="lese-lz">🎯 Lernziel: Du analysierst einen Text auf verschiedenen Ebenen: Inhalt, Sprache, Symbolik und Interpretation.</div>
+
+  <div class="lese-text">
+    <h4 id="leseTitle"></h4>
+    <div id="leseTextContent"></div>
+  </div>
+
+  <div class="exercise">
+    <div class="ex-title">✅ Übung A – Richtig oder Falsch?</div>
+    <div class="ex-instr">R = Richtig, F = Falsch. Korrigiere falsche Aussagen.</div>
+    <div id="rfQ"></div>
+    <div class="feedback" id="fb-rf"></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="checkRF()">✅ Prüfen</button><button class="btn btn-s" onclick="initRF()">🔄 Neu</button></div>
+  </div>
+
+  <div class="exercise">
+    <div class="ex-title">🔵 Übung B – Multiple Choice</div>
+    <div class="ex-instr">Wähle die richtige Antwort.</div>
+    <div id="mcQ"></div>
+    <div class="feedback" id="fb-mc"></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="checkMC()">✅ Prüfen</button><button class="btn btn-s" onclick="initMC()">🔄 Neu</button></div>
+  </div>
+
+  <div class="exercise">
+    <div class="ex-title">🧩 Übung C – Lückentext</div>
+    <div class="ex-instr">Fülle die Lücken mit den Wörtern aus der Wortbank.</div>
+    <div class="word-bank" id="leseBank"></div>
+    <div id="leseFill"></div>
+    <div class="feedback" id="fb-leseFill"></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="checkLese()">✅ Prüfen</button><button class="btn btn-s" onclick="initLese()">🔄 Zurücksetzen</button></div>
+  </div>
+
+  <div class="exercise">
+    <div class="ex-title" id="essay-title">💬 Übung D – Fragen & Symbolik</div>
+    <div class="ex-instr" id="essay-instr">Antworte in vollständigen Sätzen.</div>
+    <div id="leseAnt"></div>
+    <div class="btn-row"><button class="btn btn-g" onclick="showLeseHints()">💡 Hinweise</button></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="toast-icon" id="ti">🎉</span><div><div id="tt" style="font-size:.95rem"></div><div id="tm" style="font-size:.8rem;opacity:.85;margin-top:2px;font-weight:400"></div></div></div>
+
+<script>
+// ═══════════════════════════════════════
+// GLOBAL STATE
+// ═══════════════════════════════════════
+let grade = 7;
+let pts=0, str=0, cor=0;
+let secProg={praep:0,verb:0,wort:0,ged:0,kreativ:0,lesen:0};
+let selChip=null;
+let dropSels={};
+
+function addPts(n,msg,icon='⭐'){
+  pts+=n; str++; cor++;
+  document.getElementById('pts').textContent=pts;
+  document.getElementById('streak').textContent=str;
+  document.getElementById('corr').textContent=cor;
+  updateProg();
+  showToast(icon,`+${n} Punkte!`,msg);
+}
+function resetStr(){str=0;document.getElementById('streak').textContent=0}
+function setSP(sec,v){secProg[sec]=Math.min(100,(secProg[sec]||0)+v);document.getElementById('ovp-'+sec).style.width=Math.min(100,secProg[sec])+'%';updateProg()}
+function updateProg(){let t=Object.values(secProg).reduce((a,b)=>a+b,0);document.getElementById('globalProg').style.width=Math.min(100,Math.round(t/6))+'%'}
+function showToast(icon,title,msg){let t=document.getElementById('toast');document.getElementById('ti').textContent=icon;document.getElementById('tt').textContent=title;document.getElementById('tm').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
+function setFB(id,type,msg){let el=document.getElementById(id);if(!el)return;el.className='feedback '+type;el.textContent=msg}
+
+function showSec(id){
+  document.querySelectorAll('.section-card').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  event.currentTarget?.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>{if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+id+"'"))b.classList.add('active')});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ═══════════════════════════════════════
+// GRADE SETUP
+// ═══════════════════════════════════════
+function startApp(g){
+  grade=g;
+  document.getElementById('gradeSelect').style.display='none';
+  document.getElementById('app').style.display='block';
+  let app=document.getElementById('app');
+  app.className=g===8?'g8':'';
+  document.getElementById('appHeader').className='header'+(g===8?' g8':'');
+  document.getElementById('appTitle').textContent='Deutsch – Klasse '+g;
+  document.getElementById('appSub').textContent='Übungsprogramm zur Klassenarbeit · 24. März 2026';
+
+  // Overview subtexts
+  document.getElementById('ov-praep-sub').textContent=g===7?'Akkusativ · Dativ · Genitiv · Wechsel':'Alle Kasus · Fehlersuche · Genitiv+';
+  document.getElementById('ov-verb-sub').textContent=g===7?'Präteritum & Perfekt · 20 Verben':'Präteritum · Perfekt · Plusquamperfekt';
+  document.getElementById('ov-wort-sub').textContent=g===7?'Stufen 1–4 · 4 Wortfamilien':'Stufen 1–5 · Profi-Level';
+  document.getElementById('ov-ged-sub').textContent=g===7?'Stilmittel + Wirkung · Reimschema':'Vollständige Analyse · Kigo · Anapher';
+  document.getElementById('ov-kreativ-sub').textContent=g===7?'Erzählung · Innerer Monolog':'350–400 Wörter · Wendepunkt · Reflexion';
+  document.getElementById('ov-lesen-sub').textContent=g===7?'Textanalyse · Symbolik':'Analytischer Essay · Interpretation';
+
+  document.getElementById('ovSub').textContent='Klasse '+g+' – Klicke auf einen Bereich und sammle Punkte.';
+
+  // Grade-specific visibility
+  document.getElementById('fehlersucheEx').style.display=g===8?'block':'none';
+  document.getElementById('pqpInfo').style.display=g===8?'block':'none';
+  document.getElementById('nachdemEx').style.display=g===8?'block':'none';
+  document.getElementById('dreiFormenEx').style.display=g===8?'block':'none';
+
+  // Genitiv extras
+  document.getElementById('praep-extra-gen').textContent=g===8?', angesichts, dank, kraft, mangels':'';
+  document.getElementById('genitiv-tipp-text').textContent=g===7
+    ?'trotz, während, wegen, statt, innerhalb, außerhalb, aufgrund – diese verlangen immer den Genitiv! Merke: TROTZ des schlechten Wetters (nicht: dem Wetter).'
+    :'Umgangssprache sagt oft „wegen dem Wetter" – in der Klassenarbeit ist der GENITIV Pflicht: „wegen des Wetters"! Auch: angesichts + Gen., infolge + Gen.';
+
+  document.getElementById('elfchen-diff').innerHTML=g===8?'<span class="diff diff-8">3 zusammenhängende Elfchen</span>':'<span class="diff diff-7">2 Elfchen</span>';
+  document.getElementById('elfchen-instr').textContent=g===8?'Schreibe 3 Elfchen, die zusammen eine Geschichte erzählen (Anfang, Mitte, Ende).':'Schreibe 2 Elfchen (zu Jahreszeit und Gefühl).';
+  document.getElementById('im-diff').innerHTML='<span class="diff diff-'+(g===7?'7':'8')+'">'+(g===7?'Klasse 7':'Klasse 8 – vertieft')+'</span>';
+  document.getElementById('im-instr').textContent=g===7
+    ?'Ein innerer Monolog zeigt die Gedanken einer Figur in der Ich-Form, oft spontan und emotional.'
+    :'Innerer Monolog: Zeige innere Zerrissenheit, Zweifel, Hoffnungen. Verwende kurze, abgehackte Sätze für Aufregung; lange für Träumen. Nutze Stilmittel!';
+  document.getElementById('im-example-text').textContent=g===7
+    ?'"Warum hat sie das gesagt? Ich verstehe das nicht. Vielleicht war es nicht so gemeint. Aber trotzdem... Es tut weh."'
+    :'"Was, wenn ich versage? Die Bühne schwankt unter meinen Füßen – oder bin ich es, der schwankt? Tausend Augen. Alle warten. Ich bin ein Stein, ich bin das Schweigen, ich bin –"';
+
+  document.getElementById('check-instr').textContent=g===7
+    ?'Hat deine Erzählung (250–300 Wörter) alle Elemente?'
+    :'Hat deine Erzählung (350–400 Wörter) alle Elemente?';
+  document.getElementById('essay-title').textContent=g===7?'💬 Übung D – Fragen & Symbolik':'💬 Übung D – Symbolik & analytischer Essay';
+  document.getElementById('essay-instr').textContent=g===7
+    ?'Beantworte in vollständigen Sätzen. Klasse 7: Nutze Textstellen als Belege.'
+    :'Klasse 8: Schreibe bei der Essay-Frage mindestens 5 zusammenhängende Sätze mit Textbelegen und eigener Deutung.';
+
+  initAll();
+}
+
+function switchGrade(){
+  document.getElementById('app').style.display='none';
+  document.getElementById('gradeSelect').style.display='flex';
+  pts=0;str=0;cor=0;secProg={praep:0,verb:0,wort:0,ged:0,kreativ:0,lesen:0};
+  document.getElementById('pts').textContent=0;
+  document.getElementById('streak').textContent=0;
+  document.getElementById('corr').textContent=0;
+}
+
+// ═══════════════════════════════════════
+// CHIP / DROP SYSTEM (generic)
+// ═══════════════════════════════════════
+function setupChips(bankId, chipsData){
+  let bank=document.getElementById(bankId);
+  bank.innerHTML=chipsData.map(w=>`<span class="chip" id="chip_${bankId}_${w}" onclick="selectChip('${bankId}','${w}')">${w}</span>`).join('');
+  dropSels[bankId]={};
+  selChip=null;
+}
+function selectChip(bankId,w){
+  // deselect previous in same bank
+  let prev=document.querySelector('.chip.selected');
+  if(prev) prev.classList.remove('selected');
+  selChip={bank:bankId,word:w};
+  document.getElementById(`chip_${bankId}_${w}`).classList.add('selected');
+}
+function placeChip(bankId,slotIdx){
+  if(!selChip||selChip.bank!==bankId)return;
+  let prev=dropSels[bankId][slotIdx];
+  if(prev){let pc=document.getElementById(`chip_${bankId}_${prev}`);if(pc)pc.classList.remove('used','selected');}
+  dropSels[bankId][slotIdx]=selChip.word;
+  document.getElementById(`drop_${bankId}_${slotIdx}`).textContent=selChip.word;
+  document.getElementById(`chip_${bankId}_${selChip.word}`).classList.add('used');
+  document.getElementById(`chip_${bankId}_${selChip.word}`).classList.remove('selected');
+  selChip=null;
+}
+function renderFill(containerId,bankId,sentences){
+  let html='';
+  sentences.forEach((s,i)=>{
+    html+=`<div class="fill-sentence"><span>${i+1}. ${s.before}</span><span class="drop-zone" id="drop_${bankId}_${i}" onclick="placeChip('${bankId}',${i})">${dropSels[bankId]?.[i]||'______'}</span><span>${s.after}</span></div>`;
+  });
+  document.getElementById(containerId).innerHTML=html;
+}
+function checkFill(bankId,sentences,fbId,secKey,pts7,label){
+  let score=0;
+  sentences.forEach((s,i)=>{
+    let dz=document.getElementById(`drop_${bankId}_${i}`);
+    if(dz){if((dropSels[bankId]||{})[i]===s.ans){score++;dz.classList.add('correct');}else{dz.classList.add('wrong');dz.title='Richtig: '+s.ans;}}
+  });
+  if(score===sentences.length){addPts(pts7,label+' – Alle richtig!','🧩');setSP(secKey,25);setFB(fbId,'success',`${score}/${sentences.length} richtig! 🎉`);}
+  else if(score>=sentences.length/2){setSP(secKey,10);setFB(fbId,'partial',`${score}/${sentences.length} richtig.`);}
+  else{resetStr();setFB(fbId,'error',`${score}/${sentences.length} richtig.`);}
+}
+
+// ═══════════════════════════════════════
+// MC SYSTEM
+// ═══════════════════════════════════════
+let mcSels={};
+function renderMC(containerId,data,prefix){
+  let html='';
+  data.forEach((q,i)=>{
+    html+=`<div class="mc-q"><p>${i+1}. ${q.q}</p><div class="mc-opts">${q.opts.map((o,j)=>`<button class="mc-opt" id="${prefix}_${i}_${j}" onclick="selMC('${prefix}',${i},${j})">${o}</button>`).join('')}</div></div>`;
+  });
+  document.getElementById(containerId).innerHTML=html;
+  mcSels[prefix]={};
+}
+function selMC(prefix,q,opt){
+  mcSels[prefix]=mcSels[prefix]||{};
+  mcSels[prefix][q]=opt;
+  document.querySelectorAll(`[id^="${prefix}_${q}_"]`).forEach(b=>{b.style.borderColor='';b.style.color='';});
+  let btn=document.getElementById(`${prefix}_${q}_${opt}`);
+  btn.style.borderColor='var(--p)';btn.style.color='var(--p)';
+}
+function checkMCGroup(prefix,data,fbId,secKey,ptsVal){
+  let score=0;
+  data.forEach((q,i)=>{
+    let sel=(mcSels[prefix]||{})[i];
+    if(sel!==undefined){
+      let btn=document.getElementById(`${prefix}_${i}_${sel}`);
+      if(sel===q.a){btn.className='mc-opt correct';score++;}
+      else{btn.className='mc-opt wrong';document.getElementById(`${prefix}_${i}_${q.a}`).className='mc-opt reveal';}
+    }
+  });
+  let tot=data.length;
+  if(score>=tot*0.85){addPts(ptsVal,'Gut gemacht!','✅');setSP(secKey,30);setFB(fbId,'success',`${score}/${tot} richtig! 🏆`);}
+  else if(score>=tot/2){addPts(Math.floor(ptsVal/2),'Weiter üben!','');setSP(secKey,15);setFB(fbId,'partial',`${score}/${tot} richtig. Lies den Tipp nochmal!`);}
+  else{resetStr();setFB(fbId,'error',`${score}/${tot} richtig.`);}
+}
+
+// ═══════════════════════════════════════
+// PRÄPOSITIONEN
+// ═══════════════════════════════════════
+const praepMCData7=[
+  {q:'Er läuft <strong>trotz</strong> des Regens durch den Park.',opts:['Akkusativ','Dativ','Genitiv'],a:2},
+  {q:'<strong>Während</strong> der Ferien arbeitet sie täglich.',opts:['Akkusativ','Dativ','Genitiv'],a:2},
+  {q:'Er kauft das Geschenk <strong>für</strong> seine Schwester.',opts:['Akkusativ','Dativ','Genitiv'],a:0},
+  {q:'Die Katze schläft <strong>unter</strong> dem Sofa.',opts:['Akkusativ (Wohin?)','Dativ (Wo?)','Genitiv'],a:1},
+  {q:'<strong>Wegen</strong> des Staus kam er zu spät.',opts:['Akkusativ','Dativ','Genitiv'],a:2},
+  {q:'Er fährt <strong>mit</strong> dem Zug.',opts:['Akkusativ','Dativ','Genitiv'],a:1},
+  {q:'<strong>Innerhalb</strong> der Stadt gibt es viele Parks.',opts:['Akkusativ','Dativ','Genitiv'],a:2},
+  {q:'Die Vögel fliegen <strong>über</strong> den See (Wohin?).',opts:['Akkusativ (Wohin?)','Dativ (Wo?)','Genitiv'],a:0},
+];
+const praepMCData8=[
+  ...praepMCData7,
+  {q:'<strong>Infolge</strong> der Verhandlungen wurde ein Kompromiss erzielt.',opts:['Akkusativ','Dativ','Genitiv'],a:2},
+  {q:'<strong>Angesichts</strong> der Lage entschied er sich zu handeln.',opts:['Akkusativ','Dativ','Genitiv'],a:2},
+];
+function initPraepMC(){renderMC('praepMC',grade===7?praepMCData7:praepMCData8,'pmq');mcSels['pmq']={};}
+function checkPraepMC(){checkMCGroup('pmq',grade===7?praepMCData7:praepMCData8,'fb-praepMC','praep',15);}
+
+const genData={
+  words:['trotz','wegen','während','innerhalb','außerhalb','aufgrund','anstatt'],
+  sentences:[
+    {before:'',after:'des schlechten Wetters spielten wir draußen.',ans:'trotz'},
+    {before:'',after:'der langen Reise war sie erschöpft.',ans:'wegen'},
+    {before:'',after:'des Unterrichts soll man nicht sprechen.',ans:'während'},
+    {before:'',after:'der Schule trifft er seine Freunde.',ans:'außerhalb'},
+    {before:'',after:'einer Antwort schwieg er.',ans:'anstatt'},
+    {before:'',after:'des Erfolgs plante er weiter.',ans:'aufgrund'},
+  ]
+};
+function initGenFill(){setupChips('genBank',genData.words);renderFill('genFill','genBank',genData.sentences);}
+function checkGenFill(){checkFill('genBank',genData.sentences,'fb-genFill','praep',12,'Genitiv-Präpositionen');}
+
+const wechselData=[
+  {s:'Die Maus schleicht <strong>unter</strong> _____ Schrank.',opts:['den (Akk.)','dem (Dat.)'],a:0,verb:'schleicht (Bewegung)'},
+  {s:'Die Maus sitzt <strong>unter</strong> _____ Schrank.',opts:['den (Akk.)','dem (Dat.)'],a:1,verb:'sitzt (Ort)'},
+  {s:'Er stellt die Lampe <strong>vor</strong> _____ Spiegel.',opts:['den (Akk.)','dem (Dat.)'],a:0,verb:'stellt (Wohin?)'},
+  {s:'Die Lampe steht <strong>vor</strong> _____ Spiegel.',opts:['den (Akk.)','dem (Dat.)'],a:1,verb:'steht (Wo?)'},
+  {s:'Sie rennt <strong>in</strong> _____ Garten.',opts:['den (Akk.)','dem (Dat.)'],a:0,verb:'rennt (Wohin?)'},
+  {s:'Sie spielt <strong>in</strong> _____ Garten.',opts:['den (Akk.)','dem (Dat.)'],a:1,verb:'spielt (Wo?)'},
+  {s:'Er hängt das Foto <strong>über</strong> _____ Kamin.',opts:['den (Akk.)','dem (Dat.)'],a:0,verb:'hängt (Wohin?)'},
+  {s:'Das Foto hängt <strong>über</strong> _____ Kamin.',opts:['den (Akk.)','dem (Dat.)'],a:1,verb:'hängt (Wo?)'},
+];
+function initWechsel(){renderMC('wechselQ',wechselData,'wq');mcSels['wq']={};}
+function checkWechsel(){checkMCGroup('wq',wechselData,'fb-wechsel','praep',15);}
+
+const fehlerData=[
+  {q:'Trotz <u>dem</u> schlechten Wetter gingen wir spazieren.',opts:['Trotz dem schlechten Wetter...','Trotz des schlechten Wetters...','Trotz schlechten Wetter...'],a:1,expl:'trotz + Genitiv → des Wetters'},
+  {q:'Wegen <u>dem</u> Stau kamen wir zu spät.',opts:['Wegen dem Stau...','Wegen des Staus...','Wegen den Stau...'],a:1,expl:'wegen + Genitiv → des Staus'},
+  {q:'Er wartet seit drei <u>Tage</u> auf den Bus.',opts:['seit drei Tage','seit drei Tagen','seit drei Tages'],a:1,expl:'seit + Dativ → Tagen'},
+  {q:'Sie geht in <u>das</u> Park spazieren.',opts:['in das Park','in den Park','in dem Park'],a:1,expl:'Park ist maskulin → in den Park (Akk. Wohin?)'},
+  {q:'Während <u>dem</u> Unterricht soll man nicht reden.',opts:['Während dem Unterricht','Während des Unterrichts','Während den Unterricht'],a:1,expl:'während + Genitiv → des Unterrichts'},
+  {q:'Anstatt <u>dem</u> Lehrer zu antworten, schwieg er.',opts:['Anstatt dem Lehrer','Anstatt des Lehrers','Anstatt der Lehrer'],a:1,expl:'anstatt + Genitiv → des Lehrers'},
+];
+function initFehler(){renderMC('fehlerQ',fehlerData,'fq');mcSels['fq']={};}
+function checkFehler(){checkMCGroup('fq',fehlerData,'fb-fehler','praep',20);}
+
+// ═══════════════════════════════════════
+// VERBFORMEN
+// ═══════════════════════════════════════
+const verbData=[
+  {inf:'sehen',praet:'sah',perf:'hat gesehen',pqp:'hatte gesehen'},
+  {inf:'lesen',praet:'las',perf:'hat gelesen',pqp:'hatte gelesen'},
+  {inf:'schreiben',praet:'schrieb',perf:'hat geschrieben',pqp:'hatte geschrieben'},
+  {inf:'sprechen',praet:'sprach',perf:'hat gesprochen',pqp:'hatte gesprochen'},
+  {inf:'essen',praet:'aß',perf:'hat gegessen',pqp:'hatte gegessen'},
+  {inf:'trinken',praet:'trank',perf:'hat getrunken',pqp:'hatte getrunken'},
+  {inf:'finden',praet:'fand',perf:'hat gefunden',pqp:'hatte gefunden'},
+  {inf:'helfen',praet:'half',perf:'hat geholfen',pqp:'hatte geholfen'},
+  {inf:'nehmen',praet:'nahm',perf:'hat genommen',pqp:'hatte genommen'},
+  {inf:'tragen',praet:'trug',perf:'hat getragen',pqp:'hatte getragen'},
+  {inf:'werfen',praet:'warf',perf:'hat geworfen',pqp:'hatte geworfen'},
+  {inf:'schwimmen',praet:'schwamm',perf:'ist geschwommen',pqp:'war geschwommen'},
+  {inf:'singen',praet:'sang',perf:'hat gesungen',pqp:'hatte gesungen'},
+  {inf:'vergessen',praet:'vergaß',perf:'hat vergessen',pqp:'hatte vergessen'},
+  {inf:'beginnen',praet:'begann',perf:'hat begonnen',pqp:'hatte begonnen'},
+  {inf:'empfehlen',praet:'empfahl',perf:'hat empfohlen',pqp:'hatte empfohlen'},
+  {inf:'gewinnen',praet:'gewann',perf:'hat gewonnen',pqp:'hatte gewonnen'},
+  {inf:'verschwinden',praet:'verschwand',perf:'ist verschwunden',pqp:'war verschwunden'},
+  {inf:'erschrecken',praet:'erschrak',perf:'ist erschrocken',pqp:'war erschrocken'},
+];
+
+function initVT(){
+  let head=document.getElementById('vtHead');
+  head.innerHTML=grade===8
+    ?'<th>Infinitiv</th><th>Präteritum (er/sie)</th><th>Perfekt</th><th>Plusquamperfekt</th>'
+    :'<th>Infinitiv</th><th>Präteritum (er/sie)</th><th>Perfekt</th>';
+  let body=document.getElementById('vtBody');
+  let ex=grade===8
+    ?`<tr><td>gehen</td><td><em>ging</em></td><td><em>ist gegangen</em></td><td><em>war gegangen</em></td></tr>`
+    :`<tr><td>gehen</td><td><em>ging</em></td><td><em>ist gegangen</em></td></tr>`;
+  let rows=ex+verbData.map((v,i)=>{
+    let pqpCell=grade===8?`<td><input class="txt-input" id="vt_pqp_${i}" placeholder="war/hatte..." /></td>`:'';
+    return `<tr><td>${v.inf}</td><td><input class="txt-input" id="vt_praet_${i}" placeholder="..." /></td><td><input class="txt-input" id="vt_perf_${i}" placeholder="hat/ist + ..." /></td>${pqpCell}</tr>`;
+  }).join('');
+  body.innerHTML=rows;
+}
+function checkVT(){
+  let score=0,total=verbData.length*(grade===8?3:2);
+  verbData.forEach((v,i)=>{
+    let p=document.getElementById('vt_praet_'+i);
+    let pf=document.getElementById('vt_perf_'+i);
+    if(p.value.trim().toLowerCase()===v.praet){p.className='txt-input correct';score++;}else{p.className='txt-input wrong';p.title=v.praet;}
+    if(pf.value.trim().toLowerCase()===v.perf){pf.className='txt-input correct';score++;}else{pf.className='txt-input wrong';pf.title=v.perf;}
+    if(grade===8){
+      let pq=document.getElementById('vt_pqp_'+i);
+      if(pq.value.trim().toLowerCase()===v.pqp){pq.className='txt-input correct';score++;}else{pq.className='txt-input wrong';pq.title=v.pqp;}
+    }
+  });
+  if(score>=total*0.85){addPts(grade===8?30:25,'Verbtabelle gemeistert!','⏰');setSP('verb',40);setFB('fb-vt','success',`${score}/${total} richtig! Ausgezeichnet! 🌟`);}
+  else if(score>=total*0.6){addPts(12,'Gut!','⏰');setSP('verb',20);setFB('fb-vt','partial',`${score}/${total} richtig.`);}
+  else{resetStr();setFB('fb-vt','error',`${score}/${total}. Verben nochmal lernen!`);}
+}
+
+const ppData=[
+  {perf:'Ich habe das Buch in einer Nacht gelesen.',praet:'Ich las das Buch in einer Nacht.'},
+  {perf:'Wir sind den Berg hinaufgelaufen.',praet:'Wir liefen den Berg hinauf.'},
+  {perf:'Das Kind hat das Lied laut gesungen.',praet:'Das Kind sang das Lied laut.'},
+  {perf:'Er hat die Prüfung bestanden.',praet:'Er bestand die Prüfung.'},
+  {perf:'Sie hat das Spiel gewonnen.',praet:'Sie gewann das Spiel.'},
+  {perf:'Die Sonne ist hinter den Wolken verschwunden.',praet:'Die Sonne verschwand hinter den Wolken.'},
+  {perf:'Er hat ihr das Buch empfohlen.',praet:'Er empfahl ihr das Buch.'},
+  {perf:'Wir haben bis Mitternacht gearbeitet.',praet:'Wir arbeiteten bis Mitternacht.'},
+];
+function initPP(){
+  let html='';
+  ppData.forEach((s,i)=>{
+    html+=`<div style="margin-bottom:.75rem;"><p style="font-size:.85rem;color:#6b7280;margin-bottom:3px;">${i+1}. <em>${s.perf}</em></p><input type="text" class="txt-input" id="pp_${i}" placeholder="Im Präteritum..."/></div>`;
+  });
+  document.getElementById('ppEx').innerHTML=html;
+}
+function checkPP(){
+  let score=0;
+  ppData.forEach((s,i)=>{
+    let inp=document.getElementById('pp_'+i);
+    if(inp.value.trim()===s.praet){inp.className='txt-input correct';score++;}
+    else{inp.className='txt-input wrong';inp.title=s.praet;}
+  });
+  if(score>=ppData.length-1){addPts(15,'Präteritum perfekt!','⏰');setSP('verb',30);setFB('fb-pp','success',`${score}/${ppData.length} richtig! 🎊`);}
+  else{setSP('verb',10);setFB('fb-pp','partial',`${score}/${ppData.length}. Halte Maus über rote Felder für Lösung.`);}
+}
+
+// Nachdem-Sätze
+const nachdemData=[
+  {s1:'Sie las den Brief.',s2:'Sie rief ihre Freundin an.',ans:'Nachdem sie den Brief gelesen hatte, rief sie ihre Freundin an.'},
+  {s1:'Wir schwammen im See.',s2:'Wir gingen nach Hause.',ans:'Nachdem wir im See geschwommen waren, gingen wir nach Hause.'},
+  {s1:'Er fand den Schlüssel.',s2:'Er öffnete die Tür.',ans:'Nachdem er den Schlüssel gefunden hatte, öffnete er die Tür.'},
+  {s1:'Die Band sang das Lied.',s2:'Das Publikum applaudierte.',ans:'Nachdem die Band das Lied gesungen hatte, applaudierte das Publikum.'},
+  {s1:'Der Schüler vergaß seine Hausaufgaben.',s2:'Er bekam eine schlechte Note.',ans:'Nachdem der Schüler seine Hausaufgaben vergessen hatte, bekam er eine schlechte Note.'},
+];
+function initNachdem(){
+  let html='';
+  nachdemData.forEach((s,i)=>{
+    html+=`<div style="margin-bottom:.75rem;"><p style="font-size:.85rem;color:#6b7280;margin-bottom:3px;">${i+1}. <em>${s.s1} / ${s.s2}</em></p><input type="text" class="txt-input" id="nd_${i}" placeholder="Nachdem..."/></div>`;
+  });
+  document.getElementById('nachdemFill').innerHTML=html;
+}
+function checkNachdem(){
+  let score=0;
+  nachdemData.forEach((s,i)=>{
+    let inp=document.getElementById('nd_'+i);
+    if(inp&&inp.value.trim()===s.ans){inp.className='txt-input correct';score++;}
+    else if(inp){inp.className='txt-input wrong';inp.title=s.ans;}
+  });
+  if(score>=nachdemData.length-1){addPts(20,'Plusquamperfekt gemeistert!','⏰');setSP('verb',35);setFB('fb-nachdem','success',`${score}/${nachdemData.length} richtig! 🏆`);}
+  else{setSP('verb',15);setFB('fb-nachdem','partial',`${score}/${nachdemData.length}. Tipp: hatte/war + Partizip II`);}
+}
+
+// Alle drei
+const dreiData=[
+  {inf:'beginnen',s:'Die Vorstellung beginnt um 20 Uhr.',perf:'Die Vorstellung hat um 20 Uhr begonnen.',praet:'Die Vorstellung begann um 20 Uhr.',pqp:'Die Vorstellung hatte um 20 Uhr begonnen.'},
+  {inf:'erschrecken',s:'Das Geräusch erschreckt die Kinder.',perf:'Das Geräusch hat die Kinder erschreckt.',praet:'Das Geräusch erschreckte die Kinder.',pqp:'Das Geräusch hatte die Kinder erschreckt.'},
+  {inf:'gewinnen',s:'Die Mannschaft gewinnt den Pokal.',perf:'Die Mannschaft hat den Pokal gewonnen.',praet:'Die Mannschaft gewann den Pokal.',pqp:'Die Mannschaft hatte den Pokal gewonnen.'},
+];
+function initDrei(){
+  let html='';
+  dreiData.forEach((s,i)=>{
+    html+=`<div style="margin-bottom:1rem;border-bottom:1px solid var(--gray200);padding-bottom:.75rem;">
+      <p style="font-size:.88rem;font-weight:600;margin-bottom:.4rem;">${i+1}. Grundsatz: <em>${s.s}</em></p>
+      <input class="txt-input" id="dr_perf_${i}" placeholder="Perfekt: hat/ist + ..." style="margin-bottom:.4rem;"/>
+      <input class="txt-input" id="dr_praet_${i}" placeholder="Präteritum..." style="margin-bottom:.4rem;"/>
+      <input class="txt-input" id="dr_pqp_${i}" placeholder="Plusquamperfekt: hatte/war + ..." />
+    </div>`;
+  });
+  document.getElementById('dreiFormenFill').innerHTML=html;
+}
+function checkDrei(){
+  let score=0,total=dreiData.length*3;
+  dreiData.forEach((s,i)=>{
+    [['perf',s.perf],['praet',s.praet],['pqp',s.pqp]].forEach(([k,v])=>{
+      let el=document.getElementById(`dr_${k}_${i}`);
+      if(el){if(el.value.trim()===v){el.className='txt-input correct';score++;}else{el.className='txt-input wrong';el.title=v;}}
+    });
+  });
+  if(score>=total-2){addPts(25,'Alle drei Formen!','⏰');setSP('verb',40);setFB('fb-drei','success',`${score}/${total} – Perfekt! 🏆`);}
+  else{setSP('verb',15);setFB('fb-drei','partial',`${score}/${total}. Halte Maus über rote Felder.`);}
+}
+
+// ═══════════════════════════════════════
+// WORTSCHATZ
+// ═══════════════════════════════════════
+const wortLevelData=[
+  {lbl:'Stufe 1 – Allgemein',cls:'lv1',pairs:[{b:'gehen',p:'gehen'},{b:'sagen',p:'sagen'},{b:'machen',p:'machen'},{b:'sehen',p:'sehen'}]},
+  {lbl:'Stufe 2 – Besser',cls:'lv2',pairs:[{b:'gehen',p:'laufen'},{b:'sagen',p:'erwidern'},{b:'machen',p:'herstellen'},{b:'sehen',p:'beobachten'}]},
+  {lbl:'Stufe 3 – Präzise',cls:'lv3',pairs:[{b:'gehen',p:'schlendern'},{b:'sagen',p:'murmeln'},{b:'machen',p:'anfertigen'},{b:'sehen',p:'erblicken'}]},
+  {lbl:'Stufe 4 – Ausdrucksstark',cls:'lv4',pairs:[{b:'gehen',p:'stolzieren'},{b:'sagen',p:'verkünden'},{b:'machen',p:'vollbringen'},{b:'sehen',p:'betrachten'}]},
+];
+const wortLevel5={lbl:'Stufe 5 – Profi 🏆',cls:'lv5',pairs:[{b:'gehen',p:'schleichen'},{b:'sagen',p:'flüstern'},{b:'machen',p:'bewerkstelligen'},{b:'sehen',p:'erspähen'}]};
+
+function initWortLevels(){
+  let levels=grade===8?[...wortLevelData,wortLevel5]:wortLevelData;
+  let html=levels.map(lv=>`<div class="wlevel ${lv.cls}"><div class="wlevel-hd">${lv.lbl}</div><div class="wgrid">${lv.pairs.map(p=>`<div class="wcrd"><div class="base">statt „${p.b}"</div><div class="precise">${p.p}</div></div>`).join('')}</div></div>`).join('');
+  document.getElementById('wortLevels').innerHTML=html;
+}
+
+const wortQData7=[
+  {q:'Der General ______ den Sieg vor der ganzen Armee.',opts:['sagte','erwiderte','verkündete','murmelte'],a:2},
+  {q:'Der alte Mann ______ langsam durch den Park, ohne es eilig zu haben.',opts:['ging','lief','schlenderte','stolzierte'],a:2},
+  {q:'Sie ______ die alten Briefe sorgfältig im Schein der Lampe.',opts:['sah an','beobachtete','betrachtete','erblickte'],a:2},
+  {q:'Der Detektiv ______ vorsichtig durch den dunklen Flur.',opts:['ging','schritt','schlich','lief'],a:2},
+  {q:'Er ______ das Kunstwerk innerhalb weniger Stunden.',opts:['machte','herstellte','fertigte an','vollbrachte'],a:3},
+  {q:'Sie ______ ihm ein Geheimnis leise ins Ohr.',opts:['sagte','murmelte','flüsterte','erwiderte'],a:1},
+];
+const wortQData8=[
+  ...wortQData7,
+  {q:'Der Dieb ______ leise an der Wand entlang.',opts:['ging','schlich','stolzierte','schlenderte'],a:1},
+  {q:'Wie hast du das in so kurzer Zeit _____?',opts:['gemacht','hergestellt','vollbracht','bewerkstelligt'],a:3},
+  {q:'Der Seefahrer ______ am Horizont Land.',opts:['sah','erblickte','erspähte','beobachtete'],a:2},
+];
+function initWort(){
+  let data=grade===8?wortQData8:wortQData7;
+  renderMC('wortQ',data,'wortq');
+}
+function checkWort(){
+  let data=grade===8?wortQData8:wortQData7;
+  checkMCGroup('wortq',data,'fb-wort','wort',15);
+}
+
+const wortFillData={
+  words:['schlenderte','verkündete','betrachtete','vollbrachte','murmelte','stolzierte','erblickte','fertigte an'],
+  sentences:[
+    {before:'Der König',after:'die neue Steuer vor dem Volk.',ans:'verkündete'},
+    {before:'Er',after:'die antike Vase im Museum lange.',ans:'betrachtete'},
+    {before:'Die Katze',after:'gemütlich durch den Garten.',ans:'schlenderte'},
+    {before:'Der Schüler',after:'leise die Antwort vor sich hin.',ans:'murmelte'},
+    {before:'Die Diva',after:'über den roten Teppich.',ans:'stolzierte'},
+    {before:'Er',after:'eine Herausforderung nach der anderen.',ans:'vollbrachte'},
+  ]
+};
+function initWortFill(){setupChips('wortBank',wortFillData.words);renderFill('wortFill','wortBank',wortFillData.sentences);}
+function checkWortFill(){checkFill('wortBank',wortFillData.sentences,'fb-wortFill','wort',12,'Wortschatz-Lückentext');}
+
+const tvPairs7=[
+  {tell:'GUT',good:'hervorragend'},{tell:'SCHLECHT',good:'miserabel'},{tell:'GROSS',good:'gewaltig'},
+  {tell:'LANGSAM',good:'bedächtig'},{tell:'SAGTE',good:'murmelte'},{tell:'GING',good:'schlenderte'},
+  {tell:'LANGWEILIG',good:'eintönig'},{tell:'SIEHT',good:'betrachtet'},
+];
+const tvPairs8=[
+  {tell:'GUT',good:'exzellent'},{tell:'SCHLECHT',good:'katastrophal'},{tell:'GROSS',good:'kolossal'},
+  {tell:'LANGSAM',good:'schleichend'},{tell:'SAGTE',good:'flüsterte'},{tell:'GING',good:'schlich'},
+  {tell:'LANGWEILIG',good:'seelenlos'},{tell:'SIEHT',good:'erspäht'},{tell:'SCHNELL',good:'pfeilschnell'},
+];
+function initTV(){
+  let pairs=grade===8?tvPairs8:tvPairs7;
+  let html='';
+  pairs.forEach((p,i)=>{
+    html+=`<div style="margin-bottom:.6rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;"><span style="font-size:.85rem;background:var(--rl);padding:.3rem .6rem;border-radius:6px;color:#991b1b;font-weight:700;">${p.tell}</span><span style="color:#9ca3af;">→</span><input type="text" class="txt-input" id="tv_${i}" placeholder="Besser: Stufe ${grade===8?'4–5':'3–4'}..." style="max-width:220px;"/></div>`;
+  });
+  document.getElementById('tvFill').innerHTML=html;
+  document.getElementById('tv-diff').textContent=grade===8?'Stufen 4–5':'Stufen 3–4';
+  document.getElementById('tv-diff').className='diff diff-'+(grade===8?'8':'7');
+  document.getElementById('tv-instr').textContent=grade===8
+    ?'Ersetze die GROSSGESCHRIEBENEN Wörter durch Stufe-4- oder Stufe-5-Alternativen.'
+    :'Ersetze die GROSSGESCHRIEBENEN Wörter durch Stufe-3- oder Stufe-4-Alternativen.';
+}
+function checkTV(){
+  let pairs=grade===8?tvPairs8:tvPairs7;
+  let score=0;
+  pairs.forEach((p,i)=>{
+    let inp=document.getElementById('tv_'+i);
+    if(inp&&inp.value.trim().toLowerCase()===p.good.toLowerCase()){inp.className='txt-input correct';score++;}
+    else if(inp){inp.className='txt-input wrong';inp.title='Möglichkeit: '+p.good;}
+  });
+  if(score>=pairs.length-2){addPts(15,'Texte verbessert!','📚');setSP('wort',30);setFB('fb-tv','success',`${score}/${pairs.length} richtig! Profi-Wortschatz! ✨`);}
+  else{setSP('wort',12);setFB('fb-tv','partial',`${score}/${pairs.length}. Schau auf rote Felder für Tipps.`);}
+}
+
+// ═══════════════════════════════════════
+// GEDICHTE
+// ═══════════════════════════════════════
+const stilBase=[
+  {sm:'Vergleich',expl:'Vergleich mit „wie"',bsp:'Sein Lachen war wie Donner.'},
+  {sm:'Metapher',expl:'Direkter Vergleich ohne „wie"',bsp:'Sein Lachen – ein Donnergrollen.'},
+  {sm:'Personifikation',expl:'Dinge bekommen menschliche Eigenschaften',bsp:'Der Sturm heulte wütend.'},
+  {sm:'Alliteration',expl:'Gleicher Anfangslaut',bsp:'Kalt, klar, kristallen.'},
+  {sm:'Lautmalerei',expl:'Wort klingt wie das, was es beschreibt',bsp:'Das Wasser plätscherte.'},
+  {sm:'Symbol',expl:'Konkretes steht für Abstraktes',bsp:'Eine Kerze im Dunkeln = Hoffnung'},
+  {sm:'Enjambement',expl:'Satz geht über Versende hinaus',bsp:'Die Sonne scheint / auf leise Felder.'},
+];
+const stilExtra=[
+  {sm:'Anapher',expl:'Wiederholung am Satzanfang',bsp:'Kein Mensch, kein Auto, kein Licht.'},
+  {sm:'Antithese',expl:'Gegenüberstellung von Gegensätzen',bsp:'Die Dunkelheit schwindet – das Licht kehrt wieder.'},
+  {sm:'Hyperbel',expl:'Übertreibung',bsp:'Ein Ozean aus Tränen.'},
+];
+function initStilTable(){
+  let data=grade===8?[...stilBase,...stilExtra]:stilBase;
+  document.getElementById('stilTableBody').innerHTML=data.map(s=>`<tr><td><strong>${s.sm}</strong></td><td>${s.expl}</td><td><em>${s.bsp}</em></td></tr>`).join('');
+}
+const stilQData7=[
+  {q:'"Die Nacht schluckte die letzten Lichter."',opts:['Metapher','Alliteration','Personifikation','Vergleich'],a:0},
+  {q:'"Stumm, starr, steinern stand er da."',opts:['Metapher','Alliteration','Lautmalerei','Enjambement'],a:1},
+  {q:'"Die Glocken dröhnten – bong, bong, bong."',opts:['Symbol','Alliteration','Lautmalerei','Metapher'],a:2},
+  {q:'"Er war stark wie ein Bär, aber sanft wie ein Lamm."',opts:['Metapher','Vergleich','Personifikation','Symbol'],a:1},
+  {q:'"Der Wind flüsterte alte Geheimnisse."',opts:['Metapher','Alliteration','Personifikation','Vergleich'],a:2},
+  {q:'"Ein Funken im Dunkel – Hoffnung."',opts:['Metapher','Symbol','Enjambement','Alliteration'],a:1},
+  {q:'"Die Laternen weinen Licht in die Nacht."',opts:['Personifikation','Vergleich','Alliteration','Lautmalerei'],a:0},
+  {q:'"Sein Herz war ein Gefängnis."',opts:['Vergleich','Metapher','Symbol','Personifikation'],a:1},
+];
+const stilQData8=[
+  ...stilQData7,
+  {q:'"Kein Haus, kein Mensch, kein Laut."',opts:['Antithese','Anapher','Alliteration','Hyperbel'],a:1},
+  {q:'"Ein Meer von Tränen umgab ihn."',opts:['Hyperbel','Metapher','Alliteration','Symbol'],a:0},
+  {q:'"Die Dunkelheit floh – das Licht siegte."',opts:['Anapher','Antithese','Personifikation','Symbol'],a:1},
+];
+function initStil(){
+  let data=grade===8?stilQData8:stilQData7;
+  renderMC('stilQ',data,'stilq');
+}
+function checkStil(){
+  let data=grade===8?stilQData8:stilQData7;
+  checkMCGroup('stilq',data,'fb-stil','ged',20);
+}
+
+const reimQData=[
+  {verse:['Der Wind weht kalt durch leere Straßen,','die Blätter tanzen wild umher.','Die Bäume stehen kahl und nass,','der Sommer kommt nun nicht mehr.'],reim:'abab',opts:['Paarreim (aabb)','Kreuzreim (abab)','Umarmender Reim (abba)'],a:1},
+  {verse:['Die Sonne sinkt ins Abendrot,','die Vögel fliegen heim.','Das Licht erlischt – ein stilles Lot','senkt sich auf See und Hain.'],reim:'abab',opts:['Paarreim (aabb)','Kreuzreim (abab)','Umarmender Reim (abba)'],a:1},
+  {verse:['Ich stand allein am kalten Strand','und hörte Wellen weit.','Das Meer – so groß, so unbekannt –','schluckte mein Schweigen mit.'],reim:'abab',opts:['Paarreim (aabb)','Kreuzreim (abab)','Umarmender Reim (abba)'],a:1},
+  {verse:['Im Wald, wo Schatten Wurzeln treiben,','wo Flechten an den Steinen hängen,','wo alte Sagen ewig bleiben','und sich im Herbstwind sanft verlängen.'],reim:'abab',opts:['Paarreim (aabb)','Kreuzreim (abab)','Umarmender Reim (abba)'],a:1},
+  {verse:['Der Regen trommelt auf das Dach,','der Donner rollt von Fern.','Die Welt wird still – ein tiefer Bach','fließt unter trübem Stern.'],reim:'abab',opts:['Paarreim (aabb)','Kreuzreim (abab)','Umarmender Reim (abba)'],a:1},
+];
+// Vary reim types
+reimQData[0].reim='abab';reimQData[0].a=1;
+reimQData[2].verse=['In stiller Nacht ruht alles fest,','das Licht erlischt im Land,','Das Dunkel legt sich wie ein Nest','um alles, was ich kannt.'];
+reimQData[2].reim='abab';reimQData[2].a=1;
+// Add paarreim and umarmend
+reimQData.push({verse:['Die Sterne leuchten hell und klar,','das Mondlicht tanzt auf silbern See.','Es ist ein wunderbares Jahr,','gefüllt mit Freude, ohne Weh.'],reim:'aabb',opts:['Paarreim (aabb)','Kreuzreim (abab)','Umarmender Reim (abba)'],a:1});
+reimQData[reimQData.length-1].verse=['Die Sterne leuchten hell und klar,','die Nacht war wunderschön.','Das Jahr ist nun vergangen –','wir müssen weitergeh\'n.'];reimQData[reimQData.length-1].a=0;
+reimQData.push({verse:['In Stille ruht der alte Wald,','Kein Vogel singt, kein Laut erklingt,','Das Schweigen, das so tief erschallt,','das jeden Stein und Baum bezwingt.'],reim:'abba',opts:['Paarreim (aabb)','Kreuzreim (abab)','Umarmender Reim (abba)'],a:1});
+// Fix last
+reimQData[reimQData.length-1].verse=['In Stille ruht der alte Wald,','kein Vogel wacht in dieser Nacht.','Das Schweigen hallt und widerhallt','im Wald, den niemand hat bedacht.'];reimQData[reimQData.length-1].a=1;
+
+let reimSel={};
+function initReim(){
+  reimSel={};
+  let pick=reimQData.filter((_,i)=>i<(grade===8?7:5));
+  let html='';
+  pick.forEach((q,i)=>{
+    html+=`<div class="mc-q">
+      <p>${i+1}. <em style="font-size:.85rem;color:var(--gray700);">${q.verse.join('<br>')}</em></p>
+      <div class="mc-opts">${q.opts.map((o,j)=>`<button class="reim-opt" id="rq_${i}_${j}" onclick="selReim(${i},${j})">${o}</button>`).join('')}</div>
+    </div>`;
+  });
+  document.getElementById('reimQ').innerHTML=html;
+}
+function selReim(i,j){reimSel[i]=j;document.querySelectorAll(`[id^="rq_${i}_"]`).forEach(b=>{b.className='reim-opt';});document.getElementById(`rq_${i}_${j}`).classList.add('sel');}
+function checkReim(){
+  let pick=reimQData.filter((_,i)=>i<(grade===8?7:5));
+  let score=0;
+  pick.forEach((q,i)=>{
+    let sel=reimSel[i];
+    if(sel!==undefined){let btn=document.getElementById(`rq_${i}_${sel}`);if(sel===q.a){btn.className='reim-opt correct';score++;}else{btn.className='reim-opt wrong';document.getElementById(`rq_${i}_${q.a}`).className='reim-opt correct';}}
+  });
+  if(score>=pick.length-1){addPts(15,'Reimschema-Experte!','🎵');setSP('ged',30);setFB('fb-reim','success',`${score}/${pick.length} richtig! Du kennst Reimschemata! 🎊`);}
+  else{setSP('ged',12);setFB('fb-reim','partial',`${score}/${pick.length}. Merke: a=gleicher Endreim, aabb=Paar, abab=Kreuz, abba=Umarmend.`);}
+}
+
+// Gedichtanalyse
+function initGedichtText(){
+  document.getElementById('gedText').innerHTML=`
+    <span class="pline">Die Straßen liegen still und leer,</span>
+    <span class="pline">kein Mensch, kein Auto weit und breit. <span class="stiltag">?</span></span>
+    <span class="pline">Die Laternen leuchten schwer</span>
+    <span class="pline">und werfen Schatten in die Zeit. <span class="stiltag">?</span></span>
+    <span class="pline"><br>Die Fenster starren kalt und blind,</span>
+    <span class="pline">wie schwarze Augen ohne Licht. <span class="stiltag">?</span></span>
+    <span class="pline">Nur manchmal flüstert noch der Wind</span>
+    <span class="pline">sein einsam melancholisch' Gedicht. <span class="stiltag">?</span></span>
+    <span class="pline"><br>Doch wenn der Morgen langsam bricht,</span>
+    <span class="pline">erwacht die Stadt aus ihrer Ruh'.</span>
+    <span class="pline">Die Dunkelheit verliert ihr Gesicht –</span>
+    <span class="pline">das Leben kehrt zurück im Nu. <span class="stiltag">?</span></span>`;
+  let qs=grade===8?[
+    {q:'Welches Stilmittel liegt in Zeile 2 vor? „kein Mensch, kein Auto..."',opts:['Alliteration','Anapher','Metapher','Personifikation'],a:1},
+    {q:'„Die Laternen leuchten schwer" – welches Stilmittel?',opts:['Personifikation','Metapher','Vergleich','Lautmalerei'],a:0},
+    {q:'„Die Fenster starren kalt und blind, wie schwarze Augen..."',opts:['Metapher','Vergleich','Personifikation','Anapher'],a:1},
+    {q:'„Die Dunkelheit verliert ihr Gesicht" und „das Leben kehrt zurück"',opts:['Antithese','Symbol','Enjambement','Hyperbel'],a:0},
+    {q:'Welches Reimschema hat das Gedicht?',opts:['Paarreim (aabb)','Kreuzreim (abab)','Umarmender Reim (abba)'],a:1},
+    {q:'Welche philosophische Frage stellt das Gedicht?',opts:['Ist die Nacht schöner als der Tag?','Auf Dunkelheit folgt immer Licht/Hoffnung.','Städte sind gefährlich.','Der Wind ist lebendig.'],a:1},
+  ]:[
+    {q:'„Die Fenster starren kalt und blind" – welches Stilmittel?',opts:['Metapher','Vergleich','Personifikation','Alliteration'],a:2},
+    {q:'„wie schwarze Augen ohne Licht" – welches Stilmittel?',opts:['Metapher','Vergleich','Personifikation','Symbol'],a:1},
+    {q:'„Nur manchmal flüstert noch der Wind" – welches Stilmittel?',opts:['Alliteration','Metapher','Personifikation','Lautmalerei'],a:2},
+    {q:'Welches Reimschema hat das Gedicht?',opts:['Paarreim (aabb)','Kreuzreim (abab)','Umarmender Reim (abba)'],a:1},
+    {q:'Wie verändert sich die Stimmung im Gedicht?',opts:['Von dunkel-einsam zu hell-lebendig','Von hell zu dunkel','Bleibt die ganze Zeit gleich'],a:0},
+  ];
+  renderMC('analyseQ',qs,'aq');
+}
+function checkGedicht(){let data=grade===8?6:5;checkMCGroup('aq',document.querySelectorAll('[id^="aq_"]').length>0?[...Array(data)].map((_,i)=>({a:i%2})):[],'fb-analyse','ged',15);}
+function showAnalyseHints(){showToast('💡','Tipps eingeblendet!','Achte auf Stilmittel: Starren=Person, wie=Vergleich, Anapher=Wiederholung am Satzanfang');}
+
+function prevHaiku(){let l=[1,2,3].map(i=>document.getElementById('hk'+i).value.trim());if(!l[0]&&!l[1]&&!l[2])return;document.getElementById('hkPrev').innerHTML=l.join('<br>');document.getElementById('hkPrev').style.display='block';addPts(5,'Haiku geschrieben!','🌿');setSP('ged',15);}
+function prevElfchen(){let l=[1,2,3,4,5].map(i=>document.getElementById('ef'+i).value.trim());if(l.every(x=>!x))return;document.getElementById('efPrev').innerHTML=l.map(x=>`<span style="display:block">${x}</span>`).join('');document.getElementById('efPrev').style.display='block';addPts(5,'Elfchen geschrieben!','🧝');setSP('ged',15);}
+
+// ═══════════════════════════════════════
+// KREATIVES SCHREIBEN
+// ═══════════════════════════════════════
+const sdtData=[
+  {tell:'Er war sehr nervös.',show:'Seine Finger trommelten unkontrolliert auf dem Tisch; Schweiß stand ihm auf der Stirn.',opts:['Er war sehr nervös.','Seine Finger trommelten unkontrolliert auf dem Tisch; Schweiß stand ihm auf der Stirn.'],a:1},
+  {tell:'Die Stadt war laut.',show:'Hupen, Stimmen, das Heulen von Sirenen – alles überlagerte sich zu einem einzigen Lärm.',opts:['Die Stadt war laut.','Hupen, Stimmen, das Heulen von Sirenen – alles überlagerte sich zu einem einzigen Lärm.'],a:1},
+  {tell:'Sie war wütend.',show:'Ihre Lippen wurden schmal und weiß; sie sprach kein Wort mehr.',opts:['Sie war wütend.','Ihre Lippen wurden schmal und weiß; sie sprach kein Wort mehr.'],a:1},
+  {tell:'Es regnete stark.',show:'Die Tropfen schlugen wie Kieselsteine gegen die Scheibe; die Straßen verschwanden hinter grauen Vorhängen.',opts:['Es regnete stark.','Die Tropfen schlugen wie Kieselsteine gegen die Scheibe; die Straßen verschwanden hinter grauen Vorhängen.'],a:1},
+  {tell:'Er freute sich.',show:'Er musste das Grinsen mit beiden Händen im Gesicht zurückhalten und sprang einmal kurz in die Luft.',opts:['Er freute sich.','Er musste das Grinsen mit beiden Händen im Gesicht zurückhalten und sprang einmal kurz in die Luft.'],a:1},
+];
+function initSDT(){renderMC('sdtQ',sdtData.map(s=>({q:'Welcher Satz <strong>zeigt</strong> das Gefühl?',opts:s.opts,a:s.a})),'sdtq');}
+function checkSDT(){checkMCGroup('sdtq',sdtData.map(s=>({a:s.a})),'fb-sdt','kreativ',15);}
+
+const sdtTells=['Ich hatte Angst.','Der Raum war unheimlich.','Das Essen war ekelhaft.','Sie war erschöpft.','Er war begeistert.'];
+const sdtEx=['→ Mein Herzschlag jagte – ich glaubte, es würden alle anderen ihn hören.','→ Die Haare auf meinen Armen standen auf; das Licht flackerte einmal, zweimal.','→ Beim ersten Bissen verzog sich mein Gesicht unwillkürlich, und ich schluckte kaum.','→ Sie schleppte ihre Beine die letzten Schritte bis zur Couch, fiel hinein und bewegte sich nicht mehr.','→ Er sprang auf die Füße, als hätte jemand ihn mit einem unsichtbaren Seil hochgezogen.'];
+function initSDTWrite(){
+  document.getElementById('sdtWrite').innerHTML=sdtTells.map((t,i)=>`
+    <div class="sdt-pair"><div class="sdt-tell">❌ ${t}</div>
+    <div class="sdt-write" contenteditable="true" id="sdtW_${i}">Schreibe hier...</div></div>`).join('');
+  document.querySelectorAll('.sdt-write').forEach(el=>{
+    el.addEventListener('focus',function(){if(this.textContent.includes('Schreibe hier'))this.textContent='';});
+    el.addEventListener('blur',function(){if(this.textContent.trim().length>15){addPts(2,'Show don\'t tell!','✍️');setSP('kreativ',5);}});
+  });
+}
+function showSDTEx(){document.querySelectorAll('.sdt-write').forEach((el,i)=>{if(!el.textContent.trim()||el.textContent.includes('Schreibe'))el.textContent=sdtEx[i]||'';});showToast('💡','Beispiele!','Das sind Muster – eigene Ideen sind noch besser!');}
+
+const imPrompts7=['Du stehst vor der Klasse und weißt die Antwort nicht.','Du hörst, dass ein Freund etwas Schlechtes über dich gesagt hat.','Du öffnest dein Zeugnis und siehst eine sehr gute Note.'];
+const imPrompts8=['Du stehst auf der Bühne – das Publikum wartet, aber du hast deinen Text vergessen.','Du hörst ein Gespräch, das nicht für dich bestimmt war, und erfährst etwas Erschütterndes.','Du musst eine Entscheidung treffen, bei der beide Optionen falsch sind.'];
+function initIMWrite(){
+  let prompts=grade===8?imPrompts8:imPrompts7;
+  document.getElementById('imWrite').innerHTML=prompts.map((p,i)=>`
+    <div style="margin-bottom:1rem">
+      <p style="font-size:.85rem;font-weight:600;color:var(--gray800);margin-bottom:4px;">${i+1}. ${p}</p>
+      <textarea rows="4" placeholder="Schreibe einen inneren Monolog (Ich-Form, Gedanken direkt, kurze Sätze bei Aufregung)..." onblur="if(this.value.trim().length>20){addPts(3,'Innerer Monolog!','💭');setSP('kreativ',10);}"></textarea>
+    </div>`).join('');
+}
+function showIMHints(){showToast('💡','Tipps!',grade===8?'Nutze Anapher, Antithese, Fragesätze. Zeige Zerrissenheit!':'Kurze Sätze = Aufregung, Fragesätze = Unsicherheit.');}
+
+function initChecklist(){
+  let items7=['Einleitung: Wer? Wo? Wann?','Spannungsaufbau im Hauptteil','Überraschender oder offener Schluss','Mindestens 2 Stilmittel','Dialog eingebaut','Innerer Monolog verwendet','Verschiedene Satzanfänge','Stufe-3/4-Wörter eingesetzt','Rechtschreibung geprüft (250–300 Wörter)'];
+  let items8=['Fesselnde Exposition (Einstieg)','Spannungskurve mit Wendepunkt','Innerer Monolog + Reflexion','Mindestens 3 Stilmittel benannt','Dialog + direkte Rede','Stufe 4–5 Wörter durchgängig','Abwechslungsreiche Satzstruktur','Schluss: offen oder überraschend','350–400 Wörter · Rechtschreibung geprüft'];
+  let items=grade===8?items8:items7;
+  document.getElementById('checklist').innerHTML=items.map((it,i)=>`
+    <label style="display:flex;align-items:center;gap:.65rem;padding:.45rem .75rem;margin-bottom:.35rem;background:white;border-radius:8px;border:1.5px solid var(--gray200);cursor:pointer;font-size:.88rem;">
+      <input type="checkbox" style="width:17px;height:17px;accent-color:var(--g);cursor:pointer;" onchange="checklistUpd()"/>
+      ${it}
+    </label>`).join('');
+}
+let clDone=false;
+function checklistUpd(){
+  let checked=document.querySelectorAll('#checklist input:checked').length;
+  let total=document.querySelectorAll('#checklist input').length;
+  if(checked===total&&!clDone){clDone=true;addPts(20,'Checkliste komplett!','📋');setSP('kreativ',30);showToast('🏆','Fertig!','Deine Erzählung hat alles!');}
+  else if(checked>=5&&!window.cl5done){window.cl5done=true;addPts(5,'Guter Fortschritt!','📋');setSP('kreativ',10);}
+}
+
+// ═══════════════════════════════════════
+// LESEVERSTÄNDNIS
+// ═══════════════════════════════════════
+const leseText7=`
+  <p>Es war der letzte Schultag vor den Sommerferien. Der 13-jährige Luca schlich sich in den alten Keller unter dem Hauptgebäude, den seit Jahren niemand mehr betreten hatte. Eine verrostete Tür. Er drückte, und sie gab nach – mit einem Seufzen, als atme das Gebäude aus.</p><br>
+  <p>Drinnen stand die Zeit still. Staub lag wie Schnee auf alten Schulbänken. An der Tafel standen noch Kreideworte aus einem anderen Jahrzehnt: <em>„Wer lesen kann, ist reich."</em> In der Ecke lag ein Stapel Bücher, vergilbt und aufgequollen vom Feuchtigkeit. Eines fiel heraus: ein Tagebuch, rot eingebunden, ohne Namen.</p><br>
+  <p>Er schlug es auf. Die Handschrift war klein und schräg. Der erste Eintrag, datiert 1978: <em>„Heute hat der Schulrat das Lesen verboten. Nicht offiziell – aber wer erwischt wird, den schicken sie weg. Ich verstecke die Bücher hier unten."</em></p><br>
+  <p>Luca las weiter. Seite für Seite entstand das Bild eines Mädchens namens Hanna, das nachts heimlich las, Bücher für andere versteckte und glaubte: Wörter haben Macht. Im letzten Eintrag stand: <em>„Falls jemand das liest – vergiss nie: Ein Buch, das sie dir wegnehmen wollen, ist ein Buch, das du lesen musst."</em></p><br>
+  <p>Luca stand in dem staubigen Raum und spürte, wie etwas in ihm ruhiger wurde. Er steckte das Tagebuch in seine Tasche. Er würde es lesen. Alles davon.</p>`;
+const leseText8=`
+  <p>Als Emma das erste Mal Zeyneps Atelier betrat, empfing sie der Geruch von Terpentin und altem Holz. Die Werkstatt lag im Erdgeschoss eines Gründerzeithauses, vollgestopft mit halbfertigen Skulpturen: Figuren aus Ton, Bronze und poliertem Stein, die alle dasselbe auszudrücken schienen – ein Streben nach oben, als wollten sie aus dem Material ausbrechen.</p><br>
+  <p>Zeynep selbst war kleiner, als Emma sie sich vorgestellt hatte. Sie arbeitete mit dem Rücken zur Tür, ohne aufzuschauen. „Du bist zu früh", sagte sie. „Ich brauche noch zehn Minuten." Es klang nicht unhöflich. Es klang wie eine Tatsache.</p><br>
+  <p>Emma setzte sich und betrachtete die Skulpturen. Eine besondere zog ihren Blick an: eine menschliche Hand, die aus einem unbearbeiteten Steinblock herausragte – nur die Finger, gespreizt, als würde jemand versuchen, sich festzuhalten oder loszulassen, man konnte es nicht sagen.</p><br>
+  <p>„Das ist mein liebstes Stück", sagte Zeynep, ohne sich umzudrehen. „Weil es nicht entschieden hat." Sie pausierte. „Die meisten Kunstwerke behaupten etwas. Dieses hier fragt nur."</p><br>
+  <p>Emma dachte an ihr eigenes Schreiben – die Aufsätze, die sie verwarf, weil sie keine Antwort wusste. Vielleicht war das die Antwort: nicht zu wissen und trotzdem zu fragen.</p><br>
+  <p>Als sie eine Stunde später das Atelier verließ, drehte sie sich noch einmal um. Die Hand im Stein sah jetzt anders aus – nicht mehr zweideutig, sondern mutig.</p>`;
+
+function initLeseText(){
+  document.getElementById('leseTitle').textContent=grade===7?'Der verbotene Keller':'Die Hand im Stein';
+  document.getElementById('leseTextContent').innerHTML=grade===7?leseText7:leseText8;
+}
+
+const rfData7=[
+  {s:'Luca betrat den Keller während des Unterrichts.',ans:false,korr:'Richtig: Es war der letzte Schultag vor den Sommerferien.'},
+  {s:'An der Tafel standen Kreideworte aus einem anderen Jahrzehnt.',ans:true},
+  {s:'Das Tagebuch war blau eingebunden und hatte einen Namen.',ans:false,korr:'Richtig: Es war ROT eingebunden und OHNE Namen.'},
+  {s:'Der erste Eintrag war aus dem Jahr 1978.',ans:true},
+  {s:'Hanna versteckte die Bücher, weil sie sie nicht lesen wollte.',ans:false,korr:'Richtig: Sie versteckte die Bücher, um sie vor dem Verbot zu schützen.'},
+  {s:'Luca nahm das Tagebuch mit nach Hause.',ans:true},
+  {s:'Hanna war ein Junge.',ans:false,korr:'Richtig: Hanna war ein Mädchen.'},
+];
+const rfData8=[
+  {s:'Zeynep arbeitete mit dem Gesicht zur Tür, als Emma ankam.',ans:false,korr:'Richtig: Sie arbeitete mit dem RÜCKEN zur Tür.'},
+  {s:'Emma besuchte Zeynep in einem Atelier im Erdgeschoss.',ans:true},
+  {s:'Die Skulpturen wirkten alle wie nach unten gerichtet.',ans:false,korr:'Richtig: Sie schienen alle ein Streben nach OBEN zu zeigen.'},
+  {s:'Zeyneps Lieblingsskulptur ist eine Hand aus einem Steinblock.',ans:true},
+  {s:'Zeynep sagte, die meisten Kunstwerke stellen nur Fragen.',ans:false,korr:'Richtig: Sie sagte, die meisten BEHAUPTEN etwas – dieses Stück fragt.'},
+  {s:'Emma schreibt selbst Aufsätze.',ans:true},
+  {s:'Als Emma ging, sah die Hand für sie jetzt mutig aus.',ans:true},
+];
+function initRF(){
+  let data=grade===7?rfData7:rfData8;
+  let html='';
+  data.forEach((q,i)=>{
+    html+=`<div class="mc-q"><p>${i+1}. ${q.s}</p><div class="mc-opts"><button class="mc-opt" id="rf_${i}_R" onclick="selRF(${i},'R')">R – Richtig</button><button class="mc-opt" id="rf_${i}_F" onclick="selRF(${i},'F')">F – Falsch</button></div></div>`;
+  });
+  document.getElementById('rfQ').innerHTML=html;
+  window.rfSel={};
+}
+function selRF(i,v){window.rfSel=window.rfSel||{};window.rfSel[i]=v;['R','F'].forEach(x=>{let b=document.getElementById(`rf_${i}_${x}`);b.style.borderColor='';b.style.color='';});document.getElementById(`rf_${i}_${v}`).style.borderColor='var(--p)';document.getElementById(`rf_${i}_${v}`).style.color='var(--p)';}
+function checkRF(){
+  let data=grade===7?rfData7:rfData8;
+  let score=0;
+  data.forEach((q,i)=>{
+    let sel=(window.rfSel||{})[i];
+    if(sel){let correct=q.ans?'R':'F';let btn=document.getElementById(`rf_${i}_${sel}`);if(sel===correct){btn.className='mc-opt correct';score++;}else{btn.className='mc-opt wrong';document.getElementById(`rf_${i}_${correct}`).className='mc-opt reveal';if(q.korr)document.getElementById(`rf_${i}_${correct}`).title=q.korr;}}
+  });
+  if(score>=data.length-1){addPts(20,'Textverstehen super!','📖');setSP('lesen',35);setFB('fb-rf','success',`${score}/${data.length} richtig! 🔍`);}
+  else{setSP('lesen',15);setFB('fb-rf','partial',`${score}/${data.length}. Lies den Text nochmal!`);}
+}
+
+const mcData7=[
+  {q:'Warum hatte Hanna die Bücher versteckt?',opts:['Sie wollte alleine lesen.','Das Lesen war in der Schule verboten.','Die Bücher waren teuer.','Sie hatte keinen Platz zuhause.'],a:1},
+  {q:'Was fand Luca als erstes Unerwöhnliches in dem Keller?',opts:['Eine alte Lampe','Einen Schulranzen','Kreideworte an der Tafel','Ein Foto'],a:2},
+  {q:'Was macht Luca am Ende?',opts:['Er erzählt dem Lehrer davon.','Er lässt das Tagebuch liegen.','Er nimmt das Tagebuch mit.','Er versteckt mehr Bücher.'],a:2},
+  {q:'Was stand in Hannas letztem Eintrag?',opts:['Ein Rezept','Ein Gebet','Eine Warnung, verbotene Bücher zu lesen.','Ein Aufruf, verbotene Bücher zu lesen.'],a:3},
+  {q:'Welches Symbol steht im Text für Macht und Freiheit?',opts:['Der Schulranzen','Der Keller','Das Buch / die Wörter','Die Kreide'],a:2},
+];
+const mcData8=[
+  {q:'Was bemerkt Emma zuerst, als sie das Atelier betritt?',opts:['Die Skulpturen','Den Geruch','Zeynep selbst','Die Fenster'],a:1},
+  {q:'Was ist das Besondere an Zeyneps Lieblingsskulptur?',opts:['Sie ist aus Gold.','Sie ist sehr alt.','Sie hat sich nicht entschieden.','Sie stellt Zeynep dar.'],a:2},
+  {q:'Was denkt Emma beim Anblick der Skulptur über ihr eigenes Schreiben?',opts:['Sie will aufhören zu schreiben.','Keine Antwort zu haben, kann richtig sein.','Sie will Bildhauerin werden.','Sie ist neidisch auf Zeynep.'],a:1},
+  {q:'Wie wirkt Zeyneps erste Aussage auf Emma?',opts:['Unhöflich und arrogant','Nicht unhöflich – sachlich und direkt','Sehr herzlich','Verwirrt und seltsam'],a:1},
+  {q:'Was symbolisiert die Hand im Stein?',opts:['Zwang und Gefangenschaft','Unentschlossenheit als Mut','Den Tod','Die Natur'],a:1},
+];
+function initMC(){let data=grade===7?mcData7:mcData8;renderMC('mcQ',data,'mcq');}
+function checkMC(){let data=grade===7?mcData7:mcData8;checkMCGroup('mcq',data,'fb-mc','lesen',15);}
+
+const leseFill7={
+  words:['Tagebuch','Keller','Hanna','Bücher','verboten','Wörter','Kreide','Sommerferien'],
+  sentences:[
+    {before:'Luca betrat den',after:'unter dem Hauptgebäude am letzten Tag vor den',ans:'Keller'},
+    {before:'An der Tafel standen',after:'worte aus einem anderen Jahrzehnt.',ans:'Kreide'},
+    {before:'Er fand ein rotes',after:'ohne Namen auf dem Boden.',ans:'Tagebuch'},
+    {before:'Das Mädchen namens',after:'versteckte die Bücher heimlich.',ans:'Hanna'},
+    {before:'Das Lesen war nicht offiziell',after:',aber wer erwischt wurde, wurde weggeschickt.',ans:'verboten'},
+    {before:'Luca glaubte nach der Lektüre, dass',after:'Macht haben.',ans:'Wörter'},
+  ]
+};
+const leseFill8={
+  words:['Atelier','Skulpturen','Hand','Zeynep','Fragen','Mutig','Terpentin','Entschieden'],
+  sentences:[
+    {before:'Emma betrat Zeyneps',after:'im Erdgeschoss eines alten Hauses.',ans:'Atelier'},
+    {before:'Der Geruch von',after:'und altem Holz empfing sie.',ans:'Terpentin'},
+    {before:'Die',after:'schienen alle nach oben zu streben.',ans:'Skulpturen'},
+    {before:'Zeyneps Lieblingsstück war eine',after:'aus einem Steinblock.',ans:'Hand'},
+    {before:'Das Stück hatte sich nicht',after:',sagte Zeynep – und das gefiel ihr.',ans:'Entschieden'},
+    {before:'Als Emma das Atelier verließ, wirkte die Hand auf sie',after:',nicht mehr zweideutig.',ans:'Mutig'},
+  ]
+};
+function initLese(){
+  let d=grade===7?leseFill7:leseFill8;
+  setupChips('leseBank',d.words);
+  renderFill('leseFill','leseBank',d.sentences);
+}
+function checkLese(){
+  let d=grade===7?leseFill7:leseFill8;
+  checkFill('leseBank',d.sentences,'fb-leseFill','lesen',12,'Lückentext');
+}
+
+const leseAnt7=[
+  'Was bedeutet der Satz „Wer lesen kann, ist reich"? Was könnte das mit Hannas Geschichte zu tun haben?',
+  'Warum war das Lesen verboten? Welche Macht könnte dahinterstecken?',
+  'Beschreibe Lucas Gefühlswandel am Ende des Textes. Welche Wörter zeigen das?',
+  grade===7?'Welche symbolische Bedeutung hat der Keller in der Geschichte?':'Schreibe einen kurzen Aufsatz (5–7 Sätze): Was sagt die Geschichte über Zensur und Bildung aus?',
+];
+const leseAnt8=[
+  'Was symbolisiert die Hand im Stein? Erkläre mit mindestens 2 Interpretationsebenen.',
+  'Zeynep sagt: „Die meisten Kunstwerke behaupten etwas. Dieses hier fragt nur." Was meint sie damit? Erkläre im Kontext.',
+  'Wie verändert sich Emmas Einstellung zum Schreiben durch den Besuch? Zeige mit Textstellen.',
+  'Essay (5–7 Sätze): Was ist die zentrale Aussage des Textes? Welche philosophische Frage stellt er? Begründe mit Textstellen.',
+];
+function initLeseAnt(){
+  let qs=grade===8?leseAnt8:leseAnt7;
+  document.getElementById('leseAnt').innerHTML=qs.map((q,i)=>`
+    <div style="margin-bottom:.9rem;">
+      <p style="font-size:.88rem;font-weight:600;color:var(--gray800);margin-bottom:4px;">${i+1}. ${q}</p>
+      <textarea rows="${grade===8&&i===3?5:3}" placeholder="Antworte in vollständigen Sätzen..." onblur="if(this.value.trim().length>20){addPts(3,'Analyse!','📖');setSP('lesen',8);}"></textarea>
+    </div>`).join('');
+}
+function showLeseHints(){
+  let hints7=['Tipp: Reichtum = Wissen, Freiheit. Hanna nutzte das Lesen als Widerstand.','Tipp: Wer Texte kontrolliert, kontrolliert Gedanken. Mächtige fürchten informierte Menschen.','Tipp: „ruhiger wurde" – Kontrast zu Neugier und Aufregung vorher.','Tipp: Keller = Verborgenheit, Unterdrückung, aber auch Bewahrung und Hoffnung.'];
+  let hints8=['Tipp: Physisch = Fangen oder Loslassen. Symbolisch = Unentschlossenheit, Freiheit, Kunst zwischen den Welten.','Tipp: Fragen = intellektuelle Offenheit vs. Behaupten = Ideologie. Kunst ohne Antwort lässt Raum für den Betrachter.','Tipp: Sie verwarf Aufsätze wegen fehlender Antwort → realisiert: Fragen ist auch eine Form von Antwort.','Tipp: Zentrale These: Unsicherheit ist kein Schwäche; das Stellen von Fragen ist mutig. Belege: letzter Satz, Zeyneps Zitat.'];
+  let hints=grade===8?hints8:hints7;
+  document.querySelectorAll('#leseAnt textarea').forEach((ta,i)=>{if(!ta.value.trim()&&hints[i])ta.placeholder=hints[i];});
+  showToast('💡','Hinweise aktiv!','Schaue auf die Tipp-Felder.');
+}
+
+// ═══════════════════════════════════════
+// INIT ALL
+// ═══════════════════════════════════════
+function initAll(){
+  initPraepMC();initGenFill();initWechsel();
+  if(grade===8){initFehler();}
+  initVT();initPP();
+  if(grade===8){initNachdem();initDrei();}
+  initWortLevels();initWort();initWortFill();initTV();
+  initStilTable();initStil();initReim();initGedichtText();
+  initSDT();initSDTWrite();initIMWrite();initChecklist();
+  initLeseText();initRF();initMC();initLese();initLeseAnt();
+  // Show sec 1
+  document.querySelectorAll('.section-card').forEach(c=>c.classList.remove('active'));
+  document.getElementById('sec-overview').classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>{b.classList.remove('active');if(i===0)b.classList.add('active');});
+}
+</script>
+</body>
+</html>
