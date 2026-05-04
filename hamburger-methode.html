@@ -1,0 +1,2768 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Die Hamburger-Methode · Lernhilfe für die Abschlussprüfung</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;0,9..144,900;1,9..144,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #f4ead5;
+  --cream-dark: #ebdfc2;
+  --paper: #fbf6e9;
+  --bun: #d99547;
+  --bun-dark: #b87a32;
+  --bun-deep: #8e5a1f;
+  --lettuce: #6b8a3e;
+  --lettuce-light: #92ae5e;
+  --tomato: #c84630;
+  --tomato-dark: #a3331f;
+  --cheese: #f0c14b;
+  --patty: #5a3923;
+  --patty-dark: #3d2616;
+  --ink: #2a1a0e;
+  --ink-soft: #4a3624;
+  --shadow: rgba(58, 38, 22, 0.18);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+body {
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(217, 149, 71, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(200, 70, 48, 0.06) 0%, transparent 40%),
+    repeating-linear-gradient(45deg, transparent 0, transparent 20px, rgba(58, 38, 22, 0.015) 20px, rgba(58, 38, 22, 0.015) 21px);
+}
+
+h1, h2, h3, h4, .display {
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+/* ========== HEADER ========== */
+header.main-header {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 24px 32px;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 6px solid var(--bun);
+}
+
+header.main-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(240, 193, 75, 0.15) 0%, transparent 25%),
+    radial-gradient(circle at 85% 50%, rgba(200, 70, 48, 0.15) 0%, transparent 25%);
+  pointer-events: none;
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  position: relative;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.brand-logo {
+  font-size: 48px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.brand-text h1 {
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  color: var(--cream);
+  font-style: italic;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.brand-text .subtitle {
+  font-size: 0.85rem;
+  color: var(--bun);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.exam-badge {
+  background: var(--tomato);
+  color: var(--cream);
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 0 var(--tomato-dark);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.exam-badge .exam-icon {
+  font-size: 1.1rem;
+}
+
+.score-pill {
+  background: var(--cream);
+  color: var(--ink);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid var(--bun);
+  font-family: 'Fraunces', serif;
+}
+
+/* ========== LEVEL SELECTOR ========== */
+.level-bar {
+  background: var(--paper);
+  padding: 16px 32px;
+  border-bottom: 2px solid var(--cream-dark);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px var(--shadow);
+}
+
+.level-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.level-label {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--ink-soft);
+}
+
+.level-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.level-btn {
+  background: transparent;
+  border: 2px solid var(--ink-soft);
+  color: var(--ink-soft);
+  padding: 8px 18px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+}
+
+.level-btn:hover {
+  background: var(--cream-dark);
+}
+
+.level-btn.active {
+  background: var(--ink);
+  color: var(--cream);
+  border-color: var(--ink);
+  box-shadow: 0 3px 0 var(--bun);
+}
+
+.io-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.io-btn {
+  background: var(--bun);
+  color: var(--ink);
+  border: none;
+  padding: 8px 14px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border-radius: 4px;
+  box-shadow: 0 3px 0 var(--bun-dark);
+  transition: transform 0.1s;
+}
+
+.io-btn:hover { transform: translateY(-1px); }
+.io-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--bun-dark); }
+
+.io-btn.reset {
+  background: transparent;
+  color: var(--ink-soft);
+  box-shadow: none;
+  border: 2px solid var(--ink-soft);
+}
+
+/* ========== TABS ========== */
+.tabs {
+  max-width: 1200px;
+  margin: 32px auto 0;
+  padding: 0 32px;
+  display: flex;
+  gap: 4px;
+  border-bottom: 3px solid var(--ink);
+  flex-wrap: wrap;
+}
+
+.tab {
+  background: var(--cream-dark);
+  border: 2px solid var(--ink);
+  border-bottom: none;
+  padding: 12px 20px;
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  border-radius: 8px 8px 0 0;
+  margin-bottom: -3px;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab:hover { background: var(--paper); }
+
+.tab.active {
+  background: var(--paper);
+  color: var(--ink);
+  border-bottom: 3px solid var(--paper);
+  z-index: 2;
+}
+
+.tab-icon { font-size: 1.1rem; }
+
+/* ========== CONTAINER ========== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px 48px;
+}
+
+.panel {
+  display: none;
+  background: var(--paper);
+  padding: 36px;
+  border: 2px solid var(--ink);
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 8px 24px var(--shadow);
+  animation: fadeIn 0.3s ease;
+}
+
+.panel.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.panel h2 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.panel h2 em {
+  color: var(--tomato);
+  font-style: italic;
+  font-family: 'Fraunces', serif;
+}
+
+.panel-intro {
+  color: var(--ink-soft);
+  margin-bottom: 28px;
+  font-size: 1.05rem;
+  max-width: 700px;
+}
+
+.callout {
+  background: var(--cheese);
+  border-left: 5px solid var(--bun-deep);
+  padding: 14px 18px;
+  border-radius: 0 6px 6px 0;
+  margin: 20px 0 28px;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+
+.callout strong { color: var(--patty-dark); }
+
+/* ========== HAMBURGER VISUAL ========== */
+.burger-section {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) 1.4fr;
+  gap: 40px;
+  align-items: start;
+}
+
+@media (max-width: 800px) {
+  .burger-section { grid-template-columns: 1fr; }
+}
+
+.burger-stack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+}
+
+.layer {
+  width: 100%;
+  max-width: 320px;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+  filter: drop-shadow(0 4px 6px var(--shadow));
+}
+
+.layer:hover {
+  transform: translateX(8px) scale(1.02);
+  filter: drop-shadow(0 6px 10px var(--shadow));
+  z-index: 10;
+}
+
+.layer.highlight {
+  transform: translateX(12px) scale(1.04);
+  filter: drop-shadow(0 8px 14px rgba(217, 149, 71, 0.5));
+  z-index: 10;
+}
+
+.layer svg { display: block; width: 100%; height: auto; }
+
+.layer-label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--ink);
+  text-shadow: 0 1px 2px rgba(255,255,255,0.4);
+  pointer-events: none;
+  text-align: center;
+  width: 80%;
+}
+
+.layer-label.light { color: var(--cream); text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+
+.burger-explainer {
+  background: var(--cream);
+  padding: 24px;
+  border-radius: 8px;
+  border: 2px dashed var(--bun-dark);
+}
+
+.burger-explainer h3 {
+  font-size: 1.3rem;
+  margin-bottom: 14px;
+}
+
+.burger-explainer .step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+  align-items: start;
+}
+
+.step-icon {
+  font-size: 1.6rem;
+  width: 38px;
+  text-align: center;
+}
+
+.step-text strong {
+  display: block;
+  font-family: 'Fraunces', serif;
+  font-size: 1.05rem;
+  margin-bottom: 2px;
+  color: var(--patty-dark);
+}
+
+.step-text span {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+}
+
+/* ========== PUZZLE / DRAG-DROP ========== */
+.puzzle-instructions {
+  background: var(--cream);
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  border-left: 5px solid var(--lettuce);
+  font-size: 0.95rem;
+}
+
+.pieces-bank {
+  background: var(--cream);
+  padding: 20px;
+  border-radius: 8px;
+  border: 2px dashed var(--ink-soft);
+  margin-bottom: 28px;
+  min-height: 120px;
+}
+
+.pieces-bank-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+
+.pieces-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 60px;
+}
+
+.piece {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: grab;
+  font-size: 0.92rem;
+  font-weight: 500;
+  user-select: none;
+  box-shadow: 0 3px 0 var(--ink-soft);
+  transition: transform 0.1s, box-shadow 0.1s;
+  max-width: 360px;
+}
+
+.piece:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 0 var(--ink-soft);
+}
+
+.piece:active, .piece.dragging {
+  cursor: grabbing;
+  opacity: 0.5;
+}
+
+.piece.correct {
+  background: var(--lettuce-light);
+  border-color: var(--lettuce);
+  color: var(--ink);
+  box-shadow: 0 3px 0 var(--lettuce);
+}
+
+.piece.incorrect {
+  background: var(--tomato);
+  color: var(--cream);
+  border-color: var(--tomato-dark);
+  box-shadow: 0 3px 0 var(--tomato-dark);
+  animation: shake 0.4s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.paragraph-zones {
+  display: grid;
+  gap: 14px;
+}
+
+.zone {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 8px;
+  padding: 16px 20px;
+  min-height: 80px;
+  position: relative;
+  transition: background 0.2s;
+}
+
+.zone.drag-over {
+  background: var(--cheese);
+  border-color: var(--bun-deep);
+}
+
+.zone-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.zone-emoji { font-size: 1.6rem; }
+
+.zone-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--patty-dark);
+}
+
+.zone-hint {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  font-style: italic;
+  margin-left: auto;
+}
+
+.zone-pieces {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 40px;
+}
+
+.zone-pieces:empty::after {
+  content: '— Hier ablegen —';
+  display: block;
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-soft);
+  opacity: 0.5;
+  padding: 8px;
+}
+
+.zone .piece { width: 100%; max-width: none; }
+
+/* zone color accents */
+.zone[data-target="einleitung"] { border-top: 8px solid var(--bun); }
+.zone[data-target="hauptteil1"] { border-top: 8px solid var(--lettuce); }
+.zone[data-target="hauptteil2"] { border-top: 8px solid var(--tomato); }
+.zone[data-target="hauptteil3"] { border-top: 8px solid var(--cheese); }
+.zone[data-target="schluss"] { border-top: 8px solid var(--bun-dark); }
+
+/* struktur pieces are descriptors, smaller and more abstract */
+.piece.struktur-piece {
+  background: linear-gradient(135deg, var(--paper) 0%, var(--cream) 100%);
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 600;
+  padding: 9px 14px;
+  font-size: 0.95rem;
+  color: var(--patty-dark);
+}
+
+.piece.struktur-piece::before {
+  content: '🏷️';
+  margin-right: 6px;
+  font-style: normal;
+  font-size: 0.85rem;
+  opacity: 0.6;
+}
+
+.action-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: var(--tomato);
+  color: var(--cream);
+  border: none;
+  padding: 12px 24px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+  box-shadow: 0 4px 0 var(--tomato-dark);
+  transition: transform 0.1s;
+  letter-spacing: 0.02em;
+}
+
+.btn-primary:hover { transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--tomato-dark); }
+
+.btn-secondary {
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  padding: 10px 20px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.btn-secondary:hover { background: var(--cream-dark); }
+
+.feedback {
+  margin-top: 18px;
+  padding: 14px 18px;
+  border-radius: 6px;
+  font-weight: 500;
+  display: none;
+}
+
+.feedback.show { display: block; animation: fadeIn 0.3s; }
+
+.feedback.success {
+  background: var(--lettuce-light);
+  color: var(--ink);
+  border-left: 5px solid var(--lettuce);
+}
+
+.feedback.partial {
+  background: var(--cheese);
+  color: var(--ink);
+  border-left: 5px solid var(--bun-deep);
+}
+
+.feedback.fail {
+  background: #f5b8af;
+  color: var(--ink);
+  border-left: 5px solid var(--tomato);
+}
+
+/* ========== WRITING WORKSHOP ========== */
+.prompt-card {
+  background: linear-gradient(135deg, var(--cream) 0%, var(--cream-dark) 100%);
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  padding: 22px 26px;
+  margin-bottom: 28px;
+  position: relative;
+  box-shadow: 0 6px 0 var(--bun-dark);
+}
+
+.prompt-label {
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-style: italic;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--tomato);
+  margin-bottom: 8px;
+}
+
+.prompt-text {
+  font-family: 'Fraunces', serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.prompt-controls {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.writing-zones {
+  display: grid;
+  gap: 18px;
+}
+
+.write-zone {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.write-zone-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.write-zone-emoji { font-size: 1.4rem; }
+
+.write-zone-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--patty-dark);
+}
+
+.write-zone-tip {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin-left: auto;
+  font-style: italic;
+}
+
+.write-zone textarea {
+  width: 100%;
+  min-height: 70px;
+  padding: 10px 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.98rem;
+  border: 2px solid var(--cream-dark);
+  border-radius: 6px;
+  resize: vertical;
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.write-zone textarea:focus {
+  outline: none;
+  border-color: var(--bun);
+  background: #fffaef;
+}
+
+.word-count {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin-top: 4px;
+  text-align: right;
+}
+
+.preview-box {
+  margin-top: 24px;
+  background: var(--cream);
+  border: 2px dashed var(--bun);
+  padding: 24px;
+  border-radius: 8px;
+  display: none;
+}
+
+.preview-box.show { display: block; }
+
+.preview-box h4 {
+  font-size: 1.15rem;
+  margin-bottom: 12px;
+  color: var(--patty-dark);
+}
+
+.preview-box p {
+  margin-bottom: 12px;
+  font-size: 1rem;
+  line-height: 1.65;
+  text-indent: 1.5em;
+}
+
+.preview-box p:first-of-type { text-indent: 0; }
+
+/* ========== BADGES ========== */
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 18px;
+  margin-top: 16px;
+}
+
+.badge {
+  background: var(--cream);
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  padding: 18px 14px;
+  text-align: center;
+  position: relative;
+  opacity: 0.45;
+  filter: grayscale(0.7);
+  transition: all 0.3s;
+}
+
+.badge.earned {
+  opacity: 1;
+  filter: none;
+  background: var(--cheese);
+  box-shadow: 0 6px 0 var(--bun-deep);
+  transform: translateY(-2px);
+}
+
+.badge-icon {
+  font-size: 2.4rem;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.badge-name {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+  color: var(--patty-dark);
+}
+
+.badge-desc {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  line-height: 1.3;
+}
+
+.badge.earned::after {
+  content: '✓';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--lettuce);
+  color: var(--cream);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  border: 2px solid var(--paper);
+  box-shadow: 0 2px 4px var(--shadow);
+}
+
+/* ========== MATERIALIEN ========== */
+.materials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.material-card {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  padding: 0;
+  text-decoration: none;
+  color: var(--ink);
+  display: block;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  box-shadow: 0 5px 0 var(--ink-soft);
+}
+
+.material-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 0 var(--ink-soft);
+}
+
+.material-card:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--ink-soft);
+}
+
+.material-thumb {
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.material-thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.06) 0, rgba(255,255,255,0.06) 8px, transparent 8px, transparent 16px);
+  pointer-events: none;
+}
+
+.material-thumb-icon {
+  font-size: 3.4rem;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
+  position: relative;
+  z-index: 1;
+}
+
+.material-card[data-type="video"] .material-thumb { background: linear-gradient(135deg, var(--tomato) 0%, var(--tomato-dark) 100%); }
+.material-card[data-type="presentation"] .material-thumb { background: linear-gradient(135deg, var(--bun) 0%, var(--bun-deep) 100%); }
+.material-card[data-type="infographic"] .material-thumb { background: linear-gradient(135deg, var(--lettuce) 0%, var(--lettuce-light) 100%); }
+.material-card[data-type="infographic2"] .material-thumb { background: linear-gradient(135deg, var(--patty) 0%, var(--patty-dark) 100%); }
+.material-card[data-type="podcast"] .material-thumb { background: linear-gradient(135deg, var(--cheese) 0%, var(--bun-dark) 100%); }
+
+.material-body {
+  padding: 16px 18px 18px;
+}
+
+.material-type {
+  display: inline-block;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: var(--cream);
+  padding: 3px 9px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+  border: 1px solid var(--cream-dark);
+}
+
+.material-card h4 {
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+.material-card p {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.material-card .external-arrow {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: rgba(255,255,255,0.85);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  color: var(--ink);
+  font-weight: 700;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.materials-note {
+  background: var(--cream);
+  border-left: 5px solid var(--bun);
+  padding: 14px 18px;
+  border-radius: 0 6px 6px 0;
+  margin-top: 28px;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+}
+
+.materials-note strong { color: var(--patty-dark); }
+
+/* ========== STATS / DASHBOARD ========== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.stat-card {
+  background: var(--cream);
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  padding: 18px;
+  text-align: center;
+}
+
+.stat-value {
+  font-family: 'Fraunces', serif;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--tomato);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 6px;
+}
+
+.progress-bar {
+  height: 14px;
+  background: var(--cream-dark);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 8px;
+  border: 1px solid var(--ink-soft);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--lettuce) 0%, var(--lettuce-light) 100%);
+  width: 0%;
+  transition: width 0.5s ease;
+  border-radius: 999px;
+}
+
+.countdown-card {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 22px;
+  border-radius: 10px;
+  margin: 24px 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.countdown-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    repeating-linear-gradient(45deg, rgba(240, 193, 75, 0.05) 0, rgba(240, 193, 75, 0.05) 10px, transparent 10px, transparent 20px);
+  pointer-events: none;
+}
+
+.countdown-label {
+  font-size: 0.85rem;
+  color: var(--bun);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.countdown-days {
+  font-family: 'Fraunces', serif;
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--cream);
+  line-height: 1;
+  margin: 6px 0;
+  font-style: italic;
+}
+
+.countdown-sub {
+  font-size: 0.95rem;
+  color: var(--cream-dark);
+}
+
+/* ========== TOAST ========== */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120px);
+  background: var(--ink);
+  color: var(--cream);
+  padding: 14px 22px;
+  border-radius: 8px;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  z-index: 1000;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 90vw;
+  border-left: 5px solid var(--bun);
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast .toast-icon { font-size: 1.4rem; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 600px) {
+  header.main-header { padding: 18px 20px; }
+  .level-bar { padding: 12px 20px; }
+  .container { padding: 0 16px 32px; }
+  .panel { padding: 22px 18px; }
+  .tabs { padding: 0 16px; }
+  .tab { padding: 10px 14px; font-size: 0.92rem; }
+}
+
+/* ========== TIMELINE in einleitung tab ========== */
+.theory-grid {
+  display: grid;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.theory-item {
+  background: var(--cream);
+  border-left: 5px solid var(--bun);
+  padding: 14px 18px;
+  border-radius: 0 6px 6px 0;
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  gap: 14px;
+  align-items: center;
+}
+
+.theory-item .num {
+  font-family: 'Fraunces', serif;
+  font-size: 2rem;
+  font-weight: 900;
+  font-style: italic;
+  color: var(--tomato);
+  line-height: 1;
+  text-align: center;
+}
+
+.theory-item h4 {
+  font-size: 1.05rem;
+  margin-bottom: 3px;
+}
+
+.theory-item p {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+}
+
+/* hide pre-stripe in active drag */
+.piece-source-hidden { visibility: hidden; }
+</style>
+</head>
+<body>
+
+<header class="main-header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-logo">🍔</div>
+      <div class="brand-text">
+        <h1>Die Hamburger-Methode</h1>
+        <div class="subtitle">Lernhilfe · Argumentativer Aufsatz · Klassen 6–8</div>
+      </div>
+    </div>
+    <div class="exam-badge">
+      <span class="exam-icon">📅</span>
+      <span>Abschlussprüfung: 2. Juni</span>
+    </div>
+    <div class="score-pill">
+      <span>⭐</span>
+      <span><span id="totalPoints">0</span> Punkte</span>
+    </div>
+  </div>
+</header>
+
+<div class="level-bar">
+  <div class="level-inner">
+    <span class="level-label">Schwierigkeitsstufe wählen:</span>
+    <div class="level-buttons">
+      <button class="level-btn" data-level="6">Klasse 6 · Anfänger</button>
+      <button class="level-btn active" data-level="7">Klasse 7 · Fortgeschritten</button>
+      <button class="level-btn" data-level="8">Klasse 8 · Profi</button>
+    </div>
+    <div class="io-buttons">
+      <button class="io-btn" id="exportBtn">💾 Speichern</button>
+      <button class="io-btn" id="importBtn">📂 Laden</button>
+      <button class="io-btn reset" id="resetBtn">↺ Zurücksetzen</button>
+      <input type="file" id="importFile" accept="application/json" style="display:none;">
+    </div>
+  </div>
+</div>
+
+<nav class="tabs">
+  <button class="tab active" data-panel="theorie"><span class="tab-icon">📚</span>Theorie</button>
+  <button class="tab" data-panel="struktur"><span class="tab-icon">🏗️</span>Struktur</button>
+  <button class="tab" data-panel="puzzle"><span class="tab-icon">🧩</span>Satzpuzzle</button>
+  <button class="tab" data-panel="schreiben"><span class="tab-icon">✍️</span>Schreibwerkstatt</button>
+  <button class="tab" data-panel="materialien"><span class="tab-icon">🎬</span>Materialien</button>
+  <button class="tab" data-panel="dashboard"><span class="tab-icon">🏆</span>Mein Fortschritt</button>
+</nav>
+
+<div class="container">
+
+  <!-- ============================================== THEORIE ============================================== -->
+  <section class="panel active" id="theorie">
+    <h2>Der <em>Aufbau</em> eines argumentativen Aufsatzes</h2>
+    <p class="panel-intro">Stell dir deinen Aufsatz wie einen Hamburger vor: oben und unten je ein Brötchen (Einleitung und Schluss), in der Mitte die saftigen Argumente. Klick auf eine Schicht, um zu sehen, was hineingehört.</p>
+
+    <div class="callout">
+      <strong>Wichtig:</strong> Diese Struktur brauchst du auch in der Abschlussprüfung am 2. Juni. Wer den Aufbau im Schlaf beherrscht, hat mehr Zeit für die Inhalte!
+    </div>
+
+    <div class="burger-section">
+      <div class="burger-stack" id="burgerStack">
+        <!-- Top bun -->
+        <div class="layer" data-layer="einleitung">
+          <svg viewBox="0 0 320 90" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 30 80 Q 30 10, 160 10 Q 290 10, 290 80 Z" fill="#d99547" stroke="#8e5a1f" stroke-width="3"/>
+            <circle cx="100" cy="35" r="2.5" fill="#fbf6e9"/>
+            <circle cx="140" cy="28" r="2.5" fill="#fbf6e9"/>
+            <circle cx="180" cy="32" r="2.5" fill="#fbf6e9"/>
+            <circle cx="220" cy="38" r="2.5" fill="#fbf6e9"/>
+            <circle cx="120" cy="50" r="2.5" fill="#fbf6e9"/>
+            <circle cx="200" cy="55" r="2.5" fill="#fbf6e9"/>
+          </svg>
+          <div class="layer-label">Einleitung</div>
+        </div>
+        <!-- Lettuce -->
+        <div class="layer" data-layer="hauptteil1" style="margin-top: -12px;">
+          <svg viewBox="0 0 320 40" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 20 30 Q 30 8, 50 18 Q 70 5, 90 18 Q 110 6, 130 18 Q 150 8, 170 18 Q 190 5, 210 18 Q 230 7, 250 18 Q 270 6, 290 18 Q 305 10, 305 30 Z" fill="#92ae5e" stroke="#6b8a3e" stroke-width="3"/>
+          </svg>
+          <div class="layer-label">Argument 1</div>
+        </div>
+        <!-- Tomato -->
+        <div class="layer" data-layer="hauptteil2" style="margin-top: -8px;">
+          <svg viewBox="0 0 320 30" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="2" width="280" height="22" rx="4" fill="#c84630" stroke="#a3331f" stroke-width="3"/>
+            <circle cx="60" cy="13" r="2" fill="#7a2918"/>
+            <circle cx="120" cy="15" r="2" fill="#7a2918"/>
+            <circle cx="180" cy="13" r="2" fill="#7a2918"/>
+            <circle cx="240" cy="14" r="2" fill="#7a2918"/>
+          </svg>
+          <div class="layer-label light">Argument 2</div>
+        </div>
+        <!-- Cheese -->
+        <div class="layer" data-layer="hauptteil3" style="margin-top: -6px;">
+          <svg viewBox="0 0 320 24" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="15,2 305,2 312,18 8,18" fill="#f0c14b" stroke="#b87a32" stroke-width="3"/>
+          </svg>
+          <div class="layer-label">Argument 3</div>
+        </div>
+        <!-- Patty -->
+        <div class="layer" data-layer="hauptteil-meat" style="margin-top: -4px; pointer-events:none;">
+          <svg viewBox="0 0 320 32" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="160" cy="16" rx="148" ry="12" fill="#5a3923" stroke="#3d2616" stroke-width="3"/>
+          </svg>
+        </div>
+        <!-- Bottom bun -->
+        <div class="layer" data-layer="schluss" style="margin-top: -6px;">
+          <svg viewBox="0 0 320 50" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 30 5 Q 30 45, 160 45 Q 290 45, 290 5 Z" fill="#b87a32" stroke="#8e5a1f" stroke-width="3"/>
+          </svg>
+          <div class="layer-label">Schluss</div>
+        </div>
+      </div>
+
+      <div class="burger-explainer">
+        <h3 id="explainerTitle">Klick auf eine Schicht des Hamburgers</h3>
+        <div id="explainerContent">
+          <p style="color:var(--ink-soft); font-size:0.95rem;">Jeder Teil des Hamburgers entspricht einem Abschnitt deines Aufsatzes. Die Schichten halten alles zusammen — wenn eine fehlt, fällt der Burger auseinander!</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:36px; font-size:1.4rem;">Die fünf Abschnitte im Überblick</h3>
+    <div class="theory-grid" id="theoryGrid"></div>
+  </section>
+
+  <!-- ============================================== STRUKTUR ============================================== -->
+  <section class="panel" id="struktur">
+    <h2>Die <em>Struktur</em>: Welcher Bestandteil gehört wohin?</h2>
+    <p class="panel-intro">Bevor du echte Sätze sortierst, übst du hier zuerst den Bauplan: Wo gehört eine These hin? Wo ein Beispiel? Sortiere die Bausteine in die richtigen Absätze — das ist das Skelett jedes guten Aufsatzes.</p>
+
+    <div class="callout">
+      <strong>Warum diese Übung?</strong> Wenn du den Bauplan im Kopf hast, kannst du in der Prüfung am 2. Juni jeden beliebigen Inhalt einfüllen. Erst die Form — dann der Inhalt!
+    </div>
+
+    <div class="puzzle-instructions">
+      <strong>So geht's:</strong> Jeder Baustein ist <em>ein Bestandteil</em> (z. B. „These", „Beispiel"). Ziehe ihn in den Absatz, in den er gehört. Manche Bestandteile kommen mehrmals vor — achte auf die Reihenfolge innerhalb der Absätze!
+    </div>
+
+    <div class="pieces-bank">
+      <div class="pieces-bank-title" id="strukturBankTitle">🏗️ Bestandteile zum Sortieren</div>
+      <div class="pieces-list" id="strukturBank"></div>
+    </div>
+
+    <div class="paragraph-zones">
+      <div class="zone struktur-zone" data-target="einleitung">
+        <div class="zone-header">
+          <span class="zone-emoji">🥖</span>
+          <span class="zone-title">Einleitung</span>
+          <span class="zone-hint">oberes Brötchen</span>
+        </div>
+        <div class="zone-pieces"></div>
+      </div>
+      <div class="zone struktur-zone" data-target="hauptteil1">
+        <div class="zone-header">
+          <span class="zone-emoji">🥬</span>
+          <span class="zone-title">Hauptteil — Argument 1 (stärkstes)</span>
+          <span class="zone-hint">Salat</span>
+        </div>
+        <div class="zone-pieces"></div>
+      </div>
+      <div class="zone struktur-zone" data-target="hauptteil2">
+        <div class="zone-header">
+          <span class="zone-emoji">🍅</span>
+          <span class="zone-title">Hauptteil — Argument 2</span>
+          <span class="zone-hint">Tomate</span>
+        </div>
+        <div class="zone-pieces"></div>
+      </div>
+      <div class="zone struktur-zone" data-target="hauptteil3">
+        <div class="zone-header">
+          <span class="zone-emoji">🧀</span>
+          <span class="zone-title">Hauptteil — Argument 3 / Gegenargument</span>
+          <span class="zone-hint">Käse</span>
+        </div>
+        <div class="zone-pieces"></div>
+      </div>
+      <div class="zone struktur-zone" data-target="schluss">
+        <div class="zone-header">
+          <span class="zone-emoji">🥖</span>
+          <span class="zone-title">Schluss</span>
+          <span class="zone-hint">unteres Brötchen</span>
+        </div>
+        <div class="zone-pieces"></div>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-primary" id="checkStrukturBtn">✓ Prüfen</button>
+      <button class="btn-secondary" id="newStrukturBtn">🔄 Neu mischen</button>
+      <button class="btn-secondary" id="hintStrukturBtn">💡 Hinweis</button>
+      <button class="btn-secondary" id="orderStrukturBtn">🔢 Reihenfolge prüfen</button>
+    </div>
+    <div class="feedback" id="strukturFeedback"></div>
+  </section>
+
+  <!-- ============================================== PUZZLE ============================================== -->
+  <section class="panel" id="puzzle">
+    <h2>Das <em>Satzpuzzle</em>: Wohin gehört welcher Satz?</h2>
+    <p class="panel-intro">Jetzt mit echten Beispielsätzen. Ziehe jeden Baustein in den richtigen Absatz. Manche Sätze gehören in die Einleitung, andere ins Hauptargument, andere in den Schluss. Trau dich!</p>
+
+    <div class="puzzle-instructions">
+      <strong>So geht's:</strong> Jeder Baustein unten ist <em>ein einziger Satz</em>. Ziehe ihn per Drag-and-Drop in den richtigen Absatz. Klick danach auf <strong>„Prüfen"</strong>.
+    </div>
+
+    <div class="pieces-bank">
+      <div class="pieces-bank-title">📦 Bausteine zum Sortieren:</div>
+      <div class="pieces-list" id="piecesBank"></div>
+    </div>
+
+    <div class="paragraph-zones">
+      <div class="zone" data-target="einleitung">
+        <div class="zone-header">
+          <span class="zone-emoji">🥖</span>
+          <span class="zone-title">Einleitung</span>
+          <span class="zone-hint">oberes Brötchen</span>
+        </div>
+        <div class="zone-pieces"></div>
+      </div>
+      <div class="zone" data-target="hauptteil1">
+        <div class="zone-header">
+          <span class="zone-emoji">🥬</span>
+          <span class="zone-title">Hauptteil — Argument 1 (stärkstes)</span>
+          <span class="zone-hint">Salat</span>
+        </div>
+        <div class="zone-pieces"></div>
+      </div>
+      <div class="zone" data-target="hauptteil2">
+        <div class="zone-header">
+          <span class="zone-emoji">🍅</span>
+          <span class="zone-title">Hauptteil — Argument 2</span>
+          <span class="zone-hint">Tomate</span>
+        </div>
+        <div class="zone-pieces"></div>
+      </div>
+      <div class="zone" data-target="hauptteil3">
+        <div class="zone-header">
+          <span class="zone-emoji">🧀</span>
+          <span class="zone-title">Hauptteil — Argument 3 / Gegenargument</span>
+          <span class="zone-hint">Käse</span>
+        </div>
+        <div class="zone-pieces"></div>
+      </div>
+      <div class="zone" data-target="schluss">
+        <div class="zone-header">
+          <span class="zone-emoji">🥖</span>
+          <span class="zone-title">Schluss</span>
+          <span class="zone-hint">unteres Brötchen</span>
+        </div>
+        <div class="zone-pieces"></div>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-primary" id="checkPuzzleBtn">✓ Prüfen</button>
+      <button class="btn-secondary" id="newPuzzleBtn">🔄 Neue Aufgabe</button>
+      <button class="btn-secondary" id="hintPuzzleBtn">💡 Hinweis</button>
+    </div>
+    <div class="feedback" id="puzzleFeedback"></div>
+  </section>
+
+  <!-- ============================================== SCHREIBEN ============================================== -->
+  <section class="panel" id="schreiben">
+    <h2>Die <em>Schreibwerkstatt</em>: Schreibe deinen eigenen Hamburger</h2>
+    <p class="panel-intro">Hier baust du deinen eigenen Aufsatz Satz für Satz auf. Wähle ein Thema und fülle jede Schicht des Hamburgers mit deinen eigenen Worten.</p>
+
+    <div class="prompt-card">
+      <div class="prompt-label">📝 Dein Schreibthema</div>
+      <div class="prompt-text" id="promptText">Lade ein Thema…</div>
+      <div class="prompt-controls">
+        <button class="btn-secondary" id="newPromptBtn">🎲 Neues Thema</button>
+        <select id="promptCategory" style="padding:8px 12px; border:2px solid var(--ink); border-radius:6px; font-family:'Outfit',sans-serif; background:var(--paper);">
+          <option value="all">Alle Themen</option>
+          <option value="schule">Schule & Lernen</option>
+          <option value="alltag">Alltag & Familie</option>
+          <option value="medien">Medien & Technik</option>
+          <option value="umwelt">Umwelt & Gesellschaft</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="writing-zones" id="writingZones">
+      <div class="write-zone" data-section="einleitung-hook">
+        <div class="write-zone-head">
+          <span class="write-zone-emoji">🎣</span>
+          <span class="write-zone-title">Einleitung — Aufhänger</span>
+          <span class="write-zone-tip">Frage, Zitat oder Fakt</span>
+        </div>
+        <textarea placeholder="Beginne mit etwas, das die Aufmerksamkeit deines Lesers fängt…"></textarea>
+        <div class="word-count">0 Wörter</div>
+      </div>
+      <div class="write-zone" data-section="einleitung-these">
+        <div class="write-zone-head">
+          <span class="write-zone-emoji">🎯</span>
+          <span class="write-zone-title">Einleitung — These</span>
+          <span class="write-zone-tip">Deine Position in einem Satz</span>
+        </div>
+        <textarea placeholder="„Ich bin der Meinung, dass…" oder „Meiner Ansicht nach…"></textarea>
+        <div class="word-count">0 Wörter</div>
+      </div>
+      <div class="write-zone" data-section="arg1-these">
+        <div class="write-zone-head">
+          <span class="write-zone-emoji">🥬</span>
+          <span class="write-zone-title">Argument 1 — Behauptung (stärkstes Argument)</span>
+          <span class="write-zone-tip">Topic Sentence</span>
+        </div>
+        <textarea placeholder="Ein erster wichtiger Grund ist…"></textarea>
+        <div class="word-count">0 Wörter</div>
+      </div>
+      <div class="write-zone" data-section="arg1-begr">
+        <div class="write-zone-head">
+          <span class="write-zone-emoji">📖</span>
+          <span class="write-zone-title">Argument 1 — Begründung & Beispiel</span>
+          <span class="write-zone-tip">Warum? Beleg!</span>
+        </div>
+        <textarea placeholder="Das zeigt sich daran, dass… Zum Beispiel…"></textarea>
+        <div class="word-count">0 Wörter</div>
+      </div>
+      <div class="write-zone" data-section="arg2-these">
+        <div class="write-zone-head">
+          <span class="write-zone-emoji">🍅</span>
+          <span class="write-zone-title">Argument 2 — Behauptung</span>
+          <span class="write-zone-tip">Überleitung + neuer Punkt</span>
+        </div>
+        <textarea placeholder="Außerdem / Darüber hinaus…"></textarea>
+        <div class="word-count">0 Wörter</div>
+      </div>
+      <div class="write-zone" data-section="arg2-begr">
+        <div class="write-zone-head">
+          <span class="write-zone-emoji">📖</span>
+          <span class="write-zone-title">Argument 2 — Begründung & Beispiel</span>
+          <span class="write-zone-tip">Warum? Beleg!</span>
+        </div>
+        <textarea placeholder="Konkret bedeutet das… Ein Beispiel dafür ist…"></textarea>
+        <div class="word-count">0 Wörter</div>
+      </div>
+      <div class="write-zone" data-section="arg3-these">
+        <div class="write-zone-head">
+          <span class="write-zone-emoji">🧀</span>
+          <span class="write-zone-title">Argument 3 / Gegenargument — Behauptung</span>
+          <span class="write-zone-tip">„Manche meinen, dass…"</span>
+        </div>
+        <textarea placeholder="Schließlich / Manche behaupten zwar, dass…"></textarea>
+        <div class="word-count">0 Wörter</div>
+      </div>
+      <div class="write-zone" data-section="arg3-begr">
+        <div class="write-zone-head">
+          <span class="write-zone-emoji">📖</span>
+          <span class="write-zone-title">Argument 3 — Begründung & Entkräftung</span>
+          <span class="write-zone-tip">Warum / Aber…</span>
+        </div>
+        <textarea placeholder="…doch dieses Argument überzeugt nicht, weil…"></textarea>
+        <div class="word-count">0 Wörter</div>
+      </div>
+      <div class="write-zone" data-section="schluss-these">
+        <div class="write-zone-head">
+          <span class="write-zone-emoji">🔁</span>
+          <span class="write-zone-title">Schluss — Wiederaufnahme der These</span>
+          <span class="write-zone-tip">Mit anderen Worten</span>
+        </div>
+        <textarea placeholder="Zusammenfassend lässt sich sagen, dass…"></textarea>
+        <div class="word-count">0 Wörter</div>
+      </div>
+      <div class="write-zone" data-section="schluss-ausblick">
+        <div class="write-zone-head">
+          <span class="write-zone-emoji">🌅</span>
+          <span class="write-zone-title">Schluss — Ausblick / Appell</span>
+          <span class="write-zone-tip">Forderung, Wunsch, Frage</span>
+        </div>
+        <textarea placeholder="Deshalb sollten wir… Ich wünsche mir, dass…"></textarea>
+        <div class="word-count">0 Wörter</div>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-primary" id="assembleBtn">📜 Aufsatz zusammenfügen</button>
+      <button class="btn-secondary" id="saveDraftBtn">💾 Entwurf speichern</button>
+      <button class="btn-secondary" id="clearDraftBtn">🗑 Leeren</button>
+    </div>
+
+    <div class="preview-box" id="previewBox">
+      <h4>📜 Dein vollständiger Aufsatz:</h4>
+      <div id="previewContent"></div>
+      <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn-secondary" onclick="copyEssay()">📋 Kopieren</button>
+        <button class="btn-secondary" onclick="downloadEssay()">⬇ Als Textdatei</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================== MATERIALIEN ============================================== -->
+  <section class="panel" id="materialien">
+    <h2>Begleit­<em>materialien</em></h2>
+    <p class="panel-intro">Hier findest du zusätzliche Lernhilfen rund um die Hamburger-Methode: ein Erklärvideo, eine Präsentation, Infografiken zum Aufhängen und einen Podcast zum Anhören unterwegs. Alle Materialien öffnen sich in einem neuen Tab.</p>
+
+    <div class="materials-grid">
+      <a class="material-card" data-type="video" href="https://notebooklm.google.com/notebook/12650b43-e2b6-4c83-b6c7-1f61113731be/artifact/0b55af4f-d701-4e95-b094-ccc6ea35baf4?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_2&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_2_" target="_blank" rel="noopener noreferrer">
+        <div class="external-arrow">↗</div>
+        <div class="material-thumb"><span class="material-thumb-icon">▶️</span></div>
+        <div class="material-body">
+          <span class="material-type">Video</span>
+          <h4>Die Hamburger-Methode erklärt</h4>
+          <p>Schau dir das Erklärvideo an, um die Methode in Bewegtbild zu verstehen — perfekt für visuelle Lerntypen.</p>
+        </div>
+      </a>
+
+      <a class="material-card" data-type="presentation" href="https://notebooklm.google.com/notebook/12650b43-e2b6-4c83-b6c7-1f61113731be/artifact/fbbcbdc7-3101-475a-ab28-d4631c973222?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_2&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_2_" target="_blank" rel="noopener noreferrer">
+        <div class="external-arrow">↗</div>
+        <div class="material-thumb"><span class="material-thumb-icon">📊</span></div>
+        <div class="material-body">
+          <span class="material-type">Präsentation</span>
+          <h4>Folien zur Hamburger-Methode</h4>
+          <p>Die wichtigsten Punkte als Folien — ideal zum Wiederholen vor der Prüfung am 2. Juni.</p>
+        </div>
+      </a>
+
+      <a class="material-card" data-type="infographic" href="https://notebooklm.google.com/notebook/12650b43-e2b6-4c83-b6c7-1f61113731be/artifact/31760226-0358-4b7f-a9af-eb56ad21aaf8?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_2&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_2_" target="_blank" rel="noopener noreferrer">
+        <div class="external-arrow">↗</div>
+        <div class="material-thumb"><span class="material-thumb-icon">🖼️</span></div>
+        <div class="material-body">
+          <span class="material-type">Infografik</span>
+          <h4>Hamburger-Aufbau auf einen Blick</h4>
+          <p>Die ganze Struktur als übersichtliche Grafik — zum Ausdrucken und Aufhängen über deinem Schreibtisch.</p>
+        </div>
+      </a>
+
+      <a class="material-card" data-type="infographic2" href="https://notebooklm.google.com/notebook/12650b43-e2b6-4c83-b6c7-1f61113731be/artifact/23e10d10-0381-4824-ab9d-fca2e02e246f?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_2&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_2_" target="_blank" rel="noopener noreferrer">
+        <div class="external-arrow">↗</div>
+        <div class="material-thumb"><span class="material-thumb-icon">📋</span></div>
+        <div class="material-body">
+          <span class="material-type">Infografik 2</span>
+          <h4>Die Methode im Detail</h4>
+          <p>Eine zweite Infografik mit ergänzenden Details — vertieft die einzelnen Bausteine deines Aufsatzes.</p>
+        </div>
+      </a>
+
+      <a class="material-card" data-type="podcast" href="https://notebooklm.google.com/notebook/12650b43-e2b6-4c83-b6c7-1f61113731be/artifact/104472d0-ca12-4a91-9841-79fef631fa4c?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_2&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_2_" target="_blank" rel="noopener noreferrer">
+        <div class="external-arrow">↗</div>
+        <div class="material-thumb"><span class="material-thumb-icon">🎧</span></div>
+        <div class="material-body">
+          <span class="material-type">Podcast</span>
+          <h4>Hamburger-Methode zum Hören</h4>
+          <p>Nimm den Stoff mit auf den Schulweg, beim Joggen oder beim Aufräumen — Lernen, ohne hinzusehen.</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="materials-note">
+      <strong>💡 Tipp für die Prüfungsvorbereitung:</strong> Nutze verschiedene Materialien, um den Stoff aus mehreren Perspektiven zu verstehen. Schau erst das Video, dann übe in der <em>Struktur</em>-Aufgabe, höre den Podcast unterwegs und drucke dir die Infografik aus, um sie immer im Blick zu haben.
+    </div>
+  </section>
+
+  <!-- ============================================== DASHBOARD ============================================== -->
+  <section class="panel" id="dashboard">
+    <h2>Dein <em>Lernfortschritt</em></h2>
+    <p class="panel-intro">Hier siehst du, wie weit du auf dem Weg zur Abschlussprüfung gekommen bist. Sammle Punkte und Abzeichen — und vergiss nicht: Übung macht den Meister!</p>
+
+    <div class="countdown-card">
+      <div class="countdown-label">⏳ Tage bis zur Abschlussprüfung</div>
+      <div class="countdown-days" id="countdownDays">—</div>
+      <div class="countdown-sub">Prüfung am 2. Juni 2026 · jeder Tag zählt</div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="statPoints">0</div>
+        <div class="stat-label">Punkte gesamt</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statStruktur">0</div>
+        <div class="stat-label">Strukturen sortiert</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statPuzzles">0</div>
+        <div class="stat-label">Satzpuzzles gelöst</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statEssays">0</div>
+        <div class="stat-label">Aufsätze geschrieben</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statStreak">0</div>
+        <div class="stat-label">Tage in Folge geübt</div>
+      </div>
+    </div>
+
+    <div style="margin-top:8px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline;">
+        <strong style="font-family:'Fraunces',serif; font-size:1.05rem;">Weg zum nächsten Rang</strong>
+        <span id="rankLabel" style="color:var(--ink-soft); font-size:0.9rem;">—</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="rankProgress"></div></div>
+    </div>
+
+    <h3 style="margin-top:36px; font-size:1.4rem;">🏅 Deine Abzeichen</h3>
+    <p style="color:var(--ink-soft); font-size:0.92rem; margin-bottom:8px;">Sammle alle Abzeichen, indem du übst!</p>
+    <div class="badges-grid" id="badgesGrid"></div>
+  </section>
+
+</div>
+
+<div class="toast" id="toast"><span class="toast-icon">⭐</span><span id="toastMsg">+10 Punkte!</span></div>
+
+<script>
+// ============================================================
+// STATE & PERSISTENCE
+// ============================================================
+const STORAGE_KEY = 'hamburgerMethod_v1';
+const EXAM_DATE = new Date('2026-06-02');
+
+let state = {
+  level: 7,
+  points: 0,
+  puzzlesSolved: 0,
+  strukturSolved: 0,
+  essaysWritten: 0,
+  badges: [],
+  drafts: {},
+  lastActiveDate: null,
+  streak: 0,
+  currentPuzzleId: null,
+  currentPromptIdx: 0
+};
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) state = { ...state, ...JSON.parse(saved) };
+  } catch(e) { console.warn('Load failed', e); }
+  updateStreak();
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+  catch(e) { console.warn('Save failed', e); }
+}
+
+function updateStreak() {
+  const today = new Date().toDateString();
+  const last = state.lastActiveDate;
+  if (last !== today) {
+    if (last) {
+      const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+      if (last === yesterday.toDateString()) state.streak = (state.streak || 0) + 1;
+      else state.streak = 1;
+    } else state.streak = 1;
+    state.lastActiveDate = today;
+    saveState();
+  }
+}
+
+// ============================================================
+// THEORY CONTENT (per level)
+// ============================================================
+const THEORY = {
+  einleitung: {
+    title: '🥖 Einleitung — das obere Brötchen',
+    content: {
+      6: `<p><strong>Was hier reingehört:</strong></p>
+        <ol style="padding-left:20px; margin-top:8px;">
+          <li><strong>Ein Aufhänger:</strong> ein Satz, der neugierig macht (eine Frage oder eine kleine Geschichte).</li>
+          <li><strong>Das Thema:</strong> worum geht es überhaupt?</li>
+          <li><strong>Deine Meinung (These):</strong> „Ich finde…" oder „Ich bin der Meinung, dass…"</li>
+        </ol>
+        <p style="margin-top:10px;"><strong>Tipp:</strong> 2–3 Sätze reichen. Nicht zu lang!</p>`,
+      7: `<p><strong>Drei Bausteine:</strong></p>
+        <ol style="padding-left:20px; margin-top:8px;">
+          <li><strong>Hinführung / Aufhänger:</strong> aktuelle Diskussion, Frage, Statistik oder Zitat.</li>
+          <li><strong>Themenformulierung:</strong> Thema klar benennen.</li>
+          <li><strong>These:</strong> deine Position eindeutig formulieren.</li>
+        </ol>
+        <p style="margin-top:10px;"><strong>Tipp:</strong> Die These sollte schon andeuten, welche Argumente folgen.</p>`,
+      8: `<p><strong>Drei Bausteine — präzise und elegant:</strong></p>
+        <ol style="padding-left:20px; margin-top:8px;">
+          <li><strong>Aufhänger (Hook):</strong> rhetorische Frage, Zitat, aktuelles Ereignis oder provokante Aussage.</li>
+          <li><strong>Themenexposition:</strong> Kontext und Relevanz präzise umreißen.</li>
+          <li><strong>These mit Argumentationsrichtung:</strong> Position + kurze Andeutung der Hauptargumente.</li>
+        </ol>
+        <p style="margin-top:10px;"><strong>Stilistisch:</strong> Vermeide „In meinem Aufsatz…" — der Leser sieht doch, was er liest.</p>`
+    }
+  },
+  hauptteil1: {
+    title: '🥬 Hauptteil — die Argumente (Salat, Tomate, Käse, Patty)',
+    content: {
+      6: `<p>Jedes Argument bekommt einen <strong>eigenen Absatz</strong>. Pro Absatz drei Dinge:</p>
+        <ol style="padding-left:20px; margin-top:8px;">
+          <li><strong>Behauptung:</strong> Was ist dein Punkt?</li>
+          <li><strong>Begründung:</strong> Warum stimmt das?</li>
+          <li><strong>Beispiel:</strong> aus deinem Leben oder deiner Erfahrung.</li>
+        </ol>
+        <p style="margin-top:10px;"><strong>Reihenfolge:</strong> Fang mit deinem stärksten Argument an!</p>`,
+      7: `<p>Drei Argumente — jedes als <strong>Mini-Hamburger</strong> (Behauptung → Begründung → Beispiel → Folgerung):</p>
+        <ul style="padding-left:20px; margin-top:8px;">
+          <li><strong>Argument 1 (stärkstes):</strong> dein bester Punkt zuerst.</li>
+          <li><strong>Argument 2:</strong> ein weiterer überzeugender Grund.</li>
+          <li><strong>Argument 3 / Gegenargument:</strong> entkräfte einen möglichen Einwand.</li>
+        </ul>
+        <p style="margin-top:10px;"><strong>Überleitungen:</strong> „Außerdem…", „Darüber hinaus…", „Zwar… aber…"</p>`,
+      8: `<p>Drei argumentative Einheiten nach dem <strong>BBBF-Schema</strong>:</p>
+        <ul style="padding-left:20px; margin-top:8px;">
+          <li><strong>B</strong>ehauptung (Topic Sentence)</li>
+          <li><strong>B</strong>egründung (logische Herleitung)</li>
+          <li><strong>B</strong>eleg (Beispiel, Zahl, Zitat)</li>
+          <li><strong>F</strong>olgerung (Rückbindung an These)</li>
+        </ul>
+        <p style="margin-top:10px;"><strong>Aufbau:</strong> stärkstes → mittleres → Antithese mit Entkräftung. Konjunktionen variieren!</p>`
+    }
+  },
+  hauptteil2: { title:'🍅 Argument 2', content: { 6:'', 7:'', 8:'' }},
+  hauptteil3: { title:'🧀 Argument 3 / Gegenargument', content: { 6:'', 7:'', 8:'' }},
+  schluss: {
+    title: '🥖 Schluss — das untere Brötchen',
+    content: {
+      6: `<p><strong>So endest du deinen Aufsatz:</strong></p>
+        <ol style="padding-left:20px; margin-top:8px;">
+          <li><strong>These wiederholen</strong> (mit anderen Worten!)</li>
+          <li><strong>Was wünschst du dir?</strong> Eine Forderung, ein Wunsch oder eine Frage an den Leser.</li>
+        </ol>
+        <p style="margin-top:10px;"><strong>Achtung:</strong> Keine NEUEN Argumente mehr! Der Hamburger ist fertig 🍔</p>`,
+      7: `<p><strong>Drei Aufgaben:</strong></p>
+        <ol style="padding-left:20px; margin-top:8px;">
+          <li><strong>Wiederaufnahme der These</strong> (umformuliert)</li>
+          <li><strong>Kurze Zusammenfassung</strong> der Argumente</li>
+          <li><strong>Ausblick / Appell</strong>: Forderung, Wunsch, Lösungsvorschlag oder rhetorische Frage</li>
+        </ol>
+        <p style="margin-top:10px;"><strong>Wichtig:</strong> Niemals neue Argumente einführen!</p>`,
+      8: `<p><strong>Drei Funktionen — präzise umgesetzt:</strong></p>
+        <ol style="padding-left:20px; margin-top:8px;">
+          <li><strong>Restatement der These</strong> in neuer sprachlicher Gestalt</li>
+          <li><strong>Synthese</strong> der Hauptargumente (nicht bloße Auflistung)</li>
+          <li><strong>Ausblick:</strong> gesellschaftliche Relevanz, Forderung, Lösungsperspektive oder Apell.</li>
+        </ol>
+        <p style="margin-top:10px;"><strong>Eleganz:</strong> Ein starker Schlusssatz bleibt im Gedächtnis. Vermeide „Zum Schluss kann man sagen…"</p>`
+    }
+  }
+};
+
+const THEORY_OVERVIEW = {
+  6: [
+    { num:'1', emoji:'🥖', title:'Einleitung', text:'Aufhänger + Thema + Meinung. Kurz halten!' },
+    { num:'2', emoji:'🥬', title:'Argument 1', text:'Dein bester Grund. Behauptung — Begründung — Beispiel.' },
+    { num:'3', emoji:'🍅', title:'Argument 2', text:'Ein zweiter guter Grund. Genau wie Argument 1.' },
+    { num:'4', emoji:'🧀', title:'Argument 3', text:'Noch ein Grund — oder ein Gegenargument widerlegen.' },
+    { num:'5', emoji:'🥖', title:'Schluss', text:'These wiederholen + Wunsch oder Frage am Ende.' }
+  ],
+  7: [
+    { num:'1', emoji:'🥖', title:'Einleitung', text:'Hinführung, Themenformulierung, These mit Andeutung der Argumente.' },
+    { num:'2', emoji:'🥬', title:'Argument 1 (stärkstes)', text:'Topic Sentence + Begründung + Beispiel + Folgerung.' },
+    { num:'3', emoji:'🍅', title:'Argument 2', text:'Mit Überleitungswort einleiten. Gleicher Aufbau.' },
+    { num:'4', emoji:'🧀', title:'Argument 3 / Gegenargument', text:'„Zwar… aber…" — Einwand entkräften.' },
+    { num:'5', emoji:'🥖', title:'Schluss', text:'These wiederaufnehmen, kurz zusammenfassen, Ausblick.' }
+  ],
+  8: [
+    { num:'1', emoji:'🥖', title:'Einleitung', text:'Hook + Themenexposition + These mit Argumentationsrichtung. Stilistisch sauber.' },
+    { num:'2', emoji:'🥬', title:'Argument 1 (stärkstes)', text:'BBBF: Behauptung — Begründung — Beleg — Folgerung.' },
+    { num:'3', emoji:'🍅', title:'Argument 2', text:'Variierende Konjunktionen. Logische Verknüpfung zum vorigen Absatz.' },
+    { num:'4', emoji:'🧀', title:'Antithese mit Entkräftung', text:'Gegenposition ernst nehmen, dann widerlegen.' },
+    { num:'5', emoji:'🥖', title:'Schluss', text:'Restatement, Synthese, gesellschaftlicher Ausblick. Starker Schlusssatz.' }
+  ]
+};
+
+// ============================================================
+// STRUKTUR BANK — abstract descriptors per level
+// Each item describes a structural component, not actual content.
+// "order" = position within its paragraph (1, 2, 3...)
+// ============================================================
+const STRUKTUR = {
+  6: [
+    { text: 'Aufhänger (z. B. eine Frage)', target: 'einleitung', order: 1 },
+    { text: 'Thema nennen', target: 'einleitung', order: 2 },
+    { text: 'Meine Meinung (These)', target: 'einleitung', order: 3 },
+
+    { text: 'Behauptung (mein bester Grund)', target: 'hauptteil1', order: 1 },
+    { text: 'Begründung (warum?)', target: 'hauptteil1', order: 2 },
+    { text: 'Beispiel aus dem Alltag', target: 'hauptteil1', order: 3 },
+
+    { text: 'Behauptung (zweiter Grund)', target: 'hauptteil2', order: 1 },
+    { text: 'Begründung', target: 'hauptteil2', order: 2 },
+    { text: 'Beispiel', target: 'hauptteil2', order: 3 },
+
+    { text: 'Behauptung (dritter Grund)', target: 'hauptteil3', order: 1 },
+    { text: 'Begründung', target: 'hauptteil3', order: 2 },
+    { text: 'Beispiel', target: 'hauptteil3', order: 3 },
+
+    { text: 'Meinung wiederholen (mit anderen Worten)', target: 'schluss', order: 1 },
+    { text: 'Wunsch oder Frage am Ende', target: 'schluss', order: 2 }
+  ],
+  7: [
+    { text: 'Hinführung / Aufhänger', target: 'einleitung', order: 1 },
+    { text: 'Themenformulierung', target: 'einleitung', order: 2 },
+    { text: 'These (eigene Position)', target: 'einleitung', order: 3 },
+
+    { text: 'Topic Sentence (stärkste Behauptung)', target: 'hauptteil1', order: 1 },
+    { text: 'Begründung', target: 'hauptteil1', order: 2 },
+    { text: 'Beispiel / Beleg', target: 'hauptteil1', order: 3 },
+    { text: 'Folgerung', target: 'hauptteil1', order: 4 },
+
+    { text: 'Überleitungssatz', target: 'hauptteil2', order: 1 },
+    { text: 'Behauptung (zweites Argument)', target: 'hauptteil2', order: 2 },
+    { text: 'Begründung mit Beispiel', target: 'hauptteil2', order: 3 },
+
+    { text: 'Gegenargument („Manche meinen, dass…")', target: 'hauptteil3', order: 1 },
+    { text: 'Entkräftung („Doch / Aber…")', target: 'hauptteil3', order: 2 },
+
+    { text: 'Wiederaufnahme der These', target: 'schluss', order: 1 },
+    { text: 'Kurze Zusammenfassung', target: 'schluss', order: 2 },
+    { text: 'Ausblick / Appell', target: 'schluss', order: 3 }
+  ],
+  8: [
+    { text: 'Hook (rhetorische Frage / Zitat)', target: 'einleitung', order: 1 },
+    { text: 'Themenexposition', target: 'einleitung', order: 2 },
+    { text: 'These mit Argumentationsrichtung', target: 'einleitung', order: 3 },
+
+    { text: 'Behauptung (B)', target: 'hauptteil1', order: 1 },
+    { text: 'Begründung (B)', target: 'hauptteil1', order: 2 },
+    { text: 'Beleg (B) — Beispiel, Zahl oder Zitat', target: 'hauptteil1', order: 3 },
+    { text: 'Folgerung (F) — Rückbindung an These', target: 'hauptteil1', order: 4 },
+
+    { text: 'Konnektor / Überleitung', target: 'hauptteil2', order: 1 },
+    { text: 'Behauptung (zweites Argument)', target: 'hauptteil2', order: 2 },
+    { text: 'Begründung mit Beleg', target: 'hauptteil2', order: 3 },
+    { text: 'Folgerung', target: 'hauptteil2', order: 4 },
+
+    { text: 'Antithese (Gegenposition ernst nehmen)', target: 'hauptteil3', order: 1 },
+    { text: 'Differenzierung („zwar…")', target: 'hauptteil3', order: 2 },
+    { text: 'Entkräftung („…jedoch / aber")', target: 'hauptteil3', order: 3 },
+
+    { text: 'Restatement der These (umformuliert)', target: 'schluss', order: 1 },
+    { text: 'Synthese der Hauptargumente', target: 'schluss', order: 2 },
+    { text: 'Gesellschaftlicher Ausblick / Appell', target: 'schluss', order: 3 }
+  ]
+};
+
+// ============================================================
+// PUZZLE BANK — sentences sorted by level
+// ============================================================
+const PUZZLES = {
+  6: [
+    {
+      id: 'p6_1',
+      topic: 'Sollte es in jeder Schule eine längere Mittagspause geben?',
+      sentences: [
+        { text: 'In den letzten Wochen wurde in unserer Schule heftig diskutiert, wie lang die Mittagspause sein sollte.', target: 'einleitung' },
+        { text: 'Ich bin der Meinung, dass eine längere Mittagspause für alle Schülerinnen und Schüler eine gute Sache wäre.', target: 'einleitung' },
+        { text: 'Ein wichtiger Grund ist, dass man in einer langen Pause in Ruhe essen kann.', target: 'hauptteil1' },
+        { text: 'Wenn man hetzen muss, bekommt man Bauchschmerzen und ist danach unkonzentriert.', target: 'hauptteil1' },
+        { text: 'Außerdem können wir uns in einer längeren Pause bewegen.', target: 'hauptteil2' },
+        { text: 'Wir könnten zum Beispiel auf den Schulhof gehen und Fußball spielen.', target: 'hauptteil2' },
+        { text: 'Manche Lehrer sagen zwar, dass dann weniger Zeit für den Unterricht bleibt.', target: 'hauptteil3' },
+        { text: 'Aber wir lernen besser, wenn wir vorher entspannt waren.', target: 'hauptteil3' },
+        { text: 'Aus diesen Gründen finde ich, dass eine längere Mittagspause sinnvoll ist.', target: 'schluss' },
+        { text: 'Ich wünsche mir, dass unsere Schulleitung darüber nachdenkt.', target: 'schluss' }
+      ]
+    },
+    {
+      id: 'p6_2',
+      topic: 'Sollten Hausaufgaben am Wochenende verboten werden?',
+      sentences: [
+        { text: 'Viele meiner Freunde beschweren sich oft am Sonntagabend, weil sie noch Hausaufgaben machen müssen.', target: 'einleitung' },
+        { text: 'Ich finde, dass es am Wochenende keine Hausaufgaben geben sollte.', target: 'einleitung' },
+        { text: 'Der wichtigste Grund ist, dass wir uns am Wochenende erholen müssen.', target: 'hauptteil1' },
+        { text: 'Nach einer ganzen Woche Schule braucht das Gehirn eine Pause.', target: 'hauptteil1' },
+        { text: 'Außerdem ist das Wochenende für die Familie da.', target: 'hauptteil2' },
+        { text: 'Bei mir zu Hause besuchen wir oft Oma und Opa und ich kann nicht mitkommen, wenn ich noch lernen muss.', target: 'hauptteil2' },
+        { text: 'Manche meinen, dass Hausaufgaben für gute Noten wichtig sind.', target: 'hauptteil3' },
+        { text: 'Aber wer in der Woche fleißig ist, braucht keine zusätzlichen Aufgaben am Wochenende.', target: 'hauptteil3' },
+        { text: 'Deshalb bin ich überzeugt, dass das Wochenende hausaufgabenfrei sein sollte.', target: 'schluss' },
+        { text: 'Vielleicht könnten Lehrer und Schüler gemeinsam darüber sprechen.', target: 'schluss' }
+      ]
+    }
+  ],
+  7: [
+    {
+      id: 'p7_1',
+      topic: 'Sollten Smartphones in der Schule erlaubt sein?',
+      sentences: [
+        { text: 'Eine aktuelle Umfrage zeigt, dass über 90 Prozent der Jugendlichen ein Smartphone besitzen.', target: 'einleitung' },
+        { text: 'Trotzdem ist die Nutzung in vielen deutschen Schulen weiterhin verboten — eine Regel, die heute nicht mehr zeitgemäß ist.', target: 'einleitung' },
+        { text: 'Meiner Meinung nach sollten Smartphones im Unterricht unter klaren Bedingungen erlaubt sein.', target: 'einleitung' },
+        { text: 'Ein erstes wichtiges Argument ist, dass Smartphones beim Lernen helfen können.', target: 'hauptteil1' },
+        { text: 'Mit Apps wie Wörterbüchern oder Lernkarten kann man im Unterricht selbstständig recherchieren und Vokabeln üben.', target: 'hauptteil1' },
+        { text: 'Darüber hinaus bereitet uns der verantwortliche Umgang mit dem Smartphone auf das spätere Berufsleben vor.', target: 'hauptteil2' },
+        { text: 'Wer in der Schule lernt, das Handy gezielt einzusetzen, wird es später auch im Studium oder im Beruf sinnvoll nutzen können.', target: 'hauptteil2' },
+        { text: 'Manche Lehrer und Eltern befürchten zwar, dass Smartphones nur ablenken und den Unterricht stören.', target: 'hauptteil3' },
+        { text: 'Doch dieses Problem lässt sich mit klaren Regeln lösen, etwa durch Handyfächer oder einen „Phone-Modus" im Unterricht.', target: 'hauptteil3' },
+        { text: 'Zusammenfassend lässt sich festhalten, dass Smartphones in der Schule kein Tabu sein sollten.', target: 'schluss' },
+        { text: 'Ich plädiere dafür, dass jede Schule eine moderne Handyordnung einführt, die Bildung und Verantwortung verbindet.', target: 'schluss' }
+      ]
+    },
+    {
+      id: 'p7_2',
+      topic: 'Sollte das Wahlalter auf 16 gesenkt werden?',
+      sentences: [
+        { text: 'Bei den letzten Landtagswahlen durften in einigen Bundesländern bereits 16-Jährige mitwählen.', target: 'einleitung' },
+        { text: 'Diese Diskussion zeigt, wie aktuell die Frage nach dem richtigen Wahlalter ist.', target: 'einleitung' },
+        { text: 'Ich bin überzeugt, dass das Wahlalter auch bei Bundestagswahlen auf 16 Jahre gesenkt werden sollte.', target: 'einleitung' },
+        { text: 'Erstens sind heutige Jugendliche politisch interessierter denn je.', target: 'hauptteil1' },
+        { text: 'Bewegungen wie „Fridays for Future" beweisen, dass schon Schülerinnen und Schüler gut informierte und durchdachte Positionen vertreten können.', target: 'hauptteil1' },
+        { text: 'Zudem werden politische Entscheidungen über unsere Zukunft getroffen, ohne dass wir mitreden dürfen.', target: 'hauptteil2' },
+        { text: 'Themen wie Klimawandel oder Bildung betreffen vor allem die jüngere Generation, weshalb ihre Stimme zählen sollte.', target: 'hauptteil2' },
+        { text: 'Kritiker argumentieren oft, 16-Jährige seien noch nicht reif genug für eine fundierte politische Entscheidung.', target: 'hauptteil3' },
+        { text: 'Doch Reife hängt nicht vom Alter ab, und im Übrigen wählen auch viele Erwachsene ohne tiefere Information.', target: 'hauptteil3' },
+        { text: 'Aus den genannten Gründen halte ich eine Absenkung des Wahlalters für überfällig.', target: 'schluss' },
+        { text: 'Demokratie lebt davon, möglichst viele Stimmen zu hören — gerade die der nächsten Generation.', target: 'schluss' }
+      ]
+    }
+  ],
+  8: [
+    {
+      id: 'p8_1',
+      topic: 'Sollten Schuluniformen an deutschen Schulen eingeführt werden?',
+      sentences: [
+        { text: 'Während Schuluniformen in Großbritannien oder Japan zum Schulalltag gehören, gelten sie in Deutschland traditionell als Eingriff in die persönliche Freiheit.', target: 'einleitung' },
+        { text: 'Doch angesichts wachsender sozialer Ungleichheit auch im Klassenzimmer ist die Debatte erneut entbrannt.', target: 'einleitung' },
+        { text: 'Bei genauer Betrachtung sprechen die gewichtigeren Argumente klar für die Einführung einheitlicher Schulkleidung.', target: 'einleitung' },
+        { text: 'Das stärkste Argument lautet, dass Schuluniformen soziale Unterschiede sichtbar reduzieren.', target: 'hauptteil1' },
+        { text: 'Wenn niemand mehr durch teure Markenkleidung auffällt, sinkt der Druck auf finanziell schwächere Familien, und Mobbing aufgrund von Kleidung verliert seine Grundlage.', target: 'hauptteil1' },
+        { text: 'Ein zweiter relevanter Aspekt betrifft die Konzentration im Unterricht.', target: 'hauptteil2' },
+        { text: 'Studien aus Großbritannien deuten darauf hin, dass einheitliche Kleidung das morgendliche Entscheidungschaos reduziert und ein gemeinsames Schulgefühl schafft, was sich messbar auf die Lernatmosphäre auswirkt.', target: 'hauptteil2' },
+        { text: 'Gegner führen häufig an, Uniformen schränkten die individuelle Selbstentfaltung ein und stünden im Widerspruch zur freien Persönlichkeitsentwicklung.', target: 'hauptteil3' },
+        { text: 'Diese Sorge ist nicht ganz unberechtigt, jedoch lässt sich Individualität auch durch Frisur, Schmuck oder die Wahl der Fächer ausdrücken — Identität entsteht keineswegs nur durch das, was man trägt.', target: 'hauptteil3' },
+        { text: 'Zusammenfassend überwiegen die sozialen und pädagogischen Vorteile die Bedenken hinsichtlich der Selbstentfaltung deutlich.', target: 'schluss' },
+        { text: 'Eine moderne, von Schülern mitgestaltete Schulkleidung könnte ein Symbol für Gemeinschaft sein, ohne die Individualität zu ersticken.', target: 'schluss' }
+      ]
+    },
+    {
+      id: 'p8_2',
+      topic: 'Sollten soziale Medien für Jugendliche unter 16 Jahren reguliert werden?',
+      sentences: [
+        { text: 'Mit der Allgegenwart von TikTok, Instagram und Snapchat ist eine ganze Generation aufgewachsen, deren Selbstbild maßgeblich durch Algorithmen geformt wird.', target: 'einleitung' },
+        { text: 'Australien hat 2024 als erstes Land Plattformen für unter 16-Jährige verboten — eine Maßnahme, die international für Kontroversen sorgt.', target: 'einleitung' },
+        { text: 'Eine altersgerechte Regulierung sozialer Medien ist meines Erachtens überfällig, sollte jedoch nicht in einem pauschalen Verbot münden.', target: 'einleitung' },
+        { text: 'Den entscheidenden Anlass liefern die nachweisbaren psychischen Folgen für junge Nutzer.', target: 'hauptteil1' },
+        { text: 'Mehrere Langzeitstudien dokumentieren einen deutlichen Anstieg von Angststörungen und Depressionen bei Jugendlichen seit der flächendeckenden Smartphone-Nutzung, was einen direkten regulatorischen Eingriff rechtfertigt.', target: 'hauptteil1' },
+        { text: 'Hinzu kommt, dass die Algorithmen der Plattformen gezielt auf Suchtverhalten ausgelegt sind.', target: 'hauptteil2' },
+        { text: 'Funktionen wie unendliches Scrollen, Push-Nachrichten und Likes-Belohnungen sprechen das noch unreife Belohnungssystem des jugendlichen Gehirns an, weshalb hier kein selbstbestimmter Konsum mehr möglich ist.', target: 'hauptteil2' },
+        { text: 'Kritiker einer staatlichen Regulierung berufen sich gerne auf die Eigenverantwortung der Eltern und das Recht auf digitale Teilhabe.', target: 'hauptteil3' },
+        { text: 'Dieser Einwand greift jedoch zu kurz, denn ohne strukturelle Vorgaben bleibt die Verantwortung bei überforderten Familien, während multinationale Konzerne ungehindert profitieren.', target: 'hauptteil3' },
+        { text: 'Eine differenzierte Regulierung — etwa durch Altersverifikation, Werbeverbote für Minderjährige und algorithmische Transparenz — bietet einen Ausweg aus dem Dilemma zwischen Verbot und Laissez-faire.', target: 'schluss' },
+        { text: 'Wenn unsere Gesellschaft Tabakwerbung für Jugendliche verbietet, sollte sie auch digitale Suchtmechanismen nicht länger tolerieren.', target: 'schluss' }
+      ]
+    }
+  ]
+};
+
+// ============================================================
+// WRITING PROMPTS (per level + category)
+// ============================================================
+const PROMPTS = {
+  6: {
+    schule: [
+      'Sollte die Schule erst um 9 Uhr beginnen?',
+      'Sollten alle Klassen einen Klassenrat haben?',
+      'Wäre es gut, wenn man in der Schule kochen lernt?',
+      'Sollten Noten in der 6. Klasse abgeschafft werden?'
+    ],
+    alltag: [
+      'Sollten Kinder ein eigenes Taschengeld bekommen?',
+      'Wäre es besser, wenn die Familie öfter gemeinsam isst?',
+      'Sollten Geschwister sich ein Zimmer teilen müssen?',
+      'Sollten Kinder bei der Hausarbeit helfen?'
+    ],
+    medien: [
+      'Wie viel Zeit am Handy ist pro Tag in Ordnung?',
+      'Sollten YouTube-Videos im Unterricht erlaubt sein?',
+      'Sind Videospiele schlecht für Kinder?'
+    ],
+    umwelt: [
+      'Sollten Klassen mehr Ausflüge in die Natur machen?',
+      'Sollte jede Schule einen eigenen Garten haben?',
+      'Wäre es gut, wenn alle ein Fahrrad statt Auto benutzen?'
+    ]
+  },
+  7: {
+    schule: [
+      'Sollten Schülerinnen und Schüler die Lehrkräfte bewerten dürfen?',
+      'Sollte das Schulfach „Glück" oder „Lebensfreude" eingeführt werden?',
+      'Wären Lerngruppen sinnvoller als feste Klassen?',
+      'Sollten Klassenarbeiten durch Projektarbeiten ersetzt werden?'
+    ],
+    alltag: [
+      'Sollten Jugendliche ab 14 selbst entscheiden, wann sie nach Hause kommen?',
+      'Brauchen Schüler ein eigenes Zimmer, um konzentriert lernen zu können?',
+      'Sollte das Mindestalter für Nebenjobs gesenkt werden?'
+    ],
+    medien: [
+      'Sollten Smartphones in der Schule erlaubt sein?',
+      'Macht TikTok unsere Generation oberflächlicher?',
+      'Sollten Influencer für falsche Produktwerbung haften?',
+      'Wäre eine Bildschirmzeit-Begrenzung pro Tag sinnvoll?'
+    ],
+    umwelt: [
+      'Sollte Fleisch in der Schulmensa nur einmal pro Woche angeboten werden?',
+      'Sollten Schulfahrten nur noch mit Bus und Bahn stattfinden?',
+      'Brauchen wir ein Tempolimit auf deutschen Autobahnen?'
+    ]
+  },
+  8: {
+    schule: [
+      'Sollten Hausaufgaben in der Sekundarstufe I abgeschafft werden?',
+      'Sind Schuluniformen ein Mittel gegen soziale Ungleichheit?',
+      'Sollte das Sitzenbleiben endgültig der Vergangenheit angehören?',
+      'Brauchen wir mehr digitalen Unterricht — oder weniger?'
+    ],
+    alltag: [
+      'Ab welchem Alter sollten Jugendliche selbst über medizinische Behandlungen entscheiden dürfen?',
+      'Sollte das Wahlalter auf 16 gesenkt werden?',
+      'Sind ehrenamtliche Tätigkeiten ein Pflichtprogramm wert?'
+    ],
+    medien: [
+      'Sollten soziale Medien für unter 16-Jährige reguliert werden?',
+      'Wird Künstliche Intelligenz unsere Art zu schreiben für immer verändern — und ist das ein Verlust?',
+      'Verändert die ständige Erreichbarkeit unsere Beziehungen zum Schlechten?'
+    ],
+    umwelt: [
+      'Reicht individuelle Verantwortung aus, um den Klimawandel zu stoppen?',
+      'Sollte Inlandsfliegen in Deutschland verboten werden?',
+      'Ist eine Vier-Tage-Arbeitswoche besser für Mensch und Umwelt?'
+    ]
+  }
+};
+
+// ============================================================
+// BADGES
+// ============================================================
+const BADGES = [
+  { id:'first_struktur', icon:'🏗️', name:'Bauplan-Lehrling', desc:'Erste Struktur richtig sortiert' },
+  { id:'struktur_perfect', icon:'📐', name:'Bauplan-Meister', desc:'Struktur inkl. Reihenfolge perfekt' },
+  { id:'struktur_master', icon:'🎓', name:'Strukturkenner', desc:'5 Strukturen sortiert' },
+  { id:'first_puzzle', icon:'🥒', name:'Erster Biss', desc:'Erstes Satzpuzzle gelöst' },
+  { id:'three_puzzles', icon:'🥬', name:'Salatkenner', desc:'3 Puzzles gelöst' },
+  { id:'ten_puzzles', icon:'🍅', name:'Tomaten-Profi', desc:'10 Puzzles gelöst' },
+  { id:'first_essay', icon:'✍️', name:'Erstfeder', desc:'Erster Aufsatz geschrieben' },
+  { id:'three_essays', icon:'📜', name:'Schreibmeister', desc:'3 Aufsätze fertiggestellt' },
+  { id:'level_6', icon:'🥚', name:'Klasse 6 — gemeistert', desc:'Puzzle Klasse 6 gelöst' },
+  { id:'level_7', icon:'🧀', name:'Klasse 7 — gemeistert', desc:'Puzzle Klasse 7 gelöst' },
+  { id:'level_8', icon:'🥩', name:'Klasse 8 — Profi', desc:'Puzzle Klasse 8 gelöst' },
+  { id:'streak_3', icon:'🔥', name:'Dreitagesfeuer', desc:'3 Tage in Folge geübt' },
+  { id:'streak_7', icon:'⚡', name:'Wochenheld', desc:'7 Tage in Folge geübt' },
+  { id:'perfect', icon:'💯', name:'Perfekter Burger', desc:'Puzzle ohne Fehler gelöst' },
+  { id:'hundred_pts', icon:'⭐', name:'100 Punkte-Club', desc:'100 Punkte erreicht' }
+];
+
+const RANKS = [
+  { name:'Küchenhilfe', min:0 },
+  { name:'Brötchenbäcker', min:50 },
+  { name:'Salat-Lehrling', min:120 },
+  { name:'Grillmeister', min:250 },
+  { name:'Burger-Architekt', min:450 },
+  { name:'Hamburger-Großmeister', min:700 }
+];
+
+// ============================================================
+// UI WIRING
+// ============================================================
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.panel).classList.add('active');
+    if (tab.dataset.panel === 'dashboard') renderDashboard();
+  });
+});
+
+document.querySelectorAll('.level-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.level = parseInt(btn.dataset.level);
+    saveState();
+    renderTheory();
+    loadNewStruktur();
+    loadNewPuzzle();
+    loadNewPrompt();
+  });
+});
+
+// initialize active level button
+document.querySelector(`.level-btn[data-level="${state.level}"]`)?.classList.add('active');
+
+// ============================================================
+// THEORY RENDERING
+// ============================================================
+function renderTheory() {
+  // active level highlight
+  document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.level-btn[data-level="${state.level}"]`)?.classList.add('active');
+
+  const grid = document.getElementById('theoryGrid');
+  grid.innerHTML = '';
+  THEORY_OVERVIEW[state.level].forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'theory-item';
+    div.innerHTML = `
+      <div class="num">${item.num}</div>
+      <div>
+        <h4>${item.emoji} ${item.title}</h4>
+        <p>${item.text}</p>
+      </div>`;
+    grid.appendChild(div);
+  });
+}
+
+// burger layer click
+document.querySelectorAll('.layer[data-layer]').forEach(layer => {
+  layer.addEventListener('click', () => {
+    document.querySelectorAll('.layer').forEach(l => l.classList.remove('highlight'));
+    layer.classList.add('highlight');
+    const key = layer.dataset.layer;
+    let entry;
+    if (key === 'hauptteil1' || key === 'hauptteil2' || key === 'hauptteil3') {
+      entry = THEORY.hauptteil1;
+    } else {
+      entry = THEORY[key];
+    }
+    if (!entry) return;
+    document.getElementById('explainerTitle').textContent = entry.title;
+    document.getElementById('explainerContent').innerHTML = entry.content[state.level] || '';
+  });
+});
+
+// ============================================================
+// PUZZLE LOGIC
+// ============================================================
+function loadNewPuzzle() {
+  const pool = PUZZLES[state.level];
+  const idx = Math.floor(Math.random() * pool.length);
+  const puzzle = pool[idx];
+  state.currentPuzzleId = puzzle.id;
+
+  // show topic in callout-style above bank
+  const bankTitle = document.querySelector('.pieces-bank-title');
+  bankTitle.innerHTML = `📦 Bausteine zum Sortieren — Thema: <em style="color:var(--tomato);">${puzzle.topic}</em>`;
+
+  const bank = document.getElementById('piecesBank');
+  bank.innerHTML = '';
+  document.querySelectorAll('.zone-pieces').forEach(z => z.innerHTML = '');
+
+  // shuffle sentences
+  const shuffled = [...puzzle.sentences].sort(() => Math.random() - 0.5);
+  shuffled.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'piece';
+    div.draggable = true;
+    div.textContent = s.text;
+    div.dataset.target = s.target;
+    div.dataset.id = `piece_${i}`;
+    attachDragHandlers(div);
+    bank.appendChild(div);
+  });
+
+  document.getElementById('puzzleFeedback').classList.remove('show');
+}
+
+function attachDragHandlers(el) {
+  el.addEventListener('dragstart', (e) => {
+    el.classList.add('dragging');
+    e.dataTransfer.setData('text/plain', el.dataset.id);
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  el.addEventListener('dragend', () => el.classList.remove('dragging'));
+
+  // touch support
+  el.addEventListener('touchstart', handleTouchStart, { passive: false });
+  el.addEventListener('touchmove', handleTouchMove, { passive: false });
+  el.addEventListener('touchend', handleTouchEnd);
+}
+
+let touchDragEl = null, touchClone = null, touchOffsetX = 0, touchOffsetY = 0;
+
+function handleTouchStart(e) {
+  if (e.touches.length !== 1) return;
+  e.preventDefault();
+  touchDragEl = e.currentTarget;
+  const rect = touchDragEl.getBoundingClientRect();
+  const t = e.touches[0];
+  touchOffsetX = t.clientX - rect.left;
+  touchOffsetY = t.clientY - rect.top;
+  touchClone = touchDragEl.cloneNode(true);
+  touchClone.style.position = 'fixed';
+  touchClone.style.zIndex = '9999';
+  touchClone.style.width = rect.width + 'px';
+  touchClone.style.left = rect.left + 'px';
+  touchClone.style.top = rect.top + 'px';
+  touchClone.style.opacity = '0.85';
+  touchClone.style.pointerEvents = 'none';
+  document.body.appendChild(touchClone);
+  touchDragEl.classList.add('piece-source-hidden');
+}
+
+function handleTouchMove(e) {
+  if (!touchDragEl || !touchClone) return;
+  e.preventDefault();
+  const t = e.touches[0];
+  touchClone.style.left = (t.clientX - touchOffsetX) + 'px';
+  touchClone.style.top = (t.clientY - touchOffsetY) + 'px';
+
+  document.querySelectorAll('.zone, .pieces-bank').forEach(z => z.classList.remove('drag-over'));
+  const target = document.elementFromPoint(t.clientX, t.clientY);
+  const zone = target?.closest('.zone, .pieces-bank');
+  if (zone) zone.classList.add('drag-over');
+}
+
+function handleTouchEnd(e) {
+  if (!touchDragEl) return;
+  const t = e.changedTouches[0];
+  const target = document.elementFromPoint(t.clientX, t.clientY);
+  const dropZone = target?.closest('.zone');
+  const dropBank = target?.closest('.pieces-bank');
+
+  if (dropZone) {
+    dropZone.querySelector('.zone-pieces').appendChild(touchDragEl);
+  } else if (dropBank) {
+    dropBank.querySelector('.pieces-list').appendChild(touchDragEl);
+  }
+
+  touchDragEl.classList.remove('piece-source-hidden');
+  touchClone?.remove();
+  document.querySelectorAll('.zone, .pieces-bank').forEach(z => z.classList.remove('drag-over'));
+  touchDragEl = null;
+  touchClone = null;
+}
+
+// drop zones
+document.querySelectorAll('.zone, .pieces-bank').forEach(zone => {
+  zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    const id = e.dataTransfer.getData('text/plain');
+    const piece = document.querySelector(`[data-id="${id}"]`);
+    if (!piece) return;
+    if (zone.classList.contains('zone')) {
+      zone.querySelector('.zone-pieces').appendChild(piece);
+    } else {
+      zone.querySelector('.pieces-list').appendChild(piece);
+    }
+    piece.classList.remove('correct', 'incorrect');
+  });
+});
+
+document.getElementById('checkPuzzleBtn').addEventListener('click', () => {
+  let correct = 0, total = 0, allPlaced = true;
+  document.querySelectorAll('.piece').forEach(p => p.classList.remove('correct','incorrect'));
+
+  document.querySelectorAll('.zone').forEach(zone => {
+    const expected = zone.dataset.target;
+    zone.querySelectorAll('.piece').forEach(piece => {
+      total++;
+      if (piece.dataset.target === expected) {
+        piece.classList.add('correct');
+        correct++;
+      } else {
+        piece.classList.add('incorrect');
+      }
+    });
+  });
+
+  // check pieces still in bank
+  const inBank = document.querySelectorAll('#piecesBank .piece').length;
+  if (inBank > 0) allPlaced = false;
+  total += inBank;
+
+  const fb = document.getElementById('puzzleFeedback');
+  fb.classList.add('show');
+  fb.classList.remove('success','partial','fail');
+
+  if (!allPlaced) {
+    fb.classList.add('partial');
+    fb.innerHTML = `⚠ Du hast noch <strong>${inBank}</strong> Bausteine im Vorrat. Verteile alle, bevor du prüfst!`;
+    return;
+  }
+
+  if (correct === total) {
+    fb.classList.add('success');
+    fb.innerHTML = `🎉 <strong>Perfekt!</strong> Alle ${total} Bausteine richtig zugeordnet — du hast den Hamburger-Aufbau drauf!`;
+    awardPoints(20);
+    state.puzzlesSolved = (state.puzzlesSolved || 0) + 1;
+    grantBadge('first_puzzle');
+    if (state.puzzlesSolved >= 3) grantBadge('three_puzzles');
+    if (state.puzzlesSolved >= 10) grantBadge('ten_puzzles');
+    grantBadge(`level_${state.level}`);
+    grantBadge('perfect');
+    saveState();
+  } else if (correct / total >= 0.7) {
+    fb.classList.add('partial');
+    fb.innerHTML = `🥗 Schon richtig gut! <strong>${correct} von ${total}</strong> richtig. Schau dir die roten Bausteine nochmal an und versuche es erneut.`;
+    awardPoints(5);
+  } else {
+    fb.classList.add('fail');
+    fb.innerHTML = `🤔 <strong>${correct} von ${total}</strong> richtig. Tipp: Sätze wie „Ich bin der Meinung, dass…" gehören in die Einleitung. „Zusammenfassend…" gehört in den Schluss.`;
+  }
+});
+
+document.getElementById('newPuzzleBtn').addEventListener('click', loadNewPuzzle);
+
+document.getElementById('hintPuzzleBtn').addEventListener('click', () => {
+  // highlight one correct placement
+  const zones = document.querySelectorAll('.zone');
+  for (const zone of zones) {
+    const expected = zone.dataset.target;
+    const wrongPieces = [...zone.querySelectorAll('.piece')].filter(p => p.dataset.target !== expected);
+    const bankPieces = [...document.querySelectorAll('#piecesBank .piece')];
+    const hint = bankPieces.find(p => p.dataset.target === expected);
+    if (hint) {
+      hint.style.outline = '3px dashed var(--tomato)';
+      hint.style.outlineOffset = '3px';
+      const fb = document.getElementById('puzzleFeedback');
+      fb.classList.add('show','partial');
+      fb.innerHTML = `💡 <strong>Hinweis:</strong> Der hervorgehobene Baustein gehört in „${zone.querySelector('.zone-title').textContent}".`;
+      setTimeout(() => { hint.style.outline=''; hint.style.outlineOffset=''; }, 4000);
+      return;
+    }
+  }
+});
+
+// ============================================================
+// STRUKTUR (descriptor-only) PUZZLE
+// ============================================================
+function loadNewStruktur() {
+  const items = STRUKTUR[state.level];
+  const bank = document.getElementById('strukturBank');
+  bank.innerHTML = '';
+  document.querySelectorAll('#struktur .zone-pieces').forEach(z => z.innerHTML = '');
+
+  // shuffle
+  const shuffled = [...items].sort(() => Math.random() - 0.5);
+  shuffled.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'piece struktur-piece';
+    div.draggable = true;
+    div.textContent = item.text;
+    div.dataset.target = item.target;
+    div.dataset.order = item.order;
+    div.dataset.id = `struktur_${i}`;
+    div.dataset.label = item.text;
+    attachDragHandlers(div);
+    bank.appendChild(div);
+  });
+
+  document.getElementById('strukturFeedback').classList.remove('show');
+  // update title with level info
+  const total = items.length;
+  document.getElementById('strukturBankTitle').innerHTML = `🏗️ Bestandteile zum Sortieren — <em style="color:var(--tomato);">Klasse ${state.level}: ${total} Bausteine</em>`;
+}
+
+document.getElementById('checkStrukturBtn').addEventListener('click', () => {
+  let correctZone = 0, total = 0;
+  document.querySelectorAll('#struktur .piece').forEach(p => p.classList.remove('correct','incorrect'));
+
+  document.querySelectorAll('#struktur .zone').forEach(zone => {
+    const expected = zone.dataset.target;
+    zone.querySelectorAll('.piece').forEach(piece => {
+      total++;
+      if (piece.dataset.target === expected) {
+        piece.classList.add('correct');
+        correctZone++;
+      } else {
+        piece.classList.add('incorrect');
+      }
+    });
+  });
+
+  const inBank = document.querySelectorAll('#strukturBank .piece').length;
+  total += inBank;
+
+  const fb = document.getElementById('strukturFeedback');
+  fb.classList.add('show');
+  fb.classList.remove('success','partial','fail');
+
+  if (inBank > 0) {
+    fb.classList.add('partial');
+    fb.innerHTML = `⚠ Du hast noch <strong>${inBank}</strong> Bestandteile im Vorrat. Verteile alle, bevor du prüfst!`;
+    return;
+  }
+
+  if (correctZone === total) {
+    fb.classList.add('success');
+    fb.innerHTML = `🎉 <strong>Alle Bausteine im richtigen Absatz!</strong> Tipp: Klick jetzt auf <em>„🔢 Reihenfolge prüfen"</em>, um zu sehen, ob auch die Reihenfolge innerhalb der Absätze stimmt.`;
+    awardPoints(15);
+    grantBadge('first_struktur');
+    state.strukturSolved = (state.strukturSolved || 0) + 1;
+    if (state.strukturSolved >= 5) grantBadge('struktur_master');
+    saveState();
+  } else if (correctZone / total >= 0.7) {
+    fb.classList.add('partial');
+    fb.innerHTML = `🥗 Fast! <strong>${correctZone} von ${total}</strong> richtig zugeordnet. Schau dir die <span style="color:var(--tomato);">roten</span> Bausteine nochmal an.`;
+    awardPoints(3);
+  } else {
+    fb.classList.add('fail');
+    fb.innerHTML = `🤔 <strong>${correctZone} von ${total}</strong> richtig. Erinnerung: „These" und „Aufhänger" gehören in die <em>Einleitung</em>. „Wiederaufnahme" und „Ausblick" in den <em>Schluss</em>.`;
+  }
+});
+
+document.getElementById('orderStrukturBtn').addEventListener('click', () => {
+  const fb = document.getElementById('strukturFeedback');
+  fb.classList.add('show');
+  fb.classList.remove('success','partial','fail');
+
+  const inBank = document.querySelectorAll('#strukturBank .piece').length;
+  if (inBank > 0) {
+    fb.classList.add('partial');
+    fb.innerHTML = `⚠ Verteile zuerst alle Bausteine, dann kann ich die Reihenfolge prüfen.`;
+    return;
+  }
+
+  // first verify all are in correct zone
+  let zoneOk = true;
+  document.querySelectorAll('#struktur .zone').forEach(zone => {
+    const expected = zone.dataset.target;
+    zone.querySelectorAll('.piece').forEach(piece => {
+      if (piece.dataset.target !== expected) zoneOk = false;
+    });
+  });
+
+  if (!zoneOk) {
+    fb.classList.add('fail');
+    fb.innerHTML = `🛑 Erst sind die Absätze dran! Klick auf „✓ Prüfen", um zu sehen, welche Bausteine im falschen Absatz liegen.`;
+    return;
+  }
+
+  // now check order within each zone
+  let orderProblems = [];
+  document.querySelectorAll('#struktur .zone').forEach(zone => {
+    const pieces = [...zone.querySelectorAll('.piece')];
+    const orders = pieces.map(p => parseInt(p.dataset.order));
+    const sorted = [...orders].sort((a,b) => a - b);
+    const isCorrect = orders.every((v,i) => v === sorted[i]);
+    pieces.forEach(p => p.classList.remove('correct','incorrect'));
+    if (isCorrect) {
+      pieces.forEach(p => p.classList.add('correct'));
+    } else {
+      pieces.forEach(p => p.classList.add('incorrect'));
+      orderProblems.push(zone.querySelector('.zone-title').textContent);
+    }
+  });
+
+  if (orderProblems.length === 0) {
+    fb.classList.add('success');
+    fb.innerHTML = `🏆 <strong>Perfekt!</strong> Auch die Reihenfolge stimmt überall. Du hast den Bauplan vollständig durchschaut — ab in die <em>Schreibwerkstatt</em>!`;
+    awardPoints(25);
+    grantBadge('struktur_perfect');
+    saveState();
+  } else {
+    fb.classList.add('partial');
+    fb.innerHTML = `📐 Die Absätze stimmen, aber die <strong>Reihenfolge</strong> stimmt nicht in: <em>${orderProblems.join(', ')}</em>. Tipp: Eine These kommt vor der Begründung, das Beispiel danach!`;
+  }
+});
+
+document.getElementById('newStrukturBtn').addEventListener('click', loadNewStruktur);
+
+document.getElementById('hintStrukturBtn').addEventListener('click', () => {
+  const zones = document.querySelectorAll('#struktur .zone');
+  for (const zone of zones) {
+    const expected = zone.dataset.target;
+    const bankPieces = [...document.querySelectorAll('#strukturBank .piece')];
+    const hint = bankPieces.find(p => p.dataset.target === expected);
+    if (hint) {
+      hint.style.outline = '3px dashed var(--tomato)';
+      hint.style.outlineOffset = '3px';
+      const fb = document.getElementById('strukturFeedback');
+      fb.classList.add('show','partial');
+      fb.innerHTML = `💡 <strong>Hinweis:</strong> „${hint.dataset.label}" gehört in „${zone.querySelector('.zone-title').textContent}".`;
+      setTimeout(() => { hint.style.outline=''; hint.style.outlineOffset=''; }, 4000);
+      return;
+    }
+  }
+});
+
+// ============================================================
+// WRITING WORKSHOP
+// ============================================================
+function loadNewPrompt() {
+  const cat = document.getElementById('promptCategory').value;
+  const levelPrompts = PROMPTS[state.level];
+  let pool = [];
+  if (cat === 'all') pool = Object.values(levelPrompts).flat();
+  else pool = levelPrompts[cat] || [];
+  if (!pool.length) pool = Object.values(levelPrompts).flat();
+  const idx = Math.floor(Math.random() * pool.length);
+  document.getElementById('promptText').textContent = pool[idx];
+}
+
+document.getElementById('newPromptBtn').addEventListener('click', loadNewPrompt);
+document.getElementById('promptCategory').addEventListener('change', loadNewPrompt);
+
+document.querySelectorAll('.write-zone textarea').forEach(ta => {
+  ta.addEventListener('input', () => {
+    const words = ta.value.trim().split(/\s+/).filter(Boolean).length;
+    ta.parentElement.querySelector('.word-count').textContent = `${words} Wort${words === 1 ? '' : 'e'}`;
+  });
+});
+
+document.getElementById('assembleBtn').addEventListener('click', () => {
+  const sections = ['einleitung-hook','einleitung-these','arg1-these','arg1-begr','arg2-these','arg2-begr','arg3-these','arg3-begr','schluss-these','schluss-ausblick'];
+  const text = {};
+  sections.forEach(s => {
+    const ta = document.querySelector(`[data-section="${s}"] textarea`);
+    text[s] = ta?.value.trim() || '';
+  });
+
+  const filled = sections.filter(s => text[s]).length;
+  if (filled < 3) {
+    showToast('Schreib zuerst mindestens 3 Abschnitte!', '⚠');
+    return;
+  }
+
+  const para1 = [text['einleitung-hook'], text['einleitung-these']].filter(Boolean).join(' ');
+  const para2 = [text['arg1-these'], text['arg1-begr']].filter(Boolean).join(' ');
+  const para3 = [text['arg2-these'], text['arg2-begr']].filter(Boolean).join(' ');
+  const para4 = [text['arg3-these'], text['arg3-begr']].filter(Boolean).join(' ');
+  const para5 = [text['schluss-these'], text['schluss-ausblick']].filter(Boolean).join(' ');
+
+  const paras = [para1, para2, para3, para4, para5].filter(Boolean);
+  document.getElementById('previewContent').innerHTML = paras.map(p => `<p>${escapeHTML(p)}</p>`).join('');
+  document.getElementById('previewBox').classList.add('show');
+  document.getElementById('previewBox').scrollIntoView({ behavior:'smooth', block:'start' });
+
+  if (filled >= 8) {
+    awardPoints(25);
+    state.essaysWritten = (state.essaysWritten || 0) + 1;
+    grantBadge('first_essay');
+    if (state.essaysWritten >= 3) grantBadge('three_essays');
+    saveState();
+  } else {
+    awardPoints(5);
+  }
+});
+
+document.getElementById('saveDraftBtn').addEventListener('click', () => {
+  const sections = document.querySelectorAll('.write-zone textarea');
+  const draft = { prompt: document.getElementById('promptText').textContent, parts: {}, savedAt: new Date().toISOString() };
+  sections.forEach(ta => {
+    const sec = ta.parentElement.dataset.section;
+    draft.parts[sec] = ta.value;
+  });
+  state.drafts[`draft_${Date.now()}`] = draft;
+  saveState();
+  showToast('Entwurf gespeichert!', '💾');
+});
+
+document.getElementById('clearDraftBtn').addEventListener('click', () => {
+  if (confirm('Wirklich alle Felder leeren?')) {
+    document.querySelectorAll('.write-zone textarea').forEach(ta => {
+      ta.value = '';
+      ta.parentElement.querySelector('.word-count').textContent = '0 Wörter';
+    });
+    document.getElementById('previewBox').classList.remove('show');
+  }
+});
+
+function copyEssay() {
+  const text = document.getElementById('previewContent').innerText;
+  navigator.clipboard.writeText(text).then(() => showToast('In die Zwischenablage kopiert!', '📋'));
+}
+
+function downloadEssay() {
+  const text = document.getElementById('previewContent').innerText;
+  const blob = new Blob([text], { type:'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `Aufsatz_${new Date().toISOString().slice(0,10)}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+window.copyEssay = copyEssay;
+window.downloadEssay = downloadEssay;
+
+// ============================================================
+// POINTS / BADGES / DASHBOARD
+// ============================================================
+function awardPoints(n) {
+  state.points = (state.points || 0) + n;
+  document.getElementById('totalPoints').textContent = state.points;
+  showToast(`+${n} Punkte!`, '⭐');
+  if (state.points >= 100) grantBadge('hundred_pts');
+  if (state.streak >= 3) grantBadge('streak_3');
+  if (state.streak >= 7) grantBadge('streak_7');
+  saveState();
+}
+
+function grantBadge(id) {
+  if (!state.badges.includes(id)) {
+    state.badges.push(id);
+    const b = BADGES.find(x => x.id === id);
+    if (b) showToast(`Abzeichen freigeschaltet: ${b.name}`, b.icon);
+    saveState();
+  }
+}
+
+function showToast(msg, icon='⭐') {
+  const toast = document.getElementById('toast');
+  toast.querySelector('.toast-icon').textContent = icon;
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => toast.classList.remove('show'), 2800);
+}
+
+function renderDashboard() {
+  document.getElementById('statPoints').textContent = state.points || 0;
+  document.getElementById('statStruktur').textContent = state.strukturSolved || 0;
+  document.getElementById('statPuzzles').textContent = state.puzzlesSolved || 0;
+  document.getElementById('statEssays').textContent = state.essaysWritten || 0;
+  document.getElementById('statStreak').textContent = state.streak || 0;
+
+  // countdown
+  const now = new Date();
+  const diff = Math.ceil((EXAM_DATE - now) / (1000*60*60*24));
+  document.getElementById('countdownDays').textContent = diff > 0 ? diff : '0';
+
+  // rank progress
+  const pts = state.points || 0;
+  let curRank = RANKS[0], nextRank = RANKS[1];
+  for (let i = RANKS.length - 1; i >= 0; i--) {
+    if (pts >= RANKS[i].min) { curRank = RANKS[i]; nextRank = RANKS[i+1]; break; }
+  }
+  if (nextRank) {
+    const span = nextRank.min - curRank.min;
+    const have = pts - curRank.min;
+    const pct = Math.max(0, Math.min(100, (have / span) * 100));
+    document.getElementById('rankProgress').style.width = pct + '%';
+    document.getElementById('rankLabel').textContent = `${curRank.name} → ${nextRank.name} (${pts}/${nextRank.min})`;
+  } else {
+    document.getElementById('rankProgress').style.width = '100%';
+    document.getElementById('rankLabel').textContent = `${curRank.name} — höchster Rang erreicht!`;
+  }
+
+  // badges
+  const grid = document.getElementById('badgesGrid');
+  grid.innerHTML = '';
+  BADGES.forEach(b => {
+    const earned = state.badges.includes(b.id);
+    const div = document.createElement('div');
+    div.className = 'badge' + (earned ? ' earned' : '');
+    div.innerHTML = `
+      <span class="badge-icon">${b.icon}</span>
+      <div class="badge-name">${b.name}</div>
+      <div class="badge-desc">${b.desc}</div>`;
+    grid.appendChild(div);
+  });
+}
+
+// ============================================================
+// IMPORT / EXPORT / RESET
+// ============================================================
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const today = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `Hamburger-Methode_Fortschritt_${today}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Fortschritt gespeichert!', '💾');
+});
+
+document.getElementById('importBtn').addEventListener('click', () => {
+  document.getElementById('importFile').click();
+});
+
+document.getElementById('importFile').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      state = { ...state, ...data };
+      saveState();
+      document.getElementById('totalPoints').textContent = state.points || 0;
+      renderTheory();
+      renderDashboard();
+      showToast('Fortschritt geladen!', '📂');
+    } catch(err) {
+      showToast('Datei konnte nicht gelesen werden!', '⚠');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (confirm('Wirklich allen Fortschritt löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) {
+    localStorage.removeItem(STORAGE_KEY);
+    state = { level: 7, points: 0, puzzlesSolved: 0, strukturSolved: 0, essaysWritten: 0, badges: [], drafts: {}, lastActiveDate: null, streak: 0, currentPuzzleId: null, currentPromptIdx: 0 };
+    saveState();
+    location.reload();
+  }
+});
+
+// ============================================================
+// HELPERS
+// ============================================================
+function escapeHTML(s) {
+  return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadState();
+document.getElementById('totalPoints').textContent = state.points || 0;
+renderTheory();
+loadNewStruktur();
+loadNewPuzzle();
+loadNewPrompt();
+renderDashboard();
+
+// auto-trigger initial burger highlight
+setTimeout(() => {
+  document.querySelector('.layer[data-layer="einleitung"]')?.click();
+}, 300);
+</script>
+</body>
+</html>
