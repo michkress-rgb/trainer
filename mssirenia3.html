@@ -1,0 +1,2520 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Der Stern von Königsberg — Klassenfahrt-Edition</title>
+<style>
+  :root {
+    --paper: #ede4d3;
+    --paper-dark: #d8caa8;
+    --ink: #1a1612;
+    --ink-soft: #3a2f25;
+    --sepia: #6b4423;
+    --crimson: #8b1a1a;
+    --gold: #b8893a;
+    --gold-bright: #d4a84b;
+    --teal: #2c4a52;
+    --teal-deep: #1a2f35;
+    --navy: #0d1821;
+    --shadow: rgba(20, 15, 10, 0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--navy);
+    color: var(--ink);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(184, 137, 58, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(44, 74, 82, 0.4) 0%, transparent 60%),
+      linear-gradient(180deg, #0d1821 0%, #1a2f35 100%);
+    z-index: -2;
+    pointer-events: none;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.03) 0px, transparent 1px, transparent 2px, rgba(0,0,0,0.03) 3px),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.5;
+    mix-blend-mode: overlay;
+  }
+
+  .app {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+  }
+
+  /* HUD ============================================================ */
+  .hud {
+    position: sticky;
+    top: 10px;
+    z-index: 100;
+    background: linear-gradient(180deg, var(--teal-deep) 0%, var(--navy) 100%);
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    padding: 14px 20px;
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 20px;
+    align-items: center;
+    color: var(--paper);
+    box-shadow: 0 8px 32px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.05);
+    font-family: 'IM Fell English SC', serif;
+  }
+
+  .hud-section { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+  .hud-section.right { justify-content: flex-end; }
+
+  .hud-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.1;
+  }
+  .hud-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.8;
+  }
+  .hud-value {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--paper);
+    font-family: 'Special Elite', monospace;
+  }
+  .hud-value.danger { color: #e07b5a; }
+  .hud-value.warn { color: var(--gold-bright); }
+
+  .hud-title {
+    text-align: center;
+    font-size: 1.1rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-bright);
+    text-shadow: 0 0 12px rgba(184, 137, 58, 0.4);
+  }
+  .hud-title small {
+    display: block;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--paper);
+    opacity: 0.6;
+    margin-top: 2px;
+  }
+
+  /* PAPER PANELS =================================================== */
+  .panel {
+    background: var(--paper);
+    background-image:
+      radial-gradient(ellipse at 30% 20%, rgba(184, 137, 58, 0.08), transparent 50%),
+      radial-gradient(ellipse at 70% 80%, rgba(107, 68, 35, 0.06), transparent 50%);
+    color: var(--ink);
+    padding: 40px 50px;
+    margin: 0 0 24px;
+    border-radius: 2px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.4) inset,
+      0 20px 50px rgba(0,0,0,0.5),
+      0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+    border: 1px solid rgba(107, 68, 35, 0.2);
+  }
+  .panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.85' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.4 0 0 0 0 0.27 0 0 0 0 0.13 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    pointer-events: none;
+    border-radius: inherit;
+    mix-blend-mode: multiply;
+  }
+  .panel > * { position: relative; z-index: 1; }
+
+  /* TYPOGRAPHY ===================================================== */
+  h1, h2, h3 { font-family: 'IM Fell English SC', serif; font-weight: 600; color: var(--ink); }
+  h1 { font-size: 2.8rem; line-height: 1.1; margin-bottom: 0.3em; letter-spacing: 0.02em; }
+  h2 {
+    font-size: 1.8rem;
+    margin: 0 0 0.6em;
+    border-bottom: 2px solid var(--sepia);
+    padding-bottom: 0.2em;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5em;
+  }
+  h2::before {
+    content: "❦";
+    color: var(--crimson);
+    font-size: 1.2rem;
+  }
+  h3 { font-size: 1.3rem; margin: 1em 0 0.3em; color: var(--sepia); }
+
+  p { margin-bottom: 1em; }
+  em { color: var(--crimson); font-style: italic; font-weight: 500; }
+  .stamp {
+    display: inline-block;
+    border: 2px solid var(--crimson);
+    color: var(--crimson);
+    padding: 4px 14px;
+    font-family: 'IM Fell English SC', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    transform: rotate(-3deg);
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+
+  .lead {
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--ink-soft);
+    border-left: 3px solid var(--crimson);
+    padding-left: 1em;
+    margin: 1em 0 1.5em;
+  }
+
+  /* BUTTONS ======================================================== */
+  .btn {
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 12px 24px;
+    font-family: 'IM Fell English SC', serif;
+    font-size: 1rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 2px;
+    box-shadow: 0 4px 0 var(--sepia), 0 6px 12px rgba(0,0,0,0.3);
+    margin: 6px 6px 6px 0;
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 var(--sepia), 0 8px 16px rgba(0,0,0,0.4);
+  }
+  .btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 var(--sepia), 0 3px 6px rgba(0,0,0,0.3);
+  }
+  .btn.primary {
+    background: var(--crimson);
+    box-shadow: 0 4px 0 #5a1010, 0 6px 12px rgba(139,26,26,0.4);
+  }
+  .btn.primary:hover { box-shadow: 0 6px 0 #5a1010, 0 8px 16px rgba(139,26,26,0.5); }
+  .btn.gold {
+    background: var(--gold);
+    color: var(--ink);
+    box-shadow: 0 4px 0 #7a5a20, 0 6px 12px rgba(184,137,58,0.4);
+  }
+  .btn.ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--sepia);
+    box-shadow: none;
+  }
+  .btn.ghost:hover { background: rgba(107,68,35,0.1); transform: none; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+  /* SUSPECT GRID =================================================== */
+  .suspects {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+    margin: 1em 0;
+  }
+  .suspect-card {
+    background: var(--paper-dark);
+    border: 1px solid var(--sepia);
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  .suspect-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+  }
+  .suspect-card.examined::after {
+    content: "✓ Befragt";
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--teal);
+    color: var(--paper);
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    font-family: 'IM Fell English SC', serif;
+    letter-spacing: 0.1em;
+    border-radius: 2px;
+  }
+  .suspect-portrait {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--teal-deep), var(--navy));
+    position: relative;
+    overflow: hidden;
+  }
+  .suspect-portrait svg { width: 100%; height: 100%; }
+  .suspect-info { padding: 14px 16px; }
+  .suspect-name {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .suspect-role {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--sepia);
+  }
+
+  /* MODAL ========================================================== */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(13, 24, 33, 0.92);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+  }
+  .modal-backdrop.open { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal {
+    background: var(--paper);
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 36px 44px;
+    border-radius: 2px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+    border: 1px solid var(--sepia);
+    animation: rise 0.35s cubic-bezier(0.2, 0.8, 0.4, 1);
+    position: relative;
+  }
+  @keyframes rise { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  .modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: var(--sepia);
+    cursor: pointer;
+    line-height: 1;
+  }
+  .modal-close:hover { color: var(--crimson); }
+
+  /* DIALOGUE ======================================================= */
+  .dialogue {
+    background: rgba(255, 248, 230, 0.6);
+    border-left: 3px solid var(--gold);
+    padding: 12px 18px;
+    margin: 10px 0;
+    font-style: italic;
+    font-size: 1.05rem;
+  }
+  .dialogue::before {
+    content: "„";
+    font-size: 2rem;
+    line-height: 0;
+    color: var(--gold);
+    margin-right: 4px;
+    vertical-align: -0.5em;
+  }
+  .dialogue::after { content: "\201c"; color: var(--gold); }
+
+  /* QUESTION CHOICES ============================================== */
+  .questions { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+  .q-btn {
+    background: rgba(255,255,255,0.5);
+    border: 1px solid var(--sepia);
+    padding: 12px 16px;
+    text-align: left;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: var(--ink);
+    transition: all 0.15s ease;
+    border-radius: 2px;
+  }
+  .q-btn:hover { background: var(--paper-dark); transform: translateX(4px); }
+  .q-btn.asked { opacity: 0.5; text-decoration: line-through; }
+
+  /* LOCATIONS ====================================================== */
+  .locations {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin: 1em 0;
+  }
+  .location-card {
+    background: var(--teal-deep);
+    color: var(--paper);
+    padding: 18px;
+    border: 1px solid var(--gold);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    border-radius: 2px;
+  }
+  .location-card:hover {
+    background: var(--teal);
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(184,137,58,0.3);
+  }
+  .location-icon { font-size: 2rem; margin-bottom: 6px; }
+  .location-name {
+    font-family: 'IM Fell English SC', serif;
+    letter-spacing: 0.1em;
+  }
+
+  /* EVIDENCE ======================================================= */
+  .evidence-list {
+    list-style: none;
+    margin-top: 1em;
+  }
+  .evidence-item {
+    background: rgba(255, 248, 230, 0.5);
+    border: 1px dashed var(--sepia);
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    border-radius: 2px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .evidence-icon {
+    font-size: 1.5rem;
+    color: var(--crimson);
+    flex-shrink: 0;
+  }
+  .evidence-text { flex: 1; }
+  .evidence-source {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--sepia);
+    font-style: italic;
+    margin-top: 4px;
+  }
+
+  /* BADGES ========================================================= */
+  .badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .badge {
+    background: var(--gold);
+    color: var(--ink);
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-family: 'IM Fell English SC', serif;
+    letter-spacing: 0.1em;
+    border: 1px solid var(--ink);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    animation: badgePop 0.5s cubic-bezier(0.3, 1.6, 0.5, 1);
+  }
+  @keyframes badgePop {
+    0% { transform: scale(0) rotate(-180deg); }
+    100% { transform: scale(1) rotate(0); }
+  }
+  .badge-empty {
+    background: transparent;
+    border: 1px dashed var(--sepia);
+    color: var(--sepia);
+    opacity: 0.5;
+  }
+
+  /* TOAST ========================================================== */
+  .toast-container {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 360px;
+  }
+  .toast {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 14px 20px;
+    border-left: 4px solid var(--gold);
+    border-radius: 2px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    animation: toastSlide 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
+    font-family: 'Cormorant Garamond', serif;
+  }
+  .toast.success { border-color: #6a9b6a; }
+  .toast.danger { border-color: var(--crimson); }
+  .toast.badge-toast { border-color: var(--gold); background: linear-gradient(135deg, var(--ink), var(--teal-deep)); }
+  .toast-title {
+    font-family: 'IM Fell English SC', serif;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+  }
+  @keyframes toastSlide {
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  .toast.fade { animation: toastFade 0.4s ease forwards; }
+  @keyframes toastFade { to { opacity: 0; transform: translateX(50px); } }
+
+  /* CHAPTER MARKERS ================================================ */
+  .chapter-marker {
+    text-align: center;
+    margin: 30px 0;
+    color: var(--gold-bright);
+    font-family: 'IM Fell English SC', serif;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+  }
+  .chapter-marker::before, .chapter-marker::after {
+    content: "—————";
+    margin: 0 1em;
+    opacity: 0.5;
+  }
+
+  /* ACCUSATION ===================================================== */
+  .accusation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin: 1em 0;
+  }
+  .accuse-btn {
+    background: var(--paper-dark);
+    border: 2px solid var(--sepia);
+    padding: 16px;
+    cursor: pointer;
+    font-family: 'IM Fell English SC', serif;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    color: var(--ink);
+  }
+  .accuse-btn:hover {
+    background: var(--crimson);
+    color: var(--paper);
+    transform: scale(1.03);
+    border-color: var(--crimson);
+  }
+
+  /* TELEGRAM / NEWSPAPER STYLE ===================================== */
+  .telegram {
+    background: #fffaf0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(107, 68, 35, 0.15) 24px, rgba(107, 68, 35, 0.15) 25px);
+    padding: 24px 30px;
+    font-family: 'Special Elite', monospace;
+    border: 1px solid var(--sepia);
+    margin: 1em 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .telegram-header {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 6px;
+    margin-bottom: 14px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ink);
+  }
+
+  /* MAP / LAYOUT FUN STUFF ========================================= */
+  .ship-map {
+    background: var(--teal-deep);
+    color: var(--paper);
+    padding: 24px;
+    margin: 1em 0;
+    border: 1px solid var(--gold);
+    text-align: center;
+    font-family: 'Special Elite', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    border-radius: 2px;
+    overflow-x: auto;
+  }
+  .ship-map pre {
+    color: var(--gold-bright);
+    text-align: left;
+    display: inline-block;
+    white-space: pre;
+  }
+
+  /* HIDDEN / EASTER EGGS =========================================== */
+  .secret { color: var(--paper); cursor: help; }
+  .secret:hover { color: var(--gold); text-decoration: underline dotted; }
+
+  /* RESPONSIVE ===================================================== */
+  @media (max-width: 700px) {
+    body { font-size: 16px; }
+    .panel { padding: 24px 20px; }
+    h1 { font-size: 2rem; }
+    .hud { grid-template-columns: 1fr; gap: 10px; padding: 12px; }
+    .hud-section.right { justify-content: flex-start; }
+    .modal { padding: 24px 20px; }
+  }
+
+  /* INTRO ANIMATION =============================================== */
+  .intro-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--navy);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+    transition: opacity 0.8s ease;
+  }
+  .intro-screen.hide { opacity: 0; pointer-events: none; }
+  .intro-screen h1 {
+    color: var(--gold-bright);
+    font-size: clamp(2rem, 6vw, 4rem);
+    text-shadow: 0 0 30px rgba(184, 137, 58, 0.5);
+    animation: introTitle 1.5s ease;
+  }
+  .intro-screen .sub {
+    color: var(--paper);
+    font-style: italic;
+    opacity: 0.7;
+    margin: 1em 0 2em;
+    font-size: 1.2rem;
+    animation: introSub 2s ease;
+  }
+  @keyframes introTitle { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+  @keyframes introSub { 0%, 40% { opacity: 0; } 100% { opacity: 0.7; } }
+
+  /* COUNTDOWN PULSE =============================================== */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  .countdown-warn { animation: pulse 1.5s ease-in-out infinite; }
+
+  /* WAVE DECORATION ================================================ */
+  .waves {
+    height: 30px;
+    background: linear-gradient(180deg, transparent, var(--teal) 50%, transparent);
+    margin: 30px 0;
+    opacity: 0.3;
+    mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,15 Q50,5 100,15 T200,15 T300,15 T400,15' stroke='black' fill='none' stroke-width='2'/%3E%3C/svg%3E");
+    mask-repeat: repeat-x;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,15 Q50,5 100,15 T200,15 T300,15 T400,15' stroke='black' fill='none' stroke-width='2'/%3E%3C/svg%3E");
+    -webkit-mask-repeat: repeat-x;
+  }
+
+  /* FOG OVERLAY ON LOSE =========================================== */
+  .lose-overlay {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(13,24,33,0.95), rgba(0,0,0,0.98));
+    z-index: 400;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 40px;
+    text-align: center;
+    color: var(--paper);
+  }
+  .lose-overlay.show { display: flex; }
+  .lose-overlay h2 {
+    color: var(--crimson);
+    font-size: 3rem;
+    border: none;
+    margin-bottom: 0.4em;
+  }
+  .lose-overlay h2::before { content: ""; }
+
+  .win-overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(184,137,58,0.15), rgba(13,24,33,0.98));
+    z-index: 400;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 40px;
+    text-align: center;
+    color: var(--paper);
+  }
+  .win-overlay.show { display: flex; }
+  .win-overlay h2 {
+    color: var(--gold-bright);
+    font-size: 3rem;
+    border: none;
+    text-shadow: 0 0 30px rgba(184,137,58,0.6);
+    margin-bottom: 0.4em;
+  }
+  .win-overlay h2::before { content: ""; }
+
+  /* HINT BOX ======================================================= */
+  .hint-box {
+    background: rgba(255, 220, 100, 0.15);
+    border: 2px dashed var(--gold);
+    padding: 14px 18px;
+    margin: 14px 0;
+    border-radius: 2px;
+    font-style: italic;
+    color: var(--ink-soft);
+    position: relative;
+  }
+  .hint-box::before {
+    content: "✦ Hinweis ✦";
+    display: block;
+    font-family: 'IM Fell English SC', serif;
+    letter-spacing: 0.15em;
+    color: var(--sepia);
+    font-style: normal;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+  }
+
+  /* NOTEBOOK ======================================================= */
+  .notebook {
+    background:
+      linear-gradient(180deg, transparent 0px, transparent 26px, rgba(180, 60, 60, 0.2) 26px, rgba(180, 60, 60, 0.2) 27px, transparent 27px),
+      repeating-linear-gradient(180deg, transparent, transparent 27px, rgba(80, 100, 180, 0.15) 27px, rgba(80, 100, 180, 0.15) 28px);
+    padding: 30px 30px 30px 60px;
+    font-family: 'Special Elite', monospace;
+    line-height: 28px;
+    background-color: #fdf6e3;
+    border: 1px solid var(--sepia);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    position: relative;
+    border-radius: 2px;
+  }
+  .notebook::before {
+    content: "";
+    position: absolute;
+    left: 36px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(180, 60, 60, 0.4);
+  }
+
+  /* ANIMATION FOR REVEALS ========================================= */
+  .reveal { animation: reveal 0.5s ease; }
+  @keyframes reveal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+
+/* =====================================================================
+   2026 ÜBERARBEITUNG: hellere Oberfläche, bessere Lesbarkeit, Klasse 9
+   ===================================================================== */
+:root {
+  --paper: #fffaf0;
+  --paper-dark: #f4e5c7;
+  --ink: #122236;
+  --ink-soft: #364b63;
+  --sepia: #8a5a2b;
+  --crimson: #a83232;
+  --gold: #d89b2b;
+  --gold-bright: #f0bd4d;
+  --teal: #2f7f90;
+  --teal-deep: #14566a;
+  --navy: #e9f6fb;
+  --shadow: rgba(18, 34, 54, 0.18);
+}
+
+html, body {
+  background: #e9f6fb;
+  color: var(--ink);
+  font-size: 19px;
+}
+body::before {
+  background:
+    radial-gradient(ellipse at 10% 0%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 42%),
+    radial-gradient(ellipse at 90% 10%, rgba(240,189,77,0.28) 0%, rgba(240,189,77,0) 45%),
+    linear-gradient(180deg, #e9f6fb 0%, #f7fbff 45%, #e1f0f4 100%);
+}
+body::after { opacity: 0.12; mix-blend-mode: multiply; }
+
+.app { padding: 24px; }
+.hud {
+  background: rgba(255,250,240,0.96);
+  color: var(--ink);
+  border: 2px solid rgba(20,86,106,0.35);
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(18, 34, 54, 0.16);
+  backdrop-filter: blur(10px);
+}
+.hud-label { color: var(--teal-deep); opacity: 1; font-weight: 700; }
+.hud-value { color: var(--ink); }
+.hud-title { color: var(--teal-deep); text-shadow: none; }
+.hud-title small { color: var(--ink-soft); opacity: 0.9; }
+.hud .btn.ghost { color: var(--ink); border-color: rgba(20,86,106,0.45); background: #ffffff; }
+.hud .btn.ghost:hover { background: #eef8fb; }
+
+.panel {
+  background: var(--paper);
+  border-radius: 18px;
+  border: 1px solid rgba(20,86,106,0.18);
+  box-shadow: 0 14px 34px rgba(18, 34, 54, 0.14);
+}
+.panel::before { opacity: 0.08; }
+h1, h2, h3 { color: var(--ink); }
+h2 { border-bottom-color: rgba(20,86,106,0.35); }
+h2::before { color: var(--teal); }
+.lead { color: var(--ink-soft); border-left-color: var(--teal); background: #eef8fb; padding: 14px 18px; border-radius: 12px; }
+
+.btn {
+  border-radius: 12px;
+  box-shadow: 0 4px 0 rgba(18,34,54,0.25), 0 8px 18px rgba(18,34,54,0.16);
+  font-weight: 700;
+}
+.btn.primary { background: #0f6f8c; color: #fff; box-shadow: 0 4px 0 #0b5065, 0 8px 18px rgba(15,111,140,0.25); }
+.btn.primary:hover { box-shadow: 0 6px 0 #0b5065, 0 10px 22px rgba(15,111,140,0.28); }
+.btn.gold { background: #f2c14e; color: #122236; box-shadow: 0 4px 0 #b78316, 0 8px 18px rgba(216,155,43,0.25); }
+.btn.ghost { background: #fff; color: var(--ink); border: 1px solid rgba(20,86,106,0.35); }
+.btn:focus-visible, .q-btn:focus-visible, .suspect-card:focus-visible, .location-card:focus-visible, .accuse-btn:focus-visible, .modal-close:focus-visible {
+  outline: 4px solid rgba(242,193,78,0.95);
+  outline-offset: 3px;
+}
+
+.suspect-card {
+  background: #fffdf7;
+  border: 1px solid rgba(20,86,106,0.28);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(18,34,54,0.12);
+}
+.suspect-card:hover { box-shadow: 0 14px 26px rgba(18,34,54,0.18); }
+.suspect-card.examined::after { background: #0f6f8c; color: #fff; border-radius: 999px; }
+.suspect-portrait { background: linear-gradient(135deg, #e7f5f7, #c7e4ec); }
+.suspect-role { color: var(--ink-soft); }
+
+.location-card {
+  background: #ffffff;
+  color: var(--ink);
+  border: 1px solid rgba(20,86,106,0.32);
+  border-radius: 16px;
+  box-shadow: 0 8px 18px rgba(18,34,54,0.10);
+}
+.location-card:hover { background: #eef8fb; box-shadow: 0 12px 24px rgba(18,34,54,0.16); }
+.location-icon { color: var(--teal-deep); }
+
+.modal-backdrop { background: rgba(18, 34, 54, 0.55); }
+.modal { border-radius: 18px; border: 1px solid rgba(20,86,106,0.25); box-shadow: 0 24px 70px rgba(18,34,54,0.35); }
+.dialogue { background: #ffffff; border-left-color: var(--teal); border-radius: 12px; color: var(--ink); }
+.dialogue::before, .dialogue::after { color: var(--teal); }
+.q-btn { background: #fff; border-color: rgba(20,86,106,0.28); border-radius: 12px; }
+.q-btn:hover { background: #eef8fb; }
+.q-btn.asked { opacity: 0.75; text-decoration: none; border-style: dashed; }
+
+.evidence-item { background: #fff; border: 1px solid rgba(20,86,106,0.22); border-radius: 14px; }
+.evidence-icon { color: var(--teal-deep); }
+.badge { border-radius: 999px; background: #f2c14e; }
+.toast { background: #102338; color: #fff; border-radius: 14px; }
+.toast-title { color: #f2c14e; }
+.chapter-marker { color: var(--teal-deep); }
+.ship-map { background: #ffffff; color: var(--ink); border-color: rgba(20,86,106,0.25); border-radius: 18px; }
+.ship-map pre { color: var(--teal-deep); }
+.hint-box { background: #fff7d8; color: var(--ink); border-color: #d89b2b; border-radius: 14px; }
+.notebook { background-color: #fffdf7; border-radius: 16px; }
+.intro-screen { background: linear-gradient(180deg, #d9f1f8 0%, #fffaf0 100%); color: var(--ink); }
+.intro-screen h1 { color: var(--teal-deep); text-shadow: none; }
+.intro-screen .sub, .intro-screen p { color: var(--ink-soft) !important; opacity: 1 !important; }
+.lose-overlay { background: rgba(18,34,54,0.94); }
+.win-overlay { background: linear-gradient(180deg, rgba(18,34,54,0.96), rgba(20,86,106,0.96)); }
+
+.case-progress {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+  margin-top: 1em;
+}
+.case-step {
+  background: #ffffff;
+  border: 1px solid rgba(20,86,106,0.24);
+  border-radius: 14px;
+  padding: 12px 14px;
+  min-height: 88px;
+}
+.case-step strong { display: block; color: var(--teal-deep); margin-bottom: 4px; }
+.case-step.done { background: #eaf7ee; border-color: rgba(28,120,70,0.35); }
+.case-step.missing { background: #fff8e6; }
+.case-step small { color: var(--ink-soft); line-height: 1.35; display: block; }
+.teacher-note {
+  background: #eef8fb;
+  border: 1px solid rgba(20,86,106,0.25);
+  border-radius: 14px;
+  padding: 12px 16px;
+  margin: 14px 0;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 700px) {
+  .app { padding: 12px; }
+  .panel { padding: 24px 20px; }
+  .chapter-marker::before, .chapter-marker::after { content: ""; }
+}
+
+
+/* Offline-taugliche Schriftfamilien: keine externen Fonts nötig */
+html, body { font-family: Georgia, "Times New Roman", serif; }
+h1, h2, h3, .hud, .hud-title, .btn, .suspect-name, .location-name, .badge, .chapter-marker, .hint-box::before { font-family: Georgia, "Times New Roman", serif; }
+.hud-value, .telegram, .ship-map, .notebook { font-family: Consolas, "Courier New", monospace; }
+
+
+/* RANDOM CASE + SUSPENSE UPDATE ====================================== */
+.suspense-shell {
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: stretch;
+}
+.suspense-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.9;
+  text-align: center;
+}
+.suspense-bar {
+  height: 12px;
+  border: 1px solid rgba(107,68,35,0.55);
+  background: #fff7df;
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.18);
+}
+.suspense-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #81b29a 0%, #f2cc8f 55%, #c8553d 100%);
+  transition: width 0.45s ease;
+}
+.suspense-text {
+  font-size: 0.7rem;
+  color: var(--paper);
+  opacity: 0.78;
+  text-align: center;
+  line-height: 1.1;
+}
+.case-random-note {
+  background: #f7fbff;
+  border: 1px solid rgba(47,111,145,0.28);
+  border-left: 5px solid #2f6f91;
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin: 16px 0;
+}
+.surprise-card {
+  background: #fff0d9;
+  border: 2px solid rgba(184,92,56,0.35);
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin: 16px 0;
+  box-shadow: 0 8px 22px rgba(80,42,20,0.12);
+}
+
+</style>
+</head>
+<body>
+
+<!-- INTRO SCREEN -->
+<div class="intro-screen" id="introScreen">
+  <h1>MS Sirenia</h1>
+  <p class="sub">— Der Stern von Königsberg —<br>Klassenfahrt-Edition: Eine schwere Kriminalgeschichte auf hoher See</p>
+  <button class="btn primary" onclick="startGame()">An Bord gehen</button>
+  <p style="color: var(--paper); opacity: 0.4; font-size: 0.85rem; margin-top: 2em; max-width: 500px;">
+    Hamburg, 14. September 1924. Ein Diamant verschwindet. Fünf Tage bis zur Ankunft in New York.<br>
+    <em style="color: var(--gold-bright); opacity: 0.7;">Findest du den Dieb, bevor das Schiff anlegt? Sammle Beweise, prüfe Alibis und begründe deine Anklage.</em>
+  </p>
+</div>
+
+<div class="app">
+
+  <!-- HUD -->
+  <div class="hud">
+    <div class="hud-section">
+      <div class="hud-item">
+        <span class="hud-label">Tag</span>
+        <span class="hud-value" id="dayDisplay">1 / 3</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">Punkte</span>
+        <span class="hud-value warn" id="pointsDisplay">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">Beweise</span>
+        <span class="hud-value" id="evidenceDisplay">0</span>
+      </div>
+    </div>
+    <div class="hud-title">
+      Der Stern von Königsberg
+      <small>Akte 1924-09-14</small>
+    </div>
+    <div class="hud-section right">
+      <div class="suspense-shell" title="Je höher die Spannung, desto stärker wächst der Druck an Bord.">
+        <div class="suspense-label">Spannung</div>
+        <div class="suspense-bar"><div class="suspense-fill" id="suspenseFill"></div></div>
+        <div class="suspense-text" id="suspenseText">Ruhig</div>
+      </div>
+      <button class="btn ghost" style="padding: 8px 14px; margin: 0;" onclick="openNotebook()">Notizbuch</button>
+      <button class="btn ghost" style="padding: 8px 14px; margin: 0;" onclick="openBadges()">Orden</button>
+    </div>
+  </div>
+
+  <!-- MAIN STORY AREA -->
+  <main id="storyArea"></main>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- TOASTS -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- LOSE OVERLAY -->
+<div class="lose-overlay" id="loseOverlay">
+  <h2>Das Schiff ist im Hafen.</h2>
+  <p style="font-size: 1.3rem; max-width: 600px; margin-bottom: 1.5em; color: var(--paper); opacity: 0.8;" id="loseReason"></p>
+  <p style="opacity: 0.5; margin-bottom: 2em;">Der Dieb ist mit der Menge von Bord gegangen. Der Stern von Königsberg ist verloren.</p>
+  <button class="btn gold" onclick="restartGame()">Von vorn beginnen</button>
+</div>
+
+<!-- WIN OVERLAY -->
+<div class="win-overlay" id="winOverlay">
+  <h2 id="winTitle">Fall gelöst!</h2>
+  <div id="winContent" style="max-width: 700px;"></div>
+  <button class="btn gold" style="margin-top: 2em;" onclick="restartGame()">Erneut spielen</button>
+</div>
+
+<script>
+// ========================================================================
+// SPIELZUSTAND
+// ========================================================================
+const STATE = {
+  day: 1,
+  points: 0,
+  chapter: 0,
+  examined: new Set(),    // ID-Liste befragter Verdächtiger
+  searched: new Set(),    // ID-Liste durchsuchter Orte
+  evidence: [],           // gesammelte Beweise
+  badges: [],             // verdiente Orden
+  notes: [],              // Notizbucheinträge
+  asked: new Set(),       // gestellte Fragen (suspectId+questionId)
+  flags: new Set(),       // Story-Flags
+  wrongAccusations: 0,
+  hintsUsed: 0,
+  maxDay: 5,
+  suspense: 8,
+  culpritId: null,
+  caseProfile: null,
+  startTime: Date.now()
+};
+
+// ========================================================================
+// ZUFALLSFALL: Der Täter wird bei jedem Neustart neu bestimmt
+// ========================================================================
+const CASE_PROFILES = {
+  viktor: {
+    means: "Schlosskunst, Ablenkung und eine vorgetäuschte Handverletzung",
+    motive: "Spielschulden und Angst vor der Überwachung in New York",
+    trace: "eine winzige Spielkarte mit Brandts Monogramm, versteckt im Fensterrahmen",
+    brokenAlibi: "Brandt war nicht in seiner Kabine, obwohl er genau das behauptete",
+    framing: "Er wollte seine Bandagen als Schutzschild benutzen und mehrere Spuren auf andere lenken",
+    hiding: "hinter einem Spiegel mit doppeltem Boden in seiner Kabine",
+    confession: "Brandt wollte den Stein in New York an seine Gläubiger übergeben. Die Bandagen waren sein Trick: Niemand sollte ihm feine Schlossarbeit zutrauen."
+  },
+  greta: {
+    means: "Bühnenkostüm, Nebelmaschine, Seitentür und ein gestohlener Blick auf die Kombination",
+    motive: "ein geplatzter New-York-Vertrag und die Angst, nach der Reise entlassen zu werden",
+    trace: "ein silberner Paillettenfaden aus Gretas zweitem Kostüm, nicht aus dem trockenen Bühnenumhang",
+    brokenAlibi: "Greta hatte während der zweiten Zugabe 8 Minuten hinter dem Vorhang, die niemand genau beobachtete",
+    framing: "Sie legte Brandts Schlosskunst-Buch auffällig zurück, damit alle auf den Magier schauen",
+    hiding: "im Resonanzraum des Salonklaviers",
+    confession: "Greta nutzte Applaus und Zugabe als Deckung. Die große Show sollte beweisen, dass sie niemals den Salon verlassen konnte — aber die Seitentür gab ihr genau acht Minuten."
+  },
+  otto: {
+    means: "Funkraum-Zugang, Morsezeiten als Alibi und Kenntnis schlecht versteckter Zahlen",
+    motive: "Erpressung durch einen Empfänger in New York, der ein altes Funkprotokoll gegen ihn verwenden wollte",
+    trace: "ein blaues Morsepapier-Stückchen mit Funkraumtinte am Tresorfuß",
+    brokenAlibi: "das automatische Funkprotokoll enthält eine ungewöhnliche 11-Minuten-Lücke, die nachträglich geglättet wurde",
+    framing: "Er ließ das Wort BRANDT im Telegramm sichtbar, damit der Verdacht sofort in diese Richtung lief",
+    hiding: "im hohlen Fuß des Funkgerät-Tisches",
+    confession: "Otto wusste, dass Zahlen Menschen verraten. Er fand die Kombination in der Bibel, manipulierte das Funkprotokoll und wollte den Diamanten über eine chiffrierte Depesche verkaufen."
+  },
+  adler: {
+    means: "Fotografie der Kapitänssuite, journalistische Bewegungsfreiheit und ein präparierter Mantel",
+    motive: "eine sensationelle Schlagzeile und Schulden bei seiner Zeitung nach einer verlorenen Klage",
+    trace: "ein Stück belichteter Film mit dem Tresor im Hintergrund, halb verbrannt im Aschenbecher",
+    brokenAlibi: "Adlers angebliche Recherchezeiten widersprechen den Uhrzeiten auf seinen eigenen Fotoplatten",
+    framing: "Er sammelte Verdachtsmomente gegen alle anderen, um später den Artikel selbst steuern zu können",
+    hiding: "in einer Filmkassette mit doppeltem Boden",
+    confession: "Adler fotografierte mehr als Räume: Er fotografierte den Tresor und rekonstruierte die Kombination. Er wollte zuerst den Skandal verkaufen, dann den Stein."
+  },
+  vasquez: {
+    means: "Fachwissen über den Diamanten, genaue Kenntnis der Übergabe und ruhige Hand beim Tresor",
+    motive: "ihr Auftraggeber wollte den Preis drücken; ein verschwundener Stein war wertvoller als ein sauberer Kauf",
+    trace: "winziger Lupenstaub und ein grüner Wachssiegelrest aus ihrer Dokumentenmappe am Tresor",
+    brokenAlibi: "das Bibliothekslogbuch ist sauber, aber die Tinte ihres Abgangseintrags ist deutlich frischer",
+    framing: "Sie machte Brandts Hände auffällig, weil sie wusste, dass alle einem Magier misstrauen würden",
+    hiding: "in einem falschen Fach unter ihrem Edelstein-Katalog",
+    confession: "Vasquez erkannte, dass sie als Expertin jeden Ersatzstein entlarven konnte. Darum stahl sie den echten Diamanten selbst und baute Brandt als perfekten Verdächtigen auf."
+  }
+};
+
+let CASE_CORE_EVIDENCE = [];
+
+function initCase() {
+  const pool = Object.keys(CASE_PROFILES);
+  STATE.culpritId = pool[Math.floor(Math.random() * pool.length)];
+  STATE.caseProfile = CASE_PROFILES[STATE.culpritId];
+  CASE_CORE_EVIDENCE = [
+    { id: "safe_unbroken", title: "Tatmittel", text: "Der Tresor wurde nicht aufgebrochen: Kombination oder Schlosskunst." },
+    { id: "wet_footprint", title: "Fluchtweg", text: "Fußabdruck Größe 42–43 führt zum Fenster und zum Sonnendeck." },
+    { id: "combo_in_bible", title: "Kombination", text: "Die Tresor-Kombination war in der Bibel des Kapitäns versteckt." },
+    { id: "hidden_clothes", title: "Verkleidung", text: "Mantel und Hut im Rettungsboot enthalten Spuren vom Tresor." },
+    { id: "klasse9_group_alibi", title: "Klassenfahrt-Alibi", text: "Die 9. Klasse war überwiegend in einer beaufsichtigten Abendrunde." },
+    { id: "teacher_logbook", title: "Lehrerprotokoll", text: "Die Lehrkräfte führten Anwesenheitslisten und korrigierten Texte; mehrere Zeiten sind gegenseitig bestätigt." },
+    { id: "actual_trace", title: "Täterspur", text: STATE.caseProfile.trace },
+    { id: "actual_motive", title: "Motiv", text: STATE.caseProfile.motive },
+    { id: "actual_means", title: "Mittel", text: STATE.caseProfile.means },
+    { id: "broken_alibi", title: "Gebrochenes Alibi", text: STATE.caseProfile.brokenAlibi },
+    { id: "framing_attempt", title: "Falsche Fährte", text: STATE.caseProfile.framing },
+    { id: "surprise_code", title: "Überraschungsspur", text: "Eine scheinbar harmlose Klassennotiz wird zum Schlüssel: Die Reihenfolge der Zeiten verrät eine Lücke im Bordprotokoll." }
+  ];
+}
+
+function culpritName() {
+  return SUSPECTS[STATE.culpritId] ? SUSPECTS[STATE.culpritId].name : "die verdächtige Person";
+}
+
+function addCaseEvidence(id, icon) {
+  if (!STATE.caseProfile) initCase();
+  const profile = STATE.caseProfile;
+  const map = {
+    actual_trace: profile.trace,
+    actual_motive: profile.motive,
+    actual_means: profile.means,
+    broken_alibi: profile.brokenAlibi,
+    framing_attempt: profile.framing,
+    surprise_code: "Die Klassennotiz mit scheinbar zufälligen Uhrzeiten passt zu einer Lücke im Bordprotokoll — kein Kinderstreich, sondern ein versteckter Zeitcode."
+  };
+  addEvidence(id, map[id] || "Neue Zufallsspur", icon || "!");
+}
+
+const CRITICAL_EVIDENCE = [
+  { id: "safe_unbroken", title: "Tatmittel", text: "Der Tresor wurde nicht aufgebrochen: Kombination oder Schlosskunst." },
+  { id: "wet_footprint", title: "Fluchtweg", text: "Fußabdruck Größe 42–43 führt zum Fenster und zum Sonnendeck." },
+  { id: "viktor_missing", title: "Wackliges Alibi", text: "Brandt war um 22:15 Uhr nicht in seiner Kabine." },
+  { id: "viktor_lockbook", title: "Fähigkeit", text: "Brandt lieh ein Buch über Schlosskunst aus." },
+  { id: "viktor_no_bandage", title: "Widerspruch", text: "Vasquez sah Brandt ohne Bandagen Klavier spielen." },
+  { id: "viktor_fake_injury", title: "Scheinverletzung", text: "Der Arzt hält Brandts Bandagen für unnötig." },
+  { id: "shoe_sizes", title: "Schuhgröße", text: "Brandts Schuhgröße passt zum Abdruck; Lindqvist und Kraus eher nicht." },
+  { id: "hidden_clothes", title: "Verkleidung", text: "Mantel und Hut im Rettungsboot enthalten Spuren vom Tresor." },
+  { id: "greta_stage_confirmed", title: "Falsche Mantelspur", text: "Greta trug zwar einen schwarzen Umhang, war aber sichtbar auf der Bühne." },
+  { id: "otto_radio_log", title: "Falsche Technikspur", text: "Otto war laut Funkprotokoll während der Tatzeit im Funkraum gebunden." },
+  { id: "adler_boots", title: "Falsche Fußspur", text: "Adler hat Schuhgröße 43, aber breite Bergstiefel; der Abdruck war schmal." },
+  { id: "captain_note", title: "Motiv des Täters", text: "Der Kapitän wollte Brandts Schulden geheim melden: Brandt hatte ein starkes Motiv." },
+  { id: "klasse9_group_alibi", title: "Klassenfahrt-Alibi", text: "Die 9. Klasse war zur Tatzeit überwiegend in einer beaufsichtigten Abendrunde." },
+  { id: "teacher_logbook", title: "Lehrerprotokoll", text: "Die Lehrkräfte führten Anwesenheitslisten und korrigierten Texte; mehrere Zeiten sind gegenseitig bestätigt." },
+  { id: "lea_observation", title: "Schülerblick", text: "Lea sah Brandt kurz nach 22:00 ohne sichere Bandagen am Seitengang." },
+  { id: "amir_camera_time", title: "Zeitmarke", text: "Amirs Foto zeigt den Seitengang um 22:46 leer; die Flucht muss danach passiert sein." },
+  { id: "jonas_fake_key", title: "Falscher Schlüssel", text: "Jonas hatte nur einen Requisitenschlüssel für eine Theaterszene, nicht den Tresorschlüssel." },
+  { id: "frau_weiss_essay_stack", title: "Gesichertes Lehreralibi", text: "Frau Weiss war mit der Korrekturmappe im Lesesalon; die Seiten tragen Zeitvermerke." }
+];
+
+// ========================================================================
+// VERDÄCHTIGE
+// ========================================================================
+const SUSPECTS = {
+  margarete: {
+    name: "Lady Margarete von Hessen",
+    role: "Reiche Witwe, Schmucksammlerin",
+    portrait: portraitMargarete(),
+    intro: "Eine elegante Dame um die sechzig in einem dunkelgrünen Samtkleid. An ihrem Hals funkelt ein Smaragd, an ihren Fingern blitzen Ringe. Sie mustert dich kühl durch ihr Lorgnon.",
+    questions: {
+      whereWere: {
+        q: "Wo waren Sie gestern Abend zwischen 22:00 und 23:30 Uhr?",
+        a: "Im Speisesaal, mein Lieber. Das Captains-Dinner. Mindestens dreißig Zeugen. Der Maître d', Herr Fabricius, kann es bestätigen — er hat selbst meinen Stuhl gerückt. Wir haben um 23:30 Uhr aufgelöst.",
+        evidence: { id: "margarete_alibi", text: "Lady von Hessen behauptet, von 21:00 bis 23:30 beim Captains-Dinner gewesen zu sein.", icon: "✓" }
+      },
+      diamond: {
+        q: "Was wissen Sie über den Stern von Königsberg?",
+        a: "Ein wunderschöner Stein. 47 Karat, ostpreußischer Herkunft. Ich habe selbst dem Kapitän ein Angebot gemacht — er wollte ihn jedoch erst in New York verkaufen. Ich biete einen ehrlichen Preis. Diebstahl ist die Sprache der Schwachen."
+      },
+      others: {
+        q: "Verdächtigen Sie jemanden an Bord?",
+        a: "Dieser <em>Magier</em>, Brandt — ich traue ihm nicht. Männer, die Karten verschwinden lassen, lassen auch andere Dinge verschwinden. Und der norwegische Kerl, Lindqvist — er ist seekrank, sagt er. Bei dieser See? Lächerlich."
+      },
+      diary: {
+        q: "Was ist mit Ihrer Smaragdkette?",
+        a: "Familienerbstück. Vier Generationen. Sie verlässt nie meinen Hals — nicht einmal in der Badewanne.",
+        evidence: { id: "margarete_emerald", text: "Lady Margarete trägt ihre Smaragdkette permanent — sie war beim Dinner sichtbar.", icon: "💎" }
+      }
+    }
+  },
+  viktor: {
+    name: "Viktor Brandt",
+    role: "Bühnenmagier (\u201eDer Große Brandini\u201c)",
+    portrait: portraitViktor(),
+    intro: "Ein hagerer Mann Mitte vierzig im schwarzen Anzug. Sein gewachster Schnurrbart zuckt. Beide Hände sind in weißen Mullbinden eingewickelt. Er deutet mit dem Kinn auf einen Stuhl.",
+    questions: {
+      whereWere: {
+        q: "Wo waren Sie gestern Abend zwischen 22:00 und 23:30 Uhr?",
+        a: "In meiner Kabine, allein. Ich habe meine neue Show vorbereitet. Bei diesen <em>Verletzungen</em> bin ich kein Gesellschafter. Sehen Sie meine Hände? Ein Unfall mit der Guillotine-Illusion in Hamburg. Schmerzhaft."
+      },
+      hands: {
+        q: "Was genau ist mit Ihren Händen passiert?",
+        a: "Eine kleine Panne. Die Klinge ging einen Moment früher hinunter, als sie sollte. Schnittwunden, nichts Ernstes. Der Schiffsarzt hat sie verbunden. Aber ich kann zur Zeit kaum eine Karte mischen, geschweige denn meine Show geben.",
+        evidence: { id: "viktor_hands", text: "Viktor behauptet, seine Hände seien bandagiert wegen Schnittwunden — angeblich kann er kaum mischen.", icon: "🩹" }
+      },
+      magic: {
+        q: "Sie sind Magier — können Sie Schlösser öffnen?",
+        a: "(Lacht) Was für eine Beleidigung! Ein <em>Künstler</em> ist kein Einbrecher. Aber zugegeben — Schlosskunst ist Teil der Ausbildung. Houdini selbst war Meister darin. Ich beherrsche es. Aber nutze es nicht für Niederträchtigkeiten."
+      },
+      others: {
+        q: "Verdächtigen Sie jemanden?",
+        a: "Der Steward, Kraus, hat einen Generalschlüssel. Und diese Gemmologin, Vasquez — sie wusste genau, was der Stein wert ist. Folge dem Geld, mein Freund."
+      }
+    }
+  },
+  vasquez: {
+    name: "Dr. Elena Vasquez",
+    role: "Gemmologin (im Auftrag der Käuferseite)",
+    portrait: portraitVasquez(),
+    intro: "Eine ernste Frau Anfang dreißig in einem grauen Reisekostüm. Sie trägt eine Lupe an einer Kette. Auf dem Tisch vor ihr liegen Fachbücher und ein Notizbuch voller Skizzen.",
+    questions: {
+      whereWere: {
+        q: "Wo waren Sie gestern Abend zwischen 22:00 und 23:30 Uhr?",
+        a: "In der Bibliothek. Ich habe an einem Bericht für meinen Auftraggeber gearbeitet — den Käufer in New York. Der Bibliothekar, Herr Richter, war bis 23:00 Uhr da, danach war ich allein. Aber das Logbuch der Bibliothek zeigt meinen Eintrag um 21:45 Uhr.",
+        evidence: { id: "vasquez_alibi", text: "Dr. Vasquez behauptet, in der Bibliothek gewesen zu sein. Eintrag um 21:45 Uhr. Allein nach 23:00 Uhr.", icon: "📚" }
+      },
+      diamond: {
+        q: "Was wissen Sie über den Stern von Königsberg?",
+        a: "Ich kenne ihn besser als jeder andere an Bord. Ich habe ihn vor zwei Tagen authentifiziert — im Beisein des Kapitäns. 47,3 Karat, Schliff aus dem 18. Jahrhundert, mit charakteristischer Inklusion in der Tafel. Unverwechselbar. Ein zweiter wie er existiert nicht."
+      },
+      access: {
+        q: "Sie hatten als einzige außer dem Kapitän Zugang zum Tresor — stimmt das?",
+        a: "Nicht ganz. Ich war beim Authentifizieren <em>anwesend</em>. Aber den Tresor hat nur der Kapitän geöffnet — ich habe die Kombination nie gesehen. Er hat mit dem Rücken zu mir gestanden.",
+        evidence: { id: "vasquez_access", text: "Dr. Vasquez sah den Diamanten beim Authentifizieren, kennt die Tresor-Kombination aber angeblich nicht.", icon: "🔍" }
+      },
+      others: {
+        q: "Verdächtigen Sie jemanden?",
+        a: "Mir fiel auf, dass Brandt — der Magier — beim Mittagessen <em>ohne</em> Bandagen am Klavier saß und spielte. Ich bin sicher. Hände wie Adlerklauen, kein Verband. Vielleicht eine halbe Stunde lang. Gegen 13:30 Uhr.",
+        evidence: { id: "viktor_no_bandage", text: "Dr. Vasquez sah Brandt um 13:30 Uhr OHNE Bandagen Klavier spielen. Seine Hände waren völlig in Ordnung.", icon: "👀" }
+      }
+    }
+  },
+  tobias: {
+    name: "Tobias Kraus",
+    role: "Erster Steward",
+    portrait: portraitTobias(),
+    intro: "Ein junger Mann, höchstens fünfundzwanzig, in tadelloser weißer Stewarduniform. Er steht stramm, fast militärisch. Seine Augen sind nervös.",
+    questions: {
+      whereWere: {
+        q: "Wo waren Sie gestern Abend zwischen 22:00 und 23:30 Uhr?",
+        a: "Auf Dienst, Herr Inspektor. Ich habe das Captains-Dinner serviert von 21:00 bis 22:45 Uhr, danach Aufräumdienst im Salon bis 23:45 Uhr. Drei Kollegen waren bei mir. Bitte fragen Sie Maître d' Fabricius.",
+        evidence: { id: "tobias_alibi", text: "Tobias war im Dienst beim Captains-Dinner UND danach beim Aufräumen — Zeugen vorhanden.", icon: "🍽️" }
+      },
+      keys: {
+        q: "Sie haben einen Generalschlüssel — stimmt das?",
+        a: "Ja, Herr. Aber er öffnet nur Kabinen — nicht Tresore! Ich war noch nie in den Privaträumen des Kapitäns. Niemals. Das schwöre ich. Außerdem trage ich den Schlüssel nur tagsüber. Nachts liegt er im Wandschrank des Oberkellners.",
+        evidence: { id: "tobias_key", text: "Tobias' Schlüssel öffnet keine Tresore und wird nachts eingeschlossen.", icon: "🗝️" }
+      },
+      saw: {
+        q: "Haben Sie gestern Abend etwas Ungewöhnliches gesehen?",
+        a: "Hmm... ja, eigentlich. Ich brachte gegen 22:50 Uhr eine Flasche Wein in den Salon. Ich sah jemanden den Korridor zur Kapitänssuite verlassen. Eine schlanke Person in dunklem Mantel, mit Hut tief im Gesicht. Konnte das Gesicht nicht erkennen. Aber — die Person ging rasch zum Treppenaufgang nach oben, zum Sonnendeck.",
+        evidence: { id: "tobias_witness", text: "Tobias sah um 22:50 Uhr eine schlanke Person in dunklem Mantel, die die Kapitänssuite verließ und zum Sonnendeck (oben) ging.", icon: "👤" }
+      },
+      others: {
+        q: "Wem trauen Sie nicht?",
+        a: "Ich darf das eigentlich nicht sagen, aber... der norwegische Herr, Lindqvist — er behauptet seekrank zu sein, aber ich sah ihn heute Morgen beim Frühstück <em>schwedische Heringe</em> essen. Wer wirklich seekrank ist, isst nicht Hering."
+      }
+    }
+  },
+  greta: {
+    name: "Greta Nachtigall",
+    role: "Chanson-Sängerin der Bordkapelle",
+    portrait: portraitGreta(),
+    intro: "Eine junge Sängerin mit strengem Bob und heller Stimme. Über einem silbernen Kleid trägt sie einen schwarzen Bühnenumhang. Sie wirkt beleidigt, aber nicht ängstlich.",
+    questions: {
+      whereWere: {
+        q: "Wo waren Sie gestern Abend zwischen 22:00 und 23:30 Uhr?",
+        a: "Auf der Bühne im Salon. Von 22:05 bis kurz nach 23:00 Uhr sang ich. Danach war ich hinter der Bühne, um mich umzuziehen. Der Pianist, zwei Kellner und das halbe Publikum können das bestätigen.",
+        evidence: { id: "greta_stage", text: "Greta behauptet, von 22:05 bis kurz nach 23:00 Uhr im Salon gesungen zu haben.", icon: "♪" }
+      },
+      cloak: {
+        q: "Warum tragen Sie einen schwarzen Umhang?",
+        a: "Er gehört zu meiner Nummer 'Die Dame im Nebel'. Ein schwarzer Umhang ist auf einem Schiff nicht gerade ein Verbrechen. Aber mein Bühnenumhang war nach dem Auftritt trocken und hing im Kostümraum.",
+        evidence: { id: "greta_cloak", text: "Greta besitzt einen schwarzen Bühnenumhang. Er könnte zur Zeugenaussage passen, soll aber trocken gewesen sein.", icon: "▣" }
+      },
+      captain: {
+        q: "Hatten Sie Streit mit dem Kapitän?",
+        a: "Er wollte meine Abendnummer kürzen. Ich habe mich beschwert, ja. Aber ein gekürztes Lied ist kein Grund, einen Diamanten zu stehlen. Ich brauche Applaus, keine Edelsteine."
+      },
+      others: {
+        q: "Was haben Sie gesehen?",
+        a: "Kurz vor meinem Auftritt stand Brandt am Bühneneingang. Er wirkte nervös und fragte, ob man vom Salon aus zum Außengang komme. Ich hielt es für Lampenfieber."
+      }
+    }
+  },
+  otto: {
+    name: "Otto Reuter",
+    role: "Funker und Morse-Spezialist",
+    portrait: portraitOtto(),
+    intro: "Ein schmaler Mann mit Tintenflecken an den Fingern und Kopfhörern um den Hals. Auf seinem Tisch liegen Telegrammstreifen, Zahlenkolonnen und ein kalter Kaffee.",
+    questions: {
+      whereWere: {
+        q: "Wo waren Sie gestern Abend zwischen 22:00 und 23:30 Uhr?",
+        a: "Im Funkraum. Sturmwarnungen aus Halifax, Börsennachrichten aus London, private Depeschen für die erste Klasse. Das Funkgerät protokolliert jede Sendung automatisch mit Uhrzeit.",
+        evidence: { id: "otto_claim", text: "Otto behauptet, während der Tatzeit im Funkraum gewesen zu sein; das Funkgerät protokolliert automatisch.", icon: "⌁" }
+      },
+      codes: {
+        q: "Sie arbeiten ständig mit Zahlen. Könnten Sie eine Tresorkombination erraten?",
+        a: "Erraten? Nein. Aber Menschen verstecken Zahlen oft schlecht: Geburtstage, Bibelstellen, Schiffsdaten. Wer die Karte in der Bibel gesehen hat, brauchte keine mathematische Genialität.",
+        evidence: { id: "otto_codes", text: "Otto weiß, wie Menschen Zahlen verstecken. Das macht ihn verdächtig, beweist aber keinen Zugang.", icon: "#" }
+      },
+      telegram: {
+        q: "Gab es ein besonderes Telegramm über den Diamanten?",
+        a: "Ja. Ein chiffriertes Telegramm an den Kapitän: 'Brandt muss in New York überwacht werden. Schulden. Gefahr.' Ich durfte es nicht lesen, aber das Schlüsselwort BRANDT war unverschlüsselt.",
+        evidence: { id: "captain_note", text: "Telegramm an den Kapitän: Brandt sollte wegen Schulden in New York überwacht werden. Starkes mögliches Motiv.", icon: "▤" }
+      },
+      others: {
+        q: "Wem misstrauen Sie?",
+        a: "Dem Journalisten Adler. Er stellt Fragen, als schreibe er keine Zeitung, sondern sammle Erpressungsmaterial."
+      }
+    }
+  },
+  adler: {
+    name: "Friedrich Adler",
+    role: "Journalist der Berliner Abendpost",
+    portrait: portraitAdler(),
+    intro: "Ein drahtiger Journalist mit Nickelbrille, Notizblock und Kamera. Seine Schuhe sind staubig, seine Fragen schneller als deine.",
+    questions: {
+      whereWere: {
+        q: "Wo waren Sie gestern Abend zwischen 22:00 und 23:30 Uhr?",
+        a: "Ich recherchierte. Ein Journalist arbeitet, wenn andere schlafen. Ich war zuerst im Salon, dann am Promenadendeck. Allein, ja. Aber allein zu sein ist in meinem Beruf unvermeidlich.",
+        evidence: { id: "adler_weak_alibi", text: "Adler hat ein schwaches Alibi: Er war angeblich recherchierend unterwegs und zeitweise allein.", icon: "?" }
+      },
+      photo: {
+        q: "Haben Sie die Kapitänssuite fotografiert?",
+        a: "Vor zwei Tagen, mit Erlaubnis. Für einen Artikel über Luxusreisen. Vielleicht war der Tresor im Hintergrund, vielleicht auch nicht. Ich fotografiere Räume, keine Kombinationen.",
+        evidence: { id: "adler_photo", text: "Adler fotografierte die Kapitänssuite. Er hätte zufällig Hinweise auf den Tresor sehen können.", icon: "▧" }
+      },
+      boots: {
+        q: "Welche Schuhgröße haben Sie?",
+        a: "Dreiundvierzig. Aber schauen Sie hin: breite Bergstiefel, grobes Profil. Damit hinterlässt man keine schmale, elegante Spur. Außerdem knarren sie fürchterlich auf Schiffsböden.",
+        evidence: { id: "adler_boots", text: "Adler hat Größe 43, aber breite Bergstiefel mit grobem Profil. Der Abdruck war schmal.", icon: "▰" }
+      },
+      others: {
+        q: "Was verschweigen die anderen?",
+        a: "Brandt ist pleite. Lady Margarete will den Stein kaufen. Vasquez kennt jeden Makel des Diamanten. Und Greta liebt dramatische Abgänge. Das reicht für vier gute Schlagzeilen."
+      }
+    }
+  },
+  berger: {
+    name: "Prof. Kaspar Berger",
+    role: "Kunsthistoriker und ehemaliger Museumskurator",
+    portrait: portraitBerger(),
+    intro: "Ein alter Professor mit weißen Augenbrauen und einer Reisedecke über den Knien. Er spricht langsam, als diktiere er Fußnoten.",
+    questions: {
+      whereWere: {
+        q: "Wo waren Sie gestern Abend zwischen 22:00 und 23:30 Uhr?",
+        a: "Im Rauchsalon, beim Schach. Herr Lindqvist war kurz dort, trotz seiner angeblichen Seekrankheit. Gegen 22:40 brachte mir ein Steward Tee. Um 23:20 wurde die Partie beendet.",
+        evidence: { id: "berger_alibi", text: "Prof. Berger behauptet, 22:00-23:20 im Rauchsalon Schach gespielt zu haben; ein Steward brachte Tee.", icon: "♟" }
+      },
+      value: {
+        q: "Warum interessiert Sie der Diamant?",
+        a: "Weil er ein historisches Objekt ist, kein bloßer Schmuck. Ich wollte verhindern, dass ein amerikanischer Millionär ihn in einem Safe verschwinden lässt. Aber ich stehle nicht; ich schreibe empörte Briefe."
+      },
+      eyes: {
+        q: "Könnten Sie den Tresor öffnen?",
+        a: "Mein junger Freund, ich kann ohne Lupe kaum eine Speisekarte lesen. Eine Tresorskala im Halbdunkel? Unmöglich. Meine Hände zittern außerdem zu sehr für feine Schlossarbeit.",
+        evidence: { id: "berger_hands", text: "Prof. Berger hat zitternde Hände und schlechte Augen; feine Schlossarbeit ist sehr unwahrscheinlich.", icon: "◌" }
+      },
+      others: {
+        q: "Ist Ihnen jemand aufgefallen?",
+        a: "Der Magier hatte Interesse an alten Trickschlössern. Er fragte mich einmal, ob Museumsvitrinen im 18. Jahrhundert wirklich so leicht zu öffnen waren. Seltsame Konversation."
+      }
+    }
+  },
+  
+  lea: {
+    name: "Lea Sommer",
+    role: "Learning Partner der 9. Klasse, sehr genaue Beobachterin",
+    portrait: portraitLearner("Lea", "#b85c38"),
+    intro: "Lea sitzt mit einem Vokabelheft auf dem Schoß im kleinen Gruppenraum der Schulklasse. Sie wirkt wachsam und ein wenig beleidigt, weil Erwachsene Kinder oft übersehen.",
+    questions: {
+      whereWere: {
+        q: "Wo warst du gestern Abend zwischen 22:00 und 23:30 Uhr?",
+        a: "Erst im Gruppenraum. Frau Weiss hat uns eine Mini-Debatte über Pflicht und Freiheit machen lassen. Danach durften wir kurz auf den Gang, aber immer zu zweit. Um 23:00 Uhr waren wir wieder vollständig im Raum.",
+        evidence: { id: "lea_class_alibi", text: "Lea sagt: Die 9. Klasse hatte zwischen 22:00 und 23:00 eine beaufsichtigte Abendrunde.", icon: "L" }
+      },
+      saw: {
+        q: "Hast du etwas gesehen, das Erwachsene vielleicht übersehen haben?",
+        a: "Ja. Der Magier stand am Seitengang beim Salon. Er hat die Hände in den Taschen gehabt, nicht wie jemand, der Schmerzen hat. Als er mich sah, zog er die Bandagen extra sichtbar hoch. Das war komisch.",
+        evidence: { id: "lea_observation", text: "Lea beobachtete Brandt am Seitengang: Die Bandagen wirkten erst auffällig, als er bemerkt wurde.", icon: "L" }
+      },
+      motive: {
+        q: "Warum könntest du selbst verdächtig wirken?",
+        a: "Ich habe über den Diamanten geschrieben, ja. Für eine kreative Schreibaufgabe. Aber Fantasie ist kein Geständnis. Außerdem hätte ich keine Ahnung, wie man einen Tresor öffnet."
+      },
+      others: {
+        q: "Wem traust du nicht?",
+        a: "Jonas macht ständig Witze mit falschen Schlüsseln. Aber das ist genau der Punkt: Er ist laut, nicht heimlich. Brandt dagegen war plötzlich still."
+      }
+    }
+  },
+  amir: {
+    name: "Amir Haddad",
+    role: "Learning Partner der 9. Klasse, Fotograf der Klassenfahrt",
+    portrait: portraitLearner("Amir", "#2f6f91"),
+    intro: "Amir trägt eine kleine Kamera um den Hals. Seine Jackentaschen sind voller Filmrollen, Quittungen und halbfertiger Bildunterschriften für die Klassenchronik.",
+    questions: {
+      whereWere: {
+        q: "Wo warst du gestern Abend?",
+        a: "Ich habe Fotos für die Klassenfahrt gemacht. Frau Schneider hat mir verboten, im Erste-Klasse-Korridor herumzulaufen. Also war ich meistens beim Gruppenraum und am Promenadendeck.",
+        evidence: { id: "amir_route", text: "Amir fotografierte die Klassenfahrt, durfte aber laut Frau Schneider nicht in den Erste-Klasse-Korridor.", icon: "A" }
+      },
+      camera: {
+        q: "Zeig mir deine Fotos von gestern Abend.",
+        a: "Hier. Das Bild ist verwackelt, aber die Uhr im Hintergrund zeigt 22:46. Der Seitengang ist leer. Keine Person im Mantel. Wenn Tobias jemanden um 22:50 sah, dann kam die Person kurz danach.",
+        evidence: { id: "amir_camera_time", text: "Amirs Foto zeigt den Seitengang um 22:46 leer; die verdächtige Person erschien erst danach.", icon: "A" }
+      },
+      diamond: {
+        q: "Warum hast du den Diamanten fotografieren wollen?",
+        a: "Weil er berühmt ist. Aber der Kapitän hat Nein gesagt. Ich habe nicht einmal die Tür zur Suite gesehen."
+      },
+      others: {
+        q: "Was ist dir an den Erwachsenen aufgefallen?",
+        a: "Der Journalist Adler wollte mein Foto kaufen, bevor ich es überhaupt entwickelt hatte. Als ob er Angst vor Bildern hätte."
+      }
+    }
+  },
+  sofia: {
+    name: "Sofia Bergmann",
+    role: "Learning Partner der 9. Klasse, Debattierclub",
+    portrait: portraitLearner("Sofia", "#7a4da3"),
+    intro: "Sofia hat Karteikarten in der Hand und korrigiert ihre eigenen Formulierungen. Sie argumentiert sogar dann geordnet, wenn sie nervös ist.",
+    questions: {
+      whereWere: {
+        q: "Wo warst du zur Tatzeit?",
+        a: "In der Abendrunde. Ich hielt die Contra-Seite: 'Luxusgüter sind moralisch problematisch.' Das klingt verdächtig, ich weiß. Aber ich habe nur argumentiert, nicht gestohlen.",
+        evidence: { id: "sofia_debate", text: "Sofia diskutierte in der Abendrunde über Luxusgüter; das klingt nach Motiv, ist aber Teil einer Aufgabe.", icon: "S" }
+      },
+      ink: {
+        q: "Warum ist rote Tinte an deinen Fingern?",
+        a: "Weil Frau Weiss unsere Thesen mit roter Tinte kommentiert hat und ich den Füller ausgeliehen habe. Es ist Tinte, kein Blut und kein Tresorrost.",
+        evidence: { id: "sofia_red_ink", text: "Sofias rote Spuren stammen von Korrekturtinte, nicht vom Tatort.", icon: "S" }
+      },
+      saw: {
+        q: "Hast du jemanden auf dem Gang gesehen?",
+        a: "Herr O'Neill kam um 22:35 mit einer Seekarte vorbei und sagte, niemand dürfe allein herumlaufen. Danach blieb die Tür zum Gruppenraum offen."
+      },
+      others: {
+        q: "Wessen Aussage ist rhetorisch schwach?",
+        a: "Brandts. Er benutzt Pathos: verletzte Hände, Künstler-Ehre, Beleidigung. Aber konkrete Belege gibt er kaum."
+      }
+    }
+  },
+  jonas: {
+    name: "Jonas Keller",
+    role: "Learning Partner der 9. Klasse, Theater-AG",
+    portrait: portraitLearner("Jonas", "#2c4a52"),
+    intro: "Jonas versucht, unschuldig auszusehen, was ihm schlecht gelingt. Aus seiner Tasche ragt ein alter Messingschlüssel — zu auffällig, um wirklich klug zu sein.",
+    questions: {
+      whereWere: {
+        q: "Wo warst du gestern Abend?",
+        a: "Im Gruppenraum. Ich habe für unsere Theaterszene geübt: 'Der verschwundene Königsschatz'. Ja, der Titel ist unglücklich. Aber die Szene war geplant, bevor der Diamant verschwand.",
+        evidence: { id: "jonas_theatre", text: "Jonas übte eine Theaterszene über einen verschwundenen Schatz — verdächtig, aber zeitlich vorher geplant.", icon: "J" }
+      },
+      key: {
+        q: "Was ist das für ein Schlüssel?",
+        a: "Requisite. Er öffnet nicht einmal meinen eigenen Koffer. Frau Schneider hat ihn für das Theaterstück aus der Requisitenkiste mitgebracht.",
+        evidence: { id: "jonas_fake_key", text: "Jonas' Messingschlüssel ist eine Theaterrequisite und öffnet keinen Tresor.", icon: "J" }
+      },
+      prank: {
+        q: "Hast du jemanden erschreckt oder abgelenkt?",
+        a: "Ich habe um 22:20 ein Kartentrick-Plakat an die Tür gehängt. Brandt hat es gesehen und sehr wütend abgerissen. Mehr nicht."
+      },
+      others: {
+        q: "Wem traust du nicht?",
+        a: "Dem Magier. Ein echter Magier lacht über schlechte Kartentricks. Brandt wurde bleich."
+      }
+    }
+  },
+  mila: {
+    name: "Mila Roth",
+    role: "Learning Partner der 9. Klasse, Klassensprecherin",
+    portrait: portraitLearner("Mila", "#b8893a"),
+    intro: "Mila hält eine gefaltete Anwesenheitsliste wie ein amtliches Dokument. Sie nimmt ihre Rolle als Klassensprecherin sehr ernst.",
+    questions: {
+      whereWere: {
+        q: "Kannst du die Anwesenheit der 9. Klasse bestätigen?",
+        a: "Ja. Ich habe für Frau Schneider abgehakt: 21:58 alle da, 22:30 alle da, 23:05 alle da. Zwei Toilettengänge, jeweils zu zweit. Niemand war lange genug weg.",
+        evidence: { id: "klasse9_group_alibi", text: "Milas Anwesenheitsliste bestätigt die 9. Klasse zur Tatzeit weitgehend geschlossen im Gruppenraum.", icon: "M" }
+      },
+      list: {
+        q: "Ist die Liste zuverlässig?",
+        a: "So zuverlässig wie eine Klassenliste auf einem Schiff sein kann. Ich habe Namen, Zeiten und Unterschriften. Amir hat sogar ein Foto vom Gruppenraum um 22:31.",
+        evidence: { id: "mila_timeline", text: "Milas Liste enthält Zeiten und Unterschriften; die Klassenalibis stützen sich gegenseitig.", icon: "M" }
+      },
+      conflict: {
+        q: "Gab es Streit in der Klasse?",
+        a: "Nur darüber, ob Jonas' Theaterszene peinlich ist. Kein Streit über Diamanten."
+      },
+      others: {
+        q: "Was war wirklich ungewöhnlich?",
+        a: "Frau Weiss sagte plötzlich: 'Merkt euch: Eine gute Schlussfolgerung braucht alle Belege.' Als hätte sie geahnt, dass wir später Beweise sortieren müssen."
+      }
+    }
+  },
+  noah: {
+    name: "Noah Stein",
+    role: "Learning Partner der 9. Klasse, Schachspieler",
+    portrait: portraitLearner("Noah", "#5f6f7a"),
+    intro: "Noah wirkt ruhig und rechnet im Kopf. Auf seinem Notizblatt stehen Schachzüge, Uhrzeiten und ein paar überraschend genaue Beobachtungen.",
+    questions: {
+      whereWere: {
+        q: "Wo warst du gestern Abend?",
+        a: "Zuerst bei der Klasse, dann durfte ich für zehn Minuten in den Rauchsalon, weil Prof. Berger eine Stellung erklären wollte. Herr O'Neill kam mit. Um 22:45 war ich zurück.",
+        evidence: { id: "noah_chess_trip", text: "Noah war kurz mit Mr. O'Neill im Rauchsalon; der Ausflug war begleitet und zeitlich begrenzt.", icon: "N" }
+      },
+      berger: {
+        q: "Was weißt du über Prof. Berger?",
+        a: "Er spielte wirklich Schach. Aber er hat dreimal dieselbe Stellung erklärt, weil seine Hände zitterten und er Figuren umwarf. Ein Tresor wäre für ihn schwer gewesen.",
+        evidence: { id: "noah_berger_confirm", text: "Noah bestätigt Bergers Schachaufenthalt und seine zittrigen Hände.", icon: "N" }
+      },
+      pattern: {
+        q: "Welche Spur passt logisch nicht?",
+        a: "Der Täter musste leise sein. Adler hat laute Stiefel, Jonas redet zu viel, Lindqvist ist zu groß. Brandt wirkt wie jemand, der leise Bewegungen trainiert."
+      },
+      others: {
+        q: "Wem misstraust du?",
+        a: "Nicht der lautesten Person. In Schach verliert man oft, weil man nur die auffällige Figur sieht."
+      }
+    }
+  },
+  weiss: {
+    name: "Frau Weiss",
+    role: "Deutschlehrerin der 9. Klasse",
+    portrait: portraitTeacher("Weiss", "#8b1a1a"),
+    intro: "Frau Weiss sitzt zwischen Aufsatzmappen, Korrekturstiften und einer Tasse kaltem Tee. Sie wirkt streng, aber hilfsbereit.",
+    questions: {
+      whereWere: {
+        q: "Wo waren Sie zwischen 22:00 und 23:30 Uhr?",
+        a: "Zunächst im Gruppenraum mit der 9. Klasse. Von 22:20 bis 23:15 korrigierte ich im Lesesalon. Jede Mappe trägt eine Uhrzeit, weil ich den Lernpartnern konkrete Rückmeldungen geben wollte.",
+        evidence: { id: "frau_weiss_essay_stack", text: "Frau Weiss korrigierte Aufsätze mit Zeitvermerken zwischen 22:20 und 23:15.", icon: "W" }
+      },
+      papers: {
+        q: "Warum gibt es in Ihren Mappen Texte über Diebstahl?",
+        a: "Weil wir Erzählperspektive geübt haben: 'Ein Gegenstand verschwindet'. Das Thema wurde vor der Reise geplant. Schlechte Pädagogik vielleicht, aber kein Tatmotiv.",
+        evidence: { id: "weiss_planned_task", text: "Die Schreibaufgabe über einen verschwundenen Gegenstand wurde vor dem Diebstahl geplant.", icon: "W" }
+      },
+      class: {
+        q: "Wie zuverlässig ist das Klassenalibi?",
+        a: "Mila führte Anwesenheit, Frau Schneider kontrollierte die Tür, Mr. O'Neill begleitete einzelne Wege. Absolute Sicherheit gibt es nie, aber für einen Tresordiebstahl fehlte Zeit und Gelegenheit.",
+        evidence: { id: "teacher_logbook", text: "Die Lehrkräfte bestätigen gegenseitig die Abendaufsicht und mehrere Anwesenheitszeiten.", icon: "W" }
+      },
+      others: {
+        q: "Welche Aussage klingt sprachlich auffällig?",
+        a: "Brandt spricht in Ausflüchten. Er beantwortet moralische Vorwürfe, bevor man sie stellt. Das tun Menschen oft, wenn sie das eigentliche Faktum vermeiden."
+      }
+    }
+  },
+  oneill: {
+    name: "Mr. O'Neill",
+    role: "History Teacher und Begleiter der Klassenfahrt",
+    portrait: portraitTeacher("O'Neill", "#2d5f7a"),
+    intro: "Mr. O'Neill hat eine Seekarte ausgebreitet und markiert Routen mit Bleistift. Sein Deutsch ist sehr gut, aber gelegentlich englisch gefärbt.",
+    questions: {
+      whereWere: {
+        q: "Wo waren Sie zur Tatzeit?",
+        a: "Mostly with the group — Entschuldigung, meistens bei der Gruppe. Ich brachte Noah kurz zum Rauchsalon, dann zurück. Danach war ich am Kartentisch vor dem Gruppenraum.",
+        evidence: { id: "oneill_route", text: "Mr. O'Neill begleitete Noah und blieb danach sichtbar am Kartentisch vor dem Gruppenraum.", icon: "O" }
+      },
+      map: {
+        q: "Warum studierten Sie den Weg zur Kapitänssuite?",
+        a: "Für eine Unterrichtseinheit über Schiffssicherheit und Klassenregeln. Ich wollte wissen, wo die Lernpartner nicht hin dürfen. Die Kapitänssuite war ausdrücklich verboten.",
+        evidence: { id: "oneill_map_rules", text: "Mr. O'Neills Karte diente der Aufsicht; die Kapitänssuite war für die Klasse verboten.", icon: "O" }
+      },
+      saw: {
+        q: "Haben Sie jemanden auf dem Deck gesehen?",
+        a: "Kurz nach 22:50 hörte ich schnelle Schritte auf dem oberen Deck. Zu leicht für Lindqvist, zu kontrolliert für einen Schülerstreich. Ich sah nur einen dunklen Mantelsaum.",
+        evidence: { id: "oneill_heard_steps", text: "Mr. O'Neill hörte kurz nach 22:50 kontrollierte, leichte Schritte auf dem oberen Deck.", icon: "O" }
+      },
+      others: {
+        q: "Was sagt Ihre historische Intuition?",
+        a: "Menschen stehlen selten nur wegen Schönheit. Eher wegen Geld, Angst oder Erpressung."
+      }
+    }
+  },
+  schneider: {
+    name: "Frau Schneider",
+    role: "Klassenlehrerin und Organisatorin der Fahrt",
+    portrait: portraitTeacher("Schneider", "#6b4423"),
+    intro: "Frau Schneider wirkt erschöpft, aber vollkommen organisiert. Neben ihr liegen Fahrkarten, Elternbriefe, eine Requisitenliste und ein Stapel Regeln.",
+    questions: {
+      whereWere: {
+        q: "Wo waren Sie zwischen 22:00 und 23:30 Uhr?",
+        a: "Bei der Tür zum Gruppenraum, weil ich den Lernpartnern nicht traute, allein auf Entdeckungstour zu gehen. Um 22:30 kontrollierte ich die Liste, um 23:05 noch einmal.",
+        evidence: { id: "schneider_door", text: "Frau Schneider saß an der Tür des Gruppenraums und kontrollierte die Anwesenheit.", icon: "R" }
+      },
+      props: {
+        q: "Was ist mit der Requisitenkiste?",
+        a: "Darin lagen Jonas' falscher Schlüssel, ein Spielzeugdiamant, ein schwarzer Umhang und Papierkronen. Alles billig, alles inventarisiert. Der echte Diamant war nie in unserer Nähe.",
+        evidence: { id: "props_inventory", text: "Die Requisitenkiste enthält falschen Schlüssel, Spielzeugdiamant und Umhang — harmlose Theatermaterialien.", icon: "R" }
+      },
+      warning: {
+        q: "Haben Sie jemanden gewarnt?",
+        a: "Ja, Brandt. Er beschwerte sich, weil Jonas sein Plakat aufgehängt hatte. Ich sagte ihm, er solle die Kinder in Ruhe lassen. Seine Reaktion war übertrieben kalt.",
+        evidence: { id: "schneider_brandt_cold", text: "Frau Schneider bemerkte Brandts auffällig kalte Reaktion auf einen harmlosen Schülerstreich.", icon: "R" }
+      },
+      others: {
+        q: "Wer hatte wirklich Gelegenheit?",
+        a: "Niemand aus meiner Gruppe. Die meisten Erwachsenen unterschätzen, wie stark Klassenaufsicht dokumentiert ist. Suchen Sie jemanden mit Bewegungsfreiheit."
+      }
+    }
+  },
+  henrik: {
+    name: "Henrik Lindqvist",
+    role: "Norwegischer Geschäftsmann",
+    portrait: portraitHenrik(),
+    intro: "Ein kräftiger Mann in den Fünfzigern, blondes Haar, Sonnenbrand auf der Nase. Er liegt halb in einem Sessel, ein feuchtes Tuch auf der Stirn. Er stöhnt leise, wenn du eintrittst.",
+    questions: {
+      whereWere: {
+        q: "Wo waren Sie gestern Abend zwischen 22:00 und 23:30 Uhr?",
+        a: "(Stöhnt) In meiner Kabine, mein Herr. Seekrank. Furchtbar seekrank. Ich habe seit Hamburg kaum gegessen. Habe nicht mal das Bett verlassen. Mein Steward kann es bestätigen — er hat mir um 22:00 Uhr Tee gebracht, ich habe noch um Mitternacht nach einem Eimer geklingelt."
+      },
+      diamond: {
+        q: "Was wissen Sie über den Stern von Königsberg?",
+        a: "(Erstaunt) Vom Diamanten? Nichts! Ich bin Holzimporteur — was interessiert mich Schmuck? Ich habe gehört, dass etwas gestohlen wurde, aber meine einzige Sorge ist, diesen Eimer rechtzeitig zu erreichen."
+      },
+      sea: {
+        q: "Wie ist die See denn heute?",
+        a: "Schrecklich! Wellen wie Berge! Mein Magen kann's nicht ertragen. Ich kann nicht einmal aus dem Fenster blicken, ohne dass mir schlecht wird.",
+        evidence: { id: "henrik_seasick", text: "Henrik behauptet, die See sei rau gewesen — Wellen wie Berge.", icon: "🌊" }
+      },
+      others: {
+        q: "Verdächtigen Sie jemanden?",
+        a: "(Schwach) Wie soll ich jemanden verdächtigen, wenn ich seit zwei Tagen kein Gesicht außer meinem eigenen Spiegelbild gesehen habe? Sprechen Sie mit den Lebenden. Ich bin halb tot."
+      }
+    }
+  }
+};
+
+// ========================================================================
+// ORTE
+// ========================================================================
+const LOCATIONS = {
+  cabin: {
+    name: "Kapitänskabine",
+    icon: "🛏️",
+    text: function() {
+      const findings = [];
+      findings.push("Du betrittst die Kapitänssuite. Der Tresor steht offen. Der rote Samt im Inneren ist leer. Du untersuchst sorgfältig:");
+      findings.push("");
+      findings.push("• <strong>Der Tresor:</strong> Nicht aufgebrochen. Das Schloss ist unbeschädigt. Wer auch immer ihn geöffnet hat, kannte entweder die Kombination — oder konnte das Schloss <em>knacken</em>.");
+      findings.push("");
+      findings.push("• <strong>Boden vor dem Tresor:</strong> Ein feuchter Fußabdruck! Ungefähr Größe 42, vielleicht 43. Schmal. Spuren laufen vom Tresor zum Fenster, nicht zur Tür. Das Fenster führt auf einen schmalen Außengang, der zum Sonnendeck hinaufführt.");
+      findings.push("");
+      findings.push("• <strong>Bibel auf dem Nachttisch:</strong> Sie liegt aufgeschlagen. Beim Genaueren Hinsehen siehst du eine kleine Karteikarte, die zwischen den Seiten klemmt. Darauf, in der Handschrift des Kapitäns: <em>\u201e17-04-29\u201c</em>. Eine Zahlenkombination!");
+      findings.push("");
+      findings.push("• <strong>Auf dem Schreibtisch:</strong> Die persönliche Korrespondenz des Kapitäns liegt unberührt. Ein Glas Whisky, halb voll. Eine angefangene Zigarre im Aschenbecher — kalt.");
+      addEvidence("safe_unbroken", "Der Tresor wurde nicht aufgebrochen — geöffnet mit Kombination ODER von einem Schlossknacker.", "🔓");
+      addEvidence("wet_footprint", "Feuchter Fußabdruck Größe 42-43, schmal, führt zum Fenster (zum Sonnendeck).", "👣");
+      addEvidence("combo_in_bible", "Die Tresor-Kombination (\u201e17-04-29\u201c) war in der Bibel des Kapitäns versteckt.", "📖");
+      return findings.join("<br>");
+    }
+  },
+  deck: {
+    name: "Sonnendeck",
+    icon: "⛵",
+    text: function() {
+      let findings = [];
+      findings.push("Du steigst die Treppen hinauf zum Sonnendeck. Der Atlantik liegt ruhig vor dir. <em>Sehr ruhig</em>. Die Sonne steht hoch und das Meer ist glatt wie Glas.");
+      findings.push("");
+      findings.push("• <strong>An der Reling:</strong> Du findest einen feuchten Fleck am Holzboden — als hätte jemand vor wenigen Stunden hier gestanden, nass und tropfend. Ein paar Schritte weiter: ein gestreiftes Stoffstück, im Wind aus dem Rettungsboot Nr. 4 verfangen. Bühnenstoff vielleicht?");
+      findings.push("");
+      findings.push("• <strong>Schiffslogbuch beim Steuermann:</strong> Du fragst nach dem Wetterbericht. Der Steuermann sagt: <em>\u201eSeit drei Tagen ruhige See, Herr Inspektor. Beaufort 1 bis 2. Glatt wie ein Spiegel. Keiner an Bord sollte Probleme haben.\u201c</em>");
+      findings.push("");
+      findings.push("• <strong>Rettungsboot Nr. 4:</strong> Plane lose. Innen findest du einen feuchten schwarzen Mantel und einen schwarzen Hut. Im Mantelfutter: ein winziger Glassplitter und feiner roter Samtflaum — wie aus dem Tresorinnenraum.");
+      addEvidence("calm_sea", "Schiffslogbuch: Die See war seit drei Tagen RUHIG (Beaufort 1-2). Niemand könnte ernsthaft seekrank sein.", "🌊");
+      addEvidence("hidden_clothes", "Im Rettungsboot Nr. 4: feuchter schwarzer Mantel + Hut. Im Futter: Glassplitter und roter Samtflaum (wie aus dem Tresor).", "🎩");
+      addCaseEvidence("framing_attempt", "↯");
+      return findings.join("<br>");
+    }
+  },
+  library: {
+    name: "Bibliothek",
+    icon: "📚",
+    text: function() {
+      let findings = [];
+      findings.push("Die Bibliothek ist holzgetäfelt, ruhig, riecht nach Papier und Leder. Herr Richter, der Bibliothekar, nickt dir freundlich zu.");
+      findings.push("");
+      findings.push("• <strong>Logbuch der Bibliothek:</strong> Eintrag <em>\u201eDr. E. Vasquez — 21:45 Uhr\u201c</em>. Daneben: <em>\u201eVerlassen 23:50 Uhr\u201c</em>. Sie war über zwei Stunden hier. Herr Richter bestätigt: <em>\u201eIch war bis 23:00 Uhr selbst hier. Sie hat nicht den Raum verlassen, das ist sicher. Danach habe ich abgeschlossen — sie kam nicht mehr heraus, bevor sie um 23:50 Uhr ging.\u201c</em>");
+      findings.push("");
+      findings.push("• <strong>Buch über Schlosskunst:</strong> Du findest ein Buch namens <em>\u201eDie Kunst der Schlösser\u201c</em> von einem gewissen Edmond Locard. Auf der Karteikarte hinten siehst du, dass es vor zwei Tagen ausgeliehen wurde. Der Name auf der Karte: <em>V. Brandt</em>. Zurückgegeben gestern Morgen.");
+      findings.push("");
+      findings.push("• <strong>Auf einem Lesetisch:</strong> Eine norwegische Tageszeitung, drei Tage alt. Daneben — ein leerer Teller mit Heringskrümeln und ein Glas roter Saft. Etikett: <em>\u201eH. Lindqvist\u201c</em>.");
+      addEvidence("vasquez_alibi_confirmed", "BESTÄTIGT: Dr. Vasquez war von 21:45 bis 23:50 in der Bibliothek. Bibliothekar bezeugt es.", "✓");
+      addEvidence("viktor_lockbook", "Viktor Brandt hat vor zwei Tagen ein Buch über SCHLOSSKUNST ausgeliehen.", "📕");
+      addEvidence("henrik_eating", "In der Bibliothek: Heringskrümel und Saftglas mit Etikett 'H. Lindqvist'. Henrik isst durchaus.", "🐟");
+      return findings.join("<br>");
+    }
+  },
+  dining: {
+    name: "Speisesaal",
+    icon: "🍽️",
+    text: function() {
+      let findings = [];
+      findings.push("Der prächtige Speisesaal mit Kristalllüstern. Du sprichst mit Maître d' Fabricius, einem würdevollen alten Mann in schwarzer Krawatte.");
+      findings.push("");
+      findings.push("• <strong>Sitzplan vom 13. September:</strong> Lady Margarete von Hessen saß an Tisch 3. Tisch 3 hat einen direkten Blick zum Eingang. Fabricius bestätigt: <em>\u201eSie hat den Saal von 21:00 bis 23:30 Uhr nicht eine Sekunde verlassen, Herr Inspektor. Auch nicht zur Toilette. Ich habe sie selbst beim Hauptgang bedient.\u201c</em>");
+      findings.push("");
+      findings.push("• <strong>Personal-Notiz:</strong> <em>\u201eSteward Kraus — Tafelservice 21:00-22:45, Aufräumarbeiten Salon 22:45-23:45. Bestätigt durch drei weitere Stewards.\u201c</em>");
+      findings.push("");
+      findings.push("• <strong>Ein Gespräch:</strong> Fabricius fügt hinzu: <em>\u201eHerr Brandt, der Magier — er hatte bei uns einen Tisch reserviert für 22:00 Uhr, ist aber nicht erschienen. Ich habe selbst angeklopft an seiner Kabinentür um 22:15 Uhr — keine Antwort. Seltsam. Er hatte sich speziell darauf gefreut.\u201c</em>");
+      addEvidence("margarete_alibi_confirmed", "BESTÄTIGT: Lady Margarete war 21:00-23:30 ununterbrochen im Speisesaal.", "✓");
+      addEvidence("tobias_alibi_confirmed", "BESTÄTIGT: Tobias war 21:00-23:45 im Dienst, viele Zeugen.", "✓");
+      addEvidence("viktor_missing", "Viktor Brandt war NICHT in seiner Kabine um 22:15 Uhr — obwohl er das behauptete!", "❌");
+      addCaseEvidence("broken_alibi", "⏱");
+      return findings.join("<br>");
+    }
+  },
+  salon: {
+    name: "Salon und Bühne",
+    icon: "♫",
+    text: function() {
+      let findings = [];
+      findings.push("Der Salon riecht nach Parfüm, Zigarrenrauch und poliertem Holz. Auf der kleinen Bühne steht noch das Mikrofon der Sängerin.");
+      findings.push("");
+      findings.push("• <strong>Programmzettel:</strong> Greta Nachtigall sang von 22:05 bis 23:07 Uhr. Zwei Zugaben sind handschriftlich notiert. Der Pianist bestätigt, dass sie die Bühne nicht verlassen konnte, ohne gesehen zu werden.");
+      findings.push("");
+      findings.push("• <strong>Kostümraum:</strong> Gretas schwarzer Bühnenumhang hängt trocken am Haken. Der Stoff ist Samt, aber ohne rote Fasern, ohne Glassplitter, ohne Feuchtigkeit.");
+      findings.push("");
+      findings.push("• <strong>Seitentür:</strong> Von hier führt ein kurzer Gang zum Außendeck. Brandt fragte laut Aussage der Sängerin vor dem Auftritt nach genau diesem Weg.");
+      addEvidence("greta_stage_confirmed", "BESTÄTIGT: Greta war von 22:05 bis 23:07 sichtbar auf der Bühne; ihr schwarzer Umhang war trocken.", "♪");
+      addEvidence("stage_side_exit", "Vom Salon führt eine Seitentür zum Außendeck. Brandt fragte vor dem Auftritt nach diesem Weg.", "⇥");
+      return findings.join("<br>");
+    }
+  },
+  radio: {
+    name: "Funkraum",
+    icon: "⌁",
+    text: function() {
+      let findings = [];
+      findings.push("Der Funkraum knistert. Papierstreifen laufen aus dem Morsegerät; die Uhr über dem Tisch tickt exakt.");
+      findings.push("");
+      findings.push("• <strong>Automatisches Funkprotokoll:</strong> Otto sendete und empfing zwischen 21:58 und 23:36 fast durchgehend. Die Lücken betragen höchstens vier Minuten — zu wenig für den Weg zur Kapitänssuite und zurück.");
+      findings.push("");
+      findings.push("• <strong>Chiffriertes Telegramm:</strong> Der Kapitän sollte Brandt in New York melden. Grund: Spielschulden und Kontakt zu zwielichtigen Gläubigern in Hamburg.");
+      findings.push("");
+      findings.push("• <strong>Notiz am Rand:</strong> In der Handschrift des Kapitäns steht: <em>„B. nicht provozieren. Stein bis New York sichern.“</em>");
+      addEvidence("otto_radio_log", "BESTÄTIGT: Otto war laut automatischem Funkprotokoll während der Tatzeit im Funkraum gebunden.", "⌁");
+      addEvidence("brandt_debt_confirmed", "Brandts Spielschulden und die geplante Überwachung in New York sind durch Funknotizen bestätigt.", "▤");
+      addCaseEvidence("actual_motive", "§");
+      return findings.join("<br>");
+    }
+  },
+  smoke: {
+    name: "Rauchsalon",
+    icon: "♟",
+    text: function() {
+      let findings = [];
+      findings.push("Im Rauchsalon stehen noch zwei Schachfiguren auf dem Tisch. Der schwarze König liegt umgestürzt neben einer Teetasse.");
+      findings.push("");
+      findings.push("• <strong>Schachpartie:</strong> Prof. Berger spielte von 22:00 bis 23:20 gegen den Zahlmeister. Der Zahlmeister bestätigt die Partie und notierte sogar die Züge.");
+      findings.push("");
+      findings.push("• <strong>Zeugenaussage:</strong> Lindqvist kam gegen 22:35 kurz herein, angeblich auf der Suche nach frischer Luft. Für einen völlig Seekranken wirkt das seltsam.");
+      findings.push("");
+      findings.push("• <strong>Fenster:</strong> Das Fenster zum Außengang klemmt. Wer von hier aus fliehen wollte, hätte lauten Lärm gemacht.");
+      addEvidence("berger_alibi_confirmed", "BESTÄTIGT: Prof. Berger spielte 22:00-23:20 Schach im Rauchsalon.", "♟");
+      addEvidence("henrik_seen_smoking", "Lindqvist wurde um 22:35 im Rauchsalon gesehen — nicht dauerhaft krank in der Kabine.", "◍");
+      return findings.join("<br>");
+    }
+  },
+
+  classroom: {
+    name: "Gruppenraum der 9. Klasse",
+    icon: "9",
+    text: function() {
+      let findings = [];
+      findings.push("Der Gruppenraum sieht aus wie eine Mischung aus Klassenzimmer, Reisechaos und Ermittlungsbüro. Auf einem Tisch liegen Vokabelkarten, Aufsatzmappen und Milas Anwesenheitsliste.");
+      findings.push("");
+      findings.push("• <strong>Anwesenheitsliste:</strong> 21:58, 22:30 und 23:05 wurden alle Learning Partners abgehakt. Die Liste ist nicht perfekt, aber zu dicht, um einen längeren Einbruch zu ermöglichen.");
+      findings.push("");
+      findings.push("• <strong>Foto von Amir:</strong> Um 22:31 sitzen fast alle im Gruppenraum. Noah fehlt kurz, aber Mr. O'Neill ist mit ihm eingetragen.");
+      findings.push("");
+      findings.push("• <strong>Theaterkiste:</strong> Ein falscher Schlüssel, ein Spielzeugdiamant und ein schwarzer Umhang. Alles ist mit Papieretiketten und Nummern versehen.");
+      addEvidence("klasse9_room_confirmed", "Der Gruppenraum bestätigt: Die 9. Klasse war überwiegend beaufsichtigt und zeitlich eng kontrolliert.", "9");
+      addEvidence("props_inventory", "Theaterrequisiten der 9. Klasse sind vollständig inventarisiert und offenbar harmlos.", "9");
+      addEvidence("klasse9_group_alibi", "Die 9. Klasse hat ein starkes Gruppenalibi mit Zeitliste, Foto und Lehrkraftaufsicht.", "9");
+      addCaseEvidence("surprise_code", "?");
+      return findings.join("<br>");
+    }
+  },
+  teacher_lounge: {
+    name: "Lesesalon / Lehrertisch",
+    icon: "T",
+    text: function() {
+      let findings = [];
+      findings.push("Im Lesesalon liegt ein kleiner Stapel deutscher Aufsätze. Auf jeder ersten Seite steht eine Uhrzeit in roter Tinte.");
+      findings.push("");
+      findings.push("• <strong>Korrekturstapel:</strong> Frau Weiss markierte Aufsätze zwischen 22:24 und 23:12. Mehrere Lernpartner haben die Rückmeldungen am Morgen erhalten.");
+      findings.push("");
+      findings.push("• <strong>Regelliste:</strong> Frau Schneider notierte: 'Keine Einzelgänge. Kapitänsdeck verboten. Seitengang nur mit Lehrkraft.'");
+      findings.push("");
+      findings.push("• <strong>Seekarte:</strong> Mr. O'Neill markierte verbotene Zonen. Daneben steht: 'Sicherheit vor Neugier'.");
+      addEvidence("teacher_logbook", "Lehrerprotokoll: Anwesenheit, Korrekturzeiten und Begleitwege stützen die Alibis der Lehrkräfte.", "T");
+      addEvidence("frau_weiss_essay_stack", "Frau Weiss' Korrekturstapel enthält Zeitvermerke während der Tatzeit.", "T");
+      addEvidence("oneill_map_rules", "Mr. O'Neills Karte erklärt sein Interesse an Wegen und Sperrzonen ohne Tatbezug.", "T");
+      return findings.join("<br>");
+    }
+  },
+    doctor: {
+    name: "Schiffsarzt",
+    icon: "⚕️",
+    text: function() {
+      let findings = [];
+      findings.push("Du gehst zum Schiffsarzt, Dr. Müller. Ein vergnügter dicker Mann mit weißem Bart.");
+      findings.push("");
+      findings.push("• <strong>Über Brandts Verletzung:</strong> <em>\u201eAch, der Magier? Ja, ich habe ihm die Hände verbunden. Ehrlich gesagt — die Schnittwunden waren <strong>oberflächlich</strong>. Hätten gestern Morgen schon offen sein können. Ich habe ihm das auch gesagt. Er bestand auf weiteren Bandagen. Sehr seltsam. Besonders weil er dabei sehr leicht eine Kaffeetasse hielt.\u201c</em>");
+      findings.push("");
+      findings.push("• <strong>Über Lindqvists Seekrankheit:</strong> <em>\u201eLindqvist? Er hat mich um Tabletten gegen Seekrankheit gebeten. Ich habe ihm <strong>Zuckerpillen</strong> gegeben — bei dieser ruhigen See ist alles psychosomatisch. Er hat mir gesagt, ihm gehe es viel besser. Aber er bleibt in der Kabine — sagt er.\u201c</em>");
+      findings.push("");
+      findings.push("• <strong>Über Schuhgrößen:</strong> Auf deine Frage hin holt Dr. Müller die Krankenakten. <em>\u201eBrandt: 42. Lindqvist: 46. Kraus: 41. Die Damen ließe ich Ihnen die Frage selbst stellen.\u201c</em>");
+      addEvidence("viktor_fake_injury", "Dr. Müller: Brandts Schnittwunden waren OBERFLÄCHLICH. Bandagen unnötig. Er hielt mühelos eine Kaffeetasse.", "🩹");
+      addEvidence("henrik_fake_seasick", "Dr. Müller gab Henrik nur Zuckerpillen. Henriks 'Seekrankheit' ist psychosomatisch — bei ruhiger See wahrscheinlich Erfindung.", "💊");
+      addEvidence("shoe_sizes", "Schuhgrößen: Brandt 42, Lindqvist 46, Kraus 41. Der Fußabdruck war 42-43 (schmal).", "👞");
+      addCaseEvidence("actual_means", "⚙");
+      return findings.join("<br>");
+    }
+  }
+};
+
+// ========================================================================
+// PORTRAITS (SVG)
+// ========================================================================
+function portraitMargarete() {
+  return `<svg viewBox="0 0 200 200">
+    <defs><radialGradient id="m1" cx="50%" cy="40%"><stop offset="0%" stop-color="#3a4a3a"/><stop offset="100%" stop-color="#1a1f1a"/></radialGradient></defs>
+    <rect width="200" height="200" fill="url(#m1)"/>
+    <circle cx="100" cy="78" r="32" fill="#e8d4b8"/>
+    <path d="M68,90 Q100,135 132,90 L130,200 L70,200 Z" fill="#2a4a3a"/>
+    <ellipse cx="92" cy="78" rx="3" ry="4" fill="#1a1612"/>
+    <ellipse cx="108" cy="78" rx="3" ry="4" fill="#1a1612"/>
+    <path d="M85,52 Q100,40 115,52 Q120,46 100,38 Q80,46 85,52 Z" fill="#9b9b9b"/>
+    <circle cx="100" cy="105" r="5" fill="#2dba4e" opacity="0.9"/>
+    <line x1="100" y1="100" x2="100" y2="118" stroke="#b8893a" stroke-width="0.7"/>
+  </svg>`;
+}
+function portraitViktor() {
+  return `<svg viewBox="0 0 200 200">
+    <defs><radialGradient id="v1" cx="50%" cy="40%"><stop offset="0%" stop-color="#3a2a3a"/><stop offset="100%" stop-color="#0d0a14"/></radialGradient></defs>
+    <rect width="200" height="200" fill="url(#v1)"/>
+    <ellipse cx="100" cy="78" rx="28" ry="34" fill="#d8c4a8"/>
+    <path d="M72,85 L75,200 L125,200 L128,85 Z" fill="#1a1612"/>
+    <path d="M75,55 Q100,42 125,55 L122,40 Q100,32 78,40 Z" fill="#1a1612"/>
+    <ellipse cx="91" cy="80" rx="2.5" ry="3" fill="#1a1612"/>
+    <ellipse cx="109" cy="80" rx="2.5" ry="3" fill="#1a1612"/>
+    <path d="M82,95 Q100,98 118,95 L115,98 Q100,100 85,98 Z" fill="#2a1f15"/>
+    <path d="M85,108 Q100,112 115,108" stroke="#1a1612" stroke-width="1.5" fill="none"/>
+    <rect x="78" y="148" width="14" height="14" fill="#fafafa" rx="2"/>
+    <rect x="108" y="148" width="14" height="14" fill="#fafafa" rx="2"/>
+  </svg>`;
+}
+function portraitVasquez() {
+  return `<svg viewBox="0 0 200 200">
+    <defs><radialGradient id="va1" cx="50%" cy="40%"><stop offset="0%" stop-color="#4a4435"/><stop offset="100%" stop-color="#1f1c14"/></radialGradient></defs>
+    <rect width="200" height="200" fill="url(#va1)"/>
+    <circle cx="100" cy="78" r="30" fill="#c9a880"/>
+    <path d="M70,88 L72,200 L128,200 L130,88 Z" fill="#5a5a5a"/>
+    <path d="M68,55 Q100,38 132,58 L132,82 Q126,72 100,72 Q74,72 68,82 Z" fill="#1a1612"/>
+    <ellipse cx="91" cy="78" rx="2.5" ry="3" fill="#1a1612"/>
+    <ellipse cx="109" cy="78" rx="2.5" ry="3" fill="#1a1612"/>
+    <circle cx="120" cy="105" r="9" fill="none" stroke="#d4a84b" stroke-width="1.5"/>
+    <line x1="120" y1="113" x2="100" y2="135" stroke="#d4a84b" stroke-width="1"/>
+  </svg>`;
+}
+function portraitTobias() {
+  return `<svg viewBox="0 0 200 200">
+    <defs><radialGradient id="t1" cx="50%" cy="40%"><stop offset="0%" stop-color="#3a3f4a"/><stop offset="100%" stop-color="#141821"/></radialGradient></defs>
+    <rect width="200" height="200" fill="url(#t1)"/>
+    <circle cx="100" cy="78" r="28" fill="#e8c8a8"/>
+    <path d="M73,90 L75,200 L125,200 L127,90 Z" fill="#fafafa"/>
+    <path d="M85,90 L100,140 L115,90 Z" fill="#1a1f2a"/>
+    <rect x="98" y="92" width="4" height="40" fill="#d4a84b"/>
+    <path d="M75,55 Q100,45 125,55 L120,42 Q100,38 80,42 Z" fill="#5a4a35"/>
+    <ellipse cx="91" cy="78" rx="2" ry="2.5" fill="#1a1612"/>
+    <ellipse cx="109" cy="78" rx="2" ry="2.5" fill="#1a1612"/>
+  </svg>`;
+}
+function portraitGreta() {
+  return `<svg viewBox="0 0 240 160"><rect fill="#f7e7c8" width="240" height="160"/><circle cx="120" cy="58" r="32" fill="#f3c7a6"/><path d="M75 145 Q120 88 165 145" fill="#2c2c35"/><path d="M85 52 Q120 10 155 52 Q140 35 120 35 Q100 35 85 52" fill="#2b2018"/><circle cx="108" cy="60" r="3" fill="#1a1612"/><circle cx="132" cy="60" r="3" fill="#1a1612"/><path d="M105 83 Q120 92 135 83" stroke="#8b1a1a" fill="none" stroke-width="2"/><text x="120" y="135" text-anchor="middle" fill="#6b4423" font-size="16" font-family="serif">Greta</text></svg>`;
+}
+function portraitOtto() {
+  return `<svg viewBox="0 0 240 160"><rect fill="#e9f1f4" width="240" height="160"/><circle cx="120" cy="58" r="30" fill="#e6b88f"/><rect x="82" y="92" width="76" height="55" rx="8" fill="#29444f"/><path d="M85 48 Q120 22 155 48" fill="#654321"/><circle cx="107" cy="58" r="3" fill="#1a1612"/><circle cx="133" cy="58" r="3" fill="#1a1612"/><path d="M73 55 C50 55 50 88 73 88" stroke="#1a1612" fill="none" stroke-width="5"/><path d="M167 55 C190 55 190 88 167 88" stroke="#1a1612" fill="none" stroke-width="5"/><text x="120" y="135" text-anchor="middle" fill="#6b4423" font-size="16" font-family="serif">Otto</text></svg>`;
+}
+function portraitAdler() {
+  return `<svg viewBox="0 0 240 160"><rect fill="#efe5cf" width="240" height="160"/><circle cx="120" cy="56" r="30" fill="#e2b289"/><rect x="83" y="90" width="74" height="57" rx="5" fill="#6b4423"/><path d="M90 38 Q120 16 150 38 Q145 28 120 25 Q95 28 90 38" fill="#3a2f25"/><circle cx="108" cy="58" r="10" stroke="#1a1612" fill="none" stroke-width="2"/><circle cx="132" cy="58" r="10" stroke="#1a1612" fill="none" stroke-width="2"/><line x1="118" y1="58" x2="122" y2="58" stroke="#1a1612"/><rect x="154" y="94" width="40" height="28" rx="3" fill="#2c4a52"/><circle cx="174" cy="108" r="7" fill="#ede4d3"/><text x="120" y="135" text-anchor="middle" fill="#6b4423" font-size="16" font-family="serif">Adler</text></svg>`;
+}
+function portraitBerger() {
+  return `<svg viewBox="0 0 240 160"><rect fill="#eee7d8" width="240" height="160"/><circle cx="120" cy="56" r="31" fill="#dfb894"/><path d="M88 42 Q120 10 152 42" fill="#f4f0e6"/><path d="M80 92 Q120 80 160 92 L170 150 L70 150 Z" fill="#4b4b5c"/><rect x="100" y="54" width="16" height="6" fill="#f4f0e6"/><rect x="124" y="54" width="16" height="6" fill="#f4f0e6"/><path d="M108 82 Q120 76 132 82" stroke="#6b4423" fill="none" stroke-width="2"/><text x="120" y="135" text-anchor="middle" fill="#ede4d3" font-size="16" font-family="serif">Berger</text></svg>`;
+}
+
+function portraitLearner(label, color) {
+  return `<svg viewBox="0 0 240 160"><rect width="240" height="160" fill="#f8efe0"/><circle cx="120" cy="55" r="30" fill="#e8c4a3"/><path d="M82 142 Q120 88 158 142" fill="${color}"/><path d="M88 45 Q120 20 152 45 Q140 32 120 32 Q100 32 88 45" fill="#3a2f25"/><circle cx="108" cy="58" r="3" fill="#1a1612"/><circle cx="132" cy="58" r="3" fill="#1a1612"/><path d="M108 78 Q120 86 132 78" stroke="#6b4423" stroke-width="2" fill="none"/><rect x="78" y="105" width="84" height="32" rx="6" fill="#fff" opacity="0.82"/><text x="120" y="127" text-anchor="middle" fill="#1a1612" font-size="18" font-family="serif">${label}</text></svg>`;
+}
+function portraitTeacher(label, color) {
+  return `<svg viewBox="0 0 240 160"><rect width="240" height="160" fill="#eef4f1"/><circle cx="120" cy="54" r="31" fill="#dfb894"/><path d="M80 146 Q120 84 160 146" fill="${color}"/><path d="M88 42 Q120 18 152 42" fill="#6b5a45"/><rect x="101" y="55" width="15" height="7" fill="#f8f8f8" stroke="#1a1612"/><rect x="124" y="55" width="15" height="7" fill="#f8f8f8" stroke="#1a1612"/><line x1="116" y1="58" x2="124" y2="58" stroke="#1a1612"/><path d="M106 80 Q120 86 134 80" stroke="#1a1612" stroke-width="2" fill="none"/><rect x="70" y="108" width="100" height="31" rx="6" fill="#fff" opacity="0.84"/><text x="120" y="129" text-anchor="middle" fill="#1a1612" font-size="16" font-family="serif">${label}</text></svg>`;
+}
+function portraitHenrik() {
+  return `<svg viewBox="0 0 200 200">
+    <defs><radialGradient id="h1" cx="50%" cy="40%"><stop offset="0%" stop-color="#4a3a2a"/><stop offset="100%" stop-color="#1f1812"/></radialGradient></defs>
+    <rect width="200" height="200" fill="url(#h1)"/>
+    <ellipse cx="100" cy="80" rx="35" ry="32" fill="#e8c8a8"/>
+    <path d="M65,95 L70,200 L130,200 L135,95 Z" fill="#3a4a5a"/>
+    <path d="M70,55 Q100,42 130,55 L128,42 Q100,35 72,42 Z" fill="#d4c098"/>
+    <ellipse cx="100" cy="68" rx="14" ry="3" fill="#c97050"/>
+    <ellipse cx="91" cy="80" rx="2.5" ry="2" fill="#1a1612"/>
+    <ellipse cx="109" cy="80" rx="2.5" ry="2" fill="#1a1612"/>
+    <path d="M88,98 Q100,93 112,98" stroke="#1a1612" stroke-width="1.5" fill="none"/>
+  </svg>`;
+}
+
+// ========================================================================
+// SPIELLOGIK
+// ========================================================================
+
+function startGame() {
+  initCase();
+  document.getElementById('introScreen').classList.add('hide');
+  setTimeout(() => document.getElementById('introScreen').remove(), 800);
+  renderChapter1();
+}
+
+function renderChapter1() {
+  STATE.chapter = 1;
+  const html = `
+    <div class="panel reveal">
+      <div class="chapter-marker">Kapitel 1 — Der Diebstahl</div>
+      <h1>An Bord der MS Sirenia</h1>
+      <p class="lead">14. September 1924, 06:30 Uhr morgens. Atlantik. Fünf Tage bis New York.</p>
+
+      <p>Du bist <em>Inspektor Klaus Hartmann</em>, ein Privatdetektiv aus Hamburg, der zufällig an Bord ist. Heute Morgen klopft es laut an deiner Kabinentür. Der Steward zittert vor Aufregung:</p>
+      <div class="dialogue">Herr Hartmann! Schnell! Der Kapitän braucht Sie sofort. Es ist etwas Furchtbares geschehen!</div>
+
+      <p>Du eilst zur Kapitänssuite. Kapitän Otto Sturm — ein eisengrauer Seebär — sitzt an seinem Schreibtisch, das Gesicht rot wie ein Hummer.</p>
+
+      <div class="dialogue">Hartmann, Gott sei Dank sind Sie an Bord. Der <em>Stern von Königsberg</em> ist verschwunden. Aus meinem Tresor. Vergangene Nacht. Sie wissen, was das bedeutet — der Diamant war für einen amerikanischen Industriellen bestimmt. Wenn ich ohne ihn in New York anlege, ist meine Karriere zu Ende. Aber wenn ich Alarm schlage, weiß die ganze Welt, dass auf der MS Sirenia ein Dieb unterwegs ist.</div>
+
+      <p>Der Kapitän reicht dir ein Glas Schnaps und legt eine Liste auf den Tisch.</p>
+
+      <div class="dialogue">Sie haben drei Tage. Bis wir New York erreichen. Hier ist die Passagierliste. Viel zu viele Personen kommen in Frage — Passagiere, die Bordkapelle, die Funkstation, eine 9. Klasse auf Klassenfahrt und ihre Lehrkräfte. Finden Sie den Dieb. Trennen Sie echte Spuren von Klassenzimmer-Gerüchten, Zufällen und falschen Alibis. Bringen Sie mir den Diamanten zurück. Aber tun Sie es <em>diskret</em>.</div>
+
+      <p>Du nimmst den Auftrag an. Und so beginnt die Untersuchung...</p>
+
+      <div class="case-random-note">
+        <strong>Zufallsfall:</strong> Bei jedem neuen Spiel wird intern eine andere Täterperson ausgewählt. Die Verdächtigen bleiben gleich, aber mehrere Kernspuren ändern sich. Auswendiglernen hilft also nicht; Begründung hilft.
+      </div>
+
+      <div class="hint-box">
+        <strong>So spielst du:</strong> Befrage Verdächtige (klicke auf Person), durchsuche Orte, sammle Beweise im Notizbuch. Sei <em>vorsichtig</em>: Wenn du den Falschen beschuldigst, beginnst du von vorn! Du hast 5 Spieltage. Jede befragte Person und jeder besuchte Ort kostet einen halben Tag, sobald die Hauptbeweise gesammelt sind.
+      </div>
+
+      <button class="btn primary" onclick="renderInvestigation()">Mit der Untersuchung beginnen</button>
+    </div>
+  `;
+  document.getElementById('storyArea').innerHTML = html;
+  awardPoints(50, "Den Auftrag angenommen");
+  awardBadge("📜 Detektiv vereidigt", "Du hast den Fall übernommen.");
+}
+
+function renderInvestigation() {
+  const html = `
+    <div class="panel reveal">
+      <h2>Die Verdächtigen</h2>
+      <p>Fünf Passagiere stehen oben auf der Liste des Kapitäns. Klicke auf eine Person, um sie zu befragen. <em>Höre genau zu</em> — manche Aussagen widersprechen sich, und manche Geschichten haben Lücken.</p>
+      <div class="suspects" id="suspectsGrid"></div>
+    </div>
+
+    <div class="panel reveal">
+      <h2>Die Orte des Geschehens</h2>
+      <p>Sechs Orte an Bord verdienen einen genaueren Blick. Untersuche sie — aber sei gründlich. <em>Manche Hinweise sind versteckt.</em></p>
+      <div class="locations" id="locationsGrid"></div>
+    </div>
+
+    <div class="ship-map">
+      <pre>┌─────────────────────────────────────────┐
+│  ⛵  SONNENDECK    →  ☀️  Aussichtsplattform │
+│════════════════════════════════════════│
+│  🛏️ KAPITÄNSSUITE   📚 BIBLIOTHEK       │
+│════════════════════════════════════════│
+│  🍽️ SPEISESAAL      ⚕️ ARZTZIMMER       │
+│════════════════════════════════════════│
+│           ⚓  RUMPF / KIEL  ⚓           │
+└─────────────────────────────────────────┘
+           Hamburg  ────►  New York</pre>
+    </div>
+
+    <div class="panel reveal">
+      <h2>Ermittlungsübersicht</h2>
+      <p>Diese Übersicht zeigt die Kernspuren für <em>diesen</em> zufällig erzeugten Fall. Nicht jede Spur aus dem Notizbuch ist gleich wichtig.</p>
+      <div id="caseProgress" class="case-progress"></div>
+    </div>
+
+    <div class="panel reveal" id="accusationPanel" style="display:none;">
+      <h2>Die Anklage</h2>
+      <p>Glaubst du, du hast genug Beweise? Dann beschuldige den Dieb. <em>Aber sei dir SICHER!</em> — eine falsche Anklage zerstört die Untersuchung und du musst von vorn beginnen.</p>
+      <div class="accusation-grid" id="accusationGrid"></div>
+    </div>
+
+    <div style="text-align:center; margin: 2em 0;">
+      <button class="btn gold" onclick="readyToAccuse()">⚖️ Bereit für die Anklage</button>
+      <button class="btn ghost" onclick="getHint()">💡 Hinweis (kostet Punkte)</button>
+    </div>
+  `;
+  document.getElementById('storyArea').innerHTML = html;
+  renderSuspects();
+  renderLocations();
+  renderCaseProgress();
+}
+
+function renderSuspects() {
+  const grid = document.getElementById('suspectsGrid');
+  grid.innerHTML = Object.entries(SUSPECTS).map(([id, s]) => `
+    <div class="suspect-card ${STATE.examined.has(id) ? 'examined' : ''}" onclick="openSuspect('${id}')">
+      <div class="suspect-portrait">${s.portrait}</div>
+      <div class="suspect-info">
+        <div class="suspect-name">${s.name}</div>
+        <div class="suspect-role">${s.role}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderLocations() {
+  const grid = document.getElementById('locationsGrid');
+  grid.innerHTML = Object.entries(LOCATIONS).map(([id, l]) => `
+    <div class="location-card" onclick="visitLocation('${id}')">
+      <div class="location-icon">${l.icon}</div>
+      <div class="location-name">${l.name} ${STATE.searched.has(id) ? '✓' : ''}</div>
+    </div>
+  `).join('');
+}
+
+function renderCaseProgress() {
+  const box = document.getElementById('caseProgress');
+  if (!box) return;
+  const found = new Set(STATE.evidence.map(e => e.id));
+  box.innerHTML = CASE_CORE_EVIDENCE.map(item => {
+    const done = found.has(item.id);
+    return `
+      <div class="case-step ${done ? 'done' : 'missing'}">
+        <strong>${done ? '✓ ' : '□ '}${item.title}</strong>
+        <small>${done ? item.text : 'Noch offen: Suche nach einem Beleg oder einer Bestätigung.'}</small>
+      </div>
+    `;
+  }).join('');
+}
+
+// ========================================================================
+// VERDÄCHTIGE BEFRAGEN
+// ========================================================================
+function openSuspect(id) {
+  const s = SUSPECTS[id];
+  const isFirstInterview = !STATE.examined.has(id);
+  STATE.examined.add(id);
+  if (STATE.examined.size === 1) awardBadge("🎙️ Erste Befragung", "Du hast deine erste Aussage aufgenommen.");
+  if (isFirstInterview && STATE.examined.size === Object.keys(SUSPECTS).length) {
+    awardBadge("👥 Gründlicher Ermittler", "Alle Verdächtigen befragt!");
+    awardPoints(100, "Alle Verdächtigen befragt");
+  }
+  showSuspectModal(id);
+  renderSuspects();
+  renderCaseProgress();
+  if (isFirstInterview) advanceTime(0.10);
+}
+
+function showSuspectModal(id) {
+  const s = SUSPECTS[id];
+  const questionsHtml = Object.entries(s.questions).map(([qid, q]) => {
+    const askedKey = `${id}_${qid}`;
+    const wasAsked = STATE.asked.has(askedKey);
+    return `
+      <button class="q-btn ${wasAsked ? 'asked' : ''}" onclick="askQuestion('${id}', '${qid}')">
+        ${wasAsked ? '✓ ' : ''}${q.q}
+      </button>
+    `;
+  }).join('');
+
+  const answerArea = `<div id="answerArea"></div>`;
+
+  document.getElementById('modalContent').innerHTML = `
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2>${s.name}</h2>
+    <p style="font-style:italic; color: var(--sepia);">${s.role}</p>
+    <p style="margin-top: 1em;">${s.intro}</p>
+    <h3>Fragen</h3>
+    <div class="questions">${questionsHtml}</div>
+    ${answerArea}
+  `;
+  openModal();
+}
+
+function askQuestion(suspectId, questionId) {
+  const askedKey = `${suspectId}_${questionId}`;
+  const isNew = !STATE.asked.has(askedKey);
+  STATE.asked.add(askedKey);
+  const s = SUSPECTS[suspectId];
+  const q = s.questions[questionId];
+
+  document.getElementById('answerArea').innerHTML = `
+    <div class="dialogue reveal" style="margin-top: 1.5em;">${q.a}</div>
+  `;
+
+  if (isNew) {
+    awardPoints(20, `Frage gestellt: ${suspectId}`);
+    if (q.evidence) {
+      addEvidence(q.evidence.id, q.evidence.text, q.evidence.icon);
+    }
+    // Re-render question list to show as asked
+    showSuspectModal(suspectId);
+    setTimeout(() => {
+      document.getElementById('answerArea').innerHTML = `<div class="dialogue reveal" style="margin-top: 1.5em;">${q.a}</div>`;
+    }, 50);
+  }
+}
+
+// ========================================================================
+// ORTE BESUCHEN
+// ========================================================================
+function visitLocation(id) {
+  const l = LOCATIONS[id];
+  const isFirst = !STATE.searched.has(id);
+  STATE.searched.add(id);
+  if (STATE.searched.size === 1) awardBadge("🔍 Erste Spur", "Du hast den ersten Ort durchsucht.");
+  if (STATE.searched.size === Object.keys(LOCATIONS).length) {
+    awardBadge("🗺️ Gründlich durchsucht", "Alle Orte untersucht!");
+    awardPoints(150, "Alle Orte besucht");
+  }
+
+  document.getElementById('modalContent').innerHTML = `
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2>${l.icon} ${l.name}</h2>
+    <div style="margin-top: 1em;">${l.text()}</div>
+    <button class="btn primary" style="margin-top: 1.5em;" onclick="closeModal()">Ort verlassen</button>
+  `;
+  openModal();
+  renderLocations();
+  renderCaseProgress();
+  if (isFirst) {
+    awardPoints(40, `Ort untersucht: ${l.name}`);
+    advanceTime(0.16);
+  }
+}
+
+// ========================================================================
+// BEWEISE
+// ========================================================================
+function addEvidence(id, text, icon) {
+  if (STATE.evidence.find(e => e.id === id)) return;
+  STATE.evidence.push({ id, text, icon });
+  awardPoints(15, `Beweis gesammelt`);
+  showToast("Neuer Beweis", text, "success");
+  STATE.suspense = Math.min(100, STATE.suspense + (CASE_CORE_EVIDENCE.find(x => x.id === id) ? 3.5 : 1));
+  updateHUD();
+  renderCaseProgress();
+  maybeTriggerSurprise();
+
+  // Einige Beweisflags
+  if (id === "viktor_no_bandage") STATE.flags.add("viktor_lying_about_hands");
+  if (id === "calm_sea") STATE.flags.add("henrik_lying_about_seasick");
+  if (id === "hidden_clothes") STATE.flags.add("hidden_clothes_found");
+  if (id === "viktor_lockbook" && STATE.flags.has("hidden_clothes_found")) {
+    awardBadge("🧵 Faden gezogen", "Du hast die Verbindung zwischen Schloss-Buch und Tatwerkzeug entdeckt.");
+  }
+}
+
+// ========================================================================
+// ÜBERRASCHUNGEN
+// ========================================================================
+function maybeTriggerSurprise() {
+  const found = new Set(STATE.evidence.map(e => e.id));
+  if (STATE.evidence.length >= 10 && !STATE.flags.has("surprise_blackout")) {
+    STATE.flags.add("surprise_blackout");
+    STATE.suspense = Math.min(100, STATE.suspense + 14);
+    addEvidence("blackout", "Überraschung: Für drei Minuten fällt im unteren Gang das Licht aus. Danach liegt eine neue Spur sichtbar auf dem Boden.", "⚡");
+    showToast("Überraschung", "Kurzer Stromausfall im unteren Gang: Eine neue Spur taucht auf.", "danger");
+    awardBadge("⚡ Stromausfall", "Du hast die erste Überraschung ausgelöst.");
+  }
+  if (STATE.evidence.length >= 20 && found.has("surprise_code") && !STATE.flags.has("surprise_second_note")) {
+    STATE.flags.add("surprise_second_note");
+    STATE.suspense = Math.min(100, STATE.suspense + 16);
+    addEvidence("sealed_note", `Überraschung: Eine versiegelte Notiz nennt kein Geständnis, aber bestätigt: ${culpritName()} war näher am Tresor als bisher behauptet.`, "✉");
+    showToast("Zweite Überraschung", "Eine versiegelte Notiz verändert die Beweislage.", "danger");
+    awardBadge("✉ Geheime Notiz", "Du hast die zweite Überraschung entdeckt.");
+  }
+}
+
+// ========================================================================
+// PUNKTE & ORDEN
+// ========================================================================
+function awardPoints(amount, reason) {
+  STATE.points = Math.max(0, STATE.points + amount);
+  updateHUD();
+}
+function awardBadge(name, description) {
+  if (STATE.badges.find(b => b.name === name)) return;
+  STATE.badges.push({ name, description });
+  showToast("🏅 Orden verdient!", `${name} — ${description}`, "badge-toast");
+}
+
+// ========================================================================
+// HUD AKTUALISIEREN
+// ========================================================================
+function updateHUD() {
+  document.getElementById('pointsDisplay').textContent = STATE.points.toLocaleString('de-DE');
+  document.getElementById('evidenceDisplay').textContent = STATE.evidence.length;
+  const dayDisp = document.getElementById('dayDisplay');
+  dayDisp.textContent = `${Math.ceil(STATE.day)} / ${STATE.maxDay}`;
+  dayDisp.classList.remove('danger', 'warn', 'countdown-warn');
+  if (STATE.day >= STATE.maxDay - 0.5) dayDisp.classList.add('danger', 'countdown-warn');
+  else if (STATE.day >= STATE.maxDay - 1.5) dayDisp.classList.add('warn');
+  const fill = document.getElementById('suspenseFill');
+  const text = document.getElementById('suspenseText');
+  if (fill && text) {
+    const pct = Math.max(0, Math.min(100, Math.round(STATE.suspense)));
+    fill.style.width = pct + '%';
+    text.textContent = pct < 25 ? 'Ruhig' : pct < 50 ? 'Unruhig' : pct < 75 ? 'Gefährlich' : 'Kurz vor Panik';
+  }
+}
+
+// ========================================================================
+// ZEIT
+// ========================================================================
+function advanceTime(amount) {
+  // Time advances only after user has gathered some core evidence
+  // First-pass interactions are "free" up to a threshold
+  if (STATE.evidence.length < 6) return; // first-pass orientation is free; after that, choices cost time
+  STATE.day += amount;
+  STATE.suspense = Math.min(100, STATE.suspense + amount * 9 + Math.max(0, STATE.evidence.length - 18) * 0.05);
+  updateHUD();
+  if (STATE.day > STATE.maxDay) {
+    triggerLose("Die Zeit ist abgelaufen. Die Sirenia legt in New York an, und die Täterperson verschwindet im Hafenviertel.");
+  }
+}
+
+// ========================================================================
+// HINWEISE
+// ========================================================================
+function getHint() {
+  const hints = [
+    { cost: 75, text: "Trenne Motiv, Gelegenheit und Beweis. Mehrere Personen haben eines davon, aber nur eine Person verbindet alle drei." },
+    { cost: 100, text: "Nicht jede schwarze Kleidung ist dieselbe Spur. Frage: Welche schwarze Kleidung war feucht und enthielt Spuren aus dem Tresor?" },
+    { cost: 125, text: "Ein passender Schuh allein reicht nicht. Vergleiche Schuhform, Weg, Alibi und Fähigkeiten." },
+    { cost: 125, text: "Die Tresorkombination war auffindbar, aber der Täter musste zusätzlich ungesehen hinein- und hinauskommen." },
+    { cost: 150, text: "Achte auf die doppelte Lüge: eine Person lügt über ihren Aufenthaltsort und über ihre körperliche Fähigkeit." },
+    { cost: 175, text: "Die Klassenfahrt erzeugt viele laute Nebenverdächtige. Frage: Wer hatte Bewegungsfreiheit außerhalb der dokumentierten Aufsicht?" },
+    { cost: 200, text: `Der stärkste Fall entsteht so: ${culpritName()} verbindet Motiv, Mittel, gebrochenes Alibi, Täterspur und falsche Fährte. Prüfe die Ermittlungsübersicht.` }
+  ];
+  if (STATE.hintsUsed >= hints.length) {
+    showToast("Keine weiteren Hinweise", "Du musst es jetzt selbst herausfinden!", "danger");
+    return;
+  }
+  const h = hints[STATE.hintsUsed];
+  if (STATE.points < h.cost) {
+    showToast("Nicht genug Punkte", `Du brauchst ${h.cost} Punkte für diesen Hinweis.`, "danger");
+    return;
+  }
+  STATE.points -= h.cost;
+  STATE.hintsUsed++;
+  updateHUD();
+
+  document.getElementById('modalContent').innerHTML = `
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2>💡 Hinweis ${STATE.hintsUsed}</h2>
+    <div class="hint-box" style="margin-top: 1.5em;">${h.text}</div>
+    <p style="margin-top: 1em; font-size: 0.9rem; color: var(--sepia);"><em>—${h.cost} Punkte abgezogen</em></p>
+    <button class="btn ghost" style="margin-top: 1em;" onclick="closeModal()">Schließen</button>
+  `;
+  openModal();
+  if (STATE.hintsUsed === 1) awardBadge("💡 Verzweifelt", "Du hast deinen ersten Hinweis gekauft.");
+}
+
+// ========================================================================
+// ANKLAGE
+// ========================================================================
+function readyToAccuse() {
+  const found = new Set(STATE.evidence.map(e => e.id));
+  const keyFound = CASE_CORE_EVIDENCE.filter(e => found.has(e.id)).length;
+  if (STATE.evidence.length < 28 || keyFound < 12) {
+    document.getElementById('modalContent').innerHTML = `
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <h2>Noch nicht genug Beweise</h2>
+      <p>Für eine faire Anklage brauchst du mindestens <strong>28 Beweise</strong> und alle <strong>12 Kernspuren</strong> aus der Ermittlungsübersicht.</p>
+      <p>Aktuell: <strong>${STATE.evidence.length}</strong> Beweise, davon <strong>${keyFound}</strong> Kernspuren.</p>
+      <div class="hint-box">Prüfe besonders: Alibi, Fähigkeit, Schuhgröße, Verkleidung und widersprüchliche Aussagen.</div>
+      <button class="btn primary" onclick="closeModal()">Weiter ermitteln</button>
+    `;
+    openModal();
+    return;
+  }
+  const panel = document.getElementById('accusationPanel');
+  panel.style.display = 'block';
+  const grid = document.getElementById('accusationGrid');
+  grid.innerHTML = Object.entries(SUSPECTS).map(([id, s]) => `
+    <button class="accuse-btn" onclick="accuse('${id}')">${s.name}</button>
+  `).join('');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function accuse(suspectId) {
+  if (suspectId === STATE.culpritId) {
+    triggerWin();
+  } else {
+    STATE.wrongAccusations++;
+    STATE.suspense = Math.min(100, STATE.suspense + 18);
+    awardPoints(-75, "Falsche Anklage");
+    advanceTime(0.22);
+    if (STATE.wrongAccusations === 1) {
+      showToast("Falsche Spur", `${SUSPECTS[suspectId].name} passt nicht zu allen Kernbeweisen. Du darfst weiterermitteln.`, "danger");
+      document.getElementById('modalContent').innerHTML = `
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <h2>Die Anklage hält nicht</h2>
+        <p>${SUSPECTS[suspectId].name} ist eine falsche Spur. Eine gute Anklage muss <strong>alle</strong> Kernspuren erklären: Alibi, Zugang, Schuhgröße, Verkleidung und Lüge.</p>
+        <div class="hint-box">Schau noch einmal in dein Notizbuch und in die Ermittlungsübersicht. Wer lügt gleich mehrfach?</div>
+        <button class="btn primary" onclick="closeModal()">Beweise prüfen</button>
+      `;
+      openModal();
+      return;
+    }
+    setTimeout(() => triggerLose(`Nach zwei falschen Anklagen glaubt der Kapitän deiner Untersuchung nicht mehr. Der echte Dieb nutzt die Verwirrung und flieht.`), 800);
+  }
+}
+
+// ========================================================================
+// SIEG
+// ========================================================================
+function triggerWin() {
+  awardBadge("🏆 Fall gelöst", "Du hast den Stern von Königsberg gerettet!");
+  awardPoints(500, "Fall gelöst");
+  if (STATE.wrongAccusations === 0) awardBadge("🎯 Ohne Fehler", "Du hast den Dieb beim ersten Versuch gefasst!");
+  if (STATE.day <= 2) awardBadge("⚡ Schnell wie der Blitz", "Fall in unter 2 Tagen gelöst!");
+  if (STATE.hintsUsed === 0) awardBadge("🧠 Reiner Verstand", "Keine Hinweise gekauft!");
+  if (STATE.evidence.length >= 12) awardBadge("📚 Vollständige Akte", "Sehr gründliche Beweissammlung!");
+
+  const p = STATE.caseProfile || CASE_PROFILES.viktor;
+  const name = culpritName();
+  const winContent = `
+    <p style="font-size: 1.2rem; line-height: 1.7; max-width: 700px; margin: 1em auto;">
+      Du nimmst <strong>${name}</strong> fest. Der Stern von Königsberg wird gefunden: ${p.hiding}.
+    </p>
+    <p style="max-width: 700px; margin: 1em auto;">
+      Die Lösung war in diesem Durchgang zufällig gewählt. ${p.confession}
+    </p>
+    <ul style="text-align:left; max-width: 680px; margin: 1.5em auto; line-height: 1.8;">
+      <li><strong>Motiv:</strong> ${p.motive}</li>
+      <li><strong>Mittel:</strong> ${p.means}</li>
+      <li><strong>Gebrochenes Alibi:</strong> ${p.brokenAlibi}</li>
+      <li><strong>Täterspur:</strong> ${p.trace}</li>
+      <li><strong>Falsche Fährte:</strong> ${p.framing}</li>
+      <li><strong>Klassenspuren:</strong> Die Learning Partners und Lehrkräfte wirkten verdächtig, lieferten aber vor allem Kontrollzeiten und Gegenbeweise.</li>
+    </ul>
+    <p style="max-width: 700px; margin: 2em auto; font-style: italic;">
+      Punkte: <strong>${STATE.points.toLocaleString('de-DE')}</strong> · Beweise: <strong>${STATE.evidence.length}</strong> · Tag: <strong>${Math.ceil(STATE.day)}/${STATE.maxDay}</strong> · Spannung: <strong>${Math.round(STATE.suspense)}%</strong> · Orden: <strong>${STATE.badges.length}</strong>
+    </p>
+    <div class="badges" style="justify-content: center; max-width: 700px; margin: 1em auto;">
+      ${STATE.badges.map(b => `<span class="badge">${b.name}</span>`).join('')}
+    </div>
+  `;
+  document.getElementById('winContent').innerHTML = winContent;
+  document.getElementById('winOverlay').classList.add('show');
+}
+
+function triggerLose(reason) {
+  document.getElementById('loseReason').textContent = reason;
+  document.getElementById('loseOverlay').classList.add('show');
+}
+
+function restartGame() {
+  STATE.day = 1;
+  STATE.points = 0;
+  STATE.chapter = 0;
+  STATE.examined.clear();
+  STATE.searched.clear();
+  STATE.evidence = [];
+  STATE.badges = [];
+  STATE.notes = [];
+  STATE.asked.clear();
+  STATE.flags.clear();
+  STATE.wrongAccusations = 0;
+  STATE.hintsUsed = 0;
+  STATE.maxDay = 5;
+  STATE.suspense = 8;
+  STATE.culpritId = null;
+  STATE.caseProfile = null;
+  initCase();
+  document.getElementById('loseOverlay').classList.remove('show');
+  document.getElementById('winOverlay').classList.remove('show');
+  updateHUD();
+  renderChapter1();
+}
+
+// ========================================================================
+// MODAL
+// ========================================================================
+function openModal() { document.getElementById('modal').classList.add('open'); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+document.getElementById('modal').addEventListener('click', (e) => {
+  if (e.target.id === 'modal') closeModal();
+});
+
+// ========================================================================
+// NOTIZBUCH
+// ========================================================================
+function openNotebook() {
+  const evidenceHtml = STATE.evidence.length === 0
+    ? '<p style="font-style:italic; color: var(--sepia);">Noch keine Beweise gesammelt.</p>'
+    : `<ul class="evidence-list">${STATE.evidence.map(e => `
+      <li class="evidence-item">
+        <span class="evidence-icon">${e.icon}</span>
+        <div class="evidence-text">${e.text}</div>
+      </li>
+    `).join('')}</ul>`;
+
+  document.getElementById('modalContent').innerHTML = `
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2>📓 Notizbuch des Inspektors</h2>
+    <div class="notebook" style="margin-top: 1em;">
+      <p><strong>Gesammelte Beweise (${STATE.evidence.length}):</strong></p>
+      ${evidenceHtml}
+    </div>
+  `;
+  openModal();
+}
+
+// ========================================================================
+// ORDEN
+// ========================================================================
+function openBadges() {
+  const allPossibleBadges = [
+    "📜 Detektiv vereidigt", "🎙️ Erste Befragung", "🔍 Erste Spur",
+    "👥 Gründlicher Ermittler", "🗺️ Gründlich durchsucht", "🧵 Faden gezogen",
+    "💡 Verzweifelt", "🥚 Geheimnis entdeckt", "🏆 Fall gelöst",
+    "🎯 Ohne Fehler", "⚡ Schnell wie der Blitz", "🧠 Reiner Verstand", "📚 Vollständige Akte"
+  ];
+  const earnedNames = STATE.badges.map(b => b.name);
+  const badgesHtml = allPossibleBadges.map(name => {
+    const earned = STATE.badges.find(b => b.name === name);
+    return earned
+      ? `<div class="badge" title="${earned.description}">${name}</div>`
+      : `<div class="badge badge-empty" title="Noch nicht verdient">??? — ${name.split(' ').slice(1).join(' ')}</div>`;
+  }).join('');
+
+  document.getElementById('modalContent').innerHTML = `
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2>🏅 Ehrentafel</h2>
+    <p>Du hast <strong>${STATE.badges.length} von ${allPossibleBadges.length}</strong> Orden verdient.</p>
+    <div class="badges" style="margin-top: 1em;">${badgesHtml}</div>
+    <p style="margin-top: 2em; font-size: 0.85rem; color: var(--sepia);"><em>Tipp: Manche Orden bekommt man nur durch besondere Spielweise — schnell, ohne Fehler, ohne Hinweise.</em></p>
+  `;
+  openModal();
+}
+
+// ========================================================================
+// EASTER EGGS
+// ========================================================================
+let easterClicks = 0;
+document.addEventListener('keydown', (e) => {
+  // Konami-ähnlicher Trick: tippe "STERN"
+  if (!window.sternBuf) window.sternBuf = "";
+  window.sternBuf += e.key.toUpperCase();
+  if (window.sternBuf.length > 5) window.sternBuf = window.sternBuf.slice(-5);
+  if (window.sternBuf === "STERN") {
+    awardBadge("🥚 Geheimnis entdeckt", "Du hast das geheime Wort gefunden!");
+    awardPoints(100, "Easter Egg");
+    showToast("✨ Geheimes Wort!", "Du hast +100 Punkte erhalten und einen geheimen Orden!", "badge-toast");
+    window.sternBuf = "";
+  }
+});
+
+// Klick 7-mal auf den Titel
+document.addEventListener('click', (e) => {
+  if (e.target.closest('.hud-title')) {
+    easterClicks++;
+    if (easterClicks === 7) {
+      showToast("🦜 Hast du es bemerkt?", "Sieben Klicks — wie die sieben Meere. Du bekommst den Seebären-Orden!", "badge-toast");
+      awardBadge("🦜 Sieben Meere", "Sieben Klicks auf den Schiffsnamen.");
+      awardPoints(50, "Easter Egg");
+    }
+  }
+});
+
+// ========================================================================
+// TOAST SYSTEM
+// ========================================================================
+function showToast(title, message, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<div class="toast-title">${title}</div><div>${message}</div>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add('fade');
+    setTimeout(() => toast.remove(), 400);
+  }, 4500);
+}
+
+// Init
+updateHUD();
+</script>
+</body>
+</html>
