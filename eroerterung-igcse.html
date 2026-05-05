@@ -1,0 +1,3338 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Argumentation & Erörterung · IGCSE 0505 · Klasse 9</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,400;1,9..144,500;1,9..144,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #f7f1e3;
+  --paper-warm: #f0e8d3;
+  --paper-deep: #e7dcc0;
+  --ink: #1a1612;
+  --ink-soft: #463829;
+  --ink-mute: #6b5a44;
+  --margin: #8b7355;
+  --accent-rust: #a85432;
+  --accent-rust-deep: #82391f;
+  --accent-sage: #6d7d5d;
+  --accent-sage-deep: #4d5a40;
+  --accent-ochre: #c89f4a;
+  --accent-ochre-deep: #946f28;
+  --accent-plum: #6e4759;
+  --accent-plum-deep: #4a2f3e;
+  --accent-teal: #3d6b6f;
+  --highlight-yellow: rgba(232, 197, 71, 0.35);
+  --highlight-yellow-solid: #e8c547;
+  --highlight-pink: rgba(196, 132, 145, 0.4);
+  --highlight-pink-solid: #c48491;
+  --highlight-green: rgba(143, 168, 117, 0.4);
+  --highlight-green-solid: #8fa875;
+  --highlight-blue: rgba(125, 156, 168, 0.4);
+  --highlight-blue-solid: #7d9ca8;
+  --highlight-violet: rgba(150, 124, 167, 0.4);
+  --highlight-violet-solid: #967ca7;
+  --shadow: rgba(26, 22, 18, 0.16);
+  --shadow-deep: rgba(26, 22, 18, 0.28);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'Inter', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.6;
+  min-height: 100vh;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-image:
+    radial-gradient(circle at 8% 12%, rgba(168, 84, 50, 0.04) 0%, transparent 35%),
+    radial-gradient(circle at 92% 88%, rgba(109, 125, 93, 0.05) 0%, transparent 35%),
+    radial-gradient(circle at 50% 0%, rgba(110, 71, 89, 0.03) 0%, transparent 30%);
+}
+
+h1, h2, h3, h4, .display, .serif {
+  font-family: 'Fraunces', serif;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+a { color: var(--accent-rust); }
+
+/* ===================== HEADER (masthead style) ===================== */
+header.masthead {
+  background: var(--paper);
+  border-bottom: 3px double var(--ink);
+  padding: 28px 40px 18px;
+  position: relative;
+}
+
+.masthead-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+}
+
+.masthead-left { text-align: left; font-size: 0.78rem; color: var(--ink-mute); letter-spacing: 0.06em; text-transform: uppercase; }
+.masthead-left b { color: var(--accent-rust); font-weight: 600; }
+.masthead-right { text-align: right; font-size: 0.78rem; color: var(--ink-mute); letter-spacing: 0.06em; }
+
+.masthead-title {
+  text-align: center;
+}
+
+.masthead-title h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  line-height: 1;
+  color: var(--ink);
+}
+
+.masthead-title .tagline {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-top: 6px;
+  font-style: normal;
+}
+
+.exam-strip {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 9px 40px;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.exam-strip-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.exam-strip .countdown-num {
+  color: var(--accent-ochre);
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.score-display {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.score-item {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--paper-deep);
+}
+
+.score-item span { color: var(--accent-ochre); font-weight: 700; }
+
+/* ===================== TOOL STRIP ===================== */
+.toolstrip {
+  background: var(--paper-warm);
+  border-bottom: 1px solid var(--paper-deep);
+  padding: 10px 40px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.toolstrip-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  align-items: center;
+}
+
+.tool-btn {
+  background: transparent;
+  border: 1px solid var(--ink-mute);
+  color: var(--ink-soft);
+  padding: 6px 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.8rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.15s;
+  letter-spacing: 0.02em;
+}
+
+.tool-btn:hover { background: var(--paper); border-color: var(--ink); }
+.tool-btn.danger { color: var(--accent-rust); border-color: var(--accent-rust); }
+.tool-btn.danger:hover { background: var(--accent-rust); color: var(--paper); }
+
+/* ===================== TABS ===================== */
+.tabs-wrap {
+  background: var(--paper);
+  border-bottom: 1px solid var(--paper-deep);
+}
+
+.tabs {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+}
+
+.tab {
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 16px 22px;
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--ink-mute);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.01em;
+  position: relative;
+}
+
+.tab:hover { color: var(--ink); }
+
+.tab.active {
+  color: var(--ink);
+  border-bottom-color: var(--accent-rust);
+}
+
+.tab .tab-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--accent-rust);
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+/* ===================== CONTAINER ===================== */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 40px 64px;
+}
+
+.panel { display: none; animation: fadeIn 0.25s ease; }
+.panel.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.panel-head {
+  border-bottom: 1px solid var(--paper-deep);
+  padding-bottom: 18px;
+  margin-bottom: 28px;
+}
+
+.panel-kicker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--accent-rust);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.panel-head h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+
+.panel-head h2 em {
+  font-style: italic;
+  color: var(--accent-rust);
+}
+
+.panel-head .deck {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--ink-soft);
+  font-weight: 500;
+  max-width: 720px;
+}
+
+.callout {
+  background: var(--paper-warm);
+  border-left: 4px solid var(--accent-ochre);
+  padding: 16px 20px;
+  border-radius: 0 6px 6px 0;
+  margin: 20px 0;
+  font-size: 0.95rem;
+}
+
+.callout strong { color: var(--accent-ochre-deep); }
+
+.callout.exam {
+  background: linear-gradient(to right, rgba(168, 84, 50, 0.08), var(--paper-warm));
+  border-left-color: var(--accent-rust);
+}
+
+.callout.exam strong { color: var(--accent-rust-deep); }
+
+/* ===================== OVERVIEW PANEL ===================== */
+.workflow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin: 24px 0;
+}
+
+.workflow-step {
+  background: var(--paper-warm);
+  border: 1px solid var(--paper-deep);
+  border-radius: 8px;
+  padding: 18px 16px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.workflow-step:hover {
+  background: var(--paper);
+  border-color: var(--accent-rust);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--shadow);
+}
+
+.workflow-step .num {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: 2.2rem;
+  color: var(--accent-rust);
+  line-height: 1;
+}
+
+.workflow-step h4 {
+  font-size: 1.05rem;
+  margin: 8px 0 4px;
+  font-weight: 700;
+}
+
+.workflow-step p {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.workflow-step::after {
+  content: '→';
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent-rust);
+  font-size: 1.4rem;
+  z-index: 2;
+  background: var(--paper);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--paper-deep);
+}
+
+.workflow-step:last-child::after { display: none; }
+
+@media (max-width: 800px) {
+  .workflow-step::after { display: none; }
+}
+
+.theory-block {
+  background: var(--paper-warm);
+  padding: 28px 32px;
+  border-radius: 10px;
+  border: 1px solid var(--paper-deep);
+  margin-top: 28px;
+}
+
+.theory-block h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-size: 1.45rem;
+  margin-bottom: 14px;
+}
+
+.theory-block ul {
+  list-style: none;
+  padding: 0;
+}
+
+.theory-block ul li {
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--paper-deep);
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.theory-block ul li:last-child { border-bottom: none; }
+
+.theory-block ul li::before {
+  content: counter(list-item);
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 700;
+  color: var(--accent-rust);
+  font-size: 1.1rem;
+}
+
+.theory-block ul { counter-reset: list-item; }
+
+.theory-block ul li strong {
+  display: block;
+  font-family: 'Fraunces', serif;
+  font-size: 1.05rem;
+  margin-bottom: 2px;
+  font-weight: 700;
+}
+
+.theory-block ul li span {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+}
+
+/* ===================== READING / ANNOTATION ===================== */
+.article-selector {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 14px 18px;
+  background: var(--paper-warm);
+  border-radius: 8px;
+  border: 1px solid var(--paper-deep);
+}
+
+.article-selector label {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+.article-select {
+  padding: 8px 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.92rem;
+  background: var(--paper);
+  border: 1px solid var(--ink-mute);
+  border-radius: 4px;
+  color: var(--ink);
+  cursor: pointer;
+  flex: 1;
+  min-width: 200px;
+  max-width: 480px;
+}
+
+.reading-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 28px;
+  align-items: start;
+}
+
+@media (max-width: 1000px) {
+  .reading-layout { grid-template-columns: 1fr; }
+}
+
+.article {
+  background: var(--paper);
+  padding: 36px 40px;
+  border-radius: 4px;
+  border: 1px solid var(--paper-deep);
+  box-shadow: 0 2px 12px var(--shadow);
+  position: relative;
+  font-family: 'Fraunces', serif;
+}
+
+.article-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--ink-mute);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--paper-deep);
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.article-meta .source { color: var(--accent-rust); font-weight: 700; }
+
+.article h3.headline {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  line-height: 1.15;
+  margin-bottom: 6px;
+  color: var(--ink);
+}
+
+.article .subhead {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.05rem;
+  color: var(--ink-soft);
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--paper-deep);
+}
+
+.article p.body {
+  font-family: 'Fraunces', serif;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 1em;
+  text-align: justify;
+  hyphens: auto;
+  color: var(--ink);
+}
+
+.article p.body:first-of-type::first-letter {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-size: 3.4em;
+  float: left;
+  line-height: 0.85;
+  margin-right: 8px;
+  margin-top: 4px;
+  color: var(--accent-rust);
+}
+
+.article .para-num {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--margin);
+  margin-right: 10px;
+  vertical-align: top;
+  font-weight: 500;
+  background: var(--paper-warm);
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+.article ::selection {
+  background: var(--highlight-yellow-solid);
+  color: var(--ink);
+}
+
+/* annotated highlights */
+.highlight {
+  padding: 1px 3px;
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  transition: filter 0.15s;
+  font-weight: 500;
+}
+.highlight:hover { filter: brightness(0.92); }
+
+.highlight[data-label="thesis"] { background: var(--highlight-yellow); border-bottom: 2px solid var(--highlight-yellow-solid); }
+.highlight[data-label="fakt"] { background: var(--highlight-blue); border-bottom: 2px solid var(--highlight-blue-solid); }
+.highlight[data-label="pro"] { background: var(--highlight-green); border-bottom: 2px solid var(--highlight-green-solid); }
+.highlight[data-label="kontra"] { background: var(--highlight-pink); border-bottom: 2px solid var(--highlight-pink-solid); }
+.highlight[data-label="experte"] { background: var(--highlight-violet); border-bottom: 2px solid var(--highlight-violet-solid); }
+.highlight[data-label="beispiel"] { background: rgba(217, 119, 87, 0.3); border-bottom: 2px solid #d97757; }
+
+.highlight .remove-x {
+  display: inline-block;
+  font-size: 0.7rem;
+  margin-left: 4px;
+  color: var(--ink-mute);
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  opacity: 0.6;
+}
+.highlight .remove-x:hover { opacity: 1; color: var(--accent-rust); }
+
+/* ===================== ANNOTATION SIDEBAR ===================== */
+.annot-sidebar {
+  background: var(--paper-warm);
+  border: 1px solid var(--paper-deep);
+  border-radius: 8px;
+  padding: 22px 20px;
+  position: sticky;
+  top: 70px;
+}
+
+.annot-sidebar h4 {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+}
+
+.annot-sidebar .sidebar-help {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin-bottom: 16px;
+  line-height: 1.45;
+}
+
+.label-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.label-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1.5px solid var(--paper-deep);
+  background: var(--paper);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.88rem;
+  color: var(--ink);
+  text-align: left;
+  transition: all 0.15s;
+  width: 100%;
+}
+
+.label-btn:hover { border-color: var(--ink); }
+
+.label-btn.active {
+  border-color: var(--ink);
+  background: var(--paper-warm);
+  box-shadow: 0 0 0 2px var(--paper-deep);
+}
+
+.label-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  border: 1px solid rgba(0,0,0,0.12);
+}
+
+.label-btn .label-count {
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--ink-mute);
+  background: var(--paper-warm);
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+.annotation-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.annot-stat {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--ink-mute);
+  text-align: center;
+  padding: 10px;
+  background: var(--paper);
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.annot-stat .count {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent-rust);
+  display: block;
+  line-height: 1;
+}
+
+/* ===================== POSITION (side picker) ===================== */
+.position-card {
+  background: var(--paper-warm);
+  border: 2px solid var(--paper-deep);
+  border-radius: 10px;
+  padding: 26px 28px;
+  margin-bottom: 22px;
+}
+
+.position-card h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-size: 1.25rem;
+  margin-bottom: 6px;
+}
+
+.position-card .question {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--ink-soft);
+  margin-bottom: 18px;
+  line-height: 1.4;
+}
+
+.position-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 600px) { .position-options { grid-template-columns: 1fr; } }
+
+.position-option {
+  background: var(--paper);
+  border: 2px solid var(--paper-deep);
+  border-radius: 8px;
+  padding: 18px;
+  cursor: pointer;
+  transition: all 0.18s;
+  text-align: left;
+  font-family: 'Fraunces', serif;
+}
+
+.position-option:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.position-option.selected {
+  border-color: var(--accent-rust);
+  background: linear-gradient(to bottom right, var(--paper), rgba(168, 84, 50, 0.06));
+  box-shadow: 0 4px 0 var(--accent-rust);
+}
+
+.position-option .stance-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--accent-rust);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.position-option .stance-text {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 1.02rem;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.thesis-builder {
+  margin-top: 22px;
+}
+
+.thesis-builder label {
+  display: block;
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-size: 1rem;
+}
+
+.thesis-builder textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 12px 14px;
+  font-family: 'Fraunces', serif;
+  font-size: 1.05rem;
+  border: 1.5px solid var(--paper-deep);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink);
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.thesis-builder textarea:focus {
+  outline: none;
+  border-color: var(--accent-rust);
+  background: #fffaf0;
+}
+
+.thesis-helpers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.helper-chip {
+  background: var(--paper);
+  border: 1px solid var(--paper-deep);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  color: var(--ink-soft);
+  transition: all 0.15s;
+}
+
+.helper-chip:hover { background: var(--paper-warm); border-color: var(--ink-mute); color: var(--ink); }
+
+/* ===================== EVIDENCE / OUTLINE BUILDER ===================== */
+.outline-instructions {
+  background: var(--paper-warm);
+  border-left: 4px solid var(--accent-sage);
+  padding: 14px 18px;
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 22px;
+  font-size: 0.95rem;
+}
+
+.evidence-bank {
+  background: var(--paper-warm);
+  border: 1.5px dashed var(--ink-mute);
+  border-radius: 8px;
+  padding: 18px 20px;
+  margin-bottom: 24px;
+  min-height: 100px;
+}
+
+.evidence-bank-title {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+
+.evidence-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 50px;
+}
+
+.evidence-list:empty::after {
+  content: '— Alle Belege verteilt —';
+  display: block;
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-mute);
+  opacity: 0.5;
+  padding: 12px;
+  font-family: 'Fraunces', serif;
+}
+
+.evidence-piece {
+  background: var(--paper);
+  border: 1.5px solid var(--ink-mute);
+  border-left: 4px solid var(--margin);
+  padding: 10px 14px;
+  border-radius: 4px;
+  cursor: grab;
+  font-family: 'Fraunces', serif;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  user-select: none;
+  transition: all 0.15s;
+  position: relative;
+}
+
+.evidence-piece:hover {
+  border-color: var(--ink);
+  box-shadow: 0 3px 8px var(--shadow);
+}
+
+.evidence-piece.dragging { opacity: 0.4; cursor: grabbing; }
+
+.evidence-piece .ev-tag {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.evidence-piece[data-type="fakt"] .ev-tag { background: var(--highlight-blue); color: var(--ink); }
+.evidence-piece[data-type="fakt"] { border-left-color: var(--highlight-blue-solid); }
+.evidence-piece[data-type="pro"] .ev-tag { background: var(--highlight-green); color: var(--ink); }
+.evidence-piece[data-type="pro"] { border-left-color: var(--highlight-green-solid); }
+.evidence-piece[data-type="kontra"] .ev-tag { background: var(--highlight-pink); color: var(--ink); }
+.evidence-piece[data-type="kontra"] { border-left-color: var(--highlight-pink-solid); }
+.evidence-piece[data-type="experte"] .ev-tag { background: var(--highlight-violet); color: var(--ink); }
+.evidence-piece[data-type="experte"] { border-left-color: var(--highlight-violet-solid); }
+.evidence-piece[data-type="beispiel"] .ev-tag { background: rgba(217, 119, 87, 0.3); color: var(--ink); }
+.evidence-piece[data-type="beispiel"] { border-left-color: #d97757; }
+
+.evidence-piece .ev-text { display: block; }
+.evidence-piece .ev-cite {
+  display: block;
+  margin-top: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--ink-mute);
+  font-style: normal;
+}
+
+.outline-zones {
+  display: grid;
+  gap: 16px;
+}
+
+.outline-zone {
+  background: var(--paper);
+  border: 1.5px solid var(--paper-deep);
+  border-radius: 8px;
+  padding: 18px 22px;
+  position: relative;
+  transition: all 0.15s;
+}
+
+.outline-zone.drag-over {
+  background: linear-gradient(to right, rgba(232, 197, 71, 0.15), var(--paper));
+  border-color: var(--accent-ochre);
+}
+
+.outline-zone .zone-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  border-bottom: 1px dashed var(--paper-deep);
+  padding-bottom: 8px;
+}
+
+.outline-zone .zone-num {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: var(--accent-rust);
+  line-height: 1;
+}
+
+.outline-zone .zone-name {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.outline-zone .zone-fn {
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--ink-mute);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.outline-zone .zone-pieces {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 40px;
+}
+
+.outline-zone .zone-pieces:empty::after {
+  content: '↓ Belege hierher ziehen ↓';
+  display: block;
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-mute);
+  opacity: 0.5;
+  padding: 14px;
+  font-family: 'Fraunces', serif;
+  font-size: 0.9rem;
+}
+
+/* ===================== ACTIONS / FEEDBACK ===================== */
+.action-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  padding: 12px 22px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.15s;
+  letter-spacing: 0.02em;
+}
+
+.btn-primary:hover { background: var(--accent-rust); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+  padding: 10px 18px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+
+.btn-secondary:hover { background: var(--ink); color: var(--paper); }
+
+.btn-accent {
+  background: var(--accent-rust);
+  color: var(--paper);
+  border: none;
+  padding: 12px 22px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+
+.btn-accent:hover { background: var(--accent-rust-deep); }
+
+.feedback {
+  margin-top: 18px;
+  padding: 14px 18px;
+  border-radius: 6px;
+  font-family: 'Fraunces', serif;
+  font-size: 1rem;
+  display: none;
+  line-height: 1.5;
+}
+
+.feedback.show { display: block; animation: fadeIn 0.25s; }
+.feedback.success { background: rgba(143, 168, 117, 0.18); border-left: 4px solid var(--accent-sage); color: var(--ink); }
+.feedback.partial { background: rgba(232, 197, 71, 0.18); border-left: 4px solid var(--accent-ochre); color: var(--ink); }
+.feedback.fail { background: rgba(168, 84, 50, 0.12); border-left: 4px solid var(--accent-rust); color: var(--ink); }
+.feedback strong { font-weight: 700; }
+
+/* ===================== WRITING WORKSHOP ===================== */
+.writing-frame {
+  background: var(--paper);
+  border: 1px solid var(--paper-deep);
+  border-radius: 8px;
+  padding: 28px 32px;
+  margin-bottom: 22px;
+}
+
+.writing-thesis-banner {
+  background: linear-gradient(to right, var(--paper-warm), var(--paper));
+  border-left: 4px solid var(--accent-rust);
+  padding: 14px 18px;
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 24px;
+  font-family: 'Fraunces', serif;
+}
+
+.writing-thesis-banner .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--accent-rust);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.writing-thesis-banner .thesis-text {
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.writing-thesis-banner .empty {
+  color: var(--ink-mute);
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+.write-block {
+  background: var(--paper);
+  border: 1px solid var(--paper-deep);
+  border-radius: 6px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+
+.write-block-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.write-block-num {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--accent-rust);
+  line-height: 1;
+}
+
+.write-block-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.write-block-tip {
+  margin-left: auto;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--ink-mute);
+}
+
+.write-block textarea {
+  width: 100%;
+  min-height: 70px;
+  padding: 10px 12px;
+  font-family: 'Fraunces', serif;
+  font-size: 1rem;
+  border: 1.5px solid var(--paper-deep);
+  border-radius: 4px;
+  background: var(--paper-warm);
+  color: var(--ink);
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.write-block textarea:focus {
+  outline: none;
+  border-color: var(--accent-rust);
+  background: #fffaf0;
+}
+
+.write-block-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--ink-mute);
+}
+
+.connectors-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 6px;
+}
+
+.connector-chip {
+  background: var(--paper-warm);
+  border: 1px solid var(--paper-deep);
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  color: var(--ink-soft);
+  transition: all 0.12s;
+}
+
+.connector-chip:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.preview-essay {
+  background: var(--paper);
+  border: 1px solid var(--paper-deep);
+  border-radius: 4px;
+  padding: 36px 44px;
+  margin-top: 22px;
+  display: none;
+  box-shadow: 0 2px 12px var(--shadow);
+  position: relative;
+}
+
+.preview-essay.show { display: block; animation: fadeIn 0.4s; }
+
+.preview-essay::before {
+  content: 'Erörterung';
+  position: absolute;
+  top: 18px;
+  right: 28px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--ink-mute);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.preview-essay h3.preview-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-style: italic;
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--paper-deep);
+  padding-bottom: 12px;
+}
+
+.preview-essay .preview-author {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--ink-mute);
+  margin-bottom: 26px;
+}
+
+.preview-essay p {
+  font-family: 'Fraunces', serif;
+  font-size: 1.04rem;
+  line-height: 1.75;
+  margin-bottom: 0.8em;
+  text-indent: 1.6em;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.preview-essay p:first-of-type { text-indent: 0; }
+.preview-essay p:first-of-type::first-letter {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-size: 3em;
+  float: left;
+  line-height: 0.85;
+  margin-right: 6px;
+  margin-top: 4px;
+  color: var(--accent-rust);
+}
+
+/* ===================== RUBRIC ===================== */
+.rubric {
+  background: var(--paper-warm);
+  border: 1px solid var(--paper-deep);
+  border-radius: 8px;
+  padding: 22px 26px;
+  margin-top: 22px;
+}
+
+.rubric h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-size: 1.25rem;
+  margin-bottom: 14px;
+}
+
+.rubric-criteria {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rubric-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  background: var(--paper);
+  border-radius: 6px;
+  border: 1px solid var(--paper-deep);
+}
+
+.rubric-row .rubric-label {
+  font-family: 'Fraunces', serif;
+  font-size: 0.95rem;
+}
+
+.rubric-row .rubric-label .crit-name {
+  font-weight: 700;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.rubric-row .rubric-label .crit-hint {
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+.rubric-stars {
+  display: flex;
+  gap: 4px;
+}
+
+.star {
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--paper-deep);
+  transition: color 0.15s, transform 0.1s;
+}
+
+.star.filled { color: var(--accent-ochre); }
+.star:hover { transform: scale(1.2); }
+
+.rubric-summary {
+  margin-top: 14px;
+  padding: 12px 16px;
+  background: var(--paper);
+  border-left: 4px solid var(--accent-sage);
+  border-radius: 0 4px 4px 0;
+  font-family: 'Fraunces', serif;
+  font-size: 0.95rem;
+}
+
+/* ===================== DASHBOARD / PROGRESS ===================== */
+.countdown-banner {
+  background: linear-gradient(135deg, var(--ink) 0%, #2a221a 100%);
+  color: var(--paper);
+  padding: 28px 32px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.countdown-banner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    repeating-linear-gradient(45deg, rgba(232, 197, 71, 0.04) 0, rgba(232, 197, 71, 0.04) 12px, transparent 12px, transparent 24px);
+  pointer-events: none;
+}
+
+.countdown-banner .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--accent-ochre);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.countdown-banner .days {
+  font-family: 'Fraunces', serif;
+  font-size: 4rem;
+  font-style: italic;
+  font-weight: 900;
+  color: var(--paper);
+  line-height: 1;
+  margin: 8px 0;
+  position: relative;
+}
+
+.countdown-banner .sub {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--paper-deep);
+  position: relative;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.dash-card {
+  background: var(--paper-warm);
+  border: 1px solid var(--paper-deep);
+  border-radius: 8px;
+  padding: 18px;
+  text-align: center;
+}
+
+.dash-card .val {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: var(--accent-rust);
+  line-height: 1;
+}
+
+.dash-card .lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--ink-mute);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+.rank-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 22px 0 6px;
+}
+
+.rank-row strong {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.rank-row span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--ink-mute);
+}
+
+.progress-track {
+  height: 12px;
+  background: var(--paper-warm);
+  border: 1px solid var(--paper-deep);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-sage) 0%, var(--accent-ochre) 100%);
+  width: 0%;
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.badge {
+  background: var(--paper-warm);
+  border: 1px solid var(--paper-deep);
+  border-radius: 8px;
+  padding: 16px 12px;
+  text-align: center;
+  position: relative;
+  opacity: 0.42;
+  filter: grayscale(0.6);
+  transition: all 0.3s;
+}
+
+.badge.earned {
+  opacity: 1;
+  filter: none;
+  background: var(--paper);
+  border-color: var(--accent-ochre);
+  box-shadow: 0 4px 0 var(--accent-ochre-deep);
+  transform: translateY(-2px);
+}
+
+.badge .ico {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.badge .name {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+.badge .desc {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  line-height: 1.3;
+}
+
+.badge.earned::after {
+  content: '✓';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--accent-sage);
+  color: var(--paper);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border: 2px solid var(--paper);
+}
+
+/* ===================== MATERIALS GRID ===================== */
+.materials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.material-card {
+  background: var(--paper);
+  border: 1px solid var(--paper-deep);
+  border-radius: 8px;
+  padding: 0;
+  text-decoration: none;
+  color: var(--ink);
+  display: block;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.18s;
+  box-shadow: 0 2px 6px var(--shadow);
+}
+
+.material-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px var(--shadow);
+  border-color: var(--ink);
+}
+
+.material-thumb {
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.6rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.material-thumb::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 8px, transparent 8px, transparent 16px);
+}
+
+.material-card[data-type="video"] .material-thumb { background: linear-gradient(135deg, var(--accent-rust), var(--accent-rust-deep)); color: var(--paper); }
+.material-card[data-type="presentation"] .material-thumb { background: linear-gradient(135deg, var(--accent-ochre), var(--accent-ochre-deep)); color: var(--paper); }
+.material-card[data-type="infographic"] .material-thumb { background: linear-gradient(135deg, var(--accent-sage), var(--accent-sage-deep)); color: var(--paper); }
+.material-card[data-type="podcast"] .material-thumb { background: linear-gradient(135deg, var(--accent-plum), var(--accent-plum-deep)); color: var(--paper); }
+
+.material-body {
+  padding: 14px 16px 16px;
+}
+
+.material-type {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 4px;
+}
+
+.material-card h4 {
+  font-size: 1rem;
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.material-card p {
+  font-size: 0.84rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.material-card .ext-arrow {
+  position: absolute; top: 10px; right: 12px;
+  background: rgba(255,255,255,0.85);
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem;
+  color: var(--ink);
+  font-weight: 700;
+  z-index: 2;
+}
+
+/* ===================== TOAST ===================== */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(140px);
+  background: var(--ink);
+  color: var(--paper);
+  padding: 14px 22px;
+  border-radius: 6px;
+  font-family: 'Fraunces', serif;
+  font-size: 0.95rem;
+  box-shadow: 0 8px 28px var(--shadow-deep);
+  z-index: 1000;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-left: 4px solid var(--accent-ochre);
+  max-width: 90vw;
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast .ico { font-size: 1.3rem; }
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 700px) {
+  header.masthead { padding: 18px 20px 14px; }
+  .masthead-inner { grid-template-columns: 1fr; gap: 8px; text-align: center; }
+  .masthead-left, .masthead-right { text-align: center; }
+  .exam-strip { padding: 8px 20px; }
+  .container { padding: 24px 16px 48px; }
+  .article { padding: 24px 22px; }
+  .tabs { padding: 0 16px; overflow-x: auto; flex-wrap: nowrap; }
+  .tab { white-space: nowrap; padding: 14px 14px; font-size: 0.92rem; }
+  .toolstrip { padding: 8px 16px; }
+  .toolstrip-inner { justify-content: flex-start; flex-wrap: wrap; }
+  .writing-frame { padding: 22px 18px; }
+  .preview-essay { padding: 24px 22px; }
+}
+
+.piece-source-hidden { visibility: hidden; }
+
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="masthead-left"><b>IGCSE 0505</b> · Deutsch als erste Sprache</div>
+    <div class="masthead-title">
+      <h1>Argumentation &amp; Erörterung</h1>
+      <div class="tagline">Lese · Annotiere · Argumentiere · Schreibe</div>
+    </div>
+    <div class="masthead-right">Klasse 9 · Lernhilfe</div>
+  </div>
+</header>
+
+<div class="exam-strip">
+  <div class="exam-strip-inner">
+    <div>📅 ABSCHLUSSPRÜFUNG · 2. JUNI 2026 · noch <span class="countdown-num" id="hdrDays">—</span> Tage</div>
+    <div class="score-display">
+      <div class="score-item">PUNKTE <span id="hdrPoints">0</span></div>
+      <div class="score-item">RANG <span id="hdrRank">Lehrling</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="toolstrip">
+  <div class="toolstrip-inner">
+    <button class="tool-btn" id="exportBtn">⬇ Fortschritt exportieren</button>
+    <button class="tool-btn" id="importBtn">⬆ Fortschritt importieren</button>
+    <button class="tool-btn danger" id="resetBtn">↺ Zurücksetzen</button>
+    <input type="file" id="importFile" accept="application/json" style="display:none;">
+  </div>
+</div>
+
+<div class="tabs-wrap">
+  <nav class="tabs">
+    <button class="tab active" data-panel="overview"><span class="tab-num">01</span>Überblick</button>
+    <button class="tab" data-panel="reading"><span class="tab-num">02</span>Lesen &amp; Annotieren</button>
+    <button class="tab" data-panel="position"><span class="tab-num">03</span>Position beziehen</button>
+    <button class="tab" data-panel="outline"><span class="tab-num">04</span>Belege ordnen</button>
+    <button class="tab" data-panel="writing"><span class="tab-num">05</span>Schreibwerkstatt</button>
+    <button class="tab" data-panel="rubric"><span class="tab-num">06</span>Selbstcheck</button>
+    <button class="tab" data-panel="materials"><span class="tab-num">07</span>Materialien</button>
+    <button class="tab" data-panel="dashboard"><span class="tab-num">08</span>Fortschritt</button>
+  </nav>
+</div>
+
+<div class="container">
+
+  <!-- ===================== 01 OVERVIEW ===================== -->
+  <section class="panel active" id="overview">
+    <div class="panel-head">
+      <div class="panel-kicker">Methode · Schritt für Schritt</div>
+      <h2>Vom Quelltext zur eigenen <em>Erörterung</em></h2>
+      <p class="deck">Eine gute Erörterung entsteht nicht beim ersten Schreiben — sie entsteht durch sorgfältiges Lesen, klares Positionieren, kluges Ordnen und präzises Formulieren. Diese Lernhilfe führt dich durch alle vier Phasen.</p>
+    </div>
+
+    <div class="callout exam">
+      <strong>📅 Prüfung am 2. Juni:</strong> In der IGCSE-0505-Prüfung wirst du auf Basis von Quelltexten eine argumentative Erörterung schreiben. Diese Lernhilfe trainiert genau dieses Können — von der Quellenanalyse bis zum stilsicheren Schluss.
+    </div>
+
+    <div class="workflow">
+      <div class="workflow-step" data-go="reading">
+        <div class="num">1</div>
+        <h4>Lesen &amp; Annotieren</h4>
+        <p>Authentische Artikel auf Deutsch. Markiere Thesen, Fakten, Pro- und Kontraargumente.</p>
+      </div>
+      <div class="workflow-step" data-go="position">
+        <div class="num">2</div>
+        <h4>Position beziehen</h4>
+        <p>Wähle eine Seite und formuliere deine eigene These mithilfe von Satzanfängen.</p>
+      </div>
+      <div class="workflow-step" data-go="outline">
+        <div class="num">3</div>
+        <h4>Belege ordnen</h4>
+        <p>Ziehe Belege aus dem Artikel in den Aufbau deiner Erörterung. Per Drag-and-Drop.</p>
+      </div>
+      <div class="workflow-step" data-go="writing">
+        <div class="num">4</div>
+        <h4>Schreiben &amp; prüfen</h4>
+        <p>Schreibe Absatz für Absatz mit Konnektoren-Hilfe und prüfe dich am IGCSE-Kriterienraster.</p>
+      </div>
+    </div>
+
+    <div class="theory-block">
+      <h3>Der Aufbau einer linearen Erörterung</h3>
+      <ul>
+        <li>
+          <strong>Einleitung</strong>
+          <span>Hinführung (aktueller Anlass, Zitat, Statistik), Themenexposition mit Frage, Position deutlich erkennbar machen — eventuell schon mit Andeutung der Hauptargumente.</span>
+        </li>
+        <li>
+          <strong>Hauptteil — Argument 1 (stärkstes)</strong>
+          <span>Behauptung (Topic Sentence) → Begründung → Beleg aus dem Quelltext (sinngemäß zitiert oder paraphrasiert) → Folgerung. Konjunktionen variieren.</span>
+        </li>
+        <li>
+          <strong>Hauptteil — Argument 2</strong>
+          <span>Mit Konnektor anschließen („Hinzu kommt…", „Darüber hinaus…"), wieder Behauptung-Begründung-Beleg-Folgerung.</span>
+        </li>
+        <li>
+          <strong>Hauptteil — Antithese mit Entkräftung</strong>
+          <span>Gegenposition ernst nehmen („Kritiker wenden ein, dass…"), dann differenziert widerlegen („Doch dieser Einwand greift zu kurz…").</span>
+        </li>
+        <li>
+          <strong>Schluss</strong>
+          <span>Restatement der These (umformuliert, nicht wiederholt!), Synthese der Hauptargumente, gesellschaftlicher Ausblick / Forderung / offene Frage. Starker Schlusssatz!</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>💡 Pädagogischer Hinweis:</strong> Die <em>lineare</em> Erörterung (eine Position klar vertreten) ist für IGCSE 0505 zentral. Die <em>dialektische</em> Erörterung (Pro &amp; Kontra abwägen, dann Synthese) ist die anspruchsvollere Variante — du findest sie als Bonus-Übung in der Schreibwerkstatt.
+    </div>
+  </section>
+
+  <!-- ===================== 02 READING & ANNOTATION ===================== -->
+  <section class="panel" id="reading">
+    <div class="panel-head">
+      <div class="panel-kicker">Schritt 02 · Quellenanalyse</div>
+      <h2>Lesen &amp; <em>Annotieren</em></h2>
+      <p class="deck">Jeder Erörterung liegt ein Quelltext zugrunde. Lies aufmerksam, markiere Schlüsselstellen und ordne ihnen Funktionen zu — so entsteht das Material für deine eigene Argumentation.</p>
+    </div>
+
+    <div class="article-selector">
+      <label for="articleSelect">Wähle einen Artikel:</label>
+      <select class="article-select" id="articleSelect"></select>
+      <button class="tool-btn" id="resetAnnotsBtn">Annotationen löschen</button>
+    </div>
+
+    <div class="callout">
+      <strong>🖍 So annotierst du:</strong> Wähle rechts eine Funktion (z. B. „These"), markiere dann mit der Maus oder dem Finger eine Textstelle. Sie wird automatisch eingefärbt. Klick auf das kleine ✕, um eine Markierung wieder zu entfernen.
+    </div>
+
+    <div class="reading-layout">
+      <article class="article" id="articleContent">
+        <!-- gets populated by JS -->
+      </article>
+
+      <aside class="annot-sidebar">
+        <h4>Annotations-Werkzeug</h4>
+        <p class="sidebar-help">Wähle erst eine Funktion, dann markiere im Text.</p>
+
+        <div class="label-options" id="labelOptions">
+          <button class="label-btn active" data-label="thesis">
+            <span class="label-swatch" style="background:var(--highlight-yellow-solid);"></span>
+            These / Hauptaussage
+            <span class="label-count" data-count="thesis">0</span>
+          </button>
+          <button class="label-btn" data-label="fakt">
+            <span class="label-swatch" style="background:var(--highlight-blue-solid);"></span>
+            Fakt / Zahl
+            <span class="label-count" data-count="fakt">0</span>
+          </button>
+          <button class="label-btn" data-label="pro">
+            <span class="label-swatch" style="background:var(--highlight-green-solid);"></span>
+            Pro-Argument
+            <span class="label-count" data-count="pro">0</span>
+          </button>
+          <button class="label-btn" data-label="kontra">
+            <span class="label-swatch" style="background:var(--highlight-pink-solid);"></span>
+            Kontra-Argument
+            <span class="label-count" data-count="kontra">0</span>
+          </button>
+          <button class="label-btn" data-label="experte">
+            <span class="label-swatch" style="background:var(--highlight-violet-solid);"></span>
+            Expertenmeinung
+            <span class="label-count" data-count="experte">0</span>
+          </button>
+          <button class="label-btn" data-label="beispiel">
+            <span class="label-swatch" style="background:#d97757;"></span>
+            Beispiel / Anekdote
+            <span class="label-count" data-count="beispiel">0</span>
+          </button>
+        </div>
+
+        <div class="annot-stat">
+          Markierungen<br>
+          <span class="count" id="annotCount">0</span>
+        </div>
+
+        <div class="annotation-actions">
+          <button class="btn-primary" id="checkAnnotBtn">Annotationen prüfen</button>
+        </div>
+      </aside>
+    </div>
+
+    <div class="feedback" id="annotFeedback"></div>
+  </section>
+
+  <!-- ===================== 03 POSITION ===================== -->
+  <section class="panel" id="position">
+    <div class="panel-head">
+      <div class="panel-kicker">Schritt 03 · Standpunkt</div>
+      <h2>Position beziehen &amp; <em>These</em> formulieren</h2>
+      <p class="deck">Eine gute Erörterung lebt von einer klaren Position. Wähle, welche Seite du vertreten willst, und formuliere daraus eine eigene These — präzise, eindeutig, in der Sprache des höheren Sekundarbereichs.</p>
+    </div>
+
+    <div class="position-card">
+      <h3 id="posTopic">Wähle zuerst einen Artikel auf der Vorseite.</h3>
+      <p class="question" id="posQuestion"></p>
+      <div class="position-options" id="positionOptions"></div>
+    </div>
+
+    <div class="thesis-builder">
+      <label for="thesisInput">Deine eigene These (in einem Satz):</label>
+      <textarea id="thesisInput" placeholder="Formuliere deine Position klar und präzise…"></textarea>
+      <div class="thesis-helpers" id="thesisHelpers"></div>
+      <div class="action-row">
+        <button class="btn-primary" id="saveThesisBtn">These speichern</button>
+        <button class="btn-secondary" id="clearThesisBtn">Leeren</button>
+      </div>
+      <div class="feedback" id="thesisFeedback"></div>
+    </div>
+  </section>
+
+  <!-- ===================== 04 OUTLINE ===================== -->
+  <section class="panel" id="outline">
+    <div class="panel-head">
+      <div class="panel-kicker">Schritt 04 · Gliederung</div>
+      <h2>Belege in den <em>Aufbau</em> ordnen</h2>
+      <p class="deck">Jeder Beleg gehört in einen bestimmten Absatz deiner Erörterung. Ziehe die Belege aus dem Artikel in den passenden Teil — und sieh dabei zu, wie aus Rohstoff eine Struktur wird.</p>
+    </div>
+
+    <div class="outline-instructions">
+      <strong>So geht's:</strong> Unten siehst du Belege, die aus dem Artikel extrahiert wurden. Ziehe sie per Drag-and-Drop in den passenden Absatz deiner Erörterung. <em>Tipp:</em> Pro-Belege gehören zu deinen Hauptargumenten, Kontra-Belege in den Antithesen-Absatz.
+    </div>
+
+    <div class="evidence-bank">
+      <div class="evidence-bank-title" id="evidenceBankTitle">📦 Belege aus dem Artikel</div>
+      <div class="evidence-list" id="evidenceBank"></div>
+    </div>
+
+    <div class="outline-zones" id="outlineZones">
+      <div class="outline-zone" data-target="einleitung">
+        <div class="zone-header">
+          <span class="zone-num">I</span>
+          <span class="zone-name">Einleitung</span>
+          <span class="zone-fn">Hinführung · These</span>
+        </div>
+        <div class="zone-pieces"></div>
+      </div>
+      <div class="outline-zone" data-target="arg1">
+        <div class="zone-header">
+          <span class="zone-num">II</span>
+          <span class="zone-name">Hauptargument 1 (stärkstes)</span>
+          <span class="zone-fn">Behauptung · Beleg · Folgerung</span>
+        </div>
+        <div class="zone-pieces"></div>
+      </div>
+      <div class="outline-zone" data-target="arg2">
+        <div class="zone-header">
+          <span class="zone-num">III</span>
+          <span class="zone-name">Hauptargument 2</span>
+          <span class="zone-fn">Konnektor · Beleg · Folgerung</span>
+        </div>
+        <div class="zone-pieces"></div>
+      </div>
+      <div class="outline-zone" data-target="antithese">
+        <div class="zone-header">
+          <span class="zone-num">IV</span>
+          <span class="zone-name">Antithese mit Entkräftung</span>
+          <span class="zone-fn">Gegenposition · Widerlegung</span>
+        </div>
+        <div class="zone-pieces"></div>
+      </div>
+      <div class="outline-zone" data-target="schluss">
+        <div class="zone-header">
+          <span class="zone-num">V</span>
+          <span class="zone-name">Schluss</span>
+          <span class="zone-fn">Restatement · Synthese · Ausblick</span>
+        </div>
+        <div class="zone-pieces"></div>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-primary" id="checkOutlineBtn">Gliederung prüfen</button>
+      <button class="btn-secondary" id="hintOutlineBtn">💡 Hinweis</button>
+      <button class="btn-secondary" id="resetOutlineBtn">Zurück in den Vorrat</button>
+    </div>
+    <div class="feedback" id="outlineFeedback"></div>
+  </section>
+
+  <!-- ===================== 05 WRITING ===================== -->
+  <section class="panel" id="writing">
+    <div class="panel-head">
+      <div class="panel-kicker">Schritt 05 · Ausformulierung</div>
+      <h2>Die <em>Schreibwerkstatt</em></h2>
+      <p class="deck">Jetzt schreibst du deine Erörterung Absatz für Absatz. Nutze die Konnektoren-Vorschläge unter jedem Block — sie heben deinen Stil sofort auf IGCSE-Niveau.</p>
+    </div>
+
+    <div class="writing-thesis-banner">
+      <div class="label">Deine These</div>
+      <div class="thesis-text" id="writingThesis"><span class="empty">— Noch keine These formuliert. Geh zu Schritt 03.</span></div>
+    </div>
+
+    <div class="writing-frame">
+      <div class="write-block" data-block="einl-hin">
+        <div class="write-block-head">
+          <span class="write-block-num">I.1</span>
+          <span class="write-block-title">Einleitung — Hinführung</span>
+          <span class="write-block-tip">Aktueller Anlass · Zitat · Statistik</span>
+        </div>
+        <textarea placeholder="Beginne mit etwas, das die Aufmerksamkeit weckt — eine Beobachtung, ein Zitat, eine aktuelle Debatte…"></textarea>
+        <div class="connectors-bar">
+          <button class="connector-chip">In jüngster Zeit…</button>
+          <button class="connector-chip">Eine aktuelle Debatte…</button>
+          <button class="connector-chip">Wie eine Studie zeigt…</button>
+          <button class="connector-chip">Kaum ein Thema beschäftigt…</button>
+        </div>
+        <div class="write-block-meta"><span class="word-count">0 Wörter</span></div>
+      </div>
+
+      <div class="write-block" data-block="einl-these">
+        <div class="write-block-head">
+          <span class="write-block-num">I.2</span>
+          <span class="write-block-title">Einleitung — Themenexposition &amp; These</span>
+          <span class="write-block-tip">Frage formulieren · Position beziehen</span>
+        </div>
+        <textarea placeholder="Stelle die Leitfrage und formuliere deine Position klar…"></textarea>
+        <div class="connectors-bar">
+          <button class="connector-chip">Damit stellt sich die Frage…</button>
+          <button class="connector-chip">Im Folgenden möchte ich darlegen, weshalb…</button>
+          <button class="connector-chip">Meines Erachtens…</button>
+          <button class="connector-chip">Ich vertrete die Position, dass…</button>
+        </div>
+        <div class="write-block-meta"><span class="word-count">0 Wörter</span></div>
+      </div>
+
+      <div class="write-block" data-block="arg1-beh">
+        <div class="write-block-head">
+          <span class="write-block-num">II.1</span>
+          <span class="write-block-title">Argument 1 — Behauptung (Topic Sentence)</span>
+          <span class="write-block-tip">Stärkster Punkt zuerst!</span>
+        </div>
+        <textarea placeholder="Was ist der zentrale Punkt deines stärksten Arguments?"></textarea>
+        <div class="connectors-bar">
+          <button class="connector-chip">Ein zentraler Aspekt ist…</button>
+          <button class="connector-chip">Das gewichtigste Argument lautet…</button>
+          <button class="connector-chip">Zunächst lässt sich feststellen, dass…</button>
+        </div>
+        <div class="write-block-meta"><span class="word-count">0 Wörter</span></div>
+      </div>
+
+      <div class="write-block" data-block="arg1-beg">
+        <div class="write-block-head">
+          <span class="write-block-num">II.2</span>
+          <span class="write-block-title">Argument 1 — Begründung &amp; Beleg</span>
+          <span class="write-block-tip">Warum stimmt das? Beleg aus dem Artikel!</span>
+        </div>
+        <textarea placeholder="Begründe und belege deine Behauptung mit einem Beleg aus dem Quelltext…"></textarea>
+        <div class="connectors-bar">
+          <button class="connector-chip">Dies zeigt sich daran, dass…</button>
+          <button class="connector-chip">Wie der Artikel belegt…</button>
+          <button class="connector-chip">Laut der vorliegenden Quelle…</button>
+          <button class="connector-chip">Ein anschauliches Beispiel hierfür ist…</button>
+        </div>
+        <div class="write-block-meta"><span class="word-count">0 Wörter</span></div>
+      </div>
+
+      <div class="write-block" data-block="arg2-beh">
+        <div class="write-block-head">
+          <span class="write-block-num">III.1</span>
+          <span class="write-block-title">Argument 2 — Behauptung mit Konnektor</span>
+          <span class="write-block-tip">Variere die Konjunktion!</span>
+        </div>
+        <textarea placeholder="Schließe an dein erstes Argument an…"></textarea>
+        <div class="connectors-bar">
+          <button class="connector-chip">Hinzu kommt, dass…</button>
+          <button class="connector-chip">Darüber hinaus…</button>
+          <button class="connector-chip">Ein weiterer wesentlicher Punkt ist…</button>
+          <button class="connector-chip">Nicht zu unterschätzen ist außerdem…</button>
+        </div>
+        <div class="write-block-meta"><span class="word-count">0 Wörter</span></div>
+      </div>
+
+      <div class="write-block" data-block="arg2-beg">
+        <div class="write-block-head">
+          <span class="write-block-num">III.2</span>
+          <span class="write-block-title">Argument 2 — Begründung &amp; Beleg</span>
+          <span class="write-block-tip">Wieder mit Quellenbezug</span>
+        </div>
+        <textarea placeholder="Begründung mit Beleg aus dem Artikel oder eigenem Wissen…"></textarea>
+        <div class="connectors-bar">
+          <button class="connector-chip">Dies wird dadurch deutlich, dass…</button>
+          <button class="connector-chip">Konkret bedeutet das…</button>
+          <button class="connector-chip">Entsprechende Belege liefert…</button>
+        </div>
+        <div class="write-block-meta"><span class="word-count">0 Wörter</span></div>
+      </div>
+
+      <div class="write-block" data-block="anti-the">
+        <div class="write-block-head">
+          <span class="write-block-num">IV.1</span>
+          <span class="write-block-title">Antithese — Gegenposition ernst nehmen</span>
+          <span class="write-block-tip">Was sagen die Kritiker?</span>
+        </div>
+        <textarea placeholder="Welche Gegenargumente werden vertreten? Stelle sie fair dar…"></textarea>
+        <div class="connectors-bar">
+          <button class="connector-chip">Kritiker wenden ein, dass…</button>
+          <button class="connector-chip">Zwar ließe sich einwenden…</button>
+          <button class="connector-chip">Manche argumentieren hingegen…</button>
+          <button class="connector-chip">Es ist nicht zu leugnen, dass…</button>
+        </div>
+        <div class="write-block-meta"><span class="word-count">0 Wörter</span></div>
+      </div>
+
+      <div class="write-block" data-block="anti-ent">
+        <div class="write-block-head">
+          <span class="write-block-num">IV.2</span>
+          <span class="write-block-title">Antithese — Entkräftung</span>
+          <span class="write-block-tip">Differenziert widerlegen</span>
+        </div>
+        <textarea placeholder="Widerlege das Gegenargument mit guten Gründen…"></textarea>
+        <div class="connectors-bar">
+          <button class="connector-chip">Doch dieser Einwand greift zu kurz…</button>
+          <button class="connector-chip">Diese Sichtweise verkennt jedoch…</button>
+          <button class="connector-chip">Bei genauerer Betrachtung…</button>
+          <button class="connector-chip">Dem ist entgegenzuhalten, dass…</button>
+        </div>
+        <div class="write-block-meta"><span class="word-count">0 Wörter</span></div>
+      </div>
+
+      <div class="write-block" data-block="schl-rest">
+        <div class="write-block-head">
+          <span class="write-block-num">V.1</span>
+          <span class="write-block-title">Schluss — Restatement &amp; Synthese</span>
+          <span class="write-block-tip">These umformulieren, nicht wiederholen!</span>
+        </div>
+        <textarea placeholder="Fasse zusammen, ohne wörtlich zu wiederholen…"></textarea>
+        <div class="connectors-bar">
+          <button class="connector-chip">Zusammenfassend lässt sich festhalten…</button>
+          <button class="connector-chip">Die genannten Argumente machen deutlich…</button>
+          <button class="connector-chip">In der Gesamtschau überwiegen…</button>
+        </div>
+        <div class="write-block-meta"><span class="word-count">0 Wörter</span></div>
+      </div>
+
+      <div class="write-block" data-block="schl-aus">
+        <div class="write-block-head">
+          <span class="write-block-num">V.2</span>
+          <span class="write-block-title">Schluss — Ausblick / Appell</span>
+          <span class="write-block-tip">Starker Schlusssatz!</span>
+        </div>
+        <textarea placeholder="Forderung, Wunsch, rhetorische Frage oder gesellschaftlicher Ausblick…"></textarea>
+        <div class="connectors-bar">
+          <button class="connector-chip">Es bleibt zu hoffen, dass…</button>
+          <button class="connector-chip">Die Politik ist daher gefordert…</button>
+          <button class="connector-chip">Letztlich liegt es an uns allen…</button>
+          <button class="connector-chip">Zu fragen bleibt allerdings…</button>
+        </div>
+        <div class="write-block-meta"><span class="word-count">0 Wörter</span></div>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-accent" id="assembleBtn">📜 Erörterung zusammenfügen</button>
+      <button class="btn-secondary" id="saveDraftBtn">💾 Entwurf speichern</button>
+      <button class="btn-secondary" id="clearWritingBtn">🗑 Alles leeren</button>
+    </div>
+
+    <div class="preview-essay" id="previewEssay">
+      <h3 class="preview-title" id="previewTitle">Erörterung</h3>
+      <div class="preview-author">— eigene Ausarbeitung · IGCSE 0505 ·</div>
+      <div id="previewContent"></div>
+      <div class="action-row" style="margin-top:24px; justify-content:center;">
+        <button class="btn-secondary" onclick="copyEssay()">📋 Kopieren</button>
+        <button class="btn-secondary" onclick="downloadEssay()">⬇ Als Textdatei</button>
+        <button class="btn-secondary" onclick="downloadDocx()">⬇ Druckversion</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 06 RUBRIC ===================== -->
+  <section class="panel" id="rubric">
+    <div class="panel-head">
+      <div class="panel-kicker">Schritt 06 · Selbstbewertung</div>
+      <h2>Der <em>IGCSE</em>-Selbstcheck</h2>
+      <p class="deck">Bewerte deine Erörterung anhand der Kriterien, die auch in der Prüfung zählen. Sei ehrlich — eine realistische Einschätzung hilft dir mehr als ein freundliches Lob.</p>
+    </div>
+
+    <div class="callout">
+      <strong>📋 Tipp:</strong> Schreibe zuerst deine Erörterung in der Schreibwerkstatt fertig, lies sie laut, dann komm hierher zurück und bewerte dich Kriterium für Kriterium.
+    </div>
+
+    <div class="rubric">
+      <h3>Kriterien für die argumentative Erörterung</h3>
+      <div class="rubric-criteria" id="rubricCriteria"></div>
+      <div class="rubric-summary" id="rubricSummary">
+        Bewerte alle Kriterien, um eine Gesamteinschätzung zu erhalten.
+      </div>
+      <div class="action-row" style="margin-top:14px;">
+        <button class="btn-primary" id="saveRubricBtn">Bewertung speichern</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 07 MATERIALS ===================== -->
+  <section class="panel" id="materials">
+    <div class="panel-head">
+      <div class="panel-kicker">Begleit­material</div>
+      <h2>Vertiefende <em>Materialien</em></h2>
+      <p class="deck">Zusätzliche Lernhilfen — perfekt zum Wiederholen und zur Vorbereitung auf die Prüfung am 2. Juni. (Platzhalter — füge hier deine eigenen Links ein.)</p>
+    </div>
+
+    <div class="callout">
+      <strong>📌 Hinweis für deine Lehrkraft:</strong> Die Karten unten sind aktuell Platzhalter. Bitte deine Deutschlehrkraft, dir die passenden Links zu Videos, Präsentationen oder Podcasts zu schicken — sie können sie direkt in die HTML-Datei einfügen.
+    </div>
+
+    <div class="materials-grid">
+      <a class="material-card" data-type="video" href="#" target="_blank" rel="noopener noreferrer" onclick="event.preventDefault(); showToast('Link wird ergänzt', '🔗');">
+        <div class="ext-arrow">↗</div>
+        <div class="material-thumb">▶</div>
+        <div class="material-body">
+          <div class="material-type">Video</div>
+          <h4>Lineare Erörterung — Schritt für Schritt</h4>
+          <p>Erklärvideo zur Methodik der argumentativen Erörterung auf Klasse-9-Niveau.</p>
+        </div>
+      </a>
+      <a class="material-card" data-type="presentation" href="#" target="_blank" rel="noopener noreferrer" onclick="event.preventDefault(); showToast('Link wird ergänzt', '🔗');">
+        <div class="ext-arrow">↗</div>
+        <div class="material-thumb">📊</div>
+        <div class="material-body">
+          <div class="material-type">Präsentation</div>
+          <h4>Argumentationstypen im Überblick</h4>
+          <p>Folien zu Faktum-, Wert- und Plausibilitätsargumenten — IGCSE-konform.</p>
+        </div>
+      </a>
+      <a class="material-card" data-type="infographic" href="#" target="_blank" rel="noopener noreferrer" onclick="event.preventDefault(); showToast('Link wird ergänzt', '🔗');">
+        <div class="ext-arrow">↗</div>
+        <div class="material-thumb">🖼</div>
+        <div class="material-body">
+          <div class="material-type">Infografik</div>
+          <h4>Konnektoren-Übersicht</h4>
+          <p>Alle wichtigen Satzanfänge und Überleitungen für deine Erörterung — zum Ausdrucken.</p>
+        </div>
+      </a>
+      <a class="material-card" data-type="podcast" href="#" target="_blank" rel="noopener noreferrer" onclick="event.preventDefault(); showToast('Link wird ergänzt', '🔗');">
+        <div class="ext-arrow">↗</div>
+        <div class="material-thumb">🎧</div>
+        <div class="material-body">
+          <div class="material-type">Podcast</div>
+          <h4>Argumentieren auf Deutsch</h4>
+          <p>Audio-Folge mit Beispielen, Stilebenen und typischen Schülerfehlern.</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===================== 08 DASHBOARD ===================== -->
+  <section class="panel" id="dashboard">
+    <div class="panel-head">
+      <div class="panel-kicker">Dein Lernweg</div>
+      <h2>Mein <em>Fortschritt</em></h2>
+      <p class="deck">Übersicht über alles, was du auf dem Weg zur Abschlussprüfung am 2. Juni geschafft hast.</p>
+    </div>
+
+    <div class="countdown-banner">
+      <div class="label">Tage bis zur Abschlussprüfung</div>
+      <div class="days" id="dashDays">—</div>
+      <div class="sub">2. Juni 2026 · IGCSE 0505 Deutsch · jede Übung zählt</div>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="dash-card"><div class="val" id="dashPoints">0</div><div class="lbl">Punkte gesamt</div></div>
+      <div class="dash-card"><div class="val" id="dashAnnots">0</div><div class="lbl">Annotationen</div></div>
+      <div class="dash-card"><div class="val" id="dashTheses">0</div><div class="lbl">Thesen formuliert</div></div>
+      <div class="dash-card"><div class="val" id="dashEssays">0</div><div class="lbl">Erörterungen verfasst</div></div>
+      <div class="dash-card"><div class="val" id="dashStreak">0</div><div class="lbl">Tage in Folge</div></div>
+      <div class="dash-card"><div class="val" id="dashArticles">0</div><div class="lbl">Artikel bearbeitet</div></div>
+    </div>
+
+    <div class="rank-row"><strong>Rang-Fortschritt</strong><span id="rankInfo">—</span></div>
+    <div class="progress-track"><div class="progress-fill" id="rankFill"></div></div>
+
+    <h3 style="margin-top:32px; font-family:'Fraunces', serif; font-weight:800; font-size:1.4rem;">Auszeichnungen</h3>
+    <p style="font-family:'Fraunces', serif; font-style:italic; color:var(--ink-mute); font-size:0.92rem; margin-bottom:14px;">Sammle alle Auszeichnungen durch regelmäßiges Üben.</p>
+    <div class="badges-grid" id="badgesGrid"></div>
+  </section>
+
+</div>
+
+<div class="toast" id="toast"><span class="ico">✦</span><span id="toastMsg">+10</span></div>
+
+<script>
+// ============================================================
+// ARTICLES — authentic German texts at IGCSE 0505 level
+// Each: id, topic, headline, subhead, source, paragraphs[]
+// Plus: question, sides[], evidencePool[]
+// Each evidence has: id, text, type (fakt/pro/kontra/experte/beispiel),
+// citation, expectedZone (which paragraph it best supports)
+// ============================================================
+const ARTICLES = [
+  {
+    id: 'a1',
+    topic: 'Soziale Medien für Jugendliche',
+    headline: 'TikTok ab 16? Australien wagt das große Experiment',
+    subhead: 'Während Berlin noch zögert, hat Canberra Plattformen für unter 16-Jährige verboten — eine Maßnahme mit globalen Folgen.',
+    source: 'Feuilleton-Kommentar',
+    paragraphs: [
+      'Mit der Allgegenwart von TikTok, Instagram und Snapchat ist eine ganze Generation aufgewachsen, deren Selbstbild maßgeblich durch Algorithmen geformt wird. Die durchschnittliche tägliche Nutzungsdauer liegt bei deutschen 14- bis 17-Jährigen inzwischen bei drei Stunden und 48 Minuten — ein Wert, der vor fünf Jahren noch undenkbar gewesen wäre.',
+      'Australien hat als erstes Land weltweit eine Konsequenz gezogen: Seit Anfang 2025 ist die Nutzung großer sozialer Plattformen für unter 16-Jährige verboten. Anbieter, die Minderjährige dennoch zulassen, drohen Strafen von bis zu 49 Millionen Australischen Dollar. Die Begründung der Regierung stützt sich auf eine wachsende Zahl von Studien, die einen Zusammenhang zwischen intensivem Social-Media-Konsum und psychischen Belastungen junger Nutzer nahelegen.',
+      'Tatsächlich hat sich die Rate diagnostizierter Angststörungen bei Mädchen zwischen 13 und 17 Jahren in Deutschland zwischen 2010 und 2023 mehr als verdoppelt. Der Sozialpsychologe Jonathan Haidt spricht in seinem vielbeachteten Buch von einer „großen Neuverdrahtung" der Kindheit. Andere Forscher mahnen jedoch zur Vorsicht: Korrelation sei nicht Kausalität, und ein generelles Verbot greife zu undifferenziert.',
+      'Befürworter der australischen Regelung argumentieren, dass die Algorithmen der Plattformen gezielt auf Suchtverhalten ausgelegt seien. Funktionen wie unendliches Scrollen, personalisierte Empfehlungen und Likes-Belohnungen sprächen das noch unreife Belohnungssystem des jugendlichen Gehirns gezielt an. Eine selbstbestimmte Nutzung sei unter diesen Bedingungen kaum möglich.',
+      'Kritiker halten dagegen: Ein staatliches Verbot verlagere die Verantwortung weg von Eltern und Schulen hin zu einer paternalistischen Bevormundung. Außerdem schneide es Jugendliche von politischer Information, sozialem Austausch und kreativem Ausdruck ab — Jugendkulturen lebten heute in genau diesen Räumen. Die Bundesjugendministerin Lisa Paus warnte jüngst vor einer „digitalen Spaltung der Generationen".',
+      'Die Diskussion zeigt: Eine pauschale Antwort wird der Komplexität nicht gerecht. Sinnvoller als ein Generalverbot wären differenzierte Maßnahmen — etwa eine Altersverifikation auf Plattformebene, eine gesetzliche Pflicht zu chronologischen Feeds für Minderjährige, ein Werbeverbot für unter 16-Jährige sowie eine ernsthafte Förderung digitaler Bildung an Schulen. Wenn unsere Gesellschaft Tabakwerbung für Jugendliche selbstverständlich verbietet, sollte sie auch digitale Suchtmechanismen nicht länger tolerieren.'
+    ],
+    question: 'Sollten soziale Medien für Jugendliche unter 16 Jahren in Deutschland reguliert werden?',
+    sides: [
+      { id: 'pro', label: 'Position A', text: 'Ja — eine altersgerechte Regulierung sozialer Medien ist überfällig und schützt Jugendliche vor nachweisbaren Risiken.' },
+      { id: 'contra', label: 'Position B', text: 'Nein — pauschale Verbote sind paternalistisch und schneiden Jugendliche von wichtigen Räumen der Information und Selbstentfaltung ab.' }
+    ],
+    thesisHelpers: [
+      'Eine altersgerechte Regulierung ist meines Erachtens…',
+      'Ich vertrete die Position, dass…',
+      'Im Folgenden möchte ich darlegen, weshalb…',
+      'Bei genauer Betrachtung sprechen die gewichtigeren Argumente für…'
+    ],
+    evidencePool: [
+      { id:'e1', type:'fakt', text:'Die durchschnittliche tägliche Nutzungsdauer liegt bei deutschen 14- bis 17-Jährigen bei drei Stunden und 48 Minuten.', citation:'Absatz 1', expectedZone:'einleitung' },
+      { id:'e2', type:'fakt', text:'Die Rate diagnostizierter Angststörungen bei Mädchen zwischen 13 und 17 Jahren hat sich zwischen 2010 und 2023 mehr als verdoppelt.', citation:'Absatz 3', expectedZone:'arg1' },
+      { id:'e3', type:'pro', text:'Algorithmen sind gezielt auf Suchtverhalten ausgelegt: unendliches Scrollen, Likes, personalisierte Empfehlungen.', citation:'Absatz 4', expectedZone:'arg2' },
+      { id:'e4', type:'experte', text:'Der Sozialpsychologe Jonathan Haidt spricht von einer „großen Neuverdrahtung" der Kindheit.', citation:'Absatz 3', expectedZone:'arg1' },
+      { id:'e5', type:'kontra', text:'Ein staatliches Verbot verlagere die Verantwortung weg von Eltern und Schulen hin zu einer paternalistischen Bevormundung.', citation:'Absatz 5', expectedZone:'antithese' },
+      { id:'e6', type:'kontra', text:'Bundesjugendministerin Lisa Paus warnte vor einer „digitalen Spaltung der Generationen".', citation:'Absatz 5', expectedZone:'antithese' },
+      { id:'e7', type:'beispiel', text:'Australien hat als erstes Land Plattformen für unter 16-Jährige verboten — Strafen bis 49 Mio. AUD.', citation:'Absatz 2', expectedZone:'einleitung' },
+      { id:'e8', type:'pro', text:'Differenzierte Maßnahmen wie Altersverifikation und Werbeverbote bieten einen Mittelweg zwischen Verbot und Laissez-faire.', citation:'Absatz 6', expectedZone:'schluss' }
+    ]
+  },
+  {
+    id: 'a2',
+    topic: 'Künstliche Intelligenz in der Schule',
+    headline: 'KI im Klassenzimmer — Lernhilfe oder Denkfaulheit?',
+    subhead: 'ChatGPT & Co. sind im deutschen Schulalltag angekommen. Die Frage ist nur, ob wir damit umzugehen wissen.',
+    source: 'Bildungsmagazin · Januar 2026',
+    paragraphs: [
+      'Drei Jahre nach dem Erscheinen von ChatGPT lässt sich kaum mehr leugnen, dass künstliche Intelligenz das Lernen grundlegend verändert. Eine Umfrage des Deutschen Instituts für Bildungsforschung ergab, dass 71 Prozent der deutschen Oberstufenschüler regelmäßig KI-Werkzeuge zur Hausaufgabenbearbeitung einsetzen — nicht selten heimlich.',
+      'Die Bildungsministerien der Länder reagieren uneinheitlich: Während Bayern und Sachsen den Einsatz im Unterricht stark einschränken, fördert Bremen aktiv „KI-Kompetenz" als neuen Lernbereich. In privaten Schulen werden Schüler bereits gezielt zur reflektierten Nutzung angeleitet, während staatliche Schulen oft hinterherhinken — eine sich verschärfende Bildungsungleichheit.',
+      'Befürworter der KI-Nutzung im Unterricht verweisen auf konkrete Vorteile: Schwächere Schüler erhalten individualisierte Erklärungen, Lehrkräfte werden bei Routineaufgaben entlastet, und Schüler lernen den Umgang mit einer Technologie, die in jedem späteren Berufsfeld eine Rolle spielen wird. Der Bildungsforscher Olaf Köller von der Universität Kiel argumentiert, dass das Verbot von KI dem Verbot des Taschenrechners in den 1980ern gleiche — historisch betrachtet eine sinnlose Geste.',
+      'Die Gegenposition wiegt jedoch ebenfalls schwer. Wenn KI Aufsätze schreibt, lernen Schüler nicht mehr, einen Gedankengang über mehrere Absätze zu entwickeln. Eine MIT-Studie aus dem Jahr 2025 wies nach, dass die EEG-Aktivität in Hirnregionen für sprachliche Verarbeitung bei Probanden, die Texte mit ChatGPT verfassten, signifikant geringer war als bei jenen, die ohne Hilfsmittel arbeiteten. Der Verdacht liegt nahe: Wer das Denken delegiert, verlernt es.',
+      'Hinzu kommt ein Bewertungsproblem. Lehrkräfte können oft nicht mehr verlässlich erkennen, ob eine Hausaufgabe vom Schüler oder von einer Maschine stammt. Klassenarbeiten werden so zur einzigen verlässlichen Leistungsmessung — was wiederum den Druck auf Schüler erhöht und den Wert kontinuierlicher Lernarbeit untergräbt.',
+      'Die Lösung dürfte in einer pragmatischen Mitte liegen: KI nicht verbieten, aber transparent machen. Schulen brauchen klare Regeln, wann KI eingesetzt werden darf, und Aufgabenformate, die echtes Verstehen prüfen — etwa mündliche Prüfungen, kreative Projekte oder die kritische Bewertung von KI-generierten Texten. Wer Schüler zu mündigen Nutzern erziehen will, darf weder die Augen verschließen noch panisch verbieten.'
+    ],
+    question: 'Sollten Schulen den Einsatz von KI-Werkzeugen wie ChatGPT im Unterricht erlauben?',
+    sides: [
+      { id: 'pro', label: 'Position A', text: 'Ja — KI gehört zur Lebenswirklichkeit der Schüler und sollte reflektiert in den Unterricht integriert werden.' },
+      { id: 'contra', label: 'Position B', text: 'Nein — der unkontrollierte KI-Einsatz untergräbt eigenständiges Denken und faire Leistungsbewertung.' }
+    ],
+    thesisHelpers: [
+      'Meiner Auffassung nach…',
+      'Im Folgenden werde ich begründen, weshalb…',
+      'Eine differenzierte Betrachtung zeigt, dass…',
+      'Die schlüssigeren Argumente sprechen für…'
+    ],
+    evidencePool: [
+      { id:'e1', type:'fakt', text:'71 % der deutschen Oberstufenschüler nutzen regelmäßig KI-Werkzeuge zur Hausaufgabenbearbeitung.', citation:'Absatz 1', expectedZone:'einleitung' },
+      { id:'e2', type:'pro', text:'Schwächere Schüler erhalten durch KI individualisierte Erklärungen, Lehrkräfte werden entlastet.', citation:'Absatz 3', expectedZone:'arg1' },
+      { id:'e3', type:'experte', text:'Bildungsforscher Olaf Köller (Uni Kiel) vergleicht das KI-Verbot mit dem Taschenrechner-Verbot der 1980er.', citation:'Absatz 3', expectedZone:'arg1' },
+      { id:'e4', type:'pro', text:'Schüler lernen den Umgang mit einer Technologie, die in jedem Berufsfeld relevant wird.', citation:'Absatz 3', expectedZone:'arg2' },
+      { id:'e5', type:'kontra', text:'MIT-Studie 2025: EEG-Aktivität in Sprachregionen war bei KI-Nutzern signifikant geringer.', citation:'Absatz 4', expectedZone:'antithese' },
+      { id:'e6', type:'kontra', text:'Lehrkräfte können oft nicht mehr erkennen, ob eine Hausaufgabe vom Schüler oder von einer Maschine stammt.', citation:'Absatz 5', expectedZone:'antithese' },
+      { id:'e7', type:'beispiel', text:'Bremen fördert aktiv „KI-Kompetenz", Bayern und Sachsen schränken den Einsatz stark ein.', citation:'Absatz 2', expectedZone:'einleitung' },
+      { id:'e8', type:'pro', text:'Klare Regeln und neue Aufgabenformate (mündliche Prüfungen, kritische Bewertung von KI-Texten) bieten einen Ausweg.', citation:'Absatz 6', expectedZone:'schluss' }
+    ]
+  },
+  {
+    id: 'a3',
+    topic: 'Klimaschutz und individuelle Verantwortung',
+    headline: 'Reicht der Verzicht? Über die Grenzen individuellen Klimaschutzes',
+    subhead: 'Solange Konzerne weiterproduzieren, scheint der Bambusstrohhalm symbolisch — oder unterschätzen wir die Macht der vielen?',
+    source: 'Wochenzeitung · Schwerpunkt Klima',
+    paragraphs: [
+      'Im Café eines Berliner Innenhofs sitzt eine 17-jährige Schülerin und schmiert ihr Pausenbrot in Bienenwachstuch ein. Sie isst kein Fleisch, fliegt nicht und lehnt SUV-Mitfahrgelegenheiten ab. „Es ist mein Beitrag", sagt sie. Doch wie viel kann ein einzelner Beitrag in einer Welt bewirken, in der hundert Konzerne für mehr als 70 Prozent der weltweiten Treibhausgasemissionen verantwortlich sind?',
+      'Die Zahl stammt aus dem viel zitierten Carbon Majors Report von 2017 und hat sich tief ins Bewusstsein der Klimadebatte gegraben. Sie stützt eine These, die in der jungen Generation zunehmend Anhänger findet: Individuelle Verantwortung sei eine PR-Erfindung der Ölindustrie, ablesbar am „Carbon Footprint"-Konzept, das BP 2004 medienwirksam einführte, um die Verantwortung auf Konsumenten abzuwälzen.',
+      'Die Klimaforscherin Friederike Otto vom Imperial College London hält dem entgegen: „Wer ausschließlich auf systemische Veränderung setzt, macht es sich zu einfach." Konsumentscheidungen gäben nicht nur Marktsignale, sondern formten auch Normen. Die Vegetarierwelle der letzten zehn Jahre habe nachweislich Innovationsdruck auf die Lebensmittelindustrie ausgeübt.',
+      'Empirisch betrachtet liegt die Wahrheit dazwischen. Der durchschnittliche CO₂-Fußabdruck eines deutschen Bürgers beträgt 10,8 Tonnen pro Jahr — verglichen mit dem globalen Durchschnitt von 4,7 Tonnen ein erheblicher Wert. Wer auf Inlandsflüge, Fleisch und SUV verzichtet, kann seinen Fußabdruck rechnerisch auf etwa 4 Tonnen reduzieren. Der Effekt ist also messbar, wenn auch klein im Vergleich zum Gesamtvolumen.',
+      'Kritiker des reinen Individualismus weisen jedoch darauf hin, dass freiwilliger Verzicht sozial ungleich verteilt ist: Wer wenig Geld hat, kann sich Bio-Lebensmittel, E-Mobilität und energetische Sanierung schlicht nicht leisten. Klimaschutz drohe so zur Distinktionspraxis der gut gebildeten Mittelschicht zu werden — wirksamer wären verbindliche politische Rahmensetzungen wie eine wirksame CO₂-Bepreisung.',
+      'Die ehrliche Antwort lautet daher: Beides ist nötig. Individueller Konsumverzicht ohne politischen Druck bleibt Symbolpolitik, politische Forderungen ohne persönliche Glaubwürdigkeit verlieren ihre Kraft. Die Schülerin im Berliner Café tut also nicht zu wenig — sie tut nur nicht genug, wenn sie nicht zugleich wählen geht und auf die Straße. Klimaschutz ist Teamarbeit zwischen Privatleuten, Unternehmen und Politik.'
+    ],
+    question: 'Reicht individuelle Verantwortung aus, um den Klimawandel zu stoppen?',
+    sides: [
+      { id: 'pro', label: 'Position A', text: 'Ja, persönliche Konsumentscheidungen sind wirksam und prägen gesellschaftliche Normen — jeder Beitrag zählt.' },
+      { id: 'contra', label: 'Position B', text: 'Nein, ohne politische Rahmensetzung bleibt individueller Verzicht Symbolpolitik mit begrenzter Wirkung.' }
+    ],
+    thesisHelpers: [
+      'Bei genauer Betrachtung halte ich die Position für überzeugender, dass…',
+      'Meines Erachtens spricht mehr dafür, dass…',
+      'In der Gesamtschau überwiegen die Argumente für…',
+      'Eine ausgewogene Bewertung führt zu der Auffassung, dass…'
+    ],
+    evidencePool: [
+      { id:'e1', type:'fakt', text:'100 Konzerne verantworten über 70 % der weltweiten Treibhausgasemissionen (Carbon Majors Report 2017).', citation:'Absatz 1–2', expectedZone:'einleitung' },
+      { id:'e2', type:'fakt', text:'Der durchschnittliche CO₂-Fußabdruck in Deutschland beträgt 10,8 Tonnen pro Jahr (global: 4,7 Tonnen).', citation:'Absatz 4', expectedZone:'arg1' },
+      { id:'e3', type:'pro', text:'Wer auf Flüge, Fleisch und SUV verzichtet, kann seinen Fußabdruck rechnerisch auf 4 Tonnen reduzieren.', citation:'Absatz 4', expectedZone:'arg1' },
+      { id:'e4', type:'experte', text:'Klimaforscherin Friederike Otto: „Wer ausschließlich auf systemische Veränderung setzt, macht es sich zu einfach."', citation:'Absatz 3', expectedZone:'arg2' },
+      { id:'e5', type:'pro', text:'Konsumentscheidungen formen Normen — die Vegetarierwelle hat Innovationsdruck auf die Industrie erzeugt.', citation:'Absatz 3', expectedZone:'arg2' },
+      { id:'e6', type:'kontra', text:'Freiwilliger Verzicht ist sozial ungleich verteilt — Bio und E-Mobilität sind teuer.', citation:'Absatz 5', expectedZone:'antithese' },
+      { id:'e7', type:'kontra', text:'Klimaschutz droht zur Distinktionspraxis der Mittelschicht zu werden; wirksamer wäre eine CO₂-Bepreisung.', citation:'Absatz 5', expectedZone:'antithese' },
+      { id:'e8', type:'beispiel', text:'„Carbon Footprint"-Konzept wurde 2004 von BP eingeführt — als PR-Strategie zur Verantwortungsverlagerung.', citation:'Absatz 2', expectedZone:'antithese' }
+    ]
+  }
+];
+
+// ============================================================
+// RUBRIC (IGCSE-aligned)
+// ============================================================
+const RUBRIC = [
+  { id:'thesis', name:'Klare These', hint:'Position deutlich erkennbar, in einem Satz formulierbar' },
+  { id:'structure', name:'Aufbau', hint:'Einleitung, drei Hauptteilabsätze, Schluss — sauber abgegrenzt' },
+  { id:'evidence', name:'Belege & Quellenarbeit', hint:'Bezug zum Quelltext, sinngemäß zitiert oder paraphrasiert' },
+  { id:'antithesis', name:'Antithese', hint:'Gegenposition fair dargestellt und differenziert entkräftet' },
+  { id:'connectors', name:'Konnektoren & Übergänge', hint:'Vielfältige, präzise Konjunktionen statt „und dann"' },
+  { id:'register', name:'Register & Stil', hint:'Formal, sachlich, kein Umgangssprache, korrekte Grammatik' },
+  { id:'conclusion', name:'Starker Schluss', hint:'Restatement, Synthese, Ausblick — kein bloßes Wiederholen' }
+];
+
+// ============================================================
+// BADGES
+// ============================================================
+const BADGES = [
+  { id:'first_annot', icon:'🖍', name:'Erste Annotation', desc:'Erste Markierung gesetzt' },
+  { id:'twenty_annots', icon:'📑', name:'Aufmerksamer Leser', desc:'20 Annotationen gesammelt' },
+  { id:'all_labels', icon:'🌈', name:'Funktionskenner', desc:'Alle 6 Annotationstypen verwendet' },
+  { id:'first_thesis', icon:'⚡', name:'Erste These', desc:'Erste eigene These formuliert' },
+  { id:'three_theses', icon:'📝', name:'Standpunkt-Profi', desc:'3 Thesen zu verschiedenen Themen' },
+  { id:'first_outline', icon:'🗂', name:'Architekt', desc:'Erste Gliederung fertiggestellt' },
+  { id:'perfect_outline', icon:'🏛', name:'Strukturmeister', desc:'Gliederung ohne Fehler' },
+  { id:'first_essay', icon:'📜', name:'Erstfeder', desc:'Erste vollständige Erörterung' },
+  { id:'three_essays', icon:'🖋', name:'Erörterungsmeister', desc:'3 Erörterungen verfasst' },
+  { id:'all_articles', icon:'📚', name:'Alle Quellen', desc:'Alle Artikel bearbeitet' },
+  { id:'first_rubric', icon:'⭐', name:'Selbstkritiker', desc:'Erste Selbstbewertung' },
+  { id:'streak_3', icon:'🔥', name:'Dreitagesfeuer', desc:'3 Tage in Folge geübt' },
+  { id:'streak_7', icon:'🏆', name:'Wochenheld', desc:'7 Tage in Folge geübt' },
+  { id:'hundred', icon:'💯', name:'100 Punkte', desc:'100 Punkte erreicht' },
+  { id:'three_hundred', icon:'🎖', name:'300 Punkte', desc:'300 Punkte erreicht' }
+];
+
+const RANKS = [
+  { name:'Lehrling', min:0 },
+  { name:'Kommentator', min:60 },
+  { name:'Argumentator', min:160 },
+  { name:'Erörterer', min:300 },
+  { name:'Stilist', min:500 },
+  { name:'Großmeister', min:800 }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+const STORAGE_KEY = 'igcse_eroerterung_v1';
+const EXAM_DATE = new Date('2026-06-02');
+
+let state = {
+  points: 0,
+  currentArticleId: 'a1',
+  annotations: {},      // { articleId: [ { id, label, text, paraIdx, startOffset, endOffset } ] }
+  positions: {},        // { articleId: 'pro' | 'contra' }
+  theses: {},           // { articleId: 'meine these...' }
+  outlines: {},         // { articleId: { evidenceId: zone } }
+  drafts: {},           // { articleId: { 'einl-hin': '...', ... } }
+  rubrics: {},          // { articleId: { criterionId: score } }
+  badges: [],
+  essaysCompleted: 0,
+  outlinesCompleted: 0,
+  perfectOutlines: 0,
+  thesesCount: 0,
+  articlesTouched: [],
+  streak: 0,
+  lastActiveDate: null,
+  currentLabel: 'thesis'
+};
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) state = { ...state, ...JSON.parse(saved) };
+  } catch(e) { console.warn('Load failed', e); }
+  updateStreak();
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+  catch(e) { console.warn('Save failed', e); }
+}
+
+function updateStreak() {
+  const today = new Date().toDateString();
+  if (state.lastActiveDate !== today) {
+    if (state.lastActiveDate) {
+      const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+      state.streak = state.lastActiveDate === yesterday.toDateString() ? (state.streak || 0) + 1 : 1;
+    } else state.streak = 1;
+    state.lastActiveDate = today;
+    saveState();
+  }
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+function awardPoints(n, msg) {
+  state.points = (state.points || 0) + n;
+  document.getElementById('hdrPoints').textContent = state.points;
+  showToast(msg || `+${n} Punkte`, '✦');
+  if (state.points >= 100) grantBadge('hundred');
+  if (state.points >= 300) grantBadge('three_hundred');
+  if ((state.streak || 0) >= 3) grantBadge('streak_3');
+  if ((state.streak || 0) >= 7) grantBadge('streak_7');
+  updateRankDisplay();
+  saveState();
+}
+
+function grantBadge(id) {
+  if (!state.badges.includes(id)) {
+    state.badges.push(id);
+    const b = BADGES.find(x => x.id === id);
+    if (b) showToast(`Auszeichnung: ${b.name}`, b.icon);
+    saveState();
+  }
+}
+
+function showToast(msg, icon='✦') {
+  const t = document.getElementById('toast');
+  t.querySelector('.ico').textContent = icon;
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => t.classList.remove('show'), 2900);
+}
+
+function updateRankDisplay() {
+  const pts = state.points || 0;
+  let cur = RANKS[0];
+  for (let i = RANKS.length - 1; i >= 0; i--) if (pts >= RANKS[i].min) { cur = RANKS[i]; break; }
+  document.getElementById('hdrRank').textContent = cur.name;
+}
+
+function getCurrentArticle() {
+  return ARTICLES.find(a => a.id === state.currentArticleId) || ARTICLES[0];
+}
+
+function markArticleTouched(id) {
+  if (!state.articlesTouched.includes(id)) {
+    state.articlesTouched.push(id);
+    if (state.articlesTouched.length >= ARTICLES.length) grantBadge('all_articles');
+    saveState();
+  }
+}
+
+// ============================================================
+// TAB NAV
+// ============================================================
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.panel).classList.add('active');
+    if (tab.dataset.panel === 'dashboard') renderDashboard();
+    if (tab.dataset.panel === 'position') renderPosition();
+    if (tab.dataset.panel === 'outline') renderOutline();
+    if (tab.dataset.panel === 'writing') renderWritingThesis();
+    if (tab.dataset.panel === 'rubric') renderRubric();
+  });
+});
+
+document.querySelectorAll('.workflow-step').forEach(step => {
+  step.addEventListener('click', () => {
+    document.querySelector(`.tab[data-panel="${step.dataset.go}"]`)?.click();
+  });
+});
+
+// ============================================================
+// ARTICLE RENDERING
+// ============================================================
+function populateArticleSelect() {
+  const sel = document.getElementById('articleSelect');
+  sel.innerHTML = '';
+  ARTICLES.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a.id;
+    opt.textContent = `${a.topic} — „${a.headline}"`;
+    sel.appendChild(opt);
+  });
+  sel.value = state.currentArticleId;
+  sel.addEventListener('change', () => {
+    state.currentArticleId = sel.value;
+    saveState();
+    renderArticle();
+    markArticleTouched(state.currentArticleId);
+  });
+}
+
+function renderArticle() {
+  const a = getCurrentArticle();
+  const el = document.getElementById('articleContent');
+  let html = `
+    <div class="article-meta">
+      <span><span class="source">${escapeHTML(a.source)}</span> · ${escapeHTML(a.topic)}</span>
+      <span>${a.paragraphs.length} Absätze</span>
+    </div>
+    <h3 class="headline">${escapeHTML(a.headline)}</h3>
+    <p class="subhead">${escapeHTML(a.subhead)}</p>
+  `;
+  a.paragraphs.forEach((p, i) => {
+    html += `<p class="body" data-para="${i}"><span class="para-num">¶${i+1}</span>${escapeHTML(p)}</p>`;
+  });
+  el.innerHTML = html;
+  applyAnnotations();
+  updateLabelCounts();
+}
+
+function applyAnnotations() {
+  const a = getCurrentArticle();
+  const annots = (state.annotations[a.id] || []);
+  // Reset paragraphs to plain text first
+  document.querySelectorAll('#articleContent p.body').forEach((p, i) => {
+    p.innerHTML = `<span class="para-num">¶${i+1}</span>${escapeHTML(a.paragraphs[i])}`;
+  });
+  // For each annotation, find the text in its paragraph and wrap it
+  // Sort by start desc within each paragraph so wrapping doesn't shift later ranges
+  const byPara = {};
+  annots.forEach(an => { (byPara[an.paraIdx] = byPara[an.paraIdx] || []).push(an); });
+  Object.keys(byPara).forEach(idx => {
+    const list = byPara[idx].slice().sort((a,b) => b.startOffset - a.startOffset);
+    const p = document.querySelector(`#articleContent p.body[data-para="${idx}"]`);
+    if (!p) return;
+    // We work on the text node after the para-num span
+    // To keep things simple, rebuild paragraph from raw text and mark by offset
+    const raw = a.paragraphs[idx];
+    let segments = [{ start:0, end:raw.length, label:null, id:null }];
+    list.slice().sort((a,b) => a.startOffset - b.startOffset).forEach(an => {
+      // split segments
+      const newSegs = [];
+      segments.forEach(s => {
+        if (an.endOffset <= s.start || an.startOffset >= s.end || s.label) {
+          newSegs.push(s);
+          return;
+        }
+        if (an.startOffset > s.start) newSegs.push({ start:s.start, end:an.startOffset, label:null, id:null });
+        newSegs.push({ start:Math.max(an.startOffset,s.start), end:Math.min(an.endOffset,s.end), label:an.label, id:an.id });
+        if (an.endOffset < s.end) newSegs.push({ start:an.endOffset, end:s.end, label:null, id:null });
+      });
+      segments = newSegs;
+    });
+    let html = `<span class="para-num">¶${parseInt(idx)+1}</span>`;
+    segments.forEach(s => {
+      const t = escapeHTML(raw.slice(s.start, s.end));
+      if (s.label) {
+        html += `<span class="highlight" data-label="${s.label}" data-annot-id="${s.id}">${t}<span class="remove-x" data-remove="${s.id}">✕</span></span>`;
+      } else {
+        html += t;
+      }
+    });
+    p.innerHTML = html;
+  });
+  // attach remove handlers
+  document.querySelectorAll('.remove-x[data-remove]').forEach(x => {
+    x.addEventListener('click', e => {
+      e.stopPropagation();
+      const id = x.dataset.remove;
+      const aId = state.currentArticleId;
+      state.annotations[aId] = (state.annotations[aId] || []).filter(an => an.id !== id);
+      saveState();
+      applyAnnotations();
+      updateLabelCounts();
+    });
+  });
+}
+
+function updateLabelCounts() {
+  const annots = state.annotations[state.currentArticleId] || [];
+  const counts = {};
+  annots.forEach(a => counts[a.label] = (counts[a.label] || 0) + 1);
+  document.querySelectorAll('[data-count]').forEach(el => {
+    el.textContent = counts[el.dataset.count] || 0;
+  });
+  document.getElementById('annotCount').textContent = annots.length;
+}
+
+// ============================================================
+// LABEL SELECTION
+// ============================================================
+document.getElementById('labelOptions').addEventListener('click', (e) => {
+  const btn = e.target.closest('.label-btn');
+  if (!btn) return;
+  document.querySelectorAll('.label-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  state.currentLabel = btn.dataset.label;
+});
+
+// ============================================================
+// SELECTION-TO-ANNOTATION
+// ============================================================
+document.getElementById('articleContent').addEventListener('mouseup', handleSelection);
+document.getElementById('articleContent').addEventListener('touchend', handleSelection);
+
+function handleSelection() {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return;
+  const text = sel.toString().trim();
+  if (text.length < 4) return;
+
+  // Find the paragraph this is in
+  const node = sel.anchorNode;
+  let paraEl = node?.nodeType === 1 ? node : node?.parentElement;
+  while (paraEl && !paraEl.matches?.('p.body')) paraEl = paraEl.parentElement;
+  if (!paraEl) { sel.removeAllRanges(); return; }
+
+  const paraIdx = parseInt(paraEl.dataset.para);
+  const a = getCurrentArticle();
+  const rawText = a.paragraphs[paraIdx];
+  // find text in raw text — try exact match, else best fuzzy via includes
+  const idx = rawText.indexOf(text);
+  if (idx === -1) {
+    // try simplified normalisation (collapse whitespace)
+    const tn = text.replace(/\s+/g, ' ');
+    const rn = rawText.replace(/\s+/g, ' ');
+    const idx2 = rn.indexOf(tn);
+    if (idx2 === -1) {
+      showToast('Markierung erstreckt sich über mehrere Absätze — bitte innerhalb eines Absatzes markieren.', '⚠');
+      sel.removeAllRanges();
+      return;
+    }
+  }
+  const start = idx === -1 ? rawText.replace(/\s+/g,' ').indexOf(text.replace(/\s+/g,' ')) : idx;
+  const end = start + text.length;
+
+  // Reject overlap with existing annotation
+  const existing = state.annotations[a.id] || [];
+  const overlap = existing.find(an => an.paraIdx === paraIdx && !(an.endOffset <= start || an.startOffset >= end));
+  if (overlap) {
+    showToast('Diese Stelle ist bereits markiert.', '⚠');
+    sel.removeAllRanges();
+    return;
+  }
+
+  const annot = {
+    id: 'an_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    label: state.currentLabel,
+    text,
+    paraIdx,
+    startOffset: start,
+    endOffset: end
+  };
+  state.annotations[a.id] = [...existing, annot];
+
+  // gamification
+  const wasFirst = !existing.length && !state.badges.includes('first_annot');
+  if (wasFirst) grantBadge('first_annot');
+  const totalAnnots = Object.values(state.annotations).reduce((sum, arr) => sum + arr.length, 0);
+  if (totalAnnots >= 20) grantBadge('twenty_annots');
+  const labelsUsed = new Set();
+  Object.values(state.annotations).forEach(arr => arr.forEach(an => labelsUsed.add(an.label)));
+  if (labelsUsed.size >= 6) grantBadge('all_labels');
+
+  awardPoints(2, '+2 Annotation');
+  saveState();
+  applyAnnotations();
+  updateLabelCounts();
+  markArticleTouched(a.id);
+  sel.removeAllRanges();
+}
+
+document.getElementById('resetAnnotsBtn').addEventListener('click', () => {
+  if (!confirm('Alle Annotationen für diesen Artikel löschen?')) return;
+  state.annotations[state.currentArticleId] = [];
+  saveState();
+  applyAnnotations();
+  updateLabelCounts();
+});
+
+document.getElementById('checkAnnotBtn').addEventListener('click', () => {
+  const annots = state.annotations[state.currentArticleId] || [];
+  const fb = document.getElementById('annotFeedback');
+  fb.classList.remove('success','partial','fail');
+  fb.classList.add('show');
+  if (annots.length < 4) {
+    fb.classList.add('fail');
+    fb.innerHTML = `<strong>Noch zu wenig Material.</strong> Eine gute Annotation braucht mindestens 4–6 Markierungen, idealerweise mit verschiedenen Funktionen (These, Pro, Kontra, Beleg…).`;
+    return;
+  }
+  const types = new Set(annots.map(a => a.label));
+  if (types.size < 3) {
+    fb.classList.add('partial');
+    fb.innerHTML = `<strong>Solider Anfang!</strong> Du hast ${annots.length} Markierungen, aber bisher nur ${types.size} verschiedene Funktionen. Versuche, auch Pro- und Kontra-Argumente zu unterscheiden.`;
+    return;
+  }
+  fb.classList.add('success');
+  fb.innerHTML = `<strong>Sehr gut!</strong> ${annots.length} Markierungen mit ${types.size} verschiedenen Funktionen — du hast das Material differenziert erschlossen. Weiter zur Position!`;
+  awardPoints(8, '+8 für Quellenarbeit');
+});
+
+// ============================================================
+// POSITION
+// ============================================================
+function renderPosition() {
+  const a = getCurrentArticle();
+  document.getElementById('posTopic').textContent = `Thema: ${a.topic}`;
+  document.getElementById('posQuestion').textContent = a.question;
+  const opts = document.getElementById('positionOptions');
+  opts.innerHTML = '';
+  const chosen = state.positions[a.id];
+  a.sides.forEach(s => {
+    const div = document.createElement('button');
+    div.className = 'position-option' + (chosen === s.id ? ' selected' : '');
+    div.dataset.side = s.id;
+    div.innerHTML = `<span class="stance-label">${escapeHTML(s.label)}</span><span class="stance-text">${escapeHTML(s.text)}</span>`;
+    div.addEventListener('click', () => {
+      state.positions[a.id] = s.id;
+      saveState();
+      renderPosition();
+      awardPoints(3, '+3 Position bezogen');
+    });
+    opts.appendChild(div);
+  });
+  // helper chips
+  const helpers = document.getElementById('thesisHelpers');
+  helpers.innerHTML = '';
+  (a.thesisHelpers || []).forEach(h => {
+    const c = document.createElement('button');
+    c.className = 'helper-chip';
+    c.textContent = h;
+    c.addEventListener('click', () => {
+      const ta = document.getElementById('thesisInput');
+      ta.value = (ta.value ? ta.value.trim() + ' ' : '') + h + ' ';
+      ta.focus();
+    });
+    helpers.appendChild(c);
+  });
+  // current thesis
+  document.getElementById('thesisInput').value = state.theses[a.id] || '';
+}
+
+document.getElementById('saveThesisBtn').addEventListener('click', () => {
+  const a = getCurrentArticle();
+  const v = document.getElementById('thesisInput').value.trim();
+  const fb = document.getElementById('thesisFeedback');
+  fb.classList.remove('success','partial','fail');
+  fb.classList.add('show');
+  if (v.length < 20) {
+    fb.classList.add('fail');
+    fb.innerHTML = `<strong>Zu kurz.</strong> Eine These sollte präzise und substantiell sein — mindestens ein vollständiger, klarer Satz.`;
+    return;
+  }
+  if (!state.positions[a.id]) {
+    fb.classList.add('partial');
+    fb.innerHTML = `<strong>Wähle zuerst eine Position</strong> oben — die These sollte deine gewählte Seite spiegeln.`;
+    return;
+  }
+  const wasNew = !state.theses[a.id];
+  state.theses[a.id] = v;
+  if (wasNew) {
+    state.thesesCount = (state.thesesCount || 0) + 1;
+    grantBadge('first_thesis');
+    if (state.thesesCount >= 3) grantBadge('three_theses');
+  }
+  saveState();
+  fb.classList.add('success');
+  fb.innerHTML = `<strong>These gespeichert.</strong> Sie erscheint nun in der Schreibwerkstatt als Anker für deinen Text.`;
+  awardPoints(8, '+8 These formuliert');
+  renderWritingThesis();
+});
+
+document.getElementById('clearThesisBtn').addEventListener('click', () => {
+  document.getElementById('thesisInput').value = '';
+});
+
+// ============================================================
+// OUTLINE (drag & drop)
+// ============================================================
+function renderOutline() {
+  const a = getCurrentArticle();
+  document.getElementById('evidenceBankTitle').innerHTML = `📦 Belege aus dem Artikel — <em style="color:var(--accent-rust);">${escapeHTML(a.headline)}</em>`;
+  const bank = document.getElementById('evidenceBank');
+  bank.innerHTML = '';
+  document.querySelectorAll('#outline .zone-pieces').forEach(z => z.innerHTML = '');
+
+  const placement = state.outlines[a.id] || {};
+  // shuffle for variety
+  const shuffled = [...a.evidencePool].sort(() => Math.random() - 0.5);
+  shuffled.forEach(ev => {
+    const div = document.createElement('div');
+    div.className = 'evidence-piece';
+    div.draggable = true;
+    div.dataset.id = ev.id;
+    div.dataset.type = ev.type;
+    div.dataset.expectedZone = ev.expectedZone;
+    const labelMap = { fakt:'FAKT', pro:'PRO-ARGUMENT', kontra:'KONTRA-ARGUMENT', experte:'EXPERTENMEINUNG', beispiel:'BEISPIEL' };
+    div.innerHTML = `
+      <span class="ev-tag">${labelMap[ev.type] || ev.type}</span>
+      <span class="ev-text">${escapeHTML(ev.text)}</span>
+      <span class="ev-cite">${escapeHTML(ev.citation)}</span>
+    `;
+    attachDragHandlers(div);
+    // place if previously placed
+    if (placement[ev.id]) {
+      const z = document.querySelector(`#outline .outline-zone[data-target="${placement[ev.id]}"] .zone-pieces`);
+      if (z) z.appendChild(div); else bank.appendChild(div);
+    } else {
+      bank.appendChild(div);
+    }
+  });
+  document.getElementById('outlineFeedback').classList.remove('show');
+}
+
+function attachDragHandlers(el) {
+  el.addEventListener('dragstart', (e) => {
+    el.classList.add('dragging');
+    e.dataTransfer.setData('text/plain', el.dataset.id);
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  el.addEventListener('dragend', () => el.classList.remove('dragging'));
+
+  el.addEventListener('touchstart', handleTouchStart, { passive: false });
+  el.addEventListener('touchmove', handleTouchMove, { passive: false });
+  el.addEventListener('touchend', handleTouchEnd);
+}
+
+let touchEl = null, touchClone = null, tox = 0, toy = 0;
+
+function handleTouchStart(e) {
+  if (e.touches.length !== 1) return;
+  e.preventDefault();
+  touchEl = e.currentTarget;
+  const rect = touchEl.getBoundingClientRect();
+  const t = e.touches[0];
+  tox = t.clientX - rect.left;
+  toy = t.clientY - rect.top;
+  touchClone = touchEl.cloneNode(true);
+  touchClone.style.position = 'fixed';
+  touchClone.style.zIndex = '9999';
+  touchClone.style.width = rect.width + 'px';
+  touchClone.style.left = rect.left + 'px';
+  touchClone.style.top = rect.top + 'px';
+  touchClone.style.opacity = '0.85';
+  touchClone.style.pointerEvents = 'none';
+  document.body.appendChild(touchClone);
+  touchEl.classList.add('piece-source-hidden');
+}
+
+function handleTouchMove(e) {
+  if (!touchEl || !touchClone) return;
+  e.preventDefault();
+  const t = e.touches[0];
+  touchClone.style.left = (t.clientX - tox) + 'px';
+  touchClone.style.top = (t.clientY - toy) + 'px';
+  document.querySelectorAll('.outline-zone, .evidence-bank').forEach(z => z.classList.remove('drag-over'));
+  const target = document.elementFromPoint(t.clientX, t.clientY);
+  const zone = target?.closest('.outline-zone, .evidence-bank');
+  if (zone) zone.classList.add('drag-over');
+}
+
+function handleTouchEnd(e) {
+  if (!touchEl) return;
+  const t = e.changedTouches[0];
+  const target = document.elementFromPoint(t.clientX, t.clientY);
+  const dropZone = target?.closest('.outline-zone');
+  const dropBank = target?.closest('.evidence-bank');
+  if (dropZone) dropZone.querySelector('.zone-pieces').appendChild(touchEl);
+  else if (dropBank) dropBank.querySelector('.evidence-list').appendChild(touchEl);
+  touchEl.classList.remove('piece-source-hidden');
+  touchClone?.remove();
+  document.querySelectorAll('.outline-zone, .evidence-bank').forEach(z => z.classList.remove('drag-over'));
+  saveOutlinePlacement();
+  touchEl = null;
+  touchClone = null;
+}
+
+document.querySelectorAll('.outline-zone, .evidence-bank').forEach(zone => {
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    const id = e.dataTransfer.getData('text/plain');
+    const piece = document.querySelector(`.evidence-piece[data-id="${id}"]`);
+    if (!piece) return;
+    if (zone.classList.contains('outline-zone')) {
+      zone.querySelector('.zone-pieces').appendChild(piece);
+    } else {
+      zone.querySelector('.evidence-list').appendChild(piece);
+    }
+    saveOutlinePlacement();
+  });
+});
+
+function saveOutlinePlacement() {
+  const a = getCurrentArticle();
+  const placement = {};
+  document.querySelectorAll('#outline .outline-zone').forEach(z => {
+    const target = z.dataset.target;
+    z.querySelectorAll('.evidence-piece').forEach(p => {
+      placement[p.dataset.id] = target;
+    });
+  });
+  state.outlines[a.id] = placement;
+  saveState();
+}
+
+document.getElementById('checkOutlineBtn').addEventListener('click', () => {
+  const a = getCurrentArticle();
+  const fb = document.getElementById('outlineFeedback');
+  fb.classList.remove('show','success','partial','fail');
+  fb.classList.add('show');
+  const inBank = document.querySelectorAll('#evidenceBank .evidence-piece').length;
+  if (inBank > 0) {
+    fb.classList.add('partial');
+    fb.innerHTML = `<strong>Du hast noch ${inBank} Belege im Vorrat.</strong> Verteile alle, bevor du prüfst — oder zieh die zurück, die du nicht verwenden willst (in den Hauptteil-Absätzen). Mindestens sollten alle Belege in einer Zone stehen.`;
+    return;
+  }
+  let correct = 0, total = 0;
+  document.querySelectorAll('#outline .evidence-piece').forEach(p => {
+    total++;
+    p.style.outline = '';
+    if (p.dataset.expectedZone === p.parentElement.parentElement.dataset.target) {
+      correct++;
+    } else {
+      p.style.outline = '2px dashed var(--accent-rust)';
+      p.style.outlineOffset = '2px';
+    }
+  });
+  state.outlinesCompleted = (state.outlinesCompleted || 0) + 1;
+  grantBadge('first_outline');
+  if (correct === total) {
+    fb.classList.add('success');
+    fb.innerHTML = `<strong>Perfekte Gliederung!</strong> Alle ${total} Belege im richtigen Absatz. Pro-Argumente in den Hauptteil, Kontra in die Antithese, Fakten zur Hinführung — du hast die Logik verstanden.`;
+    state.perfectOutlines = (state.perfectOutlines || 0) + 1;
+    grantBadge('perfect_outline');
+    awardPoints(20, '+20 perfekte Gliederung');
+  } else if (correct / total >= 0.7) {
+    fb.classList.add('partial');
+    fb.innerHTML = `<strong>${correct} von ${total} richtig.</strong> Die rot umrandeten Belege liegen wahrscheinlich falsch — überleg: Wo passt ein Pro-Argument hin? Wo eine Gegenstimme?`;
+    awardPoints(8, '+8 für Bemühen');
+  } else {
+    fb.classList.add('fail');
+    fb.innerHTML = `<strong>${correct} von ${total} richtig.</strong> Tipp: Pro-Belege gehören zu deinen <em>Hauptargumenten</em>, Kontra-Belege gehören in die <em>Antithese</em>, statistische Fakten oft in die <em>Einleitung</em>.`;
+  }
+  saveState();
+});
+
+document.getElementById('hintOutlineBtn').addEventListener('click', () => {
+  const wrongPiece = [...document.querySelectorAll('#outline .evidence-piece')].find(p => {
+    const inBank = p.closest('.evidence-bank');
+    if (inBank) return false;
+    return p.dataset.expectedZone !== p.parentElement.parentElement.dataset.target;
+  });
+  const piece = wrongPiece || document.querySelector('#evidenceBank .evidence-piece');
+  if (!piece) {
+    showToast('Alles bereits passend platziert!', '✓');
+    return;
+  }
+  const targetZone = document.querySelector(`#outline .outline-zone[data-target="${piece.dataset.expectedZone}"]`);
+  piece.style.outline = '3px dashed var(--accent-ochre)';
+  piece.style.outlineOffset = '3px';
+  setTimeout(() => { piece.style.outline=''; piece.style.outlineOffset=''; }, 4500);
+  const fb = document.getElementById('outlineFeedback');
+  fb.classList.add('show', 'partial');
+  fb.classList.remove('success','fail');
+  fb.innerHTML = `<strong>💡 Hinweis:</strong> Der hervorgehobene Beleg gehört in <em>${targetZone?.querySelector('.zone-name').textContent || piece.dataset.expectedZone}</em>.`;
+});
+
+document.getElementById('resetOutlineBtn').addEventListener('click', () => {
+  document.querySelectorAll('#outline .evidence-piece').forEach(p => {
+    document.getElementById('evidenceBank').appendChild(p);
+    p.style.outline = '';
+  });
+  saveOutlinePlacement();
+});
+
+// ============================================================
+// WRITING WORKSHOP
+// ============================================================
+function renderWritingThesis() {
+  const a = getCurrentArticle();
+  const t = state.theses[a.id];
+  const banner = document.getElementById('writingThesis');
+  banner.innerHTML = t
+    ? escapeHTML(t)
+    : '<span class="empty">— Noch keine These formuliert. Geh zu Schritt 03.</span>';
+  // restore drafts
+  const draft = state.drafts[a.id] || {};
+  document.querySelectorAll('.write-block').forEach(b => {
+    const ta = b.querySelector('textarea');
+    ta.value = draft[b.dataset.block] || '';
+    ta.dispatchEvent(new Event('input'));
+  });
+}
+
+// connector chips
+document.querySelectorAll('.connector-chip').forEach(c => {
+  c.addEventListener('click', () => {
+    const ta = c.closest('.write-block').querySelector('textarea');
+    ta.value = (ta.value ? ta.value.trim() + ' ' : '') + c.textContent + ' ';
+    ta.focus();
+    ta.dispatchEvent(new Event('input'));
+  });
+});
+
+// word counts + auto-save
+document.querySelectorAll('.write-block textarea').forEach(ta => {
+  ta.addEventListener('input', () => {
+    const wc = ta.value.trim().split(/\s+/).filter(Boolean).length;
+    ta.parentElement.querySelector('.word-count').textContent = `${wc} Wort${wc===1?'':'e'}`;
+    // autosave
+    const a = getCurrentArticle();
+    if (!state.drafts[a.id]) state.drafts[a.id] = {};
+    state.drafts[a.id][ta.closest('.write-block').dataset.block] = ta.value;
+    clearTimeout(ta._saveT);
+    ta._saveT = setTimeout(saveState, 500);
+  });
+});
+
+document.getElementById('assembleBtn').addEventListener('click', () => {
+  const a = getCurrentArticle();
+  const blocks = ['einl-hin','einl-these','arg1-beh','arg1-beg','arg2-beh','arg2-beg','anti-the','anti-ent','schl-rest','schl-aus'];
+  const text = {};
+  blocks.forEach(k => {
+    const ta = document.querySelector(`.write-block[data-block="${k}"] textarea`);
+    text[k] = ta?.value.trim() || '';
+  });
+  const filled = blocks.filter(k => text[k]).length;
+  if (filled < 4) {
+    showToast('Mindestens 4 Blöcke ausfüllen!', '⚠');
+    return;
+  }
+  const paras = [
+    [text['einl-hin'], text['einl-these']].filter(Boolean).join(' '),
+    [text['arg1-beh'], text['arg1-beg']].filter(Boolean).join(' '),
+    [text['arg2-beh'], text['arg2-beg']].filter(Boolean).join(' '),
+    [text['anti-the'], text['anti-ent']].filter(Boolean).join(' '),
+    [text['schl-rest'], text['schl-aus']].filter(Boolean).join(' ')
+  ].filter(Boolean);
+
+  document.getElementById('previewTitle').textContent = a.headline + ' — Erörterung';
+  document.getElementById('previewContent').innerHTML = paras.map(p => `<p>${escapeHTML(p)}</p>`).join('');
+  document.getElementById('previewEssay').classList.add('show');
+  document.getElementById('previewEssay').scrollIntoView({ behavior:'smooth', block:'start' });
+
+  if (filled >= 8) {
+    state.essaysCompleted = (state.essaysCompleted || 0) + 1;
+    grantBadge('first_essay');
+    if (state.essaysCompleted >= 3) grantBadge('three_essays');
+    awardPoints(30, '+30 Erörterung verfasst');
+  } else {
+    awardPoints(8, '+8 Entwurf');
+  }
+});
+
+document.getElementById('saveDraftBtn').addEventListener('click', () => {
+  saveState();
+  showToast('Entwurf gespeichert', '💾');
+});
+
+document.getElementById('clearWritingBtn').addEventListener('click', () => {
+  if (!confirm('Wirklich alle Schreibfelder leeren?')) return;
+  document.querySelectorAll('.write-block textarea').forEach(ta => {
+    ta.value = '';
+    ta.dispatchEvent(new Event('input'));
+  });
+  document.getElementById('previewEssay').classList.remove('show');
+});
+
+function getEssayText() {
+  return Array.from(document.querySelectorAll('#previewContent p')).map(p => p.textContent).join('\n\n');
+}
+
+window.copyEssay = function() {
+  navigator.clipboard.writeText(getEssayText()).then(() => showToast('In Zwischenablage', '📋'));
+};
+
+window.downloadEssay = function() {
+  const text = getEssayText();
+  const blob = new Blob([text], { type:'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `Eroerterung_${new Date().toISOString().slice(0,10)}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+window.downloadDocx = function() {
+  // simple HTML-as-doc download (Word can open .doc with HTML)
+  const a = getCurrentArticle();
+  const title = a.headline + ' — Erörterung';
+  const paras = Array.from(document.querySelectorAll('#previewContent p')).map(p => `<p>${p.innerHTML}</p>`).join('');
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${title}</title>
+<style>body{font-family:Georgia,serif;font-size:12pt;line-height:1.6;max-width:680px;margin:40px auto;padding:0 30px;color:#111;}
+h1{font-size:18pt;text-align:center;font-style:italic;margin-bottom:6px;}
+.meta{text-align:center;font-size:10pt;color:#555;margin-bottom:30px;border-bottom:1px solid #ccc;padding-bottom:10px;}
+p{text-align:justify;text-indent:1.5em;margin-bottom:0.6em;}p:first-of-type{text-indent:0;}</style></head>
+<body><h1>${title}</h1><div class="meta">IGCSE 0505 · Klasse 9 · Eigene Ausarbeitung · ${new Date().toLocaleDateString('de-DE')}</div>${paras}</body></html>`;
+  const blob = new Blob([html], { type:'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url; link.download = `Eroerterung_${new Date().toISOString().slice(0,10)}.doc`;
+  link.click();
+  URL.revokeObjectURL(url);
+  showToast('Druckversion erstellt', '⬇');
+};
+
+// ============================================================
+// RUBRIC
+// ============================================================
+function renderRubric() {
+  const a = getCurrentArticle();
+  const scores = state.rubrics[a.id] || {};
+  const wrap = document.getElementById('rubricCriteria');
+  wrap.innerHTML = '';
+  RUBRIC.forEach(crit => {
+    const row = document.createElement('div');
+    row.className = 'rubric-row';
+    const score = scores[crit.id] || 0;
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+      stars += `<span class="star ${i <= score ? 'filled' : ''}" data-crit="${crit.id}" data-score="${i}">★</span>`;
+    }
+    row.innerHTML = `
+      <div class="rubric-label">
+        <span class="crit-name">${escapeHTML(crit.name)}</span>
+        <span class="crit-hint">${escapeHTML(crit.hint)}</span>
+      </div>
+      <div class="rubric-stars">${stars}</div>
+    `;
+    wrap.appendChild(row);
+  });
+  wrap.querySelectorAll('.star').forEach(s => {
+    s.addEventListener('click', () => {
+      const aId = state.currentArticleId;
+      if (!state.rubrics[aId]) state.rubrics[aId] = {};
+      state.rubrics[aId][s.dataset.crit] = parseInt(s.dataset.score);
+      saveState();
+      renderRubric();
+    });
+  });
+  // summary
+  const totalScore = Object.values(scores).reduce((a,b) => a+b, 0);
+  const max = RUBRIC.length * 5;
+  const pct = max ? Math.round(totalScore / max * 100) : 0;
+  let comment = '';
+  if (totalScore === 0) comment = 'Bewerte alle Kriterien, um eine Gesamteinschätzung zu erhalten.';
+  else if (pct >= 85) comment = `<strong>${totalScore}/${max} (${pct}%)</strong> — Auf Prüfungsniveau! Du bist gut vorbereitet.`;
+  else if (pct >= 65) comment = `<strong>${totalScore}/${max} (${pct}%)</strong> — Solide. Schau dir die Kriterien mit niedrigster Punktzahl noch einmal an.`;
+  else if (pct >= 40) comment = `<strong>${totalScore}/${max} (${pct}%)</strong> — Da geht noch was. Welcher Aspekt brauchst du am meisten Übung?`;
+  else comment = `<strong>${totalScore}/${max} (${pct}%)</strong> — Lass dich nicht entmutigen. Übe Schritt für Schritt — die Methode wirkt.`;
+  document.getElementById('rubricSummary').innerHTML = comment;
+}
+
+document.getElementById('saveRubricBtn').addEventListener('click', () => {
+  const a = getCurrentArticle();
+  const scores = state.rubrics[a.id] || {};
+  if (Object.keys(scores).length < RUBRIC.length) {
+    showToast('Bitte alle Kriterien bewerten', '⚠');
+    return;
+  }
+  grantBadge('first_rubric');
+  awardPoints(10, '+10 Selbstcheck');
+  showToast('Bewertung gespeichert', '✓');
+});
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+  // countdown
+  const now = new Date();
+  const diff = Math.ceil((EXAM_DATE - now) / (1000*60*60*24));
+  document.getElementById('hdrDays').textContent = diff > 0 ? diff : '0';
+  document.getElementById('dashDays').textContent = diff > 0 ? diff : '0';
+
+  document.getElementById('dashPoints').textContent = state.points || 0;
+  const totalAnnots = Object.values(state.annotations).reduce((s, a) => s + a.length, 0);
+  document.getElementById('dashAnnots').textContent = totalAnnots;
+  document.getElementById('dashTheses').textContent = Object.keys(state.theses).filter(k => state.theses[k]).length;
+  document.getElementById('dashEssays').textContent = state.essaysCompleted || 0;
+  document.getElementById('dashStreak').textContent = state.streak || 0;
+  document.getElementById('dashArticles').textContent = (state.articlesTouched || []).length;
+
+  // rank
+  const pts = state.points || 0;
+  let cur = RANKS[0], next = RANKS[1];
+  for (let i = RANKS.length - 1; i >= 0; i--) {
+    if (pts >= RANKS[i].min) { cur = RANKS[i]; next = RANKS[i+1]; break; }
+  }
+  if (next) {
+    const span = next.min - cur.min;
+    const have = pts - cur.min;
+    const pct = Math.max(0, Math.min(100, (have/span)*100));
+    document.getElementById('rankFill').style.width = pct + '%';
+    document.getElementById('rankInfo').textContent = `${cur.name} → ${next.name} · ${pts} / ${next.min}`;
+  } else {
+    document.getElementById('rankFill').style.width = '100%';
+    document.getElementById('rankInfo').textContent = `${cur.name} — Höchster Rang!`;
+  }
+
+  // badges
+  const grid = document.getElementById('badgesGrid');
+  grid.innerHTML = '';
+  BADGES.forEach(b => {
+    const earned = state.badges.includes(b.id);
+    const div = document.createElement('div');
+    div.className = 'badge' + (earned ? ' earned' : '');
+    div.innerHTML = `<span class="ico">${b.icon}</span><div class="name">${escapeHTML(b.name)}</div><div class="desc">${escapeHTML(b.desc)}</div>`;
+    grid.appendChild(div);
+  });
+}
+
+// ============================================================
+// IMPORT / EXPORT / RESET
+// ============================================================
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Eroerterung_Fortschritt_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Fortschritt exportiert', '⬇');
+});
+
+document.getElementById('importBtn').addEventListener('click', () => {
+  document.getElementById('importFile').click();
+});
+
+document.getElementById('importFile').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      state = { ...state, ...data };
+      saveState();
+      // refresh everything
+      populateArticleSelect();
+      renderArticle();
+      updateRankDisplay();
+      document.getElementById('hdrPoints').textContent = state.points || 0;
+      renderDashboard();
+      showToast('Fortschritt importiert', '⬆');
+    } catch(err) { showToast('Datei ungültig', '⚠'); }
+  };
+  r.readAsText(file);
+  e.target.value = '';
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (!confirm('Wirklich allen Fortschritt löschen? Diese Aktion ist nicht rückgängig zu machen.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+});
+
+// ============================================================
+// INIT
+// ============================================================
+loadState();
+populateArticleSelect();
+renderArticle();
+markArticleTouched(state.currentArticleId);
+document.getElementById('hdrPoints').textContent = state.points || 0;
+updateRankDisplay();
+// initial countdown for header
+const _now = new Date();
+const _diff = Math.ceil((EXAM_DATE - _now) / (1000*60*60*24));
+document.getElementById('hdrDays').textContent = _diff > 0 ? _diff : '0';
+renderDashboard();
+</script>
+</body>
+</html>
