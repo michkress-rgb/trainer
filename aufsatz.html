@@ -1,0 +1,2783 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mein Aufsatz · Hamburger-Methode · Klasse 6–8</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #f4ead5;
+  --cream-dark: #ebdfc2;
+  --paper: #fbf6e9;
+  --bun: #d99547;
+  --bun-dark: #b87a32;
+  --bun-deep: #8e5a1f;
+  --lettuce: #6b8a3e;
+  --lettuce-light: #92ae5e;
+  --tomato: #c84630;
+  --tomato-dark: #a3331f;
+  --cheese: #e8b04a;
+  --patty: #5a3923;
+  --patty-dark: #3d2616;
+  --ink: #2a1a0e;
+  --ink-soft: #4a3624;
+  --shadow: rgba(42, 26, 14, 0.18);
+  --shadow-deep: rgba(42, 26, 14, 0.32);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(217, 149, 71, 0.08) 0%, transparent 30%),
+    radial-gradient(circle at 90% 80%, rgba(107, 138, 62, 0.06) 0%, transparent 30%);
+}
+
+h1, h2, h3, h4, .serif { font-family: 'Fraunces', serif; letter-spacing: -0.01em; }
+
+/* ========== HEADER ========== */
+header.top {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 22px 32px 18px;
+  border-bottom: 6px solid var(--bun);
+  position: relative;
+}
+
+.top-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 18px;
+}
+
+.top-title h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: clamp(1.6rem, 3.4vw, 2.3rem);
+  line-height: 1.05;
+  margin: 0;
+}
+
+.top-title h1 .em { color: var(--bun); }
+
+.top-title .sub {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--cream-dark);
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.score-pill {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.score-pill .pill-item { color: var(--cream-dark); }
+.score-pill .pill-item b { color: var(--bun); font-weight: 700; }
+
+/* ========== DEADLINE STRIP ========== */
+.deadline-strip {
+  background: var(--tomato);
+  color: var(--cream);
+  padding: 10px 32px;
+  text-align: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.deadline-strip b { font-weight: 700; }
+
+.deadline-strip .days {
+  display: inline-block;
+  background: var(--cream);
+  color: var(--tomato-dark);
+  padding: 1px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  margin: 0 4px;
+}
+
+/* ========== TOOLBAR ========== */
+.toolbar {
+  background: var(--paper);
+  padding: 10px 32px;
+  border-bottom: 2px solid var(--cream-dark);
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  box-shadow: 0 2px 6px var(--shadow);
+}
+
+.tool-btn {
+  background: var(--cream);
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  padding: 6px 14px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border-radius: 999px;
+  transition: all 0.15s;
+}
+
+.tool-btn:hover { background: var(--ink); color: var(--cream); }
+.tool-btn.danger { color: var(--tomato-dark); border-color: var(--tomato); }
+.tool-btn.danger:hover { background: var(--tomato); color: var(--cream); }
+.tool-btn.primary { background: var(--bun); border-color: var(--bun-deep); }
+.tool-btn.primary:hover { background: var(--bun-deep); color: var(--cream); }
+
+/* ========== TABS ========== */
+.tabs {
+  background: var(--paper);
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+  padding: 0 32px;
+  border-bottom: 2px solid var(--cream-dark);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tab {
+  background: transparent;
+  border: none;
+  border-bottom: 4px solid transparent;
+  padding: 14px 20px;
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--patty);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab:hover { color: var(--ink); }
+.tab.active { color: var(--ink); border-bottom-color: var(--bun); }
+
+.tab .step-num {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  background: var(--cream-dark);
+  color: var(--ink-soft);
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.tab.active .step-num { background: var(--bun); color: var(--cream); }
+.tab .tab-icon { font-size: 1.1rem; }
+
+/* ========== CONTAINER ========== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 32px 60px;
+}
+
+.panel { display: none; animation: fadeIn 0.25s; }
+.panel.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.panel h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-size: clamp(1.6rem, 3.2vw, 2.2rem);
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+.panel h2 em { font-style: italic; color: var(--tomato); }
+
+.panel-intro {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--ink-soft);
+  margin-bottom: 22px;
+  max-width: 720px;
+}
+
+.callout {
+  background: var(--paper);
+  border: 2px solid var(--cream-dark);
+  border-left: 5px solid var(--bun);
+  padding: 14px 18px;
+  border-radius: 0 8px 8px 0;
+  margin: 16px 0;
+}
+.callout strong { color: var(--bun-deep); }
+
+.callout.green { border-left-color: var(--lettuce); }
+.callout.green strong { color: var(--lettuce); }
+.callout.red { border-left-color: var(--tomato); }
+.callout.red strong { color: var(--tomato-dark); }
+
+/* ========== GRADE PICKER ========== */
+.grade-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.grade-card {
+  background: var(--paper);
+  border: 3px solid var(--cream-dark);
+  border-radius: 14px;
+  padding: 22px 22px 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.grade-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 0 var(--cream-dark);
+  border-color: var(--bun);
+}
+
+.grade-card.selected {
+  border-color: var(--ink);
+  background: linear-gradient(to bottom, var(--paper) 0%, var(--cream) 100%);
+  box-shadow: 0 6px 0 var(--ink);
+  transform: translateY(-3px);
+}
+
+.grade-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  width: 26px;
+  height: 26px;
+  background: var(--lettuce);
+  color: var(--paper);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.grade-card .grade-num {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: 3.2rem;
+  color: var(--bun);
+  line-height: 1;
+}
+
+.grade-card.selected .grade-num { color: var(--tomato); }
+
+.grade-card h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin: 8px 0 6px;
+}
+
+.grade-card p {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.grade-card .grade-target {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 3px 10px;
+  background: var(--cream-dark);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.grade-card.selected .grade-target {
+  background: var(--bun);
+  color: var(--paper);
+}
+
+/* ========== ARTICLE PICKER ========== */
+.article-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.article-card {
+  background: var(--paper);
+  border: 3px solid var(--cream-dark);
+  border-radius: 12px;
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.article-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--bun);
+  box-shadow: 0 6px 0 var(--cream-dark);
+}
+
+.article-card.selected {
+  border-color: var(--ink);
+  box-shadow: 0 5px 0 var(--ink);
+}
+
+.article-card.selected::after {
+  content: '✓ gewählt';
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: var(--lettuce);
+  color: var(--paper);
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.article-card .topic-tag {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bun-deep);
+  margin-bottom: 6px;
+}
+
+.article-card h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-size: 1.2rem;
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+
+.article-card .question {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  line-height: 1.4;
+  flex: 1;
+}
+
+/* ========== ARTICLE READER ========== */
+.article-reader {
+  background: var(--paper);
+  border: 2px solid var(--cream-dark);
+  border-radius: 14px;
+  padding: 28px 32px;
+  margin-top: 18px;
+}
+
+.article-reader .reader-meta {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bun-deep);
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.article-reader h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+
+.article-reader .reader-question {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--patty);
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--cream-dark);
+}
+
+.article-reader p {
+  font-family: 'Fraunces', serif;
+  font-size: 1.02rem;
+  line-height: 1.65;
+  margin-bottom: 0.85em;
+  color: var(--ink);
+}
+
+.article-reader p:first-of-type::first-letter {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-size: 3.2em;
+  float: left;
+  line-height: 0.85;
+  margin-right: 6px;
+  margin-top: 4px;
+  color: var(--tomato);
+}
+
+.position-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+@media (max-width: 600px) { .position-row { grid-template-columns: 1fr; } }
+
+.position-btn {
+  background: var(--cream);
+  border: 3px solid var(--cream-dark);
+  border-radius: 12px;
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  font-family: 'Fraunces', serif;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.position-btn:hover { border-color: var(--bun); }
+.position-btn.selected {
+  border-color: var(--ink);
+  background: var(--paper);
+  box-shadow: 0 4px 0 var(--ink);
+}
+
+.position-btn .pos-label {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bun-deep);
+  margin-bottom: 6px;
+}
+
+.position-btn.selected .pos-label { color: var(--tomato-dark); }
+
+/* ========== HAMBURGER PROGRESS BAR ========== */
+.hamburger-progress {
+  background: var(--paper);
+  border: 2px solid var(--cream-dark);
+  border-radius: 12px;
+  padding: 14px 20px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: sticky;
+  top: 60px;
+  z-index: 70;
+  box-shadow: 0 3px 8px var(--shadow);
+}
+
+.hamburger-progress .hp-label {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.hp-bar {
+  flex: 1;
+  height: 12px;
+  background: var(--cream-dark);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.hp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--lettuce) 0%, var(--bun) 60%, var(--tomato) 100%);
+  border-radius: 999px;
+  transition: width 0.4s;
+}
+
+.hp-pct {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--ink);
+  min-width: 50px;
+  text-align: right;
+}
+
+/* ========== WRITING STEP CARDS ========== */
+.step-card {
+  background: var(--paper);
+  border: 2px solid var(--cream-dark);
+  border-radius: 14px;
+  padding: 0;
+  margin-bottom: 18px;
+  overflow: hidden;
+  transition: all 0.25s;
+  position: relative;
+}
+
+.step-card.complete {
+  border-color: var(--lettuce);
+  box-shadow: 0 3px 0 var(--lettuce);
+}
+
+.step-card.active {
+  border-color: var(--bun);
+  box-shadow: 0 5px 0 var(--bun-deep);
+}
+
+.step-header {
+  background: var(--cream);
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 2px solid var(--cream-dark);
+  cursor: pointer;
+}
+
+.step-card.complete .step-header { background: linear-gradient(to right, rgba(107, 138, 62, 0.12), var(--cream)); }
+.step-card.active .step-header { background: linear-gradient(to right, rgba(217, 149, 71, 0.18), var(--cream)); }
+
+.step-num-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--cream-dark);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  border: 2px solid var(--ink);
+}
+
+.step-card.complete .step-num-circle {
+  background: var(--lettuce);
+  color: var(--paper);
+  border-color: var(--lettuce);
+}
+.step-card.complete .step-num-circle::after { content: '✓'; }
+.step-card.complete .step-num-circle .step-actual-num { display: none; }
+
+.step-card.active .step-num-circle {
+  background: var(--bun);
+  color: var(--paper);
+  border-color: var(--bun-deep);
+}
+
+.step-title-area { flex: 1; }
+
+.step-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-size: 1.15rem;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.step-subtitle {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin-top: 2px;
+}
+
+.step-layer-tag {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--cream-dark);
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+}
+
+.step-layer-tag.bun-top { background: var(--bun); color: var(--paper); }
+.step-layer-tag.lettuce { background: var(--lettuce); color: var(--paper); }
+.step-layer-tag.tomato { background: var(--tomato); color: var(--paper); }
+.step-layer-tag.cheese { background: var(--cheese); color: var(--patty-dark); }
+.step-layer-tag.patty { background: var(--patty); color: var(--paper); }
+.step-layer-tag.bun-bot { background: var(--bun-deep); color: var(--paper); }
+
+.step-body { padding: 22px 24px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 22px; }
+@media (max-width: 800px) { .step-body { grid-template-columns: 1fr; } }
+
+/* coaching column */
+.coaching {
+  background: var(--cream);
+  border-radius: 10px;
+  padding: 16px 18px;
+  border: 1px solid var(--cream-dark);
+  align-self: start;
+}
+
+.coaching h4 {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 6px;
+  color: var(--patty-dark);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.coaching h4 .icon { font-size: 1.05rem; }
+
+.coaching p {
+  font-family: 'Fraunces', serif;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+}
+
+.coaching .why {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--patty);
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: var(--paper);
+  border-left: 3px solid var(--lettuce);
+  border-radius: 0 4px 4px 0;
+}
+
+.example-box {
+  background: var(--paper);
+  border: 1px dashed var(--bun);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-top: 8px;
+  font-family: 'Fraunces', serif;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--patty);
+  line-height: 1.5;
+}
+
+.example-box::before {
+  content: 'Beispiel:';
+  display: block;
+  font-style: normal;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bun-deep);
+  margin-bottom: 4px;
+}
+
+/* writing column */
+.writing-col { display: flex; flex-direction: column; }
+
+.writing-col label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--patty);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.writing-col textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 12px 14px;
+  font-family: 'Fraunces', serif;
+  font-size: 1.02rem;
+  border: 2px solid var(--cream-dark);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+  resize: vertical;
+  line-height: 1.55;
+  transition: all 0.15s;
+}
+
+.writing-col textarea:focus {
+  outline: none;
+  border-color: var(--bun);
+  background: #fffaf0;
+  box-shadow: 0 0 0 3px rgba(217, 149, 71, 0.18);
+}
+
+.starter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.starter-chip {
+  background: var(--cream);
+  border: 1px solid var(--cream-dark);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.83rem;
+  cursor: pointer;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  color: var(--patty);
+  transition: all 0.12s;
+}
+
+.starter-chip:hover {
+  background: var(--bun);
+  color: var(--paper);
+  border-color: var(--bun-deep);
+  transform: translateY(-1px);
+}
+
+.write-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.74rem;
+  color: var(--ink-soft);
+}
+
+.write-meta .wc { font-weight: 600; }
+.write-meta .wc.good { color: var(--lettuce); }
+
+.field-saved {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  color: var(--lettuce);
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.field-saved.show { opacity: 1; }
+
+/* ========== PREVIEW ========== */
+.preview-card {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  padding: 36px 42px;
+  box-shadow: 0 6px 0 var(--ink);
+  margin-top: 20px;
+  position: relative;
+}
+
+@media (max-width: 600px) {
+  .preview-card { padding: 24px 22px; }
+}
+
+.preview-card::before {
+  content: '🍔 Mein Aufsatz';
+  position: absolute;
+  top: -14px;
+  left: 24px;
+  background: var(--bun);
+  color: var(--paper);
+  padding: 4px 14px;
+  border-radius: 999px;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 0.92rem;
+  border: 2px solid var(--ink);
+}
+
+.preview-card h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: 1.5rem;
+  text-align: center;
+  margin: 8px 0 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--cream-dark);
+}
+
+.preview-card p {
+  font-family: 'Fraunces', serif;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  margin-bottom: 0.9em;
+  text-align: justify;
+  hyphens: auto;
+  text-indent: 1.4em;
+}
+
+.preview-card p:first-of-type { text-indent: 0; }
+
+.preview-card .name-line {
+  text-align: right;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  margin-top: 24px;
+}
+
+.preview-meta {
+  text-align: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--cream-dark);
+}
+
+/* ========== BUTTONS ========== */
+.btn-primary, .btn-secondary, .btn-accent {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 12px 22px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--cream);
+  box-shadow: 0 4px 0 var(--patty-dark);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 var(--patty-dark);
+}
+
+.btn-primary:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--patty-dark);
+}
+
+.btn-secondary {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.btn-secondary:hover { background: var(--cream); }
+
+.btn-accent {
+  background: var(--tomato);
+  color: var(--cream);
+  border-color: var(--tomato-dark);
+  box-shadow: 0 4px 0 var(--tomato-dark);
+}
+
+.btn-accent:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 var(--tomato-dark);
+}
+
+.btn-accent:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--tomato-dark);
+}
+
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+/* ========== DASHBOARD ========== */
+.deadline-banner {
+  background: linear-gradient(135deg, var(--ink) 0%, var(--patty-dark) 100%);
+  color: var(--cream);
+  padding: 24px 28px;
+  border-radius: 14px;
+  margin-bottom: 22px;
+  border: 3px solid var(--ink);
+  box-shadow: 0 5px 0 var(--patty-dark);
+}
+
+.deadline-banner .label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bun);
+}
+
+.deadline-banner .num {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: 4rem;
+  line-height: 1;
+  margin: 6px 0;
+}
+
+.deadline-banner .sub {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--cream-dark);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--paper);
+  border: 2px solid var(--cream-dark);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-card .val {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: 2.4rem;
+  color: var(--bun-deep);
+  line-height: 1;
+}
+
+.stat-card .lbl {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.badge {
+  background: var(--paper);
+  border: 2px solid var(--cream-dark);
+  border-radius: 12px;
+  padding: 14px 10px;
+  text-align: center;
+  opacity: 0.45;
+  filter: grayscale(0.6);
+  transition: all 0.3s;
+  position: relative;
+}
+
+.badge.earned {
+  opacity: 1;
+  filter: none;
+  border-color: var(--bun);
+  box-shadow: 0 4px 0 var(--bun-dark);
+  transform: translateY(-2px);
+}
+
+.badge .b-ico { font-size: 1.9rem; display: block; margin-bottom: 4px; }
+
+.badge .b-name {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 0.92rem;
+  margin-bottom: 3px;
+}
+
+.badge .b-desc {
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  line-height: 1.3;
+}
+
+.badge.earned::after {
+  content: '✓';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--lettuce);
+  color: var(--paper);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border: 2px solid var(--paper);
+}
+
+/* ========== TOAST ========== */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120px);
+  background: var(--ink);
+  color: var(--cream);
+  padding: 14px 24px;
+  border-radius: 999px;
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 8px 24px var(--shadow-deep);
+  z-index: 1000;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 2px solid var(--bun);
+  max-width: 90vw;
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast .ico { font-size: 1.2rem; }
+
+/* ========== SAVE INDICATOR ========== */
+.save-indicator {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  background: var(--lettuce);
+  color: var(--paper);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 800;
+  pointer-events: none;
+  box-shadow: 0 3px 8px var(--shadow);
+}
+.save-indicator.show { opacity: 1; }
+
+/* ========== TUTORIAL OVERLAY ========== */
+.tutorial-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(42, 26, 14, 0.65);
+  z-index: 900;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.tutorial-overlay.show { display: flex; }
+
+.tutorial-box {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 16px;
+  padding: 32px 32px 28px;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 10px 0 var(--patty-dark);
+  position: relative;
+}
+
+.tutorial-box h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: 1.6rem;
+  margin-bottom: 6px;
+}
+.tutorial-box h3 em { color: var(--tomato); font-style: italic; }
+
+.tutorial-box p {
+  font-family: 'Fraunces', serif;
+  font-size: 1rem;
+  line-height: 1.55;
+  margin-bottom: 12px;
+  color: var(--ink-soft);
+}
+
+.tutorial-box ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 18px;
+}
+.tutorial-box ul li {
+  padding: 6px 0;
+  font-family: 'Fraunces', serif;
+  font-size: 0.95rem;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.tutorial-box ul li::before {
+  content: '🍔';
+  flex-shrink: 0;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 700px) {
+  .top { padding: 16px 18px; }
+  .top-inner { grid-template-columns: 1fr; gap: 10px; }
+  .deadline-strip { padding: 8px 18px; font-size: 0.85rem; }
+  .toolbar { padding: 8px 18px; }
+  .tabs { padding: 0 10px; overflow-x: auto; flex-wrap: nowrap; }
+  .tab { white-space: nowrap; padding: 12px 12px; font-size: 0.92rem; }
+  .container { padding: 22px 16px 60px; }
+  .step-body { padding: 18px 16px; }
+  .article-reader { padding: 22px 18px; }
+  .hamburger-progress { top: 56px; }
+}
+
+@media print {
+  body { background: white; }
+  header.top, .deadline-strip, .toolbar, .tabs, .hamburger-progress, .panel:not(.active) { display: none !important; }
+  .preview-card { box-shadow: none; border: none; padding: 0; }
+  .preview-card::before { display: none; }
+  .action-row { display: none !important; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="top-title">
+      <h1>Mein <span class="em">Aufsatz</span> · Schritt für Schritt</h1>
+      <div class="sub">Hamburger-Methode · Deutsch · Klasse 6 – 8</div>
+    </div>
+    <div class="score-pill">
+      <div class="pill-item">🍔 <b id="hdrPoints">0</b> Punkte</div>
+      <div class="pill-item">🔥 <b id="hdrStreak">0</b> Tage</div>
+    </div>
+  </div>
+</header>
+
+<div class="deadline-strip">
+  <b>📅 Abgabe auf Toddle: 13. Mai 2026</b> · noch <span class="days" id="hdrDays">—</span> Tage Zeit
+</div>
+
+<div class="toolbar">
+  <button class="tool-btn" id="exportBtn">⬇ Speichern</button>
+  <button class="tool-btn" id="importBtn">⬆ Laden</button>
+  <button class="tool-btn primary" id="copyAllBtn">📋 Aufsatz kopieren</button>
+  <button class="tool-btn danger" id="resetBtn" title="Setzt alles zurück">↺ Reset</button>
+  <input type="file" id="importFile" accept="application/json" style="display:none;">
+</div>
+
+<nav class="tabs">
+  <button class="tab active" data-panel="welcome"><span class="step-num">1</span><span class="tab-icon">👋</span>Start</button>
+  <button class="tab" data-panel="article"><span class="step-num">2</span><span class="tab-icon">📰</span>Artikel lesen</button>
+  <button class="tab" data-panel="writing"><span class="step-num">3</span><span class="tab-icon">✍️</span>Aufsatz schreiben</button>
+  <button class="tab" data-panel="finished"><span class="step-num">4</span><span class="tab-icon">🍔</span>Mein Aufsatz</button>
+  <button class="tab" data-panel="dashboard"><span class="step-num">5</span><span class="tab-icon">🏆</span>Fortschritt</button>
+</nav>
+
+<div class="container">
+
+  <!-- ============================================================ -->
+  <!-- 1. WELCOME / GRADE PICKER                                    -->
+  <!-- ============================================================ -->
+  <section class="panel active" id="welcome">
+    <h2>Willkommen! Lass uns deinen <em>Aufsatz</em> schreiben.</h2>
+    <p class="panel-intro">Du hast bis zum 13. Mai Zeit. Das schaffen wir locker — Schritt für Schritt, Satz für Satz. Wähl unten erst deine Klassenstufe.</p>
+
+    <div class="callout green">
+      <strong>So läuft das ab:</strong> 1. Klassenstufe wählen → 2. einen Artikel lesen und Position beziehen → 3. den Aufsatz Satz für Satz schreiben (mit Hilfe!) → 4. fertig zusammenfügen, kopieren und auf Toddle abgeben.
+    </div>
+
+    <h3 style="font-family:'Fraunces', serif; font-weight:800; font-size:1.4rem; margin: 24px 0 8px;">In welcher Klasse bist du?</h3>
+    <p style="color: var(--ink-soft); margin-bottom: 14px; font-family: 'Fraunces', serif; font-style: italic;">Davon hängt ab, wie ausführlich dein Aufsatz wird.</p>
+
+    <div class="grade-picker" id="gradePicker">
+      <div class="grade-card" data-grade="6">
+        <div class="grade-num">6</div>
+        <h3>Klasse 6</h3>
+        <p>Einfacher Aufbau: These → 3 Argumente → Schluss. Du schreibst kurze, klare Sätze.</p>
+        <span class="grade-target">~150 Wörter</span>
+      </div>
+      <div class="grade-card" data-grade="7">
+        <div class="grade-num">7</div>
+        <h3>Klasse 7</h3>
+        <p>Mit Themensatz pro Argument und einem starken Aufhänger am Anfang.</p>
+        <span class="grade-target">~200 Wörter</span>
+      </div>
+      <div class="grade-card" data-grade="8">
+        <div class="grade-num">8</div>
+        <h3>Klasse 8</h3>
+        <p>Mit BBBF (Behauptung-Begründung-Beleg-Folgerung) und einer Antithese.</p>
+        <span class="grade-target">~280 Wörter</span>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-primary" id="startBtn" disabled style="opacity:0.5;">→ Weiter zum Artikel</button>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 2. ARTICLE PICKER + READER + POSITION                        -->
+  <!-- ============================================================ -->
+  <section class="panel" id="article">
+    <h2>Such dir ein <em>Thema</em> aus.</h2>
+    <p class="panel-intro">Lies einen kurzen Artikel und entscheide dann, was deine Meinung dazu ist. Du kannst zwischen mehreren Themen wählen — nimm das, was dich am meisten interessiert.</p>
+
+    <div class="article-picker" id="articlePicker"></div>
+
+    <div id="articleReaderArea" style="display:none;">
+      <div class="article-reader" id="articleReader"></div>
+
+      <h3 style="font-family:'Fraunces', serif; font-weight:800; font-size:1.3rem; margin: 22px 0 6px;">Was ist deine Meinung?</h3>
+      <p style="color: var(--ink-soft); font-family: 'Fraunces', serif; font-style: italic; margin-bottom: 12px;">Wähle <strong>eine</strong> Seite — du musst sie im Aufsatz vertreten.</p>
+      <div class="position-row" id="positionRow"></div>
+
+      <div class="action-row">
+        <button class="btn-primary" id="toWritingBtn" disabled style="opacity:0.5;">→ Jetzt geht's ans Schreiben!</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 3. WRITING WORKSHOP — heart of the tool                      -->
+  <!-- ============================================================ -->
+  <section class="panel" id="writing">
+    <h2>Dein <em>Aufsatz</em> — Schritt für Schritt</h2>
+    <p class="panel-intro">Du schreibst nicht alles auf einmal. Du füllst nur ein kleines Feld nach dem anderen. Lies links, was du tun sollst, und schreib dann rechts deinen eigenen Satz.</p>
+
+    <div id="writingHeader" style="display:none;">
+      <div class="callout">
+        <strong>📌 Dein Thema:</strong> <span id="writingTopic"></span><br>
+        <strong>🎯 Deine Position:</strong> <span id="writingPosition"></span>
+      </div>
+
+      <div class="hamburger-progress">
+        <div class="hp-label">🍔 Hamburger</div>
+        <div class="hp-bar"><div class="hp-fill" id="hpFill"></div></div>
+        <div class="hp-pct" id="hpPct">0%</div>
+      </div>
+
+      <div id="stepsContainer"></div>
+
+      <div class="action-row">
+        <button class="btn-accent" id="finishBtn">🍔 Aufsatz zusammenfügen!</button>
+      </div>
+    </div>
+
+    <div id="writingEmpty" style="text-align:center; padding: 40px 20px; font-family:'Fraunces', serif; font-style:italic; color: var(--ink-soft);">
+      <div style="font-size: 3rem; margin-bottom: 10px;">📝</div>
+      <p>Wähle erst eine Klassenstufe, einen Artikel und eine Position.</p>
+      <button class="btn-primary" style="margin-top: 16px;" onclick="document.querySelector('.tab[data-panel=&quot;welcome&quot;]').click()">← Zurück zum Anfang</button>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 4. FINISHED ESSAY                                            -->
+  <!-- ============================================================ -->
+  <section class="panel" id="finished">
+    <h2>Dein <em>fertiger</em> Aufsatz</h2>
+    <p class="panel-intro">Hier siehst du deinen Aufsatz so, wie er aussehen wird, wenn du ihn auf Toddle abgibst. Du kannst ihn kopieren oder als Datei herunterladen.</p>
+
+    <div id="finishedEmpty" style="text-align:center; padding: 40px 20px; font-family:'Fraunces', serif; font-style:italic; color: var(--ink-soft);">
+      <div style="font-size: 3rem; margin-bottom: 10px;">🍔</div>
+      <p>Schreibe deinen Aufsatz erst fertig.</p>
+      <button class="btn-primary" style="margin-top: 16px;" onclick="document.querySelector('.tab[data-panel=&quot;writing&quot;]').click()">→ Zurück zum Schreiben</button>
+    </div>
+
+    <div id="finishedReady" style="display:none;">
+      <div class="callout green">
+        <strong>✅ Fertig!</strong> Lies deinen Aufsatz noch einmal laut durch. Dann unten kopieren oder herunterladen und auf Toddle einfügen.
+      </div>
+
+      <div id="essayName" style="margin-bottom: 14px;">
+        <label style="font-family:'Outfit', sans-serif; font-size:0.78rem; font-weight:700; letter-spacing:0.05em; color:var(--patty); text-transform:uppercase; display:block; margin-bottom:6px;">Dein Name (steht oben auf dem Aufsatz):</label>
+        <input type="text" id="studentName" placeholder="z. B. Anna M." style="width:100%; max-width:280px; padding:10px 14px; font-family:'Fraunces', serif; font-size:1rem; border:2px solid var(--cream-dark); border-radius:8px; background:var(--paper);">
+      </div>
+
+      <div class="preview-card" id="previewCard"></div>
+
+      <div class="action-row">
+        <button class="btn-accent" id="copyEssayBtn">📋 Aufsatz kopieren</button>
+        <button class="btn-secondary" id="downloadTxtBtn">⬇ Als Textdatei (.txt)</button>
+        <button class="btn-secondary" id="downloadDocBtn">⬇ Word-Datei (.doc)</button>
+        <button class="btn-secondary" onclick="window.print()">🖨 Drucken</button>
+      </div>
+
+      <div class="callout" style="margin-top: 22px;">
+        <strong>📤 So gibst du auf Toddle ab:</strong> Klick auf <em>"Aufsatz kopieren"</em>, geh dann zu Toddle, öffne die Aufgabe und füge deinen Text dort ein. Vergiss nicht zu speichern!
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 5. DASHBOARD                                                 -->
+  <!-- ============================================================ -->
+  <section class="panel" id="dashboard">
+    <h2>Dein <em>Fortschritt</em></h2>
+    <p class="panel-intro">Hier siehst du, wie weit du gekommen bist. Sammle Punkte und Abzeichen!</p>
+
+    <div class="deadline-banner">
+      <div class="label">⏳ Tage bis zur Abgabe auf Toddle</div>
+      <div class="num" id="dashDays">—</div>
+      <div class="sub">13. Mai 2026 · jede Übung zählt</div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="val" id="dashPoints">0</div><div class="lbl">Punkte gesamt</div></div>
+      <div class="stat-card"><div class="val" id="dashEssays">0</div><div class="lbl">Aufsätze fertig</div></div>
+      <div class="stat-card"><div class="val" id="dashFields">0</div><div class="lbl">Felder ausgefüllt</div></div>
+      <div class="stat-card"><div class="val" id="dashStreak">0</div><div class="lbl">Tage in Folge</div></div>
+    </div>
+
+    <h3 style="font-family:'Fraunces', serif; font-weight:800; font-size:1.4rem; margin: 14px 0 6px;">Auszeichnungen</h3>
+    <p style="color: var(--ink-soft); font-family: 'Fraunces', serif; font-style: italic; margin-bottom: 14px;">Hol dir alle 12 Abzeichen!</p>
+    <div class="badges-grid" id="badgesGrid"></div>
+  </section>
+
+</div>
+
+<div class="toast" id="toast"><span class="ico">🍔</span><span id="toastMsg">+10 Punkte</span></div>
+<div class="save-indicator" id="saveIndicator">✓ Gespeichert</div>
+
+<!-- Tutorial overlay shown on first load -->
+<div class="tutorial-overlay" id="tutorialOverlay">
+  <div class="tutorial-box">
+    <h3>Hi! Ich bin dein <em>Aufsatz</em>-Helfer.</h3>
+    <p>Du hast eine Aufgabe für die Schule: einen argumentativen Aufsatz schreiben. Hier in diesem Programm helfe ich dir, ihn Schritt für Schritt zu bauen — wie einen Hamburger.</p>
+    <ul>
+      <li>Du schreibst <strong>nicht alles auf einmal.</strong> Nur ein kleines Feld nach dem anderen.</li>
+      <li>Bei jedem Feld <strong>steht daneben</strong>, was du tun sollst — mit einem Beispiel.</li>
+      <li>Alles wird <strong>automatisch gespeichert.</strong> Du kannst jederzeit aufhören und später weitermachen.</li>
+      <li>Am Ende kannst du den fertigen Aufsatz <strong>kopieren oder herunterladen</strong> und auf Toddle abgeben.</li>
+    </ul>
+    <button class="btn-primary" id="closeTutorial">Los geht's! 🍔</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// ARTICLES — age-appropriate, debatable, short
+// Structure: id, gradeMin (lowest grade this article suits), topic, headline, question, paragraphs[], sides[]
+// ============================================================
+const ARTICLES = [
+  {
+    id: 'handy',
+    gradeMin: 6,
+    topic: 'Handys in der Schule',
+    headline: 'Handy-Verbot an deutschen Schulen?',
+    question: 'Sollten Schüler ihr Handy in der Schule benutzen dürfen?',
+    paragraphs: [
+      'In immer mehr Schulen in Deutschland gibt es ein Handy-Verbot. Schüler müssen ihre Handys morgens abgeben oder dürfen sie erst nach der Schule wieder anschalten. Eltern, Lehrer und Schüler streiten darüber, ob das richtig ist.',
+      'Manche sagen: Handys lenken vom Lernen ab. Wenn ein Schüler im Unterricht heimlich auf TikTok schaut, kann er nicht aufpassen. Außerdem werden Schüler oft per Handy gemobbt. Eine Studie zeigt, dass Kinder ohne Handy in der Pause mehr miteinander reden und spielen.',
+      'Andere sagen: Handys gehören heute zum Leben dazu. Mit dem Handy kann man Vokabeln lernen, schnell etwas nachschlagen oder den Eltern Bescheid sagen, wenn der Bus später kommt. Außerdem sollen Kinder lernen, mit dem Handy verantwortlich umzugehen — und das geht nur, wenn man es auch benutzen darf.',
+      'Auch andere Länder gehen unterschiedlich damit um: Frankreich hat ein Handy-Verbot für alle Schulen unter 15 Jahren. In Finnland dürfen Schüler ihr Handy hingegen oft im Unterricht für Aufgaben nutzen. Welcher Weg ist der bessere?'
+    ],
+    sides: [
+      { id: 'pro', label: 'Position A', text: 'Handys sollten in der Schule verboten sein.' },
+      { id: 'contra', label: 'Position B', text: 'Schüler sollten Handys in der Schule benutzen dürfen.' }
+    ]
+  },
+  {
+    id: 'hausi',
+    gradeMin: 6,
+    topic: 'Hausaufgaben',
+    headline: 'Sind Hausaufgaben noch sinnvoll?',
+    question: 'Sollten Hausaufgaben abgeschafft werden?',
+    paragraphs: [
+      'Jeden Tag das gleiche: Nach der Schule warten noch Hausaufgaben. Manche Schüler sitzen Stunden daran. In Finnland gibt es kaum Hausaufgaben — und trotzdem haben finnische Schüler in vielen Tests sehr gute Ergebnisse. Viele Eltern fragen sich: Brauchen wir Hausaufgaben überhaupt?',
+      'Lehrer, die für Hausaufgaben sind, sagen: Übung macht den Meister. Was im Unterricht durchgenommen wurde, wird zu Hause vertieft. Außerdem lernen Kinder, allein zu arbeiten und sich zu organisieren — das ist auch fürs spätere Leben wichtig.',
+      'Gegner sagen: Nach 6 Stunden Schule sind Kinder müde. Statt zu spielen oder Sport zu machen, müssen sie wieder lernen. Das ist ungesund. Außerdem haben Kinder, deren Eltern viel arbeiten oder wenig Deutsch sprechen, oft keine Hilfe — sie sind benachteiligt.',
+      'Manche Schulen testen schon andere Modelle: Hausaufgaben werden durch eine Lernzeit am Ende der Schule ersetzt. So haben alle Schüler die gleichen Chancen. Aber funktioniert das auch ohne tägliche Übung zu Hause?'
+    ],
+    sides: [
+      { id: 'pro', label: 'Position A', text: 'Hausaufgaben sollten abgeschafft werden.' },
+      { id: 'contra', label: 'Position B', text: 'Hausaufgaben sind wichtig und sollten bleiben.' }
+    ]
+  },
+  {
+    id: 'tiere',
+    gradeMin: 6,
+    topic: 'Tiere im Zoo',
+    headline: 'Sind Zoos noch zeitgemäß?',
+    question: 'Sollten Zoos abgeschafft werden?',
+    paragraphs: [
+      'Über 30 Millionen Menschen besuchen jedes Jahr einen deutschen Zoo. Kinder können dort Elefanten, Tiger oder Pinguine sehen, die sie sonst nie zu Gesicht bekommen würden. Aber Tierschützer fragen seit Jahren: Ist es richtig, Tiere in Käfige zu sperren — nur damit Menschen sie anschauen können?',
+      'Tierschützer sagen: Auch wenn ein Zoo schön gestaltet ist, ist ein Gehege kein Lebensraum. Ein Eisbär, der in der Natur 1.000 Kilometer am Tag wandert, hat im Zoo vielleicht 200 Quadratmeter. Manche Tiere zeigen Verhaltensstörungen — sie laufen stundenlang im Kreis. Das ist kein Tierleben, das ist Gefangenschaft.',
+      'Zoos antworten: Heute geht es nicht mehr nur um Schauen. Moderne Zoos retten gefährdete Arten. Der Mhorrgazelle wäre ohne Zucht in Zoos schon ausgestorben. Außerdem lernen Kinder im Zoo Tiere kennen — und nur wer Tiere kennt, will sie auch schützen.',
+      'Eine Lösung könnten Tierreservate sein: große Schutzgebiete, in denen Tiere fast wie in Freiheit leben. Aber sie sind teuer und nicht für alle Tierarten möglich. Wie sollen wir mit Wildtieren umgehen?'
+    ],
+    sides: [
+      { id: 'pro', label: 'Position A', text: 'Zoos sollten abgeschafft werden.' },
+      { id: 'contra', label: 'Position B', text: 'Zoos sind wichtig und sollten bleiben.' }
+    ]
+  },
+  {
+    id: 'uniform',
+    gradeMin: 7,
+    topic: 'Schuluniformen',
+    headline: 'Brauchen wir Schuluniformen in Deutschland?',
+    question: 'Sollten deutsche Schulen Schuluniformen einführen?',
+    paragraphs: [
+      'In England, Japan und vielen anderen Ländern tragen alle Schüler die gleiche Uniform — Hose, Hemd, Krawatte oder Rock. In Deutschland ist das fast unbekannt. Doch immer wieder schlagen Politiker vor, auch hier Uniformen einzuführen. Wäre das eine gute Idee?',
+      'Befürworter sagen: Mit Uniformen gibt es weniger Streit über Markenkleidung. Wer sich keine teuren Sneaker leisten kann, wird nicht ausgegrenzt. Außerdem sieht man sofort, wer zur Schule gehört — das schafft ein Wir-Gefühl. Eine Studie aus Großbritannien zeigt, dass Schüler in Uniformen ruhiger und konzentrierter sind.',
+      'Gegner sagen: Kleidung ist ein Stück Persönlichkeit. Gerade in der Pubertät wollen sich Jugendliche ausprobieren — auch über Mode. Eine Uniform nimmt ihnen das. Außerdem kostet sie Geld: Manche Familien können sich extra Schulkleidung neben der normalen Garderobe kaum leisten. Und: Mobbing verschwindet nicht, nur weil alle das gleiche tragen.',
+      'In Hamburg gibt es bereits einzelne Schulen, die freiwillig eine Schulkleidung eingeführt haben — meist ein einfaches Polo-Shirt mit Logo. Vielleicht ist das ein Mittelweg: nicht zu streng, nicht zu locker. Aber ist das, was unsere Schulen wirklich brauchen?'
+    ],
+    sides: [
+      { id: 'pro', label: 'Position A', text: 'Schuluniformen sind eine gute Idee.' },
+      { id: 'contra', label: 'Position B', text: 'Schuluniformen sollten in Deutschland nicht eingeführt werden.' }
+    ]
+  },
+  {
+    id: 'taschengeld',
+    gradeMin: 7,
+    topic: 'Taschengeld',
+    headline: 'Taschengeld — fürs Nichtstun?',
+    question: 'Sollten Kinder ihr Taschengeld nur bekommen, wenn sie zu Hause helfen?',
+    paragraphs: [
+      'Die meisten Kinder in Deutschland bekommen Taschengeld — im Schnitt zwischen 5 und 25 Euro im Monat, je nach Alter. Manche bekommen es einfach so. Andere müssen dafür zu Hause helfen: Müll runterbringen, Geschirrspüler ausräumen, Zimmer aufräumen. Was ist gerechter?',
+      'Eltern, die Taschengeld an Hilfe knüpfen, sagen: Geld muss man sich verdienen. Wer für sein Taschengeld arbeitet, lernt früh, was es bedeutet, eigenes Geld zu haben. Außerdem helfen die Kinder zu Hause mehr — und das ist sowieso wichtig in einer Familie.',
+      'Andere Eltern sagen: Im Haushalt zu helfen ist eine Selbstverständlichkeit, keine Arbeit. Wenn man Kinder dafür bezahlt, helfen sie nur noch gegen Geld. Taschengeld soll Kindern beibringen, mit Geld umzugehen — egal ob sie geholfen haben oder nicht.',
+      'Pädagogen empfehlen oft einen Mittelweg: Kleine Aufgaben (das eigene Zimmer aufräumen) sind selbstverständlich. Größere Sonderaufgaben (Auto waschen, Garten umgraben) können extra bezahlt werden. Aber das eigentliche Taschengeld bleibt bestehen — egal was. Was hältst du davon?'
+    ],
+    sides: [
+      { id: 'pro', label: 'Position A', text: 'Taschengeld sollte an Mithilfe geknüpft sein.' },
+      { id: 'contra', label: 'Position B', text: 'Taschengeld sollte unabhängig von Hilfsarbeiten gezahlt werden.' }
+    ]
+  },
+  {
+    id: 'soziale',
+    gradeMin: 8,
+    topic: 'Soziale Medien',
+    headline: 'TikTok ab 16? Soziale Medien für Jugendliche',
+    question: 'Sollten soziale Medien wie TikTok und Instagram für Kinder unter 16 verboten werden?',
+    paragraphs: [
+      'In Australien dürfen seit 2025 Kinder unter 16 Jahren keine sozialen Medien mehr nutzen. Auch in Deutschland wird darüber gesprochen. Die Frage ist: Schützt ein Verbot Kinder — oder bevormundet es sie?',
+      'Befürworter eines Verbots verweisen auf alarmierende Zahlen: Die Rate diagnostizierter Angststörungen bei Mädchen zwischen 13 und 17 Jahren hat sich in Deutschland zwischen 2010 und 2023 mehr als verdoppelt. Forscher sehen einen Zusammenhang mit der Nutzung sozialer Medien. Außerdem sind die Algorithmen darauf programmiert, junge Nutzer möglichst lange auf der Plattform zu halten — eine selbstbestimmte Nutzung ist für Jugendliche dabei kaum möglich.',
+      'Kritiker eines Verbots sagen: Soziale Medien sind heute Teil des Alltags. Über sie tauschen sich Jugendliche aus, organisieren sich politisch, finden kreative Räume. Ein Verbot würde sie davon ausschließen. Außerdem verlagert es die Verantwortung weg von Eltern und Schulen hin zu einer staatlichen Bevormundung. Bundesjugendministerin Lisa Paus warnte vor einer „digitalen Spaltung der Generationen".',
+      'Eine Alternative wäre eine strengere Regulierung der Plattformen selbst: Werbeverbot für Minderjährige, Pflicht zu chronologischen Feeds, klare Altersverifikation. So würde nicht der Nutzer eingeschränkt, sondern die Suchtmechanik der Plattform. Welcher Weg ist sinnvoller?'
+    ],
+    sides: [
+      { id: 'pro', label: 'Position A', text: 'Soziale Medien sollten für Kinder unter 16 verboten werden.' },
+      { id: 'contra', label: 'Position B', text: 'Ein pauschales Verbot ist falsch — bessere Regulierung wäre sinnvoller.' }
+    ]
+  },
+  {
+    id: 'klima',
+    gradeMin: 8,
+    topic: 'Klima & Schulstreik',
+    headline: 'Für das Klima die Schule schwänzen?',
+    question: 'Ist es richtig, für das Klima während der Schulzeit zu demonstrieren?',
+    paragraphs: [
+      'Seit den „Fridays for Future"-Protesten von 2019 gehen jeden Freitag Tausende Schüler auf die Straße, um für mehr Klimaschutz zu demonstrieren — oft während der Schulzeit. Eltern, Lehrer und Politiker streiten darüber: Ist das Engagement oder Schule schwänzen?',
+      'Befürworter argumentieren: Demokratie lebt vom Mitmachen. Wenn junge Menschen sehen, wie ihre Zukunft durch Erwachsene-Entscheidungen gefährdet wird, müssen sie protestieren dürfen — auch dann, wenn es lautstark ist. Greta Thunberg begann ihren ersten Schulstreik mit 15 Jahren. Heute hört die Welt zu. Ohne diese Proteste wäre das Klimathema nicht so weit oben auf der politischen Tagesordnung.',
+      'Kritiker entgegnen: Schule ist Pflicht, und Demonstrationen können auch am Wochenende stattfinden. Wer die Schule schwänzt, lernt vor allem, wann ihm Regeln passen und wann nicht. Außerdem: Wer wirklich etwas ändern will, sollte Naturwissenschaften lernen, später Ingenieur werden und Lösungen entwickeln — statt vor dem Bundestag Plakate hochzuhalten.',
+      'Die Gerichte haben sich bereits mehrfach mit Schulstreiks befasst: Sie sind formal nicht erlaubt, aber Schulen gehen unterschiedlich mit Verstößen um. Manche schreiben unentschuldigte Fehlstunden ein, andere drücken ein Auge zu. Wo liegt die richtige Grenze?'
+    ],
+    sides: [
+      { id: 'pro', label: 'Position A', text: 'Schulstreiks für das Klima sind richtig und wichtig.' },
+      { id: 'contra', label: 'Position B', text: 'Demonstrationen sollten in der Freizeit stattfinden, nicht in der Schulzeit.' }
+    ]
+  }
+];
+
+// ============================================================
+// ESSAY STRUCTURES BY GRADE
+// Each step: id, layer (which hamburger layer), title, subtitle, coaching{what, why, example, starters[]}
+// ============================================================
+const STRUCTURES = {
+  6: [
+    {
+      id: 'aufhaenger',
+      layer: 'bun-top',
+      layerName: '🍞 Oberes Brötchen',
+      title: 'Der Aufhänger',
+      subtitle: 'Der erste Satz, der zeigt, worum es geht.',
+      coaching: {
+        what: 'Schreib einen Satz, der das Thema einführt. Wovon handelt der Artikel? Sag das ganz einfach.',
+        why: 'Der Leser weiß sofort, worum es geht. Wie eine Überschrift, aber als Satz.',
+        example: 'In vielen Schulen gibt es heute ein Handyverbot. Doch ist das wirklich gut?',
+        starters: [
+          'In vielen Schulen…',
+          'Heute gibt es eine Diskussion über…',
+          'Immer öfter wird darüber gestritten, ob…',
+          'Viele Menschen fragen sich…'
+        ]
+      }
+    },
+    {
+      id: 'these',
+      layer: 'bun-top',
+      layerName: '🍞 Oberes Brötchen',
+      title: 'Deine These (deine Meinung)',
+      subtitle: 'Sag in einem Satz klar, was du denkst.',
+      coaching: {
+        what: 'Schreib in EINEM Satz, was deine Meinung ist. Pro oder Contra? Klar und deutlich.',
+        why: 'Der Leser muss sofort wissen, auf welcher Seite du stehst. Sonst weiß er nicht, was deine Argumente beweisen sollen.',
+        example: 'Meiner Meinung nach sollten Handys in der Schule verboten sein.',
+        starters: [
+          'Meiner Meinung nach…',
+          'Ich finde, dass…',
+          'Ich bin der Meinung, dass…',
+          'Ich denke, dass…'
+        ]
+      }
+    },
+    {
+      id: 'arg1',
+      layer: 'lettuce',
+      layerName: '🥬 Salat',
+      title: 'Argument 1',
+      subtitle: 'Dein erster Grund.',
+      coaching: {
+        what: 'Nenn einen Grund, warum du das denkst. Schreib ihn in 1-2 Sätzen.',
+        why: 'Eine Meinung ohne Gründe ist keine Meinung — das ist nur Geschmack. Ein guter Grund überzeugt!',
+        example: 'Erstens lenken Handys vom Lernen ab. Wenn man heimlich auf TikTok schaut, kann man nicht aufpassen.',
+        starters: [
+          'Erstens…',
+          'Ein wichtiger Grund ist…',
+          'Zum einen…',
+          'Außerdem…'
+        ]
+      }
+    },
+    {
+      id: 'arg2',
+      layer: 'tomato',
+      layerName: '🍅 Tomate',
+      title: 'Argument 2',
+      subtitle: 'Dein zweiter Grund.',
+      coaching: {
+        what: 'Noch ein Grund — etwas anderes als beim ersten Argument!',
+        why: 'Mit zwei Argumenten ist deine Meinung doppelt so überzeugend.',
+        example: 'Zweitens werden manche Schüler per Handy gemobbt. Ohne Handy gibt es das in der Schule nicht.',
+        starters: [
+          'Zweitens…',
+          'Ein weiterer Grund ist…',
+          'Zum anderen…',
+          'Hinzu kommt, dass…'
+        ]
+      }
+    },
+    {
+      id: 'arg3',
+      layer: 'cheese',
+      layerName: '🧀 Käse',
+      title: 'Argument 3',
+      subtitle: 'Dein dritter Grund (oder ein Beispiel).',
+      coaching: {
+        what: 'Noch ein Argument — oder ein gutes Beispiel, das deine Meinung stützt.',
+        why: 'Drei Argumente machen deinen Aufsatz stark. Beispiele sind besonders überzeugend!',
+        example: 'Drittens habe ich gesehen, dass meine Klasse in der Pause viel mehr miteinander redet, seit die Handys weg sind.',
+        starters: [
+          'Drittens…',
+          'Ein gutes Beispiel ist…',
+          'Ich kenne das aus eigener Erfahrung:…',
+          'Auch in unserer Klasse…'
+        ]
+      }
+    },
+    {
+      id: 'schluss',
+      layer: 'bun-bot',
+      layerName: '🍞 Unteres Brötchen',
+      title: 'Der Schluss',
+      subtitle: 'Fasse deine Meinung am Ende noch einmal zusammen.',
+      coaching: {
+        what: 'Sag noch einmal in 1-2 Sätzen, was du denkst — aber mit anderen Worten als am Anfang!',
+        why: 'Der Leser soll am Ende noch einmal klar sehen, was deine Meinung ist. Wie ein letzter Punkt nach einem guten Argument.',
+        example: 'Aus all diesen Gründen finde ich, dass Handys in der Schule nichts zu suchen haben.',
+        starters: [
+          'Aus all diesen Gründen…',
+          'Zusammenfassend kann man sagen…',
+          'Deshalb bin ich überzeugt, dass…',
+          'Alles in allem finde ich…'
+        ]
+      }
+    }
+  ],
+
+  7: [
+    {
+      id: 'aufhaenger',
+      layer: 'bun-top',
+      layerName: '🍞 Oberes Brötchen',
+      title: 'Der Aufhänger',
+      subtitle: 'Ein interessanter Einstieg ins Thema.',
+      coaching: {
+        what: 'Beginn mit etwas, das den Leser packt: einer Frage, einer Beobachtung oder einer Zahl aus dem Artikel.',
+        why: 'Ein guter erster Satz macht neugierig. Niemand will einen Aufsatz lesen, der mit „In diesem Aufsatz geht es um…" beginnt.',
+        example: 'Über 30 Millionen Menschen besuchen jedes Jahr einen Zoo in Deutschland. Doch ist es wirklich richtig, Tiere einzusperren — nur damit wir sie anschauen können?',
+        starters: [
+          'Stell dir vor, …',
+          'Über X Menschen…',
+          'Hast du dich schon einmal gefragt, ob…',
+          'In den letzten Jahren ist eine Diskussion entstanden über…'
+        ]
+      }
+    },
+    {
+      id: 'thema',
+      layer: 'bun-top',
+      layerName: '🍞 Oberes Brötchen',
+      title: 'Themensatz / Worum geht es?',
+      subtitle: 'Ein Satz, der die Streitfrage klar nennt.',
+      coaching: {
+        what: 'Erkläre kurz, worüber gestritten wird. Worüber genau willst du eine Meinung haben?',
+        why: 'Bevor du deine Meinung sagst, muss klar sein, worum es überhaupt geht. Sonst hängt deine These in der Luft.',
+        example: 'Manche Menschen finden Zoos heute nicht mehr zeitgemäß, andere sehen sie als wichtige Schutzeinrichtung.',
+        starters: [
+          'Manche Menschen finden…',
+          'Es gibt zwei Meinungen:…',
+          'Während die einen sagen, … finden andere, …',
+          'Die Frage ist umstritten:…'
+        ]
+      }
+    },
+    {
+      id: 'these',
+      layer: 'bun-top',
+      layerName: '🍞 Oberes Brötchen',
+      title: 'Deine These',
+      subtitle: 'Deine klare Position in einem Satz.',
+      coaching: {
+        what: 'Sag in einem präzisen Satz, was du denkst. Vermeide schwache Wörter wie „eher", „vielleicht".',
+        why: 'Eine starke These ist die wichtigste Zutat deines Aufsatzes. Sie zeigt: Ich habe nachgedacht — und das ist meine Position.',
+        example: 'Meiner Ansicht nach sollten Zoos in ihrer heutigen Form abgeschafft werden, weil sie den Tieren keinen artgerechten Lebensraum bieten.',
+        starters: [
+          'Meiner Ansicht nach…',
+          'Ich vertrete die Meinung, dass…',
+          'Ich bin überzeugt, dass…',
+          'Aus meiner Sicht…'
+        ]
+      }
+    },
+    {
+      id: 'topic1',
+      layer: 'lettuce',
+      layerName: '🥬 Salat',
+      title: 'Argument 1: Topic Sentence',
+      subtitle: 'Ein Satz, der das Argument ankündigt.',
+      coaching: {
+        what: 'Sag in einem Satz, was dein erstes Argument ist. Noch keine Erklärung — die kommt gleich!',
+        why: 'Ein Topic Sentence sagt dem Leser sofort: „Hier kommt jetzt mein erster Punkt." Das macht den Aufsatz übersichtlich.',
+        example: 'Ein erster wichtiger Grund ist, dass Tiere in Zoogehegen oft Verhaltensstörungen entwickeln.',
+        starters: [
+          'Ein erster wichtiger Grund ist, dass…',
+          'Zunächst lässt sich feststellen, dass…',
+          'Ein zentraler Punkt ist, dass…',
+          'Erstens ist zu bedenken, dass…'
+        ]
+      }
+    },
+    {
+      id: 'expl1',
+      layer: 'lettuce',
+      layerName: '🥬 Salat',
+      title: 'Argument 1: Erklärung & Beispiel',
+      subtitle: 'Erkläre dein Argument und nenne ein Beispiel.',
+      coaching: {
+        what: 'Warum stimmt das? Erkläre es in 1-2 Sätzen und nimm ein Beispiel oder einen Beleg aus dem Artikel.',
+        why: 'Ein Argument ohne Erklärung überzeugt niemanden. Erst wenn du zeigst, woher du es hast oder warum es stimmt, wird es stark.',
+        example: 'Wie der Artikel zeigt, hat ein Eisbär in der Natur 1.000 Kilometer Lebensraum am Tag — im Zoo nur 200 Quadratmeter. Manche Tiere laufen deshalb stundenlang im Kreis.',
+        starters: [
+          'Wie der Artikel zeigt,…',
+          'Ein Beispiel dafür ist,…',
+          'Das sieht man daran, dass…',
+          'Im Artikel steht, dass…'
+        ]
+      }
+    },
+    {
+      id: 'topic2',
+      layer: 'tomato',
+      layerName: '🍅 Tomate',
+      title: 'Argument 2: Topic Sentence',
+      subtitle: 'Dein zweites Argument — mit Übergang!',
+      coaching: {
+        what: 'Beginne mit einem Übergangswort und nenne dein zweites Argument.',
+        why: 'Ein Übergangswort verbindet die Argumente. Sonst klingt der Aufsatz wie eine Liste, nicht wie ein Text.',
+        example: 'Hinzu kommt, dass moderne Tierreservate eine bessere Alternative zu Zoos darstellen.',
+        starters: [
+          'Hinzu kommt, dass…',
+          'Darüber hinaus…',
+          'Ein weiterer wichtiger Punkt ist,…',
+          'Außerdem ist zu bedenken, dass…'
+        ]
+      }
+    },
+    {
+      id: 'expl2',
+      layer: 'tomato',
+      layerName: '🍅 Tomate',
+      title: 'Argument 2: Erklärung & Beispiel',
+      subtitle: 'Erkläre und belege dein zweites Argument.',
+      coaching: {
+        what: 'Wieder: Warum stimmt dein Argument? Beispiel oder Beleg aus dem Artikel.',
+        why: 'Auch das zweite Argument braucht Beweise. Sonst denkt der Leser: „Das stimmt vielleicht — vielleicht aber auch nicht."',
+        example: 'In Schutzgebieten leben Tiere fast wie in Freiheit, ohne ständig beobachtet zu werden. Das wäre wirklich Tierschutz.',
+        starters: [
+          'In der Praxis sieht das so aus:…',
+          'Ein konkretes Beispiel ist…',
+          'Der Artikel macht deutlich:…',
+          'Das zeigt sich auch daran, dass…'
+        ]
+      }
+    },
+    {
+      id: 'arg3',
+      layer: 'cheese',
+      layerName: '🧀 Käse',
+      title: 'Argument 3: Persönlicher Bezug',
+      subtitle: 'Was bedeutet das für DICH oder für uns alle?',
+      coaching: {
+        what: 'Verbinde das Thema mit deinem Leben oder deiner Erfahrung. Hast du selbst etwas erlebt? Eine eigene Beobachtung?',
+        why: 'Persönliche Beispiele machen Aufsätze lebendig. Der Leser merkt: Hier hat jemand wirklich nachgedacht.',
+        example: 'Ich war letztes Jahr im Tierpark Hagenbeck und habe einen Tiger gesehen, der immer wieder im Kreis lief. Ich konnte ihn nicht mehr ansehen.',
+        starters: [
+          'Ich selbst habe erlebt, dass…',
+          'In meiner Familie…',
+          'Bei uns in der Klasse…',
+          'Wenn ich daran denke,…'
+        ]
+      }
+    },
+    {
+      id: 'schluss-zus',
+      layer: 'bun-bot',
+      layerName: '🍞 Unteres Brötchen',
+      title: 'Schluss: Zusammenfassung',
+      subtitle: 'Fasse deine wichtigsten Argumente nochmal zusammen.',
+      coaching: {
+        what: 'Erinnere den Leser kurz an deine Hauptpunkte — aber wiederhole sie nicht wörtlich.',
+        why: 'Der Leser hat vielleicht den Anfang vergessen. Eine Zusammenfassung am Ende macht deine Position noch einmal stark.',
+        example: 'Insgesamt zeigen die Argumente: Zoos sind heute eher Belastung als Hilfe für die Tiere — Reservate sind die bessere Lösung.',
+        starters: [
+          'Insgesamt zeigen die Argumente, dass…',
+          'Wenn man alles zusammen betrachtet,…',
+          'Die Argumente machen deutlich:…',
+          'Aus alldem ergibt sich:…'
+        ]
+      }
+    },
+    {
+      id: 'schluss-app',
+      layer: 'bun-bot',
+      layerName: '🍞 Unteres Brötchen',
+      title: 'Schluss: Appell oder Ausblick',
+      subtitle: 'Ein starker letzter Satz.',
+      coaching: {
+        what: 'Eine Forderung („Wir sollten…"), ein Wunsch („Es bleibt zu hoffen…") oder eine Frage an den Leser.',
+        why: 'Der letzte Satz bleibt im Kopf. Er sollte stark sein — wie der letzte Bissen eines guten Burgers.',
+        example: 'Vielleicht ist es Zeit, dass wir als Gesellschaft Tiere nicht mehr als Unterhaltung betrachten.',
+        starters: [
+          'Vielleicht ist es Zeit, dass…',
+          'Wir alle sollten…',
+          'Es bleibt zu hoffen, dass…',
+          'Letztendlich liegt es an uns,…'
+        ]
+      }
+    }
+  ],
+
+  8: [
+    {
+      id: 'aufhaenger',
+      layer: 'bun-top',
+      layerName: '🍞 Oberes Brötchen',
+      title: 'Der Aufhänger',
+      subtitle: 'Ein packender Einstieg mit Anlass oder Zahl.',
+      coaching: {
+        what: 'Steig mit einem aktuellen Anlass, einer überraschenden Zahl oder einem Zitat ein. Der Aufhänger soll zeigen: Das Thema ist wichtig — gerade jetzt.',
+        why: 'Klasse-8-Aufsätze beginnen nicht mehr wie Inhaltsangaben, sondern wie kleine Essays. Ein guter Einstieg signalisiert: Hier denkt jemand mit.',
+        example: 'In Australien dürfen Kinder unter 16 seit Anfang 2025 keine sozialen Medien mehr nutzen. Eine Maßnahme, die auch in Deutschland zunehmend diskutiert wird.',
+        starters: [
+          'In Australien / Deutschland / Europa…',
+          'Eine aktuelle Studie zeigt, dass…',
+          'Die Zahl überrascht:…',
+          'Seit dem Jahr X wird darüber debattiert,…'
+        ]
+      }
+    },
+    {
+      id: 'leitfrage',
+      layer: 'bun-top',
+      layerName: '🍞 Oberes Brötchen',
+      title: 'Leitfrage / Themenexposition',
+      subtitle: 'Du formulierst die Streitfrage selbst.',
+      coaching: {
+        what: 'Formuliere die zentrale Frage, um die es im Aufsatz geht. Sie soll klar und konkret sein.',
+        why: 'Eine präzise Frage macht den Aufsatz fokussiert. Vage Fragen führen zu vagen Aufsätzen.',
+        example: 'Damit stellt sich die Frage: Schützt ein solches Verbot junge Menschen wirksam, oder bevormundet es sie unangemessen?',
+        starters: [
+          'Damit stellt sich die Frage,…',
+          'Es lohnt sich zu fragen, ob…',
+          'Die Diskussion wirft die zentrale Frage auf:…',
+          'Doch ist…'
+        ]
+      }
+    },
+    {
+      id: 'these',
+      layer: 'bun-top',
+      layerName: '🍞 Oberes Brötchen',
+      title: 'Deine These',
+      subtitle: 'Klar, präzise, im formalen Register.',
+      coaching: {
+        what: 'Formuliere deine Position in einem starken, eindeutigen Satz. Vermeide „Ich finde" — schreib formaler.',
+        why: 'In Klasse 8 wird ein höheres Register erwartet. Eine starke These ist konkret, eindeutig — und jemand könnte ihr widersprechen.',
+        example: 'Meines Erachtens ist ein pauschales Verbot der falsche Weg; sinnvoller wäre eine strenge Regulierung der Plattformen selbst.',
+        starters: [
+          'Meines Erachtens…',
+          'Im Folgenden möchte ich darlegen, weshalb…',
+          'Ich vertrete die Position, dass…',
+          'Bei genauerer Betrachtung sprechen die gewichtigeren Argumente dafür, dass…'
+        ]
+      }
+    },
+    {
+      id: 'beh1',
+      layer: 'lettuce',
+      layerName: '🥬 Salat — Argument 1',
+      title: 'Behauptung (Argument 1)',
+      subtitle: 'Dein STÄRKSTES Argument — als Topic Sentence.',
+      coaching: {
+        what: 'Nenne dein stärkstes Argument in einem klaren Satz. Noch keine Erklärung.',
+        why: 'In Klasse 8 lernst du das Schema BBBF: Behauptung, Begründung, Beleg, Folgerung. Die Behauptung ist der Anfang — der Themensatz dieses Absatzes.',
+        example: 'Ein zentraler Aspekt ist, dass die Algorithmen sozialer Medien gezielt auf Suchtverhalten ausgelegt sind.',
+        starters: [
+          'Ein zentraler Aspekt ist, dass…',
+          'Das gewichtigste Argument lautet:…',
+          'Zunächst ist anzuführen, dass…',
+          'In erster Linie ist zu bedenken, dass…'
+        ]
+      }
+    },
+    {
+      id: 'beg1',
+      layer: 'lettuce',
+      layerName: '🥬 Salat — Argument 1',
+      title: 'Begründung (Argument 1)',
+      subtitle: 'Warum stimmt deine Behauptung?',
+      coaching: {
+        what: 'Erkläre logisch, WARUM deine Behauptung richtig ist. Verwende Konjunktionen wie „weil", „da", „denn".',
+        why: 'Die Begründung ist der Kern. Sie zeigt: Ich habe nicht nur eine Meinung, ich kann sie auch vernünftig begründen.',
+        example: 'Funktionen wie unendliches Scrollen und personalisierte Empfehlungen sprechen das noch unreife Belohnungssystem von Jugendlichen gezielt an, sodass eine selbstbestimmte Nutzung kaum möglich ist.',
+        starters: [
+          'Dies liegt daran, dass…',
+          'Das hängt damit zusammen, dass…',
+          'Der Grund dafür ist,…',
+          'Funktionen wie / Mechanismen wie…'
+        ]
+      }
+    },
+    {
+      id: 'bel1',
+      layer: 'lettuce',
+      layerName: '🥬 Salat — Argument 1',
+      title: 'Beleg (Argument 1)',
+      subtitle: 'Beweis aus dem Artikel.',
+      coaching: {
+        what: 'Nenne einen Beleg aus dem Artikel, der deine Begründung stützt: eine Zahl, eine Studie, ein Beispiel. Mit Quellenhinweis.',
+        why: 'Ohne Beleg ist eine Begründung nur eine Behauptung. Ein Beleg aus dem Artikel macht deinen Punkt stark.',
+        example: 'Wie der Artikel zeigt, hat sich die Rate diagnostizierter Angststörungen bei Mädchen zwischen 13 und 17 Jahren in Deutschland zwischen 2010 und 2023 mehr als verdoppelt.',
+        starters: [
+          'Wie der Artikel zeigt,…',
+          'Laut der vorliegenden Quelle…',
+          'Der Artikel verweist darauf, dass…',
+          'Belegt wird dies durch…'
+        ]
+      }
+    },
+    {
+      id: 'fol1',
+      layer: 'lettuce',
+      layerName: '🥬 Salat — Argument 1',
+      title: 'Folgerung (Argument 1)',
+      subtitle: 'Was folgt daraus für deine These?',
+      coaching: {
+        what: 'Schließe den Absatz mit einem Satz ab, der zeigt, was aus diesem Argument für deine These folgt.',
+        why: 'Die Folgerung verknüpft das Argument mit deiner Position. Ohne sie hängt der Absatz in der Luft.',
+        example: 'Daraus folgt, dass nicht die Nutzung selbst, sondern ihre algorithmische Steuerung das eigentliche Problem ist — und dort sollte auch reguliert werden.',
+        starters: [
+          'Daraus folgt, dass…',
+          'Dies macht deutlich, dass…',
+          'Damit zeigt sich:…',
+          'Folglich ist…'
+        ]
+      }
+    },
+    {
+      id: 'beh2',
+      layer: 'tomato',
+      layerName: '🍅 Tomate — Argument 2',
+      title: 'Behauptung (Argument 2)',
+      subtitle: 'Dein zweites Argument, mit Übergang.',
+      coaching: {
+        what: 'Schließe an Argument 1 an und nenne dein zweites Argument als klare Behauptung.',
+        why: 'Übergänge zeigen: Hier kommt etwas Neues, aber es passt zum Vorigen. Ohne Übergänge wirkt der Aufsatz zerrissen.',
+        example: 'Hinzu kommt, dass ein pauschales Verbot Jugendliche von wichtigen Räumen der Information und politischen Beteiligung abschneiden würde.',
+        starters: [
+          'Hinzu kommt, dass…',
+          'Darüber hinaus ist zu bedenken,…',
+          'Ein weiterer wesentlicher Punkt ist,…',
+          'Nicht zu unterschätzen ist außerdem,…'
+        ]
+      }
+    },
+    {
+      id: 'beg2',
+      layer: 'tomato',
+      layerName: '🍅 Tomate — Argument 2',
+      title: 'Begründung & Beleg (Argument 2)',
+      subtitle: 'Begründung mit eingebautem Beleg.',
+      coaching: {
+        what: 'Erkläre, warum das stimmt — und stütze deine Erklärung gleich mit einem Beleg aus dem Artikel.',
+        why: 'In Klasse 8 darfst du Begründung und Beleg in einem Absatz verbinden, wenn es flüssiger klingt. Hauptsache, beides ist klar erkennbar.',
+        example: 'Soziale Medien sind heute Räume des politischen Austauschs und der kulturellen Selbstentfaltung. Bundesjugendministerin Lisa Paus warnte daher vor einer „digitalen Spaltung der Generationen", die durch ein Verbot drohe.',
+        starters: [
+          'Konkret bedeutet das,…',
+          'In der Praxis…',
+          'Wie auch im Artikel deutlich wird,…',
+          'Ein anschauliches Beispiel hierfür liefert der Artikel:…'
+        ]
+      }
+    },
+    {
+      id: 'fol2',
+      layer: 'tomato',
+      layerName: '🍅 Tomate — Argument 2',
+      title: 'Folgerung (Argument 2)',
+      subtitle: 'Was folgt aus diesem Argument?',
+      coaching: {
+        what: 'Verbinde Argument 2 mit deiner These — was bedeutet es für deine Position?',
+        why: 'Auch dieser Absatz braucht einen klaren Abschluss, der zeigt, wie das Argument deine These stärkt.',
+        example: 'Folglich wäre ein Verbot nicht nur unverhältnismäßig, sondern würde auch wichtige Beteiligungschancen blockieren.',
+        starters: [
+          'Folglich…',
+          'Daraus ergibt sich, dass…',
+          'Damit wird deutlich,…',
+          'Dies zeigt:…'
+        ]
+      }
+    },
+    {
+      id: 'anti',
+      layer: 'cheese',
+      layerName: '🧀 Käse — Antithese',
+      title: 'Antithese (Gegenargument)',
+      subtitle: 'Nimm die Gegenseite ernst.',
+      coaching: {
+        what: 'Stelle ein starkes Gegenargument fair dar. „Kritiker sagen…" oder „Manche argumentieren…"',
+        why: 'Wenn du die Gegenseite ernst nimmst, wirkt deine Position viel stärker. Du zeigst: Ich habe alle Seiten betrachtet.',
+        example: 'Kritiker eines Verbots wenden ein, dass Eltern und Schulen die Verantwortung tragen sollten — nicht der Staat. Es gehe um Erziehung, nicht um Bevormundung.',
+        starters: [
+          'Kritiker wenden ein, dass…',
+          'Manche argumentieren hingegen,…',
+          'Es ließe sich einwenden, dass…',
+          'Auf den ersten Blick scheint plausibel,…'
+        ]
+      }
+    },
+    {
+      id: 'entk',
+      layer: 'cheese',
+      layerName: '🧀 Käse — Antithese',
+      title: 'Entkräftung (deine Antwort)',
+      subtitle: 'Widerlege das Gegenargument differenziert.',
+      coaching: {
+        what: 'Antworte auf das Gegenargument: Wo greift es zu kurz? Was übersieht es? Sei höflich, aber bestimmt.',
+        why: 'Die Entkräftung zeigt: Ich kenne die Gegenseite — und ich kann trotzdem überzeugend antworten. Das ist Klasse-8-Niveau.',
+        example: 'Doch dieser Einwand greift zu kurz: Eltern können bei manipulativen Algorithmen kaum gegensteuern. Hier braucht es klare Regeln — nicht nur erzieherische Appelle.',
+        starters: [
+          'Doch dieser Einwand greift zu kurz, denn…',
+          'Diese Sichtweise verkennt jedoch,…',
+          'Bei genauerer Betrachtung zeigt sich, dass…',
+          'Dem ist entgegenzuhalten, dass…'
+        ]
+      }
+    },
+    {
+      id: 'rest',
+      layer: 'bun-bot',
+      layerName: '🍞 Unteres Brötchen',
+      title: 'Schluss: Restatement',
+      subtitle: 'Wiederhole deine These — mit anderen Worten.',
+      coaching: {
+        what: 'Greif deine These noch einmal auf, aber NICHT wörtlich. Formuliere sie um.',
+        why: 'Wörtliche Wiederholung ist langweilig. Eine umformulierte These wirkt durchdacht und zeigt: Ich habe meine Argumente entwickelt.',
+        example: 'Zusammenfassend zeigt sich: Ein pauschales Verbot adressiert nicht das eigentliche Problem — die manipulativen Mechanismen der Plattformen.',
+        starters: [
+          'Zusammenfassend zeigt sich,…',
+          'Die genannten Argumente machen deutlich,…',
+          'In der Gesamtschau überwiegen die Argumente, die…',
+          'Aus allen genannten Gründen…'
+        ]
+      }
+    },
+    {
+      id: 'aus',
+      layer: 'bun-bot',
+      layerName: '🍞 Unteres Brötchen',
+      title: 'Schluss: Ausblick / Appell',
+      subtitle: 'Ein starker, gesellschaftlicher Schlusssatz.',
+      coaching: {
+        what: 'Eine Forderung an Politik / Gesellschaft, ein Wunsch, eine offene Frage. Etwas, das im Kopf bleibt.',
+        why: 'Der letzte Satz bleibt am stärksten in Erinnerung. Er sollte den Aufsatz nicht nur abschließen, sondern weiterdenken.',
+        example: 'Die Politik ist daher gefordert, statt junge Menschen einzuschränken, die Plattformen zur Verantwortung zu ziehen.',
+        starters: [
+          'Die Politik ist daher gefordert,…',
+          'Es bleibt zu hoffen, dass…',
+          'Letztlich liegt es an uns allen,…',
+          'Zu fragen bleibt allerdings,…'
+        ]
+      }
+    }
+  ]
+};
+
+// ============================================================
+// BADGES
+// ============================================================
+const BADGES = [
+  { id: 'first_field', icon: '✏️', name: 'Erster Satz', desc: 'Dein erstes Feld ausgefüllt' },
+  { id: 'half_done', icon: '🌗', name: 'Halbzeit', desc: '50 % deines Aufsatzes geschafft' },
+  { id: 'full_essay', icon: '🍔', name: 'Erster Aufsatz', desc: 'Einen Aufsatz fertiggestellt' },
+  { id: 'two_essays', icon: '🍔🍔', name: 'Doppel-Burger', desc: 'Zwei Aufsätze geschrieben' },
+  { id: 'three_essays', icon: '🏅', name: 'Drei Aufsätze', desc: 'Drei Aufsätze fertig' },
+  { id: 'all_starters', icon: '🚀', name: 'Starthilfe-Profi', desc: 'Satzanfänge benutzt' },
+  { id: 'streak_3', icon: '🔥', name: 'Drei-Tages-Feuer', desc: '3 Tage in Folge geübt' },
+  { id: 'streak_7', icon: '⚡', name: 'Wochenheld', desc: '7 Tage in Folge geübt' },
+  { id: 'g6_master', icon: '6️⃣', name: 'Klasse-6-Meister', desc: 'Aufsatz in Klasse 6 fertig' },
+  { id: 'g7_master', icon: '7️⃣', name: 'Klasse-7-Meister', desc: 'Aufsatz in Klasse 7 fertig' },
+  { id: 'g8_master', icon: '8️⃣', name: 'Klasse-8-Meister', desc: 'Aufsatz in Klasse 8 fertig' },
+  { id: 'before_deadline', icon: '🎯', name: 'Pünktlich', desc: 'Aufsatz vor dem 13. Mai fertig' }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+const STORAGE_KEY = 'aufsatz_helfer_v1';
+const DEADLINE = new Date('2026-05-13');
+
+let state = {
+  grade: null,                    // 6, 7, 8
+  articleId: null,                // selected article
+  position: null,                 // 'pro' | 'contra'
+  drafts: {},                     // { stepId: 'text' } — current essay
+  studentName: '',
+  points: 0,
+  essaysCompleted: 0,
+  fieldsCompleted: 0,
+  startersUsed: 0,
+  badges: [],
+  streak: 0,
+  lastActiveDate: null,
+  tutorialSeen: false
+};
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) state = { ...state, ...JSON.parse(saved) };
+  } catch(e) { console.warn('Load failed', e); }
+  updateStreak();
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+  catch(e) { console.warn('Save failed', e); }
+}
+
+function updateStreak() {
+  const today = new Date().toDateString();
+  if (state.lastActiveDate !== today) {
+    if (state.lastActiveDate) {
+      const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+      state.streak = state.lastActiveDate === yesterday.toDateString() ? (state.streak || 0) + 1 : 1;
+    } else state.streak = 1;
+    state.lastActiveDate = today;
+    saveState();
+  }
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+function showToast(msg, icon = '🍔') {
+  const t = document.getElementById('toast');
+  t.querySelector('.ico').textContent = icon;
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function showSaveIndicator() {
+  const ind = document.getElementById('saveIndicator');
+  ind.classList.add('show');
+  clearTimeout(showSaveIndicator._t);
+  showSaveIndicator._t = setTimeout(() => ind.classList.remove('show'), 1400);
+}
+
+function awardPoints(n, msg) {
+  state.points = (state.points || 0) + n;
+  document.getElementById('hdrPoints').textContent = state.points;
+  if (msg) showToast(msg, '✨');
+  if ((state.streak || 0) >= 3) grantBadge('streak_3');
+  if ((state.streak || 0) >= 7) grantBadge('streak_7');
+  saveState();
+}
+
+function grantBadge(id) {
+  if (state.badges.includes(id)) return;
+  state.badges.push(id);
+  const b = BADGES.find(x => x.id === id);
+  if (b) showToast(`${b.name} freigeschaltet!`, b.icon);
+  saveState();
+}
+
+function getArticle() {
+  return ARTICLES.find(a => a.id === state.articleId);
+}
+
+function getStructure() {
+  return STRUCTURES[state.grade] || [];
+}
+
+// ============================================================
+// TAB NAV
+// ============================================================
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.panel).classList.add('active');
+    if (tab.dataset.panel === 'article') renderArticlePicker();
+    if (tab.dataset.panel === 'writing') renderWriting();
+    if (tab.dataset.panel === 'finished') renderFinished();
+    if (tab.dataset.panel === 'dashboard') renderDashboard();
+    window.scrollTo(0, 0);
+  });
+});
+
+// ============================================================
+// 1. WELCOME — grade picker
+// ============================================================
+document.querySelectorAll('.grade-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const newGrade = parseInt(card.dataset.grade);
+    if (state.grade && state.grade !== newGrade && Object.keys(state.drafts).length > 0) {
+      if (!confirm(`Du hast schon mit Klasse ${state.grade} angefangen. Wenn du jetzt Klasse ${newGrade} wählst, werden deine Texte gelöscht. Wirklich wechseln?`)) {
+        return;
+      }
+      state.drafts = {};
+      state.articleId = null;
+      state.position = null;
+    }
+    state.grade = newGrade;
+    document.querySelectorAll('.grade-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    document.getElementById('startBtn').disabled = false;
+    document.getElementById('startBtn').style.opacity = '1';
+    saveState();
+  });
+});
+
+document.getElementById('startBtn').addEventListener('click', () => {
+  document.querySelector('.tab[data-panel="article"]').click();
+});
+
+// ============================================================
+// 2. ARTICLE PICKER + READER
+// ============================================================
+function renderArticlePicker() {
+  if (!state.grade) {
+    document.getElementById('articlePicker').innerHTML = '<div class="callout red"><strong>⚠ Wähle erst eine Klassenstufe</strong> auf der Startseite.</div>';
+    document.getElementById('articleReaderArea').style.display = 'none';
+    return;
+  }
+  const picker = document.getElementById('articlePicker');
+  picker.innerHTML = '';
+  // show articles for this grade and below — i.e. articles whose gradeMin <= grade
+  const eligible = ARTICLES.filter(a => a.gradeMin <= state.grade);
+  eligible.forEach(a => {
+    const card = document.createElement('div');
+    card.className = 'article-card' + (state.articleId === a.id ? ' selected' : '');
+    card.dataset.id = a.id;
+    card.innerHTML = `
+      <div class="topic-tag">${escapeHTML(a.topic)}</div>
+      <h3>${escapeHTML(a.headline)}</h3>
+      <p class="question">${escapeHTML(a.question)}</p>
+    `;
+    card.addEventListener('click', () => selectArticle(a.id));
+    picker.appendChild(card);
+  });
+  if (state.articleId) renderArticleReader();
+}
+
+function selectArticle(id) {
+  if (state.articleId && state.articleId !== id && Object.keys(state.drafts).length > 0) {
+    if (!confirm('Wenn du jetzt einen anderen Artikel wählst, werden deine schon geschriebenen Sätze gelöscht. Wirklich wechseln?')) {
+      return;
+    }
+    state.drafts = {};
+    state.position = null;
+  }
+  state.articleId = id;
+  saveState();
+  renderArticlePicker();
+  renderArticleReader();
+  document.getElementById('articleReaderArea').style.display = 'block';
+  setTimeout(() => {
+    document.getElementById('articleReader').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+function renderArticleReader() {
+  const a = getArticle();
+  if (!a) return;
+  document.getElementById('articleReaderArea').style.display = 'block';
+  const reader = document.getElementById('articleReader');
+  reader.innerHTML = `
+    <div class="reader-meta">${escapeHTML(a.topic)} · zum Lesen</div>
+    <h3>${escapeHTML(a.headline)}</h3>
+    <div class="reader-question">${escapeHTML(a.question)}</div>
+    ${a.paragraphs.map(p => `<p>${escapeHTML(p)}</p>`).join('')}
+  `;
+  // Render position buttons
+  const posRow = document.getElementById('positionRow');
+  posRow.innerHTML = '';
+  a.sides.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'position-btn' + (state.position === s.id ? ' selected' : '');
+    btn.dataset.id = s.id;
+    btn.innerHTML = `<span class="pos-label">${escapeHTML(s.label)}</span>${escapeHTML(s.text)}`;
+    btn.addEventListener('click', () => {
+      state.position = s.id;
+      saveState();
+      renderArticleReader();
+      document.getElementById('toWritingBtn').disabled = false;
+      document.getElementById('toWritingBtn').style.opacity = '1';
+    });
+    posRow.appendChild(btn);
+  });
+  if (state.position) {
+    document.getElementById('toWritingBtn').disabled = false;
+    document.getElementById('toWritingBtn').style.opacity = '1';
+  } else {
+    document.getElementById('toWritingBtn').disabled = true;
+    document.getElementById('toWritingBtn').style.opacity = '0.5';
+  }
+}
+
+document.getElementById('toWritingBtn').addEventListener('click', () => {
+  document.querySelector('.tab[data-panel="writing"]').click();
+});
+
+// ============================================================
+// 3. WRITING WORKSHOP — the heart
+// ============================================================
+function renderWriting() {
+  if (!state.grade || !state.articleId || !state.position) {
+    document.getElementById('writingHeader').style.display = 'none';
+    document.getElementById('writingEmpty').style.display = 'block';
+    return;
+  }
+  document.getElementById('writingHeader').style.display = 'block';
+  document.getElementById('writingEmpty').style.display = 'none';
+
+  const a = getArticle();
+  const pos = a.sides.find(s => s.id === state.position);
+  document.getElementById('writingTopic').textContent = `${a.headline} (Klasse ${state.grade})`;
+  document.getElementById('writingPosition').textContent = pos.text;
+
+  const structure = getStructure();
+  const container = document.getElementById('stepsContainer');
+  container.innerHTML = '';
+
+  structure.forEach((step, idx) => {
+    const card = document.createElement('div');
+    card.className = 'step-card';
+    const value = state.drafts[step.id] || '';
+    if (value.trim().length >= 8) card.classList.add('complete');
+    card.dataset.stepId = step.id;
+
+    card.innerHTML = `
+      <div class="step-header">
+        <div class="step-num-circle"><span class="step-actual-num">${idx + 1}</span></div>
+        <div class="step-title-area">
+          <div class="step-title">${escapeHTML(step.title)}</div>
+          <div class="step-subtitle">${escapeHTML(step.subtitle)}</div>
+        </div>
+        <span class="step-layer-tag ${step.layer}">${escapeHTML(step.layerName)}</span>
+      </div>
+      <div class="step-body">
+        <div class="coaching">
+          <h4><span class="icon">📖</span>Was du tun sollst</h4>
+          <p>${escapeHTML(step.coaching.what)}</p>
+          <div class="why">💡 ${escapeHTML(step.coaching.why)}</div>
+          <div class="example-box">${escapeHTML(step.coaching.example)}</div>
+        </div>
+        <div class="writing-col">
+          <label>Dein Satz / deine Sätze:</label>
+          <textarea data-step="${step.id}" placeholder="Hier schreibst du…">${escapeHTML(value)}</textarea>
+          <div class="starter-chips" data-step-chips="${step.id}">
+            ${step.coaching.starters.map(s => `<button class="starter-chip" type="button">${escapeHTML(s)}</button>`).join('')}
+          </div>
+          <div class="write-meta">
+            <span class="wc">${value.trim().split(/\s+/).filter(Boolean).length} Wörter</span>
+            <span class="field-saved">✓ Gespeichert</span>
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  // attach handlers
+  container.querySelectorAll('textarea[data-step]').forEach(ta => {
+    ta.addEventListener('input', () => {
+      const stepId = ta.dataset.step;
+      const val = ta.value;
+      const wasEmpty = !state.drafts[stepId] || state.drafts[stepId].trim().length < 8;
+      const isFilled = val.trim().length >= 8;
+      state.drafts[stepId] = val;
+      const wc = val.trim().split(/\s+/).filter(Boolean).length;
+      const card = ta.closest('.step-card');
+      card.querySelector('.wc').textContent = `${wc} Wört${wc===1?'':'er'}`;
+      if (wc >= 5) card.querySelector('.wc').classList.add('good');
+      else card.querySelector('.wc').classList.remove('good');
+
+      if (wasEmpty && isFilled) {
+        card.classList.add('complete');
+        state.fieldsCompleted = (state.fieldsCompleted || 0) + 1;
+        if (state.fieldsCompleted === 1) grantBadge('first_field');
+        awardPoints(5);
+        // half done?
+        const total = getStructure().length;
+        const done = getStructure().filter(s => (state.drafts[s.id] || '').trim().length >= 8).length;
+        if (done >= total / 2 && !state.badges.includes('half_done')) grantBadge('half_done');
+        updateProgressBar();
+      } else if (!isFilled && !wasEmpty) {
+        card.classList.remove('complete');
+        updateProgressBar();
+      }
+
+      // saved indicator
+      clearTimeout(ta._saveT);
+      ta._saveT = setTimeout(() => {
+        saveState();
+        showSaveIndicator();
+        const fs = card.querySelector('.field-saved');
+        fs.classList.add('show');
+        setTimeout(() => fs.classList.remove('show'), 1200);
+      }, 600);
+    });
+  });
+
+  // starter chips
+  container.querySelectorAll('.starter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const stepId = chip.parentElement.dataset.stepChips;
+      const ta = container.querySelector(`textarea[data-step="${stepId}"]`);
+      const text = chip.textContent;
+      // insert at end with space
+      const cur = ta.value.trimEnd();
+      ta.value = (cur ? cur + ' ' : '') + text + ' ';
+      ta.focus();
+      ta.dispatchEvent(new Event('input'));
+      // count starter usage
+      state.startersUsed = (state.startersUsed || 0) + 1;
+      if (state.startersUsed >= 5) grantBadge('all_starters');
+      saveState();
+    });
+  });
+
+  updateProgressBar();
+  // Mark first incomplete step as active visually
+  const firstIncomplete = container.querySelector('.step-card:not(.complete)');
+  if (firstIncomplete) firstIncomplete.classList.add('active');
+}
+
+function updateProgressBar() {
+  const structure = getStructure();
+  if (!structure.length) return;
+  const done = structure.filter(s => (state.drafts[s.id] || '').trim().length >= 8).length;
+  const pct = Math.round((done / structure.length) * 100);
+  document.getElementById('hpFill').style.width = pct + '%';
+  document.getElementById('hpPct').textContent = pct + '%';
+}
+
+document.getElementById('finishBtn').addEventListener('click', () => {
+  const structure = getStructure();
+  const done = structure.filter(s => (state.drafts[s.id] || '').trim().length >= 8).length;
+  if (done < structure.length) {
+    if (!confirm(`Du hast erst ${done} von ${structure.length} Feldern ausgefüllt. Trotzdem zusammenfügen?`)) return;
+  }
+  // award
+  if (!state.badges.includes('full_essay') && done >= Math.ceil(structure.length * 0.8)) {
+    state.essaysCompleted = (state.essaysCompleted || 0) + 1;
+    grantBadge('full_essay');
+    if (state.essaysCompleted >= 2) grantBadge('two_essays');
+    if (state.essaysCompleted >= 3) grantBadge('three_essays');
+    if (state.grade === 6) grantBadge('g6_master');
+    if (state.grade === 7) grantBadge('g7_master');
+    if (state.grade === 8) grantBadge('g8_master');
+    // before deadline?
+    const now = new Date();
+    if (now < DEADLINE) grantBadge('before_deadline');
+    awardPoints(50, '+50 Aufsatz fertig!');
+  }
+  saveState();
+  document.querySelector('.tab[data-panel="finished"]').click();
+});
+
+// ============================================================
+// 4. FINISHED ESSAY
+// ============================================================
+function renderFinished() {
+  const structure = getStructure();
+  const filled = structure.filter(s => (state.drafts[s.id] || '').trim().length >= 8);
+  if (filled.length < 3 || !state.articleId) {
+    document.getElementById('finishedEmpty').style.display = 'block';
+    document.getElementById('finishedReady').style.display = 'none';
+    return;
+  }
+  document.getElementById('finishedEmpty').style.display = 'none';
+  document.getElementById('finishedReady').style.display = 'block';
+
+  const nameInput = document.getElementById('studentName');
+  nameInput.value = state.studentName || '';
+  nameInput.oninput = () => {
+    state.studentName = nameInput.value;
+    saveState();
+    renderPreviewCard();
+  };
+  renderPreviewCard();
+}
+
+function renderPreviewCard() {
+  const a = getArticle();
+  if (!a) return;
+  const card = document.getElementById('previewCard');
+  const structure = getStructure();
+  // Group steps into paragraphs based on layer transitions
+  const paragraphs = [];
+  let current = [];
+  let lastLayer = null;
+  structure.forEach(step => {
+    const text = (state.drafts[step.id] || '').trim();
+    if (!text) return;
+    // start a new paragraph when layer family changes (top-bun starts paragraph 1, lettuce -> 2, tomato -> 3, cheese -> 4, bot-bun -> last)
+    const layerFamily = step.layer.startsWith('bun-top') ? 'intro' : step.layer.startsWith('bun-bot') ? 'outro' : step.layer;
+    if (layerFamily !== lastLayer && current.length) {
+      paragraphs.push(current.join(' '));
+      current = [];
+    }
+    current.push(text);
+    lastLayer = layerFamily;
+  });
+  if (current.length) paragraphs.push(current.join(' '));
+
+  const today = new Date().toLocaleDateString('de-DE');
+  const name = state.studentName || '_______';
+  card.innerHTML = `
+    <h3>${escapeHTML(a.headline)}</h3>
+    ${paragraphs.map(p => `<p>${escapeHTML(p)}</p>`).join('')}
+    <div class="name-line">— ${escapeHTML(name)} · ${today}</div>
+    <div class="preview-meta">Hamburger-Methode · Klasse ${state.grade} · ${getEssayWordCount()} Wörter</div>
+  `;
+}
+
+function getEssayText() {
+  const a = getArticle();
+  if (!a) return '';
+  const structure = getStructure();
+  const paragraphs = [];
+  let current = [];
+  let lastLayer = null;
+  structure.forEach(step => {
+    const text = (state.drafts[step.id] || '').trim();
+    if (!text) return;
+    const layerFamily = step.layer.startsWith('bun-top') ? 'intro' : step.layer.startsWith('bun-bot') ? 'outro' : step.layer;
+    if (layerFamily !== lastLayer && current.length) {
+      paragraphs.push(current.join(' '));
+      current = [];
+    }
+    current.push(text);
+    lastLayer = layerFamily;
+  });
+  if (current.length) paragraphs.push(current.join(' '));
+  const today = new Date().toLocaleDateString('de-DE');
+  const name = state.studentName || '';
+  let header = `${a.headline}\n${'='.repeat(a.headline.length)}\n\n`;
+  if (name) header += `Von: ${name}\n`;
+  header += `Datum: ${today}\nKlasse: ${state.grade}\n\n`;
+  return header + paragraphs.join('\n\n');
+}
+
+function getEssayWordCount() {
+  const structure = getStructure();
+  let total = 0;
+  structure.forEach(s => {
+    total += (state.drafts[s.id] || '').trim().split(/\s+/).filter(Boolean).length;
+  });
+  return total;
+}
+
+document.getElementById('copyEssayBtn').addEventListener('click', () => {
+  navigator.clipboard.writeText(getEssayText()).then(() => {
+    showToast('Aufsatz kopiert! Jetzt auf Toddle einfügen.', '📋');
+  });
+});
+
+document.getElementById('downloadTxtBtn').addEventListener('click', () => {
+  const blob = new Blob([getEssayText()], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Aufsatz_Klasse${state.grade}_${new Date().toISOString().slice(0,10)}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Heruntergeladen!', '⬇');
+});
+
+document.getElementById('downloadDocBtn').addEventListener('click', () => {
+  const a = getArticle();
+  const structure = getStructure();
+  const paragraphs = [];
+  let current = [];
+  let lastLayer = null;
+  structure.forEach(step => {
+    const text = (state.drafts[step.id] || '').trim();
+    if (!text) return;
+    const layerFamily = step.layer.startsWith('bun-top') ? 'intro' : step.layer.startsWith('bun-bot') ? 'outro' : step.layer;
+    if (layerFamily !== lastLayer && current.length) {
+      paragraphs.push(current.join(' '));
+      current = [];
+    }
+    current.push(text);
+    lastLayer = layerFamily;
+  });
+  if (current.length) paragraphs.push(current.join(' '));
+
+  const today = new Date().toLocaleDateString('de-DE');
+  const name = state.studentName || '';
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHTML(a.headline)}</title>
+<style>body{font-family:Georgia,serif;font-size:12pt;line-height:1.65;max-width:680px;margin:40px auto;padding:0 30px;color:#111;}
+h1{font-size:18pt;text-align:center;font-style:italic;margin-bottom:6px;}
+.meta{text-align:center;font-size:10pt;color:#555;margin-bottom:24px;border-bottom:1px solid #ccc;padding-bottom:10px;}
+p{text-align:justify;text-indent:1.4em;margin-bottom:0.6em;}p:first-of-type{text-indent:0;}
+.name{text-align:right;font-style:italic;font-size:10pt;color:#444;margin-top:24px;}</style></head>
+<body><h1>${escapeHTML(a.headline)}</h1><div class="meta">Klasse ${state.grade} · ${escapeHTML(name)} · ${today}</div>
+${paragraphs.map(p => `<p>${escapeHTML(p)}</p>`).join('')}
+${name ? `<div class="name">— ${escapeHTML(name)}</div>` : ''}
+</body></html>`;
+  const blob = new Blob([html], { type: 'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `Aufsatz_Klasse${state.grade}_${new Date().toISOString().slice(0,10)}.doc`;
+  link.click();
+  URL.revokeObjectURL(url);
+  showToast('Word-Datei heruntergeladen!', '⬇');
+});
+
+document.getElementById('copyAllBtn').addEventListener('click', () => {
+  if (!state.articleId || Object.keys(state.drafts).length === 0) {
+    showToast('Schreibe erst etwas!', '✋');
+    return;
+  }
+  navigator.clipboard.writeText(getEssayText()).then(() => {
+    showToast('Aufsatz kopiert!', '📋');
+  });
+});
+
+// ============================================================
+// 5. DASHBOARD
+// ============================================================
+function renderDashboard() {
+  const now = new Date();
+  const diff = Math.ceil((DEADLINE - now) / (1000 * 60 * 60 * 24));
+  document.getElementById('dashDays').textContent = diff > 0 ? diff : '0';
+  document.getElementById('hdrDays').textContent = diff > 0 ? diff : '0';
+
+  document.getElementById('dashPoints').textContent = state.points || 0;
+  document.getElementById('dashEssays').textContent = state.essaysCompleted || 0;
+  document.getElementById('dashFields').textContent = state.fieldsCompleted || 0;
+  document.getElementById('dashStreak').textContent = state.streak || 0;
+  document.getElementById('hdrStreak').textContent = state.streak || 0;
+  document.getElementById('hdrPoints').textContent = state.points || 0;
+
+  const grid = document.getElementById('badgesGrid');
+  grid.innerHTML = '';
+  BADGES.forEach(b => {
+    const earned = state.badges.includes(b.id);
+    const div = document.createElement('div');
+    div.className = 'badge' + (earned ? ' earned' : '');
+    div.innerHTML = `<span class="b-ico">${b.icon}</span><div class="b-name">${escapeHTML(b.name)}</div><div class="b-desc">${escapeHTML(b.desc)}</div>`;
+    grid.appendChild(div);
+  });
+}
+
+// ============================================================
+// IMPORT / EXPORT / RESET
+// ============================================================
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Aufsatz_Speicherstand_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Speicherstand exportiert', '⬇');
+});
+
+document.getElementById('importBtn').addEventListener('click', () => {
+  document.getElementById('importFile').click();
+});
+
+document.getElementById('importFile').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      state = { ...state, ...data };
+      saveState();
+      // refresh
+      document.querySelectorAll('.grade-card').forEach(c => c.classList.toggle('selected', parseInt(c.dataset.grade) === state.grade));
+      if (state.grade) {
+        document.getElementById('startBtn').disabled = false;
+        document.getElementById('startBtn').style.opacity = '1';
+      }
+      renderArticlePicker();
+      renderWriting();
+      renderDashboard();
+      showToast('Speicherstand importiert', '⬆');
+    } catch(err) {
+      showToast('Datei ungültig', '⚠');
+    }
+  };
+  r.readAsText(file);
+  e.target.value = '';
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (!confirm('Wirklich ALLES zurücksetzen? Dein geschriebener Aufsatz und alle Punkte gehen verloren.')) return;
+  if (!confirm('Bist du dir wirklich SICHER? Das kann nicht rückgängig gemacht werden.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+});
+
+// ============================================================
+// TUTORIAL
+// ============================================================
+document.getElementById('closeTutorial').addEventListener('click', () => {
+  document.getElementById('tutorialOverlay').classList.remove('show');
+  state.tutorialSeen = true;
+  saveState();
+});
+
+// ============================================================
+// INIT
+// ============================================================
+loadState();
+document.getElementById('hdrPoints').textContent = state.points || 0;
+document.getElementById('hdrStreak').textContent = state.streak || 0;
+const _now = new Date();
+const _diff = Math.ceil((DEADLINE - _now) / (1000 * 60 * 60 * 24));
+document.getElementById('hdrDays').textContent = _diff > 0 ? _diff : '0';
+
+// pre-select grade card if saved
+if (state.grade) {
+  const card = document.querySelector(`.grade-card[data-grade="${state.grade}"]`);
+  if (card) card.classList.add('selected');
+  document.getElementById('startBtn').disabled = false;
+  document.getElementById('startBtn').style.opacity = '1';
+}
+
+// show tutorial on first visit
+if (!state.tutorialSeen) {
+  setTimeout(() => document.getElementById('tutorialOverlay').classList.add('show'), 400);
+}
+
+renderDashboard();
+</script>
+</body>
+</html>
