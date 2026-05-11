@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Wörtergarten · Rechtschreibtrainer Klasse 6</title>
+<style>
+  :root{
+    --bg1:#fff7d6; --bg2:#dff7ff; --bg3:#f3e8ff; --ink:#243047; --muted:#64748b;
+    --card:#ffffffcc; --line:#d8e0ef; --pink:#ff70b8; --sun:#ffcc3d; --mint:#78e7c7;
+    --blue:#6aa9ff; --purple:#a78bfa; --green:#41c98b; --red:#ff6b6b; --orange:#ff9f43;
+    --shadow:0 18px 50px rgba(31,41,55,.14);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;font-family:Verdana, Arial, sans-serif;color:var(--ink);font-size:18px;}
+  body{
+    background:
+      radial-gradient(circle at 10% 10%, #fff 0 4%, transparent 5%),
+      radial-gradient(circle at 88% 12%, #fff9 0 3%, transparent 4%),
+      linear-gradient(135deg,var(--bg1),var(--bg2) 48%,var(--bg3));
+    overflow-x:hidden;
+  }
+  .cloud{position:fixed;border-radius:999px;background:#fff9;filter:blur(.2px);z-index:-1;animation:float 12s ease-in-out infinite}
+  .cloud:before,.cloud:after{content:"";position:absolute;background:#fff9;border-radius:50%}
+  .cloud.one{width:190px;height:55px;left:3%;top:8%}.cloud.one:before{width:75px;height:75px;left:28px;top:-30px}.cloud.one:after{width:90px;height:90px;left:86px;top:-38px}
+  .cloud.two{width:160px;height:46px;right:7%;top:28%;animation-delay:-5s}.cloud.two:before{width:60px;height:60px;left:18px;top:-24px}.cloud.two:after{width:80px;height:80px;left:72px;top:-36px}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(16px)}}
+  header{padding:28px 18px 12px;max-width:1180px;margin:auto;}
+  .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:stretch}
+  .panel{background:var(--card);backdrop-filter:blur(10px);border:1px solid #fff;border-radius:28px;box-shadow:var(--shadow);padding:24px;}
+  h1{font-size:clamp(2rem,4vw,3.8rem);line-height:1;margin:.1em 0 .25em;font-weight:900;letter-spacing:-.04em;}
+  h2{font-size:1.4rem;margin:.1em 0 .6em}.tag{display:inline-flex;gap:8px;align-items:center;padding:8px 14px;border-radius:999px;background:#fff4;border:1px solid #fff;font-weight:800;color:#6b21a8}
+  .subtitle{font-size:1.16rem;line-height:1.45;color:#334155;max-width:720px}.bigEmoji{font-size:4.8rem;text-align:center;filter:drop-shadow(0 10px 18px #0002)}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}.stat{background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px;text-align:center}.stat b{display:block;font-size:1.8rem}.stat span{font-size:.88rem;color:var(--muted);font-weight:700}
+  main{max-width:1180px;margin:0 auto 60px;padding:12px 18px 40px;display:grid;grid-template-columns:330px 1fr;gap:20px;align-items:start}.side{position:sticky;top:14px}.lesson{min-height:620px}
+  button,input,select,textarea{font:inherit}button{border:0;border-radius:18px;padding:12px 16px;font-weight:900;cursor:pointer;background:#fff;box-shadow:0 8px 20px #0001;border:1px solid var(--line);color:var(--ink)}button.primary{background:linear-gradient(135deg,var(--pink),var(--purple));color:white;border:0}button.good{background:linear-gradient(135deg,var(--green),#8df5b7);color:#063b25;border:0}button.warn{background:linear-gradient(135deg,var(--sun),#ffef95);color:#5b3a00;border:0}button.ghost{background:#fff8}button:active{transform:translateY(1px)}button:disabled{opacity:.5;cursor:not-allowed}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.stack{display:grid;gap:12px}.field{width:100%;padding:15px 16px;border-radius:18px;border:2px solid #dbeafe;background:white;font-size:1.2rem;outline:none}.field:focus{border-color:var(--blue);box-shadow:0 0 0 5px #60a5fa22}.small{font-size:.88rem;color:var(--muted)}
+  .modeTabs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.modeTabs button.active{background:#243047;color:#fff}.wordCard{background:white;border:1px solid var(--line);border-radius:28px;padding:24px;box-shadow:var(--shadow);margin-top:14px;position:relative;overflow:hidden}.wordCard:before{content:"";position:absolute;right:-70px;top:-70px;width:200px;height:200px;background:radial-gradient(circle,var(--sun),transparent 65%);opacity:.45}.taskLabel{font-size:1.05rem;font-weight:900;color:#7c3aed;text-transform:uppercase;letter-spacing:.04em}.prompt{font-size:1.65rem;line-height:1.25;font-weight:900;margin:14px 0}.answerLine{display:grid;grid-template-columns:1fr auto;gap:10px;margin:16px 0}.feedback{min-height:54px;border-radius:20px;padding:14px 16px;font-weight:900;background:#f8fafc;border:1px solid var(--line)}.feedback.ok{background:#dcfce7;border-color:#86efac;color:#14532d}.feedback.no{background:#fee2e2;border-color:#fca5a5;color:#7f1d1d}.hint{background:#fef9c3;border:1px solid #fde68a;border-radius:18px;padding:12px 14px;color:#713f12;font-weight:800}.boxes{display:grid;gap:10px;margin-top:14px}.boxRow{display:grid;grid-template-columns:118px 1fr 54px;gap:10px;align-items:center}.bar{height:18px;background:#e2e8f0;border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--blue),var(--purple));border-radius:999px;transition:.4s}.pill{display:inline-flex;padding:7px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:900;font-size:.84rem}.badgeGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.badge{padding:12px;border-radius:18px;background:#f1f5f9;border:1px solid var(--line);text-align:center;font-weight:900;opacity:.45}.badge.on{background:#fff7ed;border-color:#fdba74;opacity:1;box-shadow:0 8px 20px #fb923c22}.badge .ico{font-size:1.8rem;display:block}.dragArea,.dropArea{display:flex;flex-wrap:wrap;gap:10px;min-height:62px;padding:14px;border:2px dashed #c7d2fe;border-radius:20px;background:#f8fafc}.tile{user-select:none;padding:12px 15px;border-radius:16px;background:linear-gradient(135deg,#fff,#eef2ff);border:1px solid #c7d2fe;font-weight:900;box-shadow:0 8px 14px #0001;cursor:grab;font-size:1.25rem}.tile.dragging{opacity:.5}.dropArea{border-color:#86efac;background:#f0fdf4}.dropArea .tile{background:linear-gradient(135deg,#ecfdf5,#fff)}.wordList{max-height:230px;overflow:auto;border:1px solid var(--line);border-radius:18px;background:#fff;padding:10px}.wordItem{display:flex;justify-content:space-between;gap:12px;padding:8px 6px;border-bottom:1px solid #f1f5f9}.wordItem:last-child{border-bottom:0}.spark{position:fixed;pointer-events:none;z-index:9999;font-size:22px;animation:pop 900ms ease-out forwards}@keyframes pop{to{transform:translate(var(--x),var(--y)) rotate(260deg);opacity:0}}.switch{display:flex;align-items:center;gap:8px;font-weight:900}.switch input{width:22px;height:22px}.quote{font-size:1.05rem;font-weight:900;color:#0f766e;background:#ccfbf1;border:1px solid #99f6e4;border-radius:18px;padding:13px 15px}.footerNote{font-size:.85rem;color:#64748b;margin-top:10px}.confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:1000}.kbd{font-family:ui-monospace,Consolas,monospace;background:#e2e8f0;border-radius:8px;padding:2px 7px;font-size:.9em}.settingsGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:900px){.hero,main{grid-template-columns:1fr}.side{position:static}.stats{grid-template-columns:repeat(2,1fr)}.answerLine{grid-template-columns:1fr}.boxRow{grid-template-columns:88px 1fr 44px}.settingsGrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="cloud one"></div><div class="cloud two"></div><canvas id="confetti" class="confettiCanvas"></canvas>
+<header>
+  <section class="hero">
+    <div class="panel">
+      <span class="tag">🌈 Wörtergarten · Klasse 6</span>
+      <h1>Dein fröhlicher Rechtschreibtrainer</h1>
+      <p class="subtitle">Übe häufige deutsche Wörter mit Hören, Tippen, Fehlerfinden, Lückensätzen und Ziehen. Jedes richtig geschriebene Wort wächst weiter bis in den <b>Langzeitspeicher</b>.</p>
+      <div class="stats">
+        <div class="stat"><b id="statCorrect">0</b><span>richtig</span></div>
+        <div class="stat"><b id="statStreak">0</b><span>Serie</span></div>
+        <div class="stat"><b id="statLong">0</b><span>Langzeit</span></div>
+        <div class="stat"><b id="statDue">0</b><span>heute dran</span></div>
+      </div>
+    </div>
+    <div class="panel stack" style="place-items:center;text-align:center">
+      <div class="bigEmoji">🦊📚✨</div>
+      <div class="quote" id="cheer">Du kannst das. Ein Wort nach dem anderen!</div>
+      <button class="primary" id="startBtn">Training starten</button>
+    </div>
+  </section>
+</header>
+<main>
+  <aside class="side stack">
+    <section class="panel stack">
+      <h2>Training</h2>
+      <div class="modeTabs">
+        <button id="modeMixed" class="active">Mix</button>
+        <button id="modeListen">Hören</button>
+        <button id="modeFix">Fehler</button>
+        <button id="modeBlank">Lücke</button>
+        <button id="modeDrag">Ziehen</button>
+        <button id="modeNouns">Nomen</button>
+      </div>
+      <label class="switch"><input type="checkbox" id="speakAuto" checked> Wörter automatisch vorlesen</label>
+      <label class="switch"><input type="checkbox" id="strictCaps" checked> Groß-/Kleinschreibung zählt</label>
+      <div class="settingsGrid">
+        <label class="small">Neue Wörter pro Runde<input id="newPerSession" class="field" type="number" min="5" max="80" value="20"></label>
+        <label class="small">Schriftgröße<select id="fontScale" class="field"><option value="1">groß</option><option value="1.15" selected>sehr groß</option><option value="1.3">riesig</option></select></label>
+      </div>
+    </section>
+    <section class="panel">
+      <h2>Leitner-Boxen</h2>
+      <div class="boxes" id="boxStats"></div>
+      <p class="footerNote">Richtig: ein Fach weiter. Falsch: zurück zum Start. Je höher das Fach, desto seltener erscheint das Wort.</p>
+    </section>
+    <section class="panel stack">
+      <h2>Speichern</h2>
+      <button id="exportBtn" class="good">Spielstand herunterladen</button>
+      <label><input id="importFile" type="file" accept=".json,application/json" style="display:none"><button id="importBtn" class="warn" type="button">Spielstand hochladen</button></label>
+      <button id="resetBtn" class="ghost">Fortschritt zurücksetzen</button>
+      <p class="footerNote">Zusätzlich wird automatisch in diesem Browser gespeichert.</p>
+    </section>
+  </aside>
+  <section class="lesson panel">
+    <div class="row" style="justify-content:space-between">
+      <div><h2 style="margin-bottom:0">Aktuelle Aufgabe</h2><div class="small" id="sessionInfo">Noch nicht gestartet.</div></div>
+      <div class="row"><span class="pill" id="boxPill">Box 0</span><button id="speakBtn">🔊 Vorlesen</button></div>
+    </div>
+    <div class="wordCard" id="taskCard">
+      <div class="taskLabel" id="taskType">Bereit?</div>
+      <div class="prompt" id="prompt">Drücke auf „Training starten“.</div>
+      <div id="taskArea"></div>
+      <div class="answerLine" id="answerLine">
+        <input id="answer" class="field" autocomplete="off" spellcheck="false" placeholder="Antwort hier schreiben …">
+        <button id="checkBtn" class="primary">Prüfen</button>
+      </div>
+      <div class="row">
+        <button id="hintBtn" class="ghost">Tipp</button>
+        <button id="skipBtn" class="ghost">Später</button>
+        <span class="small">Tastatur: <span class="kbd">Enter</span> prüfen, <span class="kbd">Alt</span> + <span class="kbd">V</span> vorlesen</span>
+      </div>
+      <div id="hint" class="hint" style="display:none"></div>
+      <div id="feedback" class="feedback">Hier bekommst du Rückmeldung.</div>
+    </div>
+    <section style="margin-top:20px" class="stack">
+      <div class="row" style="justify-content:space-between"><h2>Abzeichen</h2><span class="pill" id="levelPill">Level 1</span></div>
+      <div class="badgeGrid" id="badges"></div>
+    </section>
+    <section style="margin-top:20px" class="panel stack">
+      <h2>Eigene Wörter hinzufügen</h2>
+      <div class="row"><input id="newWord" class="field" placeholder="z. B. außergewöhnlich"><button id="addWordBtn" class="good">Hinzufügen</button></div>
+      <div class="wordList" id="recentWords"></div>
+    </section>
+  </section>
+</main>
+<script>
+const BASE_WORDS = ["der", "die", "und", "in", "den", "von", "zu", "das", "mit", "sich", "des", "auf", "für", "ist", "im", "dem", "nicht", "ein", "eine", "als", "auch", "es", "an", "werden", "aus", "er", "hat", "daß", "sie", "nach", "wird", "bei", "einer", "um", "am", "sind", "noch", "wie", "einem", "über", "einen", "so", "zum", "war", "haben", "nur", "oder", "aber", "vor", "zur", "bis", "mehr", "durch", "man", "sein", "wurde", "sei", "Prozent", "hatte", "kann", "gegen", "vom", "können", "schon", "wenn", "habe", "seine", "Mark", "ihre", "dann", "unter", "wir", "soll", "ich", "eines", "Jahr", "zwei", "Jahren", "diese", "dieser", "wieder", "keine", "Uhr", "seiner", "worden", "will", "zwischen", "immer", "Millionen", "was", "sagte", "gibt", "alle", "DM", "diesem", "seit", "muß", "wurden", "beim", "doch", "jetzt", "waren", "drei", "Jahre", "neue", "neuen", "damit", "bereits", "da", "ihr", "seinen", "müssen", "ab", "ihrer", "ohne", "sondern", "selbst", "ersten", "nun", "etwa", "heute", "ihren", "weil", "ihm", "seien", "Menschen", "Deutschland", "anderen", "werde", "sagt", "rund", "ihn", "Ende", "jedoch", "Zeit", "sollen", "ins", "seinem", "uns", "Stadt", "geht", "sehr", "hier", "ganz", "erst", "wollen", "Berlin", "vor allem", "sowie", "hatten", "kein", "deutschen", "machen", "lassen", "Unternehmen", "andere", "ob", "dieses", "steht", "dabei", "wegen", "weiter", "denn", "beiden", "einmal", "etwas", "nichts", "allerdings", "vier", "gut", "viele", "wo", "viel", "dort", "alles", "wäre", "SPD", "kommt", "vergangenen", "denen", "fast", "fünf", "könnte", "nicht nur", "hätten", "Frau", "dafür", "kommen", "diesen", "letzten", "zwar", "großen", "dazu", "Mann", "sollte", "würde", "also", "bisher", "Leben", "Milliarden", "Welt", "Regierung", "konnte", "ihrem", "Frauen", "während", "Land", "zehn", "würden", "stehen", "ja", "USA", "heißt", "dies", "zurück", "Kinder", "dessen", "ihnen", "deren", "sogar", "Frage", "gewesen", "erste", "gab", "liegt", "gar", "davon", "gestern", "geben", "Teil", "Polizei", "dass", "hätte", "eigenen", "kaum", "sieht", "große", "weitere", "sehen", "macht", "Angaben", "weniger", "gerade", "läßt", "Geld", "München", "deutsche", "allen", "darauf", "wohl", "später", "könne", "deshalb", "aller", "kam", "Arbeit", "mich", "gegenüber", "nächsten", "bleibt", "wenig", "lange", "gemacht", "Wer", "Fall", "mir", "gehen", "Berliner", "mal", "Weg", "CDU", "wollte", "sechs", "keinen", "Woche", "dagegen", "alten", "möglich", "gilt", "erklärte", "müsse", "könnten", "Geschichte", "zusammen", "finden", "Tag", "Art", "erhalten", "Dollar", "Wochen", "jeder", "nie", "bleiben", "besonders", "Jahres", "zunächst", "derzeit", "allein", "deutlich", "Entwicklung", "weiß", "einige", "sollten", "Präsident", "geworden", "statt", "Bonn", "Platz", "inzwischen", "Freitag", "pro", "seines", "Montag", "Europa", "schließlich", "Sonntag", "einfach", "gehört", "eher", "oft", "Zahl", "neben", "hält", "weit", "Partei", "meisten", "Thema", "zeigt", "Politik", "zweiten", "Januar", "insgesamt", "je", "mußte", "Anfang", "hinter", "ebenfalls", "ging", "Mitarbeiter", "darüber", "vielen", "Ziel", "darf", "Seite", "fest", "hin", "erklärt", "Namen", "Haus", "Frankfurt", "Gesellschaft", "Mittwoch", "damals", "Dienstag", "Hilfe", "Mai", "Markt", "Tage", "Donnerstag", "halten", "gleich", "nehmen", "solche", "Entscheidung", "besser", "alte", "Leute", "Ergebnis", "Samstag", "sagen", "System", "März", "tun", "Monaten", "kleinen", "lang", "knapp", "bringen", "wissen", "Kosten", "Erfolg", "bekannt", "findet", "daran", "künftig", "acht", "Grünen", "schnell", "Grund", "scheint", "Zukunft", "Stuttgart", "bin", "liegen", "politischen", "Gruppe", "Rolle", "stellt", "Juni", "sieben", "September", "nämlich", "Männer", "Oktober", "Mrd", "überhaupt", "eigene", "gegeben", "Außerdem", "Stunden", "eigentlich", "Meter", "ließ", "Probleme", "vielleicht", "ebenso", "Bereich", "zum Beispiel", "Höhe", "Familie", "Bild", "Ländern", "Informationen", "Frankreich", "Tagen", "schwer", "zuvor", "genau", "April", "stellen", "neu", "erwartet", "Hamburg", "sicher", "führen", "mehrere", "Wirtschaft", "Mio", "Programm", "offenbar", "weiteren", "natürlich", "konnten", "stark", "Dezember", "Juli", "ganze", "kommenden", "Kunden", "bekommen", "eben", "kleine", "trotz", "wirklich", "Lage", "Länder", "leicht", "gekommen", "Spiel", "laut", "November", "kurz", "politische", "führt", "innerhalb", "unsere", "meint", "immer wieder", "Form", "Münchner", "AG", "anders", "ihres", "völlig", "beispielsweise", "gute", "bislang", "August", "Hand", "jede", "GmbH", "Film", "Minuten", "erreicht", "beide", "Musik", "Kritik", "Mitte", "Verfügung", "Buch", "dürfen", "jeweils", "einigen", "Umsatz", "spielen", "Daten", "welche", "müßten", "hieß", "paar", "nachdem", "Kunst", "Euro", "gebracht", "Problem", "jeden", "Sprecher", "recht", "erneut", "längst", "europäischen", "Eltern", "Beginn", "besteht", "mindestens", "machte", "bietet", "Bürger", "Trainer", "bald", "Fragen", "klar", "Seiten", "gehören", "erstmals", "Februar", "zeigen", "Titel", "Stück", "größten", "FDP", "setzt", "Wert", "Frankfurter", "Staat", "möchte", "daher", "wolle", "Bundesregierung", "lediglich", "Nacht", "Krieg", "Opfer", "Tod", "nimmt", "Firma", "zuletzt", "Werk", "hohen", "unter anderem", "Kirche", "weiterhin", "gebe", "gestellt", "Mitglieder", "Rahmen", "zweite", "Paris", "Situation", "gefunden", "Wochenende", "internationalen", "Wasser", "sonst", "stand", "Hälfte", "Möglichkeit", "versucht", "blieb", "junge", "Mehrheit", "Straße", "Sache", "arbeiten", "Monate", "Mutter", "berichtet", "letzte", "Gericht", "wollten", "zwölf", "zumindest", "Wahl", "genug", "Weise", "Vater", "Bericht", "amerikanischen", "hoch", "beginnt", "Wort", "obwohl", "Kopf", "spielt", "Interesse", "Westen", "verloren", "Preis", "jedem", "erreichen", "setzen", "spricht", "früher", "teilte", "Landes", "zudem", "einzelnen", "bereit", "Blick", "Druck", "Bayern", "Kilometer", "gemeinsam", "Bedeutung", "Chance", "Politiker", "besten", "Ansicht", "endlich", "Stelle", "direkt", "Bevölkerung", "solchen", "solle", "jungen", "Einsatz", "richtig", "größte", "sofort", "neuer", "ehemaligen", "unserer", "dürfte", "schaffen", "Augen", "Rußland", "Internet", "Raum", "Mannschaft", "neun", "kamen", "Ausstellung", "Zeiten", "einzige", "meine", "Verfahren", "Angebot", "Richtung", "Projekt", "niemand", "Kampf", "weder", "tatsächlich", "Personen", "dpa", "geführt", "Gespräch", "Kreis", "Hamburger", "Schule", "guten", "Hauptstadt", "durchaus", "Zusammenarbeit", "darin", "Amt", "Schritt", "meist", "groß", "zufolge", "Sprache", "Region", "Punkte", "Vergleich", "genommen", "gleichen", "du", "Soldaten", "Universität", "verschiedenen", "Kollegen", "neues", "Bürgermeister", "Angst", "stellte", "Sommer", "danach", "anderer", "gesagt", "Sicherheit", "Bau", "handelt", "Folge", "Bilder", "lag", "Osten", "Handel", "sprach", "Aufgabe", "Chef", "frei", "dennoch", "DDR", "hohe", "Firmen", "bzw", "Koalition", "Mädchen", "entwickelt", "fand", "Diskussion", "bringt", "Hause", "Gefahr", "per", "zugleich", "früheren", "dadurch", "ganzen", "abend", "erzählt", "Streit", "Vergangenheit", "Parteien", "Verhandlungen", "jedenfalls", "gesehen", "französischen", "darunter", "Spieler", "forderte", "Beispiel", "Meinung", "wenigen", "Publikum", "sowohl", "meinte", "mag", "Auto", "Lösung", "Boden", "Präsidenten", "hinaus", "verletzt", "weltweit", "Sohn", "bevor", "Peter", "mußten", "keiner", "Produktion", "Ort", "braucht", "Zusammenhang", "Kind", "Verein", "sprechen", "Aktien", "gleichzeitig", "London", "sogenannten", "Richter", "geplant", "Italien", "Mittel", "her", "freilich", "Mensch", "großer", "Bonner", "wenige", "öffentlichen", "Unterstützung", "dritten", "nahm", "Bundesrepublik", "Arbeitsplätze", "bedeutet", "Feld", "Dr.", "Bank", "oben", "gesetzt", "Ausland", "Ministerpräsident", "Vertreter", "z.B.", "jedes", "ziehen", "Parlament", "berichtete", "China", "aufgrund", "warum", "Kindern", "heraus", "heutigen", "Anteil", "Herr", "Öffentlichkeit", "Liebe", "rechnen", "fällt", "New York", "Industrie", "Stuttgarter", "wären", "Vorjahr", "Sicht", "Idee", "Banken", "verlassen", "Leiter", "Bühne", "insbesondere", "offen", "stets", "Theater", "ändern", "entschieden", "Staaten", "Experten", "Gesetz", "Geschäft", "Tochter", "angesichts", "gelten", "erwarten", "läuft", "fordert", "Japan", "Sieg", "Stimmen", "wählen", "russischen", "gewinnen", "CSU", "bieten", "Nähe", "jährlich", "Bremen", "Schüler", "Rede", "Funktion", "Zuschauer", "hingegen", "anderes", "Führung", "Besucher", "Drittel", "Moskau", "immerhin", "Vorsitzende", "Urteil", "Kultur", "betonte", "mittlerweile", "Saison", "Konzept", "suchen", "Zahlen", "Roman", "Gewalt", "Köln", "gesamte", "indem", "EU", "Stunde", "ehemalige", "Auftrag", "entscheiden", "genannt", "tragen", "Börse", "langen", "häufig", "Chancen", "Position", "alt", "Luft", "Studenten", "übernehmen", "stärker", "ohnehin", "zeigte", "geplanten", "Reihe", "darum", "verhindern", "begann", "Medien", "verkauft", "Minister", "wichtig", "amerikanische", "sah", "gesamten", "einst", "verwendet", "vorbei", "Behörden", "helfen", "Folgen", "bezeichnet", "zur Zeit", "voll", "deutscher", "Worten", "plötzlich", "müßte", "Vertrag", "Staatsanwaltschaft", "Monat", "Herbst", "Israel", "Zeitung", "Grenzen", "Wissenschaftler", "Partner", "Patienten", "nutzen", "Bund", "setzte", "Betrieb", "Michael", "beteiligt", "Professor", "Fernsehen", "Künstler", "mehreren", "erinnert", "Liste", "Möglichkeiten", "Autor", "täglich", "eingesetzt", "Versuch", "Alter", "Autos", "Kohl", "außer", "Hoffnung", "Verkauf", "nennt", "erscheint", "führte", "Prozeß", "Täter", "bisherigen", "länger", "erkennen", "treffen", "unser", "begonnen", "Antrag", "beschäftigt", "Opposition", "Maßnahmen", "brachte", "nächste", "gezeigt", "Sinn", "Erde", "gefordert", "Wohnung", "all", "Menge", "gerne", "Hintergrund", "hören", "Deutschlands", "selten", "bestätigt", "bestimmt", "entstehen", "nannte", "schreibt", "Union", "brauchen", "gewählt", "Kraft", "elf", "trägt", "zieht", "Grenze", "Geschäftsführer", "Team", "Gebäude", "Tonnen", "Wettbewerb", "Anspruch", "Polen", "morgen", "Bremer", "Gebiet", "glaubt", "Sa", "Natur", "jene", "Fällen", "Jahrhundert", "leisten", "Zeitpunkt", "internationale", "mein", "Konkurrenz", "nach wie vor", "nicht einmal", "stieg", "notwendig", "sogenannte", "fahren", "kostet", "entsprechenden", "geplante", "geschlossen", "Fehler", "Zweifel", "Erklärung", "wiederum", "erschienen", "gehe", "Glück", "erfolgreich", "fehlt", "Gruppen", "Aktion", "kündigte", "meinen", "manchmal", "verschiedene", "übernommen", "möglichst", "SZ", "lieber", "Verantwortung", "Gespräche", "Suche", "gern", "fallen", "Organisation", "Preise", "weitgehend", "Basis", "Computer", "aufgenommen", "Schutz", "Eindruck", "fiel", "nahe", "schlecht", "lebt", "Verhältnis", "Forderung", "britischen", "sozialen", "Technik", "entstanden", "Vorstand", "verantwortlich", "of", "bestimmten", "jüngsten", "geboren", "erhält", "wobei", "Gegner", "Gründen", "Material", "Spitze", "Gewinn", "Punkten", "vertreten", "Schulen", "Studie", "Zeichen", "gewonnen", "Kurs", "Washington", "Türkei", "Erfahrungen", "wirkt", "Armee", "erhielt", "beginnen", "bißchen", "entfernt", "vorgesehen", "Ergebnisse", "zahlreiche", "entgegen", "hielt", "privaten", "sucht", "Gemeinde", "Antwort", "Zentrum", "bilden", "legen", "Schweiz", "gemeinsamen", "teilweise", "Großbritannien", "Licht", "Hannover", "Produkte", "Stimme", "diesmal", "Schluß", "gingen", "angeboten", "Gesicht", "ließen", "eröffnet", "versuchen", "Konzern", "Leistungen", "Gäste", "Wohnungen", "möglicherweise", "wichtige", "zog", "geraten", "Bewegung", "nötig", "Mitglied", "hundert", "Düsseldorf", "PDS", "wahrscheinlich", "vermutlich", "selber", "ständig", "Senat", "Branche", "Journalisten", "enthält", "laufen", "Straßen", "Einführung", "arbeitet", "verlangt", "Werke", "Runde", "Besuch", "unterstützt", "Manager", "Brüssel", "de", "schweren", "sitzt", "geschrieben", "jemand", "französische", "Wachstum", "taz", "bestimmte", "Freiheit", "entsprechende", "kennt", "Band", "Arbeitgeber", "glauben", "Wege", "verurteilt", "tritt", "Volk", "Pläne", "R", "angekündigt", "Satz", "sitzen", "Vorschlag", "rechnet", "muss", "erhöht", "Investitionen", "Aufgaben", "warten", "entdeckt", "wichtigsten", "Heimat", "verstehen", "schrieb", "trotzdem", "erfahren", "Unternehmens", "frühere", "bekommt", "Jugendlichen", "Dinge", "öffentliche", "Institut", "Wirkung", "sorgen", "trifft", "reden", "Werte", "Forscher", "Sitzung", "zusätzlich", "vielmehr", "Anlaß", "gehalten", "Tel.", "Schweizer", "beschlossen", "Serben", "Bundestag", "Verwaltung", "vorher", "automatisch", "betont", "Leistung", "abgeschlossen", "zufrieden", "Beschäftigten", "Papier", "Thomas", "Verbindung", "Sinne", "ziemlich", "Debatte", "enthalten", "ausschließlich", "bestehen", "Flüchtlinge", "Jugendliche", "Freund", "A", "Themen", "überall", "droht", "Gewerkschaften", "Bedingungen", "Beziehungen", "Text", "europäische", "Punkt", "Erfahrung", "The", "I", "Außenminister", "soziale", "russische", "Tisch", "Republik", "höher", "reicht", "Million", "gehabt", "politisch", "ähnlich", "geschaffen", "Schaden", "erster", "Körper", "Amerikaner", "getötet", "Frieden", "zählt", "Beteiligung", "Wagen", "Bahn", "vergessen", "Verlust", "Tiere", "Museum", "gegründet", "daraus", "Start", "Kontrolle", "Einfluß", "Österreich", "Norden", "Wunsch", "manche", "Wahlen", "Reise", "steigen", "gemeinsame", "Darstellung", "Demokratie", "König", "England", "nennen", "Teile", "Jahrhunderts", "denken", "Name", "Lehrer", "S.", "laufenden", "verbunden", "Qualität", "zusätzliche", "Widerstand", "schön", "Spanien", "gegangen", "Beamten", "Europas", "Freunde", "mitteilte", "erklären", "Familien", "gefallen", "Aktie", "Krise", "Baden-Württemberg", "Nummer", "wies", "außerhalb", "gestiegen", "Reform", "Literatur", "Arbeitslosigkeit", "Lebens", "Sozialdemokraten", "gewann", "Moment", "angeblich", "entsprechend", "Mill", "weiteres", "beträgt", "dritte", "wesentlich", "Amerika", "Insel", "britische", "Nachfolger", "entspricht", "dahin", "unseren", "solcher", "Juden", "Sport", "Rathaus", "verkaufen", "größere", "Frühjahr", "gebaut", "Wahrheit", "dar", "Kommission", "Polizisten", "Bosnien", "offensichtlich", "Grundlage", "relativ", "Nein", "Klasse", "tut", "hängt", "wenigstens", "aktuellen", "Modell", "Herstellung", "hinzu", "Gedanken", "Übernahme", "entwickeln", "Quartal", "meiner", "dürften", "jener", "Zustimmung", "legt", "fordern", "Einheit", "blieben", "in Zukunft", "Szene", "Klaus", "Bundeskanzler", "Schwierigkeiten", "geblieben", "lesen", "getroffen", "keineswegs", "Abschluß", "Verlag", "Interessen", "Netz", "anschließend", "Plan", "Ausbildung", "befindet", "zunehmend", "verzichten", "gespielt", "ermittelt", "legte", "Ruhe", "Hans", "Händler", "genutzt", "höhere", "starke", "treten", "Veranstaltung", "Stimmung", "Ärzte", "erheblich", "standen", "Teilnehmer", "möchten", "starken", "Forderungen", "Anlage", "siehe", "erfolgt", "Vertrieb", "beste", "gelungen", "Ordnung", "Andreas", "lautet", "kritisiert", "Schröder", "machten", "verstärkt", "Süden", "Haltung", "freien", "weist", "nahezu", "Motto", "abgelehnt", "gelang", "gezogen", "frühen", "schreiben", "aufs", "gleiche", "öffentlich", "Häuser", "kleiner", "folgt", "Wien", "möglichen", "weiterer", "kaufen", "Gefühl", "wirtschaftlichen", "Initiative", "hofft", "dürfe", "Person", "Telekom", "kennen", "interessiert", "Beitrag", "Geschäftsjahr", "lernen", "gefragt", "bezeichnete", "Meister", "Bücher", "kürzlich", "Tradition", "einzelne", "Vorsitzender", "Verband", "Grüne", "überzeugt", "Rückkehr", "schwere", "falsch", "unten", "behandelt", "indes", "großes", "Worte", "getan", "Vorstellung", "somit", "langsam", "gedacht", "geändert", "hervor", "Hessen", "Städte", "unbedingt", "Hotel", "Artikel", "tätig", "zahlreichen", "Geburtstag", "gesprochen", "schließen", "Engagement", "Gründe", "erlaubt", "Kl.", "Ausländer", "Anleger", "größer", "verlieren", "Verhalten", "ausgesprochen", "fanden", "Betriebe", "Praxis", "ums", "galt", "Gemeinden", "Wolfgang", "Kanzler", "Viertel", "private", "Zustand", "miteinander", "genauso", "präsentiert", "Planung", "Forschung", "staatlichen", "Gott", "einzigen", "wichtigen", "Verkehr", "befinden", "Kauf", "Vorstellungen", "Halle", "Untersuchung", "s", "Rom", "bessere", "unserem", "jeweiligen", "angelegt", "beendet", "Fälle", "Einschätzung", "stehe", "Dienst", "herrscht", "Begriff", "Sekunden", "Essen", "ans", "erfüllt", "Krankenhaus", "Auskunft", "bauen", "Rechnung", "Arbeitnehmer", "endgültig", "Truppen", "Aufbau", "leider", "verpflichtet", "Auffassung", "komme", "Karriere", "bezahlen", "Telefon", "Rest", "Umwelt", "schlägt", "bewußt", "wichtiger", "Sonne", "trat", "gelangen", "schneller", "Kandidaten", "Brief", "folgenden", "erscheinen", "wirtschaftliche", "Nr.", "Fahrer", "erforderlich", "Rennen", "Nachfrage", "Verdacht", "eigener", "Hinweis", "Umgebung", "bestätigte", "Regelung", "Fenster", "dienen", "modernen", "zuständig", "Flughafen", "Generation", "gelegt", "ergeben", "nationalen", "Waffen", "Schicksal", "Entscheidungen", "Jugend", "Niederlage", "Spaß", "Niveau", "Gelände", "Trend", "heißen", "Tatsache", "Presse", "Feuer", "bezahlt", "Förderung", "Bildung", "vorstellen", "grundsätzlich", "voller", "Winter", "italienischen", "Botschaft", "Investoren", "Grad", "Geschäfte", "Leser", "spielte", "bayerischen", "erzielt", "reichen", "Einrichtung", "Energie", "Gelegenheit", "regelmäßig", "übertragen", "Freude", "verändert", "Umgang", "Fans", "entweder", "Dauer", "Finanzierung", "Hersteller", "Größe", "eingestellt", "Kontakt", "früh", "ursprünglich", "m", "Prinzip", "Ausdruck", "definieren", "Mittelpunkt", "Wunder", "eindeutig", "Quadratmeter", "Mitarbeitern", "Behandlung", "größeren", "Nachbarn", "Schriftsteller", "Himmel", "hoffen", "unterstützen", "Auge", "Risiko", "allgemeinen", "verdient", "Tor", "Finanzminister", "Maria", "behauptet", "Rücktritt", "schwarzen", "bewegen", "plus", "mögliche", "passiert", "betroffen", "durchgeführt", "entsteht", "Vorwürfe", "näher", "bekam", "Aussage", "Verfassung", "Helmut Kohl", "Bewohner", "vorhanden", "richtige", "übrigens", "Kommunen", "Städten", "Werner", "verfügt", "Filme", "Tabelle", "historischen", "Werbung", "fragt", "Gegenteil", "Fischer", "Gegensatz", "Bauern", "Arzt", "Leitung", "voraussichtlich", "Dieter", "besondere", "Abgeordneten", "sehe", "Arbeiter", "Beschluß", "festgenommen", "Ermittlungen", "Minute", "Anzahl", "Willen", "Ruf", "aktiv", "Karlsruhe", "einiger", "westlichen", "Schweden", "technischen", "verwenden", "Vorwurf", "zwanzig", "höheren", "offiziell", "tief", "in der Regel", "Ausbau", "Auswahl", "Voraussetzung", "Wissenschaft", "richtigen", "schien", "festgelegt", "Bilanz", "erhöhen", "kurzem", "Gang", "vorerst", "Hände", "wirken", "Vertrauen", "denkt", "lösen", "Positionen", "zählen", "Veränderungen", "besitzt", "Alternative", "Falle", "Entwurf", "Ziele", "sichern", "ernst", "positiv", "Tat", "ermöglicht", "Ideen", "ausgeschlossen", "Änderung", "Ebene", "äußerst", "Lager", "zweimal", "Brandenburg", "Tür", "dringend", "Regisseur", "Wechsel", "Begründung", "Wirklichkeit", "Pfennig", "fehlen", "links", "Summe", "Aktivitäten", "Erinnerung", "Zugang", "II", "praktisch", "geöffnet", "Leipzig", "Frank", "Strecke", "japanischen", "fährt", "Wende", "Herz", "Autoren", "fürs", "übrigen", "Ausgabe", "Fußball", "Kölner", "kritisierte", "Projekte", "versteht", "Stil", "letztlich", "Aussagen", "Oberbürgermeister", "herum", "Bundeswehr", "Verständnis", "steigt", "kämpfen", "zugunsten", "glaube", "Fraktion", "Posten", "Dorf", "Post", "unmittelbar", "Bruder", "außen", "welcher", "Rang", "Krankheit", "Heinz", "eingerichtet", "Auswirkungen", "Strom", "bloß", "Auseinandersetzung", "zumal", "Struktur", "Linie", "Felder", "Ministerpräsidenten", "dient", "Clinton", "wußte", "falls", "entstand", "Herrn", "Autofahrer", "Information", "Erwartungen", "Sitz", "definiert", "warf", "Fusion", "Untersuchungen", "gaben", "verlor", "los", "daraufhin", "Zinsen", "scheinen", "Sowjetunion", "Büro", "angenommen", "Ursache", "Steuern", "fühlen", "Anlagen", "Jürgen", "Franzosen", "allzu", "liege", "verteilt", "soviel", "Jelzin", "Landtag", "Nürnberg", "Bereichen", "stammt", "Service", "künftigen", "Kino", "Behörde", "gehandelt", "Nutzung", "ausgerechnet", "Interview", "zuerst", "aufgefordert", "Gewerkschaft", "davor", "Ausnahme", "Erhöhung", "wächst", "gearbeitet", "Rechte", "eins", "unterschiedlichen", "Walter", "geradezu", "wirft", "international", "Zug", "erreichte", "Bedarf", "erlebt", "teuer", "Kritiker", "Flucht", "Klage", "Änderungen", "u.", "informiert", "geschickt", "Gerhard", "erinnern", "Männern", "Unternehmer", "klingt", "Hinweise", "kräftig", "fort", "rein", "eigenes", "spät", "Eröffnung"];
+const STORAGE_KEY = "woertergarten_rechtschreibung_v1";
+const BOX_NAMES = ["Start", "Keimling", "Spross", "Blüte", "Sternwort", "Langzeitspeicher"];
+const INTERVALS = [0, 1, 2, 4, 7, 21]; // in Tagen, im Langzeitspeicher selten
+const CHEERS = [
+  "Stark! Du trainierst wie eine Wort-Zauberin.",
+  "Jedes Wort macht deinen Wörtergarten größer.",
+  "Fehler sind nur Wegweiser. Weiter geht’s!",
+  "Super Einsatz. Dein Gehirn sortiert gerade neue Muster.",
+  "Ein Wort nach dem anderen: genau so wächst Sicherheit.",
+  "Du bist dran, und du wirst besser. Wirklich!"
+];
+const SENTENCES = [
+  "Heute schreibe ich das Wort ___ besonders sorgfältig.",
+  "In meinem Heft steht ___ ganz ordentlich in der Zeile.",
+  "Beim Lesen entdecke ich das Wort ___ sofort wieder.",
+  "Ich merke mir: ___ hat eine genaue Form.",
+  "Im Wörtergarten wächst heute das Wort ___."
+];
+const BADGES = [
+  ["🌱","Erster Keimling", s=>s.totalCorrect>=1],
+  ["🔥","10er-Serie", s=>s.bestStreak>=10],
+  ["🧲","Fehlerfinderin", s=>s.fixCorrect>=10],
+  ["🎧","Hör-Profi", s=>s.listenCorrect>=10],
+  ["🧩","Zieh-Meisterin", s=>s.dragCorrect>=10],
+  ["🌼","100 Wörter richtig", s=>s.totalCorrect>=100],
+  ["🏰","Langzeitspeicher", s=>longCount(s)>=10],
+  ["✨","Wort-Zauber", s=>s.totalCorrect>=250]
+];
+let state, current=null, mode="mixed", dragAnswer=[];
+const $ = id => document.getElementById(id);
+function today(){ return new Date().setHours(0,0,0,0); }
+function days(n){ return n*86400000; }
+function shuffle(a){ return [...a].sort(()=>Math.random()-.5); }
+function norm(s){ return (s||"").trim().replace(/\s+/g," "); }
+function same(a,b){ return $("strictCaps").checked ? norm(a)===norm(b) : norm(a).toLowerCase()===norm(b).toLowerCase(); }
+function cleanWord(w){ return String(w||"").trim(); }
+function initState(){
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if(saved){ try{ state=JSON.parse(saved); } catch(e){ state=null; } }
+  if(!state || !state.words){
+    state={created:new Date().toISOString(), totalCorrect:0,totalWrong:0,streak:0,bestStreak:0,fixCorrect:0,listenCorrect:0,dragCorrect:0,blankCorrect:0,nounCorrect:0, customWords:[], words:{}};
+  }
+  for(const w of BASE_WORDS.slice(0, Number($("newPerSession")?.value||20))){ ensureWord(w); }
+  save();
+}
+function ensureWord(w){
+  w=cleanWord(w); if(!w) return;
+  if(!state.words[w]) state.words[w]={box:0, correct:0, wrong:0, due:today(), last:null, added:new Date().toISOString()};
+}
+function addMoreNew(){
+  const need = Number($("newPerSession").value||20);
+  const existing = Object.keys(state.words).length;
+  for(const w of BASE_WORDS.slice(0, Math.max(need, existing+need))){ ensureWord(w); if(Object.keys(state.words).length>=existing+need) break; }
+}
+function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); updateUI(); }
+function dueWords(){
+  const t=today();
+  let entries = Object.entries(state.words).filter(([w,d])=>d.due<=t);
+  if(entries.length<8){ addMoreNew(); entries = Object.entries(state.words).filter(([w,d])=>d.due<=t); }
+  return entries;
+}
+function pickWord(){
+  const entries = dueWords();
+  const weighted=[];
+  for(const [w,d] of entries){
+    const weight = Math.max(1, 7-d.box) + (d.wrong||0);
+    for(let i=0;i<weight;i++) weighted.push([w,d]);
+  }
+  if(!weighted.length) return null;
+  return weighted[Math.floor(Math.random()*weighted.length)];
+}
+function taskModesFor(word){
+  const canDrag = word.replace(/\s/g,"").length<=18 && !/[.\/]/.test(word);
+  const canNoun = /^[A-ZÄÖÜ]/.test(word) && word.length>2;
+  let modes=["listen","fix","blank"];
+  if(canDrag) modes.push("drag");
+  if(canNoun) modes.push("nouns");
+  return modes;
+}
+function chooseMode(word){
+  if(mode!=="mixed") return mode;
+  const m=taskModesFor(word);
+  return m[Math.floor(Math.random()*m.length)];
+}
+function nextTask(){
+  const picked=pickWord();
+  if(!picked){ $("prompt").textContent="Alle Wörter schlafen gerade. Lade neue Wörter oder übe später weiter."; return; }
+  const [word,data]=picked;
+  current={word,data,mode:chooseMode(word)};
+  renderTask();
+  if($("speakAuto").checked && ["listen","drag"].includes(current.mode)) setTimeout(()=>speak(word),250);
+}
+function renderTask(){
+  const w=current.word, d=current.data, m=current.mode;
+  $("answer").value=""; $("feedback").className="feedback"; $("feedback").textContent="Hier bekommst du Rückmeldung."; $("hint").style.display="none"; $("boxPill").textContent=BOX_NAMES[d.box]||"Box";
+  $("taskArea").innerHTML=""; $("answerLine").style.display="grid"; $("answer").disabled=false; $("checkBtn").disabled=false;
+  const set=(type,prompt,placeholder)=>{ $("taskType").textContent=type; $("prompt").innerHTML=prompt; $("answer").placeholder=placeholder||"Antwort hier schreiben …"; };
+  if(m==="listen") set("Hören und schreiben","Klicke auf <b>Vorlesen</b> und schreibe das Wort genau auf.","Gehörtes Wort schreiben …");
+  if(m==="fix") set("Fehler finden","In diesem Wort ist ein Fehler. Schreibe es richtig: <span class='pill'>"+makeTypo(w)+"</span>","Richtige Schreibweise …");
+  if(m==="blank") set("Lücke füllen", SENTENCES[Math.floor(Math.random()*SENTENCES.length)].replace("___","<span class='pill'>_____</span>"), "Fehlendes Wort …");
+  if(m==="nouns") set("Nomen großschreiben","Dieses Nomen hat seine Krone verloren. Schreibe es richtig: <span class='pill'>"+w.toLowerCase()+"</span>","Mit richtiger Großschreibung …");
+  if(m==="drag") renderDrag(w);
+  $("answer").focus(); updateUI();
+}
+function renderDrag(w){
+  $("taskType").textContent="Ziehen und bauen"; $("prompt").innerHTML="Ziehe die Bausteine in die grüne Fläche und baue das Wort. Du darfst es dir vorlesen lassen."; $("answerLine").style.display="none";
+  const chunks = makeChunks(w);
+  const scrambled = shuffle(chunks.map((c,i)=>({c,i,id:Math.random().toString(36).slice(2)})));
+  dragAnswer=[];
+  $("taskArea").innerHTML=`<div class="small" style="margin-bottom:8px">Bausteine:</div><div class="dragArea" id="dragArea"></div><div class="small" style="margin:12px 0 8px">Dein Wort:</div><div class="dropArea" id="dropArea"></div><div class="row" style="margin-top:12px"><button id="clearDrag" class="ghost">Zurücklegen</button><button id="checkDrag" class="primary">Prüfen</button></div>`;
+  const dragArea=$("dragArea"), dropArea=$("dropArea");
+  for(const item of scrambled) addTile(item, dragArea);
+  $("clearDrag").onclick=()=>renderTask(); $("checkDrag").onclick=checkAnswer;
+  [dragArea, dropArea].forEach(area=>{
+    area.addEventListener("dragover", e=>e.preventDefault());
+    area.addEventListener("drop", e=>{e.preventDefault(); const id=e.dataTransfer.getData("text/plain"); const el=document.querySelector(`[data-id="${id}"]`); if(el) area.appendChild(el);});
+  });
+}
+function addTile(item,parent){
+  const el=document.createElement("div"); el.className="tile"; el.draggable=true; el.textContent=item.c; el.dataset.id=item.id;
+  el.addEventListener("dragstart",e=>{el.classList.add("dragging"); e.dataTransfer.setData("text/plain",item.id);});
+  el.addEventListener("dragend",()=>el.classList.remove("dragging"));
+  el.addEventListener("click",()=>{ const drop=$("dropArea"); const drag=$("dragArea"); (el.parentElement===drop?drag:drop).appendChild(el); });
+  parent.appendChild(el);
+}
+function makeChunks(w){
+  if(w.includes(" ")) return w.split(/(\s+)/).filter(x=>x.length);
+  if(w.length<=6) return [...w];
+  const chunks=[]; let i=0; while(i<w.length){ const n = (w.length-i>7)?2:Math.min(3,w.length-i); chunks.push(w.slice(i,i+n)); i+=n; } return chunks;
+}
+function makeTypo(w){
+  if(w.length<3) return w.toLowerCase();
+  const common = [["ie","ei"],["ei","ie"],["ä","e"],["ö","o"],["ü","u"],["ß","ss"],["ss","ß"],["h",""]];
+  for(const [a,b] of shuffle(common)){ if(w.includes(a)) return w.replace(a,b); }
+  const arr=[...w]; const i=Math.max(1, Math.floor(Math.random()*(arr.length-1))); [arr[i-1],arr[i]]=[arr[i],arr[i-1]]; return arr.join("");
+}
+function checkAnswer(){
+  if(!current) return;
+  let given;
+  if(current.mode==="drag") given=[...$("dropArea").children].map(x=>x.textContent).join(""); else given=$("answer").value;
+  const ok=same(given,current.word);
+  if(ok) handleCorrect(); else handleWrong(given);
+}
+function handleCorrect(){
+  const d=state.words[current.word]; d.correct=(d.correct||0)+1; d.box=Math.min(5,(d.box||0)+1); d.last=new Date().toISOString(); d.due=today()+days(INTERVALS[d.box]);
+  state.totalCorrect++; state.streak++; state.bestStreak=Math.max(state.bestStreak,state.streak);
+  if(current.mode==="fix") state.fixCorrect++; if(current.mode==="listen") state.listenCorrect++; if(current.mode==="drag") state.dragCorrect++; if(current.mode==="blank") state.blankCorrect++; if(current.mode==="nouns") state.nounCorrect++;
+  $("feedback").className="feedback ok"; $("feedback").innerHTML=`Richtig! <b>${current.word}</b> wandert in <b>${BOX_NAMES[d.box]}</b>.`;
+  $("cheer").textContent=CHEERS[Math.floor(Math.random()*CHEERS.length)];
+  burst(); sparkle(22); save(); setTimeout(nextTask,950);
+}
+function handleWrong(given){
+  const d=state.words[current.word]; d.wrong=(d.wrong||0)+1; d.box=0; d.last=new Date().toISOString(); d.due=today(); state.totalWrong++; state.streak=0;
+  $("feedback").className="feedback no"; $("feedback").innerHTML=`Fast! Richtig ist: <b>${current.word}</b>. Das Wort kommt wieder in den Start, damit du es bald sicher kannst.`;
+  speak(current.word); save(); setTimeout(nextTask,2400);
+}
+function showHint(){
+  if(!current) return; const w=current.word;
+  const masked = [...w].map((ch,i)=> ch===" "?" / ": (i===0 || i===w.length-1 || /[ÄÖÜäöüß]/.test(ch)?ch:"·")).join("");
+  $("hint").innerHTML=`Tipp: <b>${masked}</b> · Länge: ${w.replace(/\s/g,"").length} Buchstaben`;
+  $("hint").style.display="block";
+}
+function speak(text){
+  if(!('speechSynthesis' in window)) { $("feedback").textContent="Vorlesen wird in diesem Browser leider nicht unterstützt."; return; }
+  window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang="de-DE"; u.rate=.82; u.pitch=1.08; window.speechSynthesis.speak(u);
+}
+function longCount(s){ return Object.values(s.words||{}).filter(d=>d.box>=5).length; }
+function updateUI(){
+  if(!state) return;
+  $("statCorrect").textContent=state.totalCorrect||0; $("statStreak").textContent=state.streak||0; $("statLong").textContent=longCount(state); $("statDue").textContent=dueWords().length;
+  const vals=[0,1,2,3,4,5].map(b=>Object.values(state.words).filter(d=>d.box===b).length), total=Math.max(1,Object.keys(state.words).length);
+  $("boxStats").innerHTML=vals.map((v,i)=>`<div class="boxRow"><b>${BOX_NAMES[i]}</b><div class="bar"><i style="width:${Math.round(v/total*100)}%"></i></div><span>${v}</span></div>`).join("");
+  const level=Math.floor((state.totalCorrect||0)/50)+1; $("levelPill").textContent="Level "+level;
+  $("badges").innerHTML=BADGES.map(([ico,name,test])=>`<div class="badge ${test(state)?'on':''}"><span class="ico">${ico}</span>${name}</div>`).join("");
+  const words=Object.entries(state.words).sort((a,b)=>(b[1].last||"").localeCompare(a[1].last||"")).slice(0,24);
+  $("recentWords").innerHTML=words.map(([w,d])=>`<div class="wordItem"><b>${escapeHtml(w)}</b><span class="pill">${BOX_NAMES[d.box]}</span></div>`).join("");
+  $("sessionInfo").textContent=`${Object.keys(state.words).length} Wörter aktiviert · ${BASE_WORDS.length} Wörter im Startvorrat`;
+}
+function escapeHtml(s){ return s.replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])); }
+function exportSave(){ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="woertergarten-spielstand.json"; a.click(); URL.revokeObjectURL(a.href); }
+function importSave(file){ const r=new FileReader(); r.onload=()=>{ try{ const data=JSON.parse(r.result); if(!data.words) throw new Error(); state=data; save(); $("feedback").className="feedback ok"; $("feedback").textContent="Spielstand wurde geladen."; }catch(e){ alert("Diese Datei konnte nicht geladen werden."); } }; r.readAsText(file); }
+function burst(){
+  const canvas=$("confetti"), ctx=canvas.getContext("2d"); canvas.width=innerWidth; canvas.height=innerHeight; const parts=[];
+  for(let i=0;i<95;i++) parts.push({x:innerWidth/2,y:innerHeight*.28,vx:(Math.random()-.5)*8,vy:Math.random()*-7-2,g:.22,s:Math.random()*7+4,r:Math.random()*6.28,vr:(Math.random()-.5)*.2,life:80,color:["#ff70b8","#ffcc3d","#78e7c7","#6aa9ff","#a78bfa"][i%5]});
+  let frame=0; function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); for(const p of parts){ p.x+=p.vx; p.y+=p.vy; p.vy+=p.g; p.r+=p.vr; p.life--; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); ctx.fillStyle=p.color; ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.65); ctx.restore(); } frame++; if(frame<90) requestAnimationFrame(anim); else ctx.clearRect(0,0,canvas.width,canvas.height); } anim();
+}
+function sparkle(n){ for(let i=0;i<n;i++){ const s=document.createElement("div"); s.className="spark"; s.textContent=["✨","🌟","💫","🌸"][i%4]; s.style.left=(innerWidth/2+Math.random()*160-80)+"px"; s.style.top=(innerHeight*.34+Math.random()*80-40)+"px"; s.style.setProperty("--x",(Math.random()*260-130)+"px"); s.style.setProperty("--y",(Math.random()*-220-60)+"px"); document.body.appendChild(s); setTimeout(()=>s.remove(),900); } }
+function setMode(m){ mode=m; for(const id of ["Mixed","Listen","Fix","Blank","Drag","Nouns"]){ $("mode"+id).classList.remove("active"); } const map={mixed:"Mixed",listen:"Listen",fix:"Fix",blank:"Blank",drag:"Drag",nouns:"Nouns"}; $("mode"+map[m]).classList.add("active"); if(current) nextTask(); }
+window.addEventListener("DOMContentLoaded",()=>{
+  initState();
+  $("startBtn").onclick=nextTask; $("checkBtn").onclick=checkAnswer; $("speakBtn").onclick=()=>current&&speak(current.word); $("hintBtn").onclick=showHint; $("skipBtn").onclick=nextTask;
+  $("answer").addEventListener("keydown",e=>{ if(e.key==="Enter") checkAnswer(); });
+  document.addEventListener("keydown",e=>{ if(e.altKey && e.key.toLowerCase()==="v" && current) speak(current.word); });
+  [["modeMixed","mixed"],["modeListen","listen"],["modeFix","fix"],["modeBlank","blank"],["modeDrag","drag"],["modeNouns","nouns"]].forEach(([id,m])=>$(id).onclick=()=>setMode(m));
+  $("exportBtn").onclick=exportSave; $("importBtn").onclick=()=>$("importFile").click(); $("importFile").onchange=e=>e.target.files[0]&&importSave(e.target.files[0]);
+  $("resetBtn").onclick=()=>{ if(confirm("Fortschritt wirklich zurücksetzen?")){ localStorage.removeItem(STORAGE_KEY); state=null; initState(); nextTask(); } };
+  $("addWordBtn").onclick=()=>{ const w=cleanWord($("newWord").value); if(!w) return; ensureWord(w); if(!state.customWords.includes(w)) state.customWords.push(w); $("newWord").value=""; save(); $("feedback").className="feedback ok"; $("feedback").textContent=`${w} wurde hinzugefügt.`; };
+  $("fontScale").onchange=e=>document.documentElement.style.fontSize=(18*Number(e.target.value))+"px";
+  $("newPerSession").onchange=()=>{ addMoreNew(); save(); };
+});
+</script>
+</body>
+</html>
