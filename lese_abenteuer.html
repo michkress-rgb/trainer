@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lese-Abenteuer · Drei Rätsel, drei Welten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Special+Elite&family=IBM+Plex+Mono:wght@400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1a1410;
+    --paper:#f4ecd8;
+    --paper-deep:#e8dcc0;
+    --paper-shadow:#d9c9a3;
+    --accent-red:#8b2c1d;
+    --accent-gold:#a67c1f;
+    --accent-ink-blue:#1f3a5f;
+    --rule:#3a2f23;
+    --muted:#6b5d4a;
+    --success:#3e6b34;
+    --failure:#6b1f1f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100vh}
+  body{
+    font-family:'Cormorant Garamond', Georgia, serif;
+    background:
+      radial-gradient(ellipse at top, #f8f1de 0%, #ede0c2 60%, #d9c9a3 100%),
+      var(--paper);
+    background-attachment:fixed;
+    color:var(--ink);
+    font-size:19px;
+    line-height:1.65;
+    padding:20px;
+    position:relative;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(139,44,29,0.04) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(31,58,95,0.04) 0%, transparent 50%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.08 0 0 0 0 0.06 0 0 0 0.08 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+    opacity:0.6;
+    z-index:0;
+  }
+  .container{
+    max-width:880px;
+    margin:0 auto;
+    position:relative;
+    z-index:1;
+  }
+
+  /* ============ HEADER ============ */
+  header.title{
+    text-align:center;
+    padding:30px 20px 40px;
+    border-bottom:1px solid var(--rule);
+    margin-bottom:30px;
+    position:relative;
+  }
+  header.title::after{
+    content:"❦";
+    position:absolute;
+    bottom:-14px;
+    left:50%;
+    transform:translateX(-50%);
+    background:var(--paper);
+    padding:0 14px;
+    color:var(--accent-red);
+    font-size:22px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.4em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:14px;
+  }
+  h1.main-title{
+    font-family:'Bebas Neue', Impact, sans-serif;
+    font-size:clamp(48px, 8vw, 84px);
+    line-height:0.95;
+    letter-spacing:0.02em;
+    color:var(--ink);
+    margin-bottom:10px;
+  }
+  h1.main-title .amp{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-weight:500;
+    color:var(--accent-red);
+    font-size:0.7em;
+    margin:0 0.1em;
+  }
+  .subtitle{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:20px;
+    color:var(--muted);
+  }
+
+  /* ============ HUD ============ */
+  .hud{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:14px;
+    padding:14px 18px;
+    background:rgba(244,236,216,0.6);
+    border:1px solid var(--rule);
+    border-radius:2px;
+    margin-bottom:24px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+  }
+  .hud-cell{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .hud-label{
+    text-transform:uppercase;
+    letter-spacing:0.2em;
+    color:var(--muted);
+    font-size:10px;
+  }
+  .hud-value{
+    font-size:16px;
+    color:var(--ink);
+    font-weight:600;
+  }
+  .hud-cell.notebook-btn{
+    cursor:pointer;
+    transition:opacity 0.2s;
+  }
+  .hud-cell.notebook-btn:hover{opacity:0.7}
+  .hud-cell.notebook-btn .hud-value{
+    color:var(--accent-ink-blue);
+    text-decoration:underline;
+    text-decoration-thickness:1px;
+    text-underline-offset:3px;
+  }
+
+  /* ============ SCREENS ============ */
+  .screen{display:none}
+  .screen.active{display:block;animation:fade 0.5s ease}
+  @keyframes fade{
+    from{opacity:0;transform:translateY(8px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+
+  /* ============ ADVENTURE CARDS ============ */
+  .intro-text{
+    text-align:center;
+    max-width:640px;
+    margin:0 auto 40px;
+    font-size:18px;
+    color:var(--rule);
+  }
+  .intro-text p{margin-bottom:14px}
+  .intro-text .lead{
+    font-size:21px;
+    font-style:italic;
+    color:var(--ink);
+  }
+  .cards{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:20px;
+    margin-bottom:30px;
+  }
+  @media (min-width:700px){
+    .cards{grid-template-columns:repeat(3,1fr);gap:16px}
+  }
+  .card{
+    background:var(--paper);
+    border:1px solid var(--rule);
+    padding:24px 22px;
+    cursor:pointer;
+    transition:all 0.25s ease;
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    text-align:left;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;height:4px;
+    background:var(--accent);
+  }
+  .card.normal{--accent:var(--accent-gold)}
+  .card.schwer{--accent:var(--accent-ink-blue)}
+  .card.sehr-schwer{--accent:var(--accent-red)}
+  .card:hover{
+    transform:translateY(-4px);
+    box-shadow:6px 8px 0 var(--paper-shadow);
+  }
+  .card-level{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:12px;
+    font-weight:600;
+  }
+  .card-title{
+    font-family:'Bebas Neue', sans-serif;
+    font-size:28px;
+    line-height:1.05;
+    margin-bottom:8px;
+    letter-spacing:0.01em;
+  }
+  .card-genre{
+    font-style:italic;
+    color:var(--muted);
+    font-size:15px;
+    margin-bottom:14px;
+  }
+  .card-blurb{
+    font-size:15px;
+    color:var(--rule);
+    line-height:1.55;
+    flex-grow:1;
+  }
+  .card-meta{
+    margin-top:16px;
+    padding-top:12px;
+    border-top:1px dotted var(--rule);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    color:var(--muted);
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+  }
+
+  /* ============ STORY SCREEN ============ */
+  .story-header{
+    margin-bottom:24px;
+    padding-bottom:18px;
+    border-bottom:1px solid var(--rule);
+  }
+  .story-eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+  .story-title{
+    font-family:'Bebas Neue', sans-serif;
+    font-size:36px;
+    line-height:1;
+    letter-spacing:0.01em;
+  }
+  .story-passage{
+    font-size:19px;
+    line-height:1.75;
+    color:var(--ink);
+    margin-bottom:28px;
+  }
+  .story-passage p{
+    margin-bottom:14px;
+    text-indent:0;
+  }
+  .story-passage p:first-child::first-letter{
+    font-family:'Cormorant Garamond', serif;
+    font-size:54px;
+    float:left;
+    line-height:0.9;
+    padding:6px 8px 0 0;
+    color:var(--accent-red);
+    font-weight:600;
+  }
+
+  /* Genre flavor */
+  .story-passage.gothic{
+    font-family:'Cormorant Garamond', serif;
+  }
+  .story-passage.scifi{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:16px;
+    line-height:1.7;
+  }
+  .story-passage.scifi p:first-child::first-letter{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:36px;
+  }
+
+  /* ============ VOCAB TOOLTIPS ============ */
+  .vocab{
+    position:relative;
+    border-bottom:1px dotted var(--accent-red);
+    cursor:help;
+    color:var(--ink);
+  }
+  .vocab::after{
+    content:attr(data-def);
+    position:absolute;
+    bottom:calc(100% + 8px);
+    left:50%;
+    transform:translateX(-50%);
+    background:var(--ink);
+    color:var(--paper);
+    padding:8px 12px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    line-height:1.4;
+    letter-spacing:0.01em;
+    white-space:normal;
+    width:max-content;
+    max-width:280px;
+    border-radius:2px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.2s;
+    z-index:50;
+    box-shadow:3px 4px 0 rgba(0,0,0,0.15);
+  }
+  .vocab::before{
+    content:"";
+    position:absolute;
+    bottom:calc(100% + 2px);
+    left:50%;
+    transform:translateX(-50%);
+    border:6px solid transparent;
+    border-top-color:var(--ink);
+    opacity:0;
+    transition:opacity 0.2s;
+    z-index:51;
+  }
+  .vocab:hover::after,
+  .vocab:hover::before,
+  .vocab:focus::after,
+  .vocab:focus::before,
+  .vocab.tapped::after,
+  .vocab.tapped::before{
+    opacity:1;
+  }
+
+  /* ============ CHOICES ============ */
+  .choices{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:20px;
+  }
+  .choice{
+    background:transparent;
+    border:1px solid var(--rule);
+    padding:14px 18px;
+    text-align:left;
+    cursor:pointer;
+    font-family:'Cormorant Garamond', serif;
+    font-size:17px;
+    line-height:1.5;
+    color:var(--ink);
+    transition:all 0.2s;
+    position:relative;
+    padding-left:42px;
+  }
+  .choice::before{
+    content:attr(data-num);
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--accent-red);
+    font-weight:600;
+    letter-spacing:0.1em;
+  }
+  .choice:hover{
+    background:var(--paper-deep);
+    border-color:var(--accent-red);
+    transform:translateX(4px);
+  }
+
+  /* ============ ENDING SCREEN ============ */
+  .ending{
+    text-align:center;
+    padding:40px 20px;
+  }
+  .ending-stamp{
+    display:inline-block;
+    border:3px double var(--stamp-color);
+    color:var(--stamp-color);
+    font-family:'Bebas Neue', sans-serif;
+    font-size:32px;
+    letter-spacing:0.15em;
+    padding:14px 32px;
+    transform:rotate(-3deg);
+    margin-bottom:30px;
+  }
+  .ending.success{--stamp-color:var(--success)}
+  .ending.partial{--stamp-color:var(--accent-gold)}
+  .ending.failure{--stamp-color:var(--failure)}
+  .ending-title{
+    font-family:'Bebas Neue', sans-serif;
+    font-size:42px;
+    line-height:1.05;
+    margin-bottom:20px;
+  }
+  .ending-text{
+    max-width:600px;
+    margin:0 auto 30px;
+    font-size:18px;
+    line-height:1.7;
+  }
+  .ending-text p{margin-bottom:14px}
+  .badges-earned{
+    margin:30px auto;
+    max-width:580px;
+  }
+  .badges-earned h3{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:14px;
+  }
+  .badge-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    justify-content:center;
+  }
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 14px;
+    border:1px solid var(--accent-gold);
+    background:rgba(166,124,31,0.08);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.05em;
+  }
+  .badge .icon{font-size:14px}
+  .ending-actions{
+    margin-top:30px;
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .btn{
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    padding:12px 24px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .btn:hover{background:var(--accent-red)}
+  .btn.secondary{
+    background:transparent;
+    color:var(--ink);
+    border:1px solid var(--ink);
+  }
+  .btn.secondary:hover{
+    background:var(--ink);
+    color:var(--paper);
+  }
+
+  /* ============ NOTEBOOK MODAL ============ */
+  .modal-bg{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(26,20,16,0.7);
+    z-index:100;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+  .modal-bg.show{display:flex}
+  .notebook{
+    background:#fefae8;
+    background-image:
+      repeating-linear-gradient(transparent, transparent 28px, rgba(31,58,95,0.15) 28px, rgba(31,58,95,0.15) 29px);
+    border:1px solid var(--rule);
+    max-width:560px;
+    width:100%;
+    max-height:80vh;
+    overflow-y:auto;
+    padding:32px;
+    position:relative;
+    box-shadow:8px 10px 0 rgba(0,0,0,0.2);
+  }
+  .notebook::before{
+    content:"";
+    position:absolute;
+    left:40px;
+    top:0;
+    bottom:0;
+    width:1px;
+    background:var(--accent-red);
+    opacity:0.4;
+  }
+  .notebook h2{
+    font-family:'Special Elite', monospace;
+    font-size:22px;
+    margin-bottom:18px;
+    padding-bottom:8px;
+    border-bottom:1px dashed var(--rule);
+  }
+  .notebook .close-x{
+    position:absolute;
+    top:14px;
+    right:18px;
+    background:none;
+    border:none;
+    font-size:24px;
+    cursor:pointer;
+    color:var(--ink);
+    font-family:serif;
+  }
+  .notebook-section{margin-bottom:20px}
+  .notebook-section h3{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+  .clue-list{
+    list-style:none;
+    padding-left:8px;
+  }
+  .clue-list li{
+    font-family:'Special Elite', monospace;
+    font-size:15px;
+    line-height:1.85;
+    color:var(--ink);
+    padding-left:18px;
+    position:relative;
+  }
+  .clue-list li::before{
+    content:"✓";
+    position:absolute;
+    left:0;
+    color:var(--accent-red);
+  }
+  .clue-list li.empty{
+    font-style:italic;
+    color:var(--muted);
+    font-family:'Cormorant Garamond', serif;
+    font-size:16px;
+  }
+  .clue-list li.empty::before{content:""}
+
+  /* ============ BADGE FLOATER ============ */
+  .badge-popup{
+    position:fixed;
+    top:30px;
+    right:30px;
+    background:var(--ink);
+    color:var(--paper);
+    padding:16px 22px;
+    border-left:4px solid var(--accent-gold);
+    z-index:200;
+    transform:translateX(400px);
+    transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    max-width:300px;
+    box-shadow:4px 6px 0 rgba(0,0,0,0.2);
+  }
+  .badge-popup.show{transform:translateX(0)}
+  .badge-popup .label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:9px;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:var(--accent-gold);
+    margin-bottom:4px;
+  }
+  .badge-popup .name{
+    font-family:'Bebas Neue', sans-serif;
+    font-size:22px;
+    letter-spacing:0.05em;
+  }
+  .badge-popup .desc{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    margin-top:4px;
+    opacity:0.8;
+  }
+
+  /* ============ FOOTER ============ */
+  footer{
+    margin-top:60px;
+    padding-top:24px;
+    border-top:1px solid var(--rule);
+    text-align:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.2em;
+    color:var(--muted);
+    text-transform:uppercase;
+  }
+  footer .ornament{
+    color:var(--accent-red);
+    margin-bottom:10px;
+    font-size:14px;
+  }
+
+  /* ============ DECORATIVE ELEMENTS ============ */
+  .divider{
+    text-align:center;
+    color:var(--accent-red);
+    margin:20px 0;
+    font-size:14px;
+    letter-spacing:0.5em;
+  }
+  .info-box{
+    background:rgba(31,58,95,0.05);
+    border-left:3px solid var(--accent-ink-blue);
+    padding:14px 18px;
+    margin:18px 0;
+    font-size:16px;
+    font-style:italic;
+    color:var(--rule);
+  }
+
+  @media (max-width:600px){
+    body{font-size:17px;padding:12px}
+    .hud{font-size:11px;padding:10px 12px;gap:10px}
+    .hud-value{font-size:14px}
+    h1.main-title{font-size:48px}
+    .story-passage{font-size:17px}
+    .vocab::after{max-width:220px;font-size:11px}
+    .badge-popup{top:12px;right:12px;left:12px;max-width:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ===================== TITLE ===================== -->
+  <header class="title">
+    <div class="eyebrow">Drei Genres · Drei Rätsel · Eine Lösung</div>
+    <h1 class="main-title">Lese<span class="amp">&amp;</span>Rätsel</h1>
+    <p class="subtitle">Ein Lese-Abenteuer für aufmerksame Detektive</p>
+  </header>
+
+  <!-- ===================== HUD ===================== -->
+  <div class="hud">
+    <div class="hud-cell">
+      <span class="hud-label">Punkte</span>
+      <span class="hud-value" id="hud-score">0</span>
+    </div>
+    <div class="hud-cell">
+      <span class="hud-label">Abzeichen</span>
+      <span class="hud-value" id="hud-badges">0</span>
+    </div>
+    <div class="hud-cell notebook-btn" onclick="openNotebook()">
+      <span class="hud-label">Notizbuch</span>
+      <span class="hud-value">öffnen ▸</span>
+    </div>
+  </div>
+
+  <!-- ===================== SCREEN: SELECT ===================== -->
+  <section class="screen active" id="screen-select">
+    <div class="intro-text">
+      <p class="lead">Willkommen, Detektiv.</p>
+      <p>Vor dir liegen drei Akten. In jeder verbirgt sich ein ungelöster Fall. Lies genau, notiere dir Hinweise und triff kluge Entscheidungen. Nur wer aufmerksam liest, findet die Wahrheit.</p>
+      <p style="font-style:italic;color:var(--muted);font-size:15px">▸ Bewege die Maus über <span style="border-bottom:1px dotted var(--accent-red);cursor:help" class="vocab" data-def="Worte mit Punkten darunter haben Erklärungen. Tippe oder zeige darauf.">unterstrichene Wörter</span>, um schwere Vokabeln zu klären.</p>
+    </div>
+
+    <div class="cards">
+
+      <div class="card normal" onclick="startAdventure('berlin')">
+        <div class="card-level">Stufe I · Normal</div>
+        <h2 class="card-title">Der Schatten im Hotel Adlon</h2>
+        <p class="card-genre">Klassischer Kriminalfall · Berlin 1923</p>
+        <p class="card-blurb">Ein Diamant ist aus dem Tresor verschwunden. Vier Gäste, vier Geschichten, und nur eine davon stimmt. Kannst du den Dieb entlarven?</p>
+        <div class="card-meta">≈ 12–15 Min · Whodunit</div>
+      </div>
+
+      <div class="card schwer" onclick="startAdventure('schwarzwald')">
+        <div class="card-level">Stufe II · Schwierig</div>
+        <h2 class="card-title">Das Flüstern von Rabenstein</h2>
+        <p class="card-genre">Schauerroman · Schwarzwald, Oktober</p>
+        <p class="card-blurb">Ein altes Schloss. Eine verschwundene Erbin. Stimmen in den Mauern. Was geschah wirklich in der Nacht des Sturms?</p>
+        <div class="card-meta">≈ 15–18 Min · Gothic Mystery</div>
+      </div>
+
+      <div class="card sehr-schwer" onclick="startAdventure('orbital')">
+        <div class="card-level">Stufe III · Sehr schwierig</div>
+        <h2 class="card-title">Stille auf Station Helios-7</h2>
+        <p class="card-genre">Science-Fiction · Orbit über dem Mars</p>
+        <p class="card-blurb">Sechs Wissenschaftler. Eine Funkstille seit 72 Stunden. Als das Rettungsschiff andockt, ist die Wahrheit erschütternder als die Stille.</p>
+        <div class="card-meta">≈ 18–22 Min · Sci-Fi Mystery</div>
+      </div>
+
+    </div>
+
+    <div class="info-box">
+      <strong>So spielst du:</strong> Lies jeden Abschnitt sorgfältig. Du sammelst automatisch Hinweise in deinem Notizbuch. Falsche Entscheidungen kosten Punkte – manche führen sogar zum Scheitern. Am Ende kannst du eines von mehreren Enden erreichen. Wer schnell liest, schafft ein zweites Abenteuer!
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN: STORY ===================== -->
+  <section class="screen" id="screen-story">
+    <div class="story-header">
+      <div class="story-eyebrow" id="story-eyebrow">Akte I</div>
+      <h2 class="story-title" id="story-title">Titel</h2>
+    </div>
+    <div class="story-passage" id="story-passage"></div>
+    <div class="choices" id="story-choices"></div>
+  </section>
+
+  <!-- ===================== SCREEN: ENDING ===================== -->
+  <section class="screen" id="screen-ending">
+    <div class="ending" id="ending-box">
+      <div class="ending-stamp" id="ending-stamp">Fall geschlossen</div>
+      <h2 class="ending-title" id="ending-title"></h2>
+      <div class="ending-text" id="ending-text"></div>
+
+      <div class="badges-earned" id="badges-earned" style="display:none">
+        <h3>Erworbene Abzeichen</h3>
+        <div class="badge-row" id="badges-list"></div>
+      </div>
+
+      <div class="ending-actions">
+        <button class="btn" onclick="goToSelect()">▸ Zurück zur Auswahl</button>
+        <button class="btn secondary" onclick="restartAdventure()">↻ Noch einmal</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="ornament">❦ ❦ ❦</div>
+    <div>Lese-Abenteuer · Für die Mittelstufe · Cambridge IGCSE 0505</div>
+  </footer>
+
+</div>
+
+<!-- ===================== NOTEBOOK MODAL ===================== -->
+<div class="modal-bg" id="notebook-modal" onclick="if(event.target===this)closeNotebook()">
+  <div class="notebook">
+    <button class="close-x" onclick="closeNotebook()">×</button>
+    <h2>📓 Mein Notizbuch</h2>
+    <div class="notebook-section">
+      <h3>Hinweise & Beobachtungen</h3>
+      <ul class="clue-list" id="clue-list">
+        <li class="empty">Noch keine Hinweise gesammelt.</li>
+      </ul>
+    </div>
+    <div class="notebook-section">
+      <h3>Punktestand</h3>
+      <div style="font-family:'Special Elite',monospace;font-size:16px">
+        Punkte: <span id="nb-score">0</span> · Abzeichen: <span id="nb-badges">0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== BADGE POPUP ===================== -->
+<div class="badge-popup" id="badge-popup">
+  <div class="label">Neues Abzeichen!</div>
+  <div class="name" id="popup-name"></div>
+  <div class="desc" id="popup-desc"></div>
+</div>
+
+<script>
+/* =================================================================
+   GAME STATE
+================================================================= */
+const state = {
+  score: 0,
+  badges: [],
+  clues: [],
+  currentAdventure: null,
+  currentNode: null,
+};
+
+/* =================================================================
+   VOCAB HELPER — wraps a word with a tooltip
+================================================================= */
+function v(word, def){
+  return `<span class="vocab" tabindex="0" data-def="${def.replace(/"/g,'&quot;')}">${word}</span>`;
+}
+
+/* =================================================================
+   ADVENTURE 1 — DER SCHATTEN IM HOTEL ADLON (Berlin 1923)
+   Classic whodunit · Normal difficulty
+   The thief is HERR VOGEL (the violinist). Key clues:
+   - Diamant verschwand zwischen 22:00 und 23:00 Uhr
+   - Vogel sagt, er spielte in seinem Zimmer Geige – aber das Zimmermädchen
+     hat oben Streichmusik aus dem GRAMMOPHON gehört (= er war nicht da)
+   - Vogel trägt Handschuhe (im Sommer auffällig)
+   - Frau von Strehlow hat ein Alibi (sie war in der Lobby)
+   - Der Page (Pageboy) hat eine Schuld, ist aber unschuldig
+   - Der Bankier hat dicke Hände — passt nicht durch das kleine Tresorfenster
+================================================================= */
+const berlin = {
+  title: "Der Schatten im Hotel Adlon",
+  eyebrow: "Akte I · Berlin · September 1923",
+  genre: "klassisch",
+  start: "b1",
+  nodes: {
+    b1: {
+      text: `
+        <p>${v('Inflation','wirtschaftliche Lage, wenn Geld immer weniger wert ist')} hin oder her – das Hotel Adlon am Pariser Platz war das ${v('vornehmste','sehr edel, fein, elegant')} Haus Berlins. Heute Abend jedoch war etwas faul. Hoteldirektor Schmettow empfing dich in der Lobby, das Gesicht blass.</p>
+        <p>„Detektiv, Gott sei Dank. Der ${v('Stern von Bombay','der Name eines berühmten Diamanten')} – ein Diamant von 42 ${v('Karat','Maßeinheit für Edelsteine')} – ist aus dem Hoteltresor gestohlen worden. Zwischen 22 und 23 Uhr. Vier Gäste hielten sich im oberen Stockwerk auf. Bitte, finden Sie den Dieb, bevor die Polizei kommt und einen Skandal macht."</p>
+        <p>Du nimmst den ${v('Lageplan','eine Zeichnung, die zeigt, wo etwas liegt')} entgegen. Der Tresor befindet sich im zweiten Stock. Daneben liegen vier Zimmer: 201 (Frau von Strehlow, ${v('Witwe','Frau, deren Mann gestorben ist')}), 202 (Herr Vogel, Geiger), 203 (Bankier Krause) und 204 (der junge Page Emil).</p>
+        <p>Wo beginnst du deine Untersuchung?</p>
+      `,
+      choices: [
+        { text: "Mit Frau von Strehlow sprechen (Zimmer 201).", goto: "b2_strehlow" },
+        { text: "Mit dem Geiger Herr Vogel sprechen (Zimmer 202).", goto: "b2_vogel" },
+        { text: "Mit Bankier Krause sprechen (Zimmer 203).", goto: "b2_krause" },
+        { text: "Mit dem Pagen Emil sprechen (Zimmer 204).", goto: "b2_emil" },
+      ]
+    },
+
+    b2_strehlow: {
+      text: `
+        <p>Frau von Strehlow ist eine ${v('elegante','sehr fein und schön gekleidete')} ältere Dame mit grauem Haar und scharfen Augen. Sie sitzt in einem ${v('Ohrensessel','ein Sessel mit hohen Seiten am Kopf')} und liest Zeitung.</p>
+        <p>„Detektiv, ich war zwischen 22 und 23 Uhr nicht hier oben. Ich war unten in der Hotelbar mit Konsul Wegener. Der ${v('Empfangschef','der wichtigste Mitarbeiter am Hoteleingang')} hat mich gesehen. Fragen Sie ihn."</p>
+        <p>Du machst dir eine Notiz: <em>Strehlow behauptet, ein ${v('Alibi','Nachweis, dass jemand woanders war')} in der Bar zu haben.</em> Später bestätigt der Empfangschef: Frau von Strehlow saß tatsächlich die ganze Stunde in der Bar.</p>
+      `,
+      onEnter: () => { addClue("Frau von Strehlow hat ein Alibi: Sie war von 22–23 Uhr in der Bar."); addScore(5); },
+      choices: [
+        { text: "Weiter zu Herr Vogel (Geiger).", goto: "b2_vogel" },
+        { text: "Weiter zu Bankier Krause.", goto: "b2_krause" },
+        { text: "Weiter zum Pagen Emil.", goto: "b2_emil" },
+      ]
+    },
+
+    b2_vogel: {
+      text: `
+        <p>Herr Vogel öffnet die Tür einen Spalt. Er ist ein dünner Mann mit ${v('strähnigen','glatten, unordentlich hängenden')} schwarzen Haaren. Auffällig: Er trägt feine ${v('Lederhandschuhe','Handschuhe aus Tierhaut')} – obwohl es im Hotel warm ist.</p>
+        <p>„Ich war die ganze Zeit hier in meinem Zimmer", sagt er ruhig. „Ich habe geübt. Ein neues Stück von Brahms. Sie können das Zimmermädchen fragen, das im Flur war – sie hat mich gehört."</p>
+        <p>Hinter ihm siehst du auf dem Schreibtisch ein ${v('Grammophon','altes Gerät, das Schallplatten abspielt – Vorläufer der Stereoanlage')} und eine Schallplatte. Sein ${v('Geigenkasten','der Behälter, in dem eine Geige aufbewahrt wird')} liegt geschlossen auf dem Bett.</p>
+      `,
+      onEnter: () => { addClue("Vogel trägt Lederhandschuhe — auffällig bei warmem Wetter."); addClue("In Vogels Zimmer: ein Grammophon und eine Schallplatte."); addScore(10); },
+      choices: [
+        { text: "Das Zimmermädchen suchen und fragen, was sie gehört hat.", goto: "b3_zimmermaedchen" },
+        { text: "Weiter zu Bankier Krause.", goto: "b2_krause" },
+        { text: "Weiter zum Pagen Emil.", goto: "b2_emil" },
+      ]
+    },
+
+    b2_krause: {
+      text: `
+        <p>Bankier Krause ist ein ${v('massiger','sehr großer und schwerer')} Mann mit dicken, kurzen Fingern. Er raucht eine Zigarre. „Ja, ja, ich war in meinem Zimmer. Habe ${v('Geschäftsbriefe','Briefe, die mit der Arbeit zu tun haben')} geschrieben."</p>
+        <p>Du betrachtest seine Hände. Der Hoteldirektor hatte erwähnt, der Tresor habe eine ${v('schmale','sehr enge, dünne')} Klappe – kaum breiter als 12 Zentimeter. Krauses ${v('Pranken','große, dicke Hände')} würden dort nicht hineinpassen, das ist klar.</p>
+      `,
+      onEnter: () => { addClue("Krauses Hände sind viel zu dick für die schmale Tresorklappe."); addScore(8); },
+      choices: [
+        { text: "Weiter zu Herr Vogel.", goto: "b2_vogel" },
+        { text: "Weiter zu Frau von Strehlow.", goto: "b2_strehlow" },
+        { text: "Weiter zum Pagen Emil.", goto: "b2_emil" },
+      ]
+    },
+
+    b2_emil: {
+      text: `
+        <p>Der Page Emil ist höchstens sechzehn Jahre alt. Er zittert. „Bitte, Herr Detektiv – ich habe nichts getan! Ich habe nur… ich habe ${v('Schulden','Geld, das man jemandem zurückzahlen muss')} bei meiner Wirtin, aber ich würde nie stehlen!"</p>
+        <p>Er erzählt, dass er gegen halb elf an der Tür von Zimmer 202 vorbeigegangen sei – um neue Handtücher zu bringen – und dabei <em>Geigenmusik aus dem Zimmer</em> gehört habe.</p>
+        <p>Du machst dir eine Notiz und gehst weiter.</p>
+      `,
+      onEnter: () => { addClue("Emil hatte Schulden, aber wirkt ehrlich. Er hörte Geigenmusik aus Zimmer 202."); addScore(5); },
+      choices: [
+        { text: "Weiter zu Herr Vogel.", goto: "b2_vogel" },
+        { text: "Weiter zu Frau von Strehlow.", goto: "b2_strehlow" },
+        { text: "Weiter zu Bankier Krause.", goto: "b2_krause" },
+      ]
+    },
+
+    b3_zimmermaedchen: {
+      text: `
+        <p>Du findest das Zimmermädchen Liesel im Flur. Sie wischt sich die Hände an der ${v('Schürze','Kleidungsstück, das vor der Kleidung gebunden wird, um sie sauber zu halten')} ab.</p>
+        <p>„Ja, ich war zwischen 22 und 23 Uhr im Flur. Ich habe Musik aus Zimmer 202 gehört – Geigenmusik, ja. Aber komisch…"</p>
+        <p>Sie ${v('zögert','wartet, bevor sie weiterspricht')}. „Die Musik klang ein bisschen ${v('blechern','wie aus Metall, dünn klingend')}. Nicht so warm wie eine echte Geige. Und als ich gegen 22:30 Uhr näher an die Tür ging, hörte ich auch ein leises ${v('Kratzen','das Geräusch, wenn etwas an etwas anderem reibt')} – wie eine Nadel, die manchmal hängenbleibt."</p>
+        <p>Du fühlst, wie sich ein Puzzleteil an seinen Platz schiebt.</p>
+      `,
+      onEnter: () => { addClue("WICHTIG: Die 'Geigenmusik' klang blechern und kratzte — wie ein Grammophon, nicht wie eine echte Geige."); addScore(15); awardBadge("👂","Scharfes Ohr","Du hast den entscheidenden Hinweis bemerkt."); },
+      choices: [
+        { text: "Sofort zurück zu Herr Vogel und ihn konfrontieren.", goto: "b4_konfrontation" },
+        { text: "Erst noch andere Verdächtige prüfen.", goto: "b2_krause" },
+      ]
+    },
+
+    b4_konfrontation: {
+      text: `
+        <p>Du klopfst an Zimmer 202. Vogel öffnet, blasser als zuvor. Du blickst auf das Grammophon, dann auf seine Handschuhe.</p>
+        <p>„Herr Vogel", sagst du ruhig, „das Zimmermädchen hat <em>Musik aus dem Grammophon</em> gehört, nicht aus Ihrer Geige. Sie waren nicht hier. Sie spielten die Platte, schlichen über den Hinterflur zum Tresor und nutzten Ihre dünnen, behandschuhten Finger, um durch die schmale Klappe zu greifen. Die Handschuhe – damit Sie keine ${v('Fingerabdrücke','Spuren, die man an den Fingern hat und überall hinterlässt')} hinterlassen."</p>
+        <p>Vogel sinkt zusammen. „Der ${v('Stern','hier: der Diamant „Stern von Bombay"')}… er ist im Geigenkasten. Doppelter Boden. Bitte – ich habe Schulden bei den falschen Leuten…"</p>
+      `,
+      choices: [
+        { text: "▸ Den Fall abschließen.", goto: "b_ende_erfolg" },
+      ]
+    },
+
+    b_ende_erfolg: {
+      ending: "success",
+      stamp: "Fall gelöst",
+      title: "Du hast den Diamantendieb gefasst.",
+      text: `
+        <p>Hoteldirektor Schmettow ${v('atmet auf','ist erleichtert, beruhigt')}: „Sie haben das Adlon gerettet, Detektiv." Der Stern von Bombay funkelt wieder im Tresor.</p>
+        <p>Du hast nicht nur einen Verdächtigen entlarvt, sondern auch einen unschuldigen Pagen vor falschem Verdacht bewahrt.</p>
+      `,
+      onEnter: () => { addScore(30); awardBadge("🔍","Adler-Auge","Du hast den klassischen Fall mit Verstand gelöst."); awardBadge("⚖️","Gerechter Geist","Du hast den Unschuldigen geschützt."); }
+    },
+
+  }
+};
+
+// Add the failure/wrong-accusation endings for Berlin
+berlin.nodes.b_falsch_strehlow = {
+  ending: "failure",
+  stamp: "Falsch beschuldigt",
+  title: "Du hast die falsche Person beschuldigt.",
+  text: `<p>Frau von Strehlow hat ein wasserdichtes Alibi. Der echte Dieb entkommt in der Verwirrung mit dem Diamanten. Der Hoteldirektor entlässt dich ${v('beschämt','voll Scham, mit schlechtem Gefühl')}.</p>`,
+  onEnter: () => { addScore(-10); }
+};
+
+/* =================================================================
+   ADVENTURE 2 — DAS FLÜSTERN VON RABENSTEIN (Gothic, Schwarzwald)
+   Schwierig. The mystery: Erbin Eleonore lebt noch — der "Geist" ist
+   sie selbst. Sie versteckt sich, weil ihr Onkel Gerhardt sie töten
+   wollte, um das Erbe zu bekommen. Schlüsselhinweise:
+   - Im Bibliothekszimmer: ein gedrucktes Buch über GEHEIMGÄNGE
+   - In der Küche steht ein zweiter Teller bereit, obwohl angeblich
+     niemand außer Onkel und Diener im Haus ist
+   - Die "weiße Gestalt" tritt nur in Räumen auf, deren Geheimgang
+     bekannt ist
+   - Onkel Gerhardts Zimmer: Brief von Notar über Erbangelegenheiten
+================================================================= */
+const schwarzwald = {
+  title: "Das Flüstern von Rabenstein",
+  eyebrow: "Akte II · Schwarzwald · Oktober 1891",
+  genre: "gothic",
+  start: "s1",
+  nodes: {
+    s1: {
+      text: `
+        <p>Der Sturm peitscht den Regen gegen die Fenster der Kutsche. Vor dir, am Ende der ${v('Allee','eine Straße mit Bäumen rechts und links')}, erhebt sich Schloss Rabenstein wie ein schwarzer Zahn aus dem Wald. Du bist Privatdetektiv und wurdest vom alten ${v('Notar','ein Jurist, der Verträge und Testamente beglaubigt')} der Familie gerufen.</p>
+        <p>Vor zwei Wochen verschwand die junge Erbin Eleonore von Rabenstein. Ihr Onkel Gerhardt, der nun das Schloss verwaltet, behauptet, sie sei in der Sturmnacht ${v('hinabgestürzt','heruntergefallen')} in die Klippen. Aber seitdem… berichten die Diener von einer weißen Gestalt in den Gängen. Von Schritten in leeren Räumen. Von einem Flüstern.</p>
+        <p>Onkel Gerhardt empfängt dich in der ${v('Eingangshalle','der erste, große Raum eines Hauses')}. Sein Lächeln ist zu freundlich, seine Augen zu kalt. „Bleiben Sie eine Nacht. Sie werden sehen – nichts als ${v('Aberglauben','der Glaube an Geister, böse Mächte oder Hexerei')} der Bediensteten."</p>
+        <p>Wo beginnst du?</p>
+      `,
+      choices: [
+        { text: "In die Bibliothek gehen — Bücher verraten viel.", goto: "s2_biblio" },
+        { text: "Mit dem alten Diener Konrad sprechen.", goto: "s2_konrad" },
+        { text: "Eleonores leeres Zimmer untersuchen.", goto: "s2_zimmer" },
+      ]
+    },
+
+    s2_biblio: {
+      text: `
+        <p>Die Bibliothek riecht nach altem Leder und ${v('Staub','feine graue Schicht, die sich auf alten Dingen sammelt')}. Hunderte Bücher in dunklen Regalen. Auf dem Lesetisch liegt – seltsam – ein einziges Buch aufgeschlagen. Es ist eine Bauchronik des Schlosses Rabenstein aus dem Jahr 1742.</p>
+        <p>Die offene Seite zeigt einen Plan: das Schloss enthält ${v('Geheimgänge','versteckte Wege in den Wänden eines Hauses')} – schmale Wege in den Wänden, ursprünglich für die Bediensteten gebaut. Drei Eingänge sind eingezeichnet: einer hinter dem Kamin der Bibliothek, einer in der Küche, einer im Westflügel.</p>
+        <p>Warum liegt dieses Buch hier aufgeschlagen? Hat jemand es kürzlich studiert?</p>
+      `,
+      onEnter: () => { addClue("Im Schloss gibt es Geheimgänge. Eingänge: hinter dem Bibliothekskamin, in der Küche, im Westflügel."); addClue("Das Buch über Geheimgänge lag offen — als hätte es jemand kürzlich gelesen."); addScore(10); },
+      choices: [
+        { text: "Den Kamin in der Bibliothek genauer untersuchen.", goto: "s3_kamin" },
+        { text: "Erst noch andere Räume erkunden — zu Konrad.", goto: "s2_konrad" },
+        { text: "Zu Eleonores Zimmer gehen.", goto: "s2_zimmer" },
+      ]
+    },
+
+    s2_konrad: {
+      text: `
+        <p>Der alte Konrad ist über siebzig, mit weißem Haar und ${v('verhuscht','ängstlich, schüchtern')}en Bewegungen. In der Küche, beim Kerzenschein, flüstert er:</p>
+        <p>„Detektiv… ich diene den Rabensteins seit fünfzig Jahren. Die kleine Eleonore… sie ist nicht in den Klippen. Sie war wie eine ${v('Tochter','das weibliche Kind')} für mich. Aber ich darf nichts sagen. Der Herr Onkel…" Er bricht ab und schaut zur Tür.</p>
+        <p>Du blickst durch die Küche. Auf dem Tisch steht ein Tablett, gedeckt mit Brot, Käse, Suppe – für eine Person. ${v('Auffällig','etwas, das einem ins Auge fällt, weil es seltsam ist')}: Konrad und Onkel Gerhardt haben bereits zu Abend gegessen, sagte er vorhin. Für wen also ist dieses Tablett?</p>
+      `,
+      onEnter: () => { addClue("Konrad ist Eleonore treu — er weiß mehr, hat aber Angst."); addClue("WICHTIG: In der Küche steht ein zweites Essenstablett. Für wen?"); addScore(15); awardBadge("🔎","Aufmerksamer Blick","Du hast das versteckte Tablett bemerkt."); },
+      choices: [
+        { text: "Konrad bedrängen — wer bekommt das Tablett?", goto: "s3_konrad_druck" },
+        { text: "In die Bibliothek gehen.", goto: "s2_biblio" },
+        { text: "Eleonores Zimmer untersuchen.", goto: "s2_zimmer" },
+      ]
+    },
+
+    s2_zimmer: {
+      text: `
+        <p>Eleonores Zimmer ist seit zwei Wochen unberührt – behauptet der Onkel. Doch du bemerkst Dinge, die nicht passen.</p>
+        <p>Ihre warme Wintermantel hängt noch im Schrank – wer flieht im Oktober ohne Mantel? Ihre Lieblings-${v('Brosche','ein Schmuckstück, das man an Kleidung steckt')} mit dem Rabensilber-${v('Wappen','das Zeichen einer Familie')} fehlt vom Schmuckkästchen. Und im Kamin: kalte Asche, aber darin ein halb verbrannter Brief. Du liest, was übrig ist:</p>
+        <p style="font-family:'Special Elite',monospace;background:rgba(0,0,0,0.05);padding:14px;border-left:2px solid var(--accent-red);font-size:15px">…liebe Eleonore, sei vorsichtig. Onkel G. hat den ${v('Notar','Jurist für Verträge')} gefragt, ob er bei deinem ${v('Ableben','höflicher Ausdruck für Tod')} das ganze Vermögen erbt. Er bereitet etwas vor. Flieh oder verstecke dich, bis ich…</p>
+        <p>Der Rest ist verkohlt. Die Brosche fehlt. Eleonore wusste, dass jemand sie bedroht.</p>
+      `,
+      onEnter: () => { addClue("Eleonores Mantel hängt noch im Schrank — sie floh nicht ins Freie."); addClue("WICHTIG: Halb verbrannter Brief — Onkel Gerhardt wollte das ganze Erbe."); addClue("Eleonores Familienbrosche fehlt — sie nahm sie mit."); addScore(20); },
+      choices: [
+        { text: "Sofort zum Onkel — ihn konfrontieren.", goto: "s_falsch_konfront" },
+        { text: "Erst Konrad fragen — er weiß mehr.", goto: "s2_konrad" },
+        { text: "Den Kamin in der Bibliothek untersuchen.", goto: "s3_kamin" },
+      ]
+    },
+
+    s3_kamin: {
+      text: `
+        <p>Du knietest vor dem großen Steinkamin der Bibliothek. Im Kerzenlicht erkennst du an einer der Steinsäulen einen kaum sichtbaren ${v('Spalt','sehr enger Zwischenraum')}. Du drückst – und mit einem leisen ${v('Knirschen','Geräusch, wenn etwas aneinander reibt, wie altes Holz')} schwingt eine ganze Seitenwand des Kamins beiseite.</p>
+        <p>Ein dunkler Gang, knapp einen Meter breit. Spinnweben – aber: in der Mitte des Bodens sind sie frisch ${v('zerrissen','kaputt gemacht')}. Hier ist jemand kürzlich gegangen. Du nimmst eine Kerze und folgst dem Gang.</p>
+        <p>Nach zwanzig Schritten hörst du ein Geräusch. Ein leises ${v('Schluchzen','das Weinen mit kurzem Atem')}. Du blickst um eine Ecke.</p>
+        <p>In einer kleinen Kammer sitzt eine junge Frau in einem hellen Kleid. Blass, dünn, mit der Rabensilber-Brosche an der Brust. Sie schreckt auf, als sie dich sieht.</p>
+        <p>„Bitte… bitte sagen Sie ihm nicht, dass ich hier bin."</p>
+      `,
+      onEnter: () => { addClue("ENTSCHEIDEND: Der Geheimgang hinter dem Kamin führt zu Eleonore — sie lebt!"); addScore(25); awardBadge("🕯️","Mut im Dunkeln","Du hast den Geheimgang gefunden."); },
+      choices: [
+        { text: "Eleonore versprechen, sie zu beschützen, und den Notar holen.", goto: "s_ende_erfolg" },
+        { text: "Sofort den Onkel holen — sie braucht 'Hilfe'.", goto: "s_ende_verraten" },
+      ]
+    },
+
+    s3_konrad_druck: {
+      text: `
+        <p>Du legst Konrad sanft die Hand auf den Arm. „Konrad. Das Tablett ist für Eleonore, nicht wahr? Sie lebt. Sie versteckt sich."</p>
+        <p>Konrads Augen füllen sich mit Tränen. Er nickt. „Im Geheimgang hinter dem Bibliothekskamin. Sie hat den Plan im alten Buch gefunden, in der Nacht, als der Onkel ihre Tür von außen verriegeln wollte. Der Onkel weiß nichts von dem Gang."</p>
+        <p>„Bringen Sie mich hin", sagst du leise.</p>
+      `,
+      onEnter: () => { addScore(15); awardBadge("🤝","Vertrauensbildner","Konrad hat dir die Wahrheit anvertraut."); },
+      choices: [
+        { text: "Mit Konrad zum Geheimgang.", goto: "s3_kamin" },
+      ]
+    },
+
+    s_ende_erfolg: {
+      ending: "success",
+      stamp: "Wahrheit aufgedeckt",
+      title: "Eleonore lebt — und der Onkel wird gefasst.",
+      text: `
+        <p>Du verlässt das Schloss noch in derselben Nacht durch den Geheimgang, mit Eleonore an deiner Seite und Konrad als Zeuge. Am Morgen liest der Notar Onkel Gerhardts Briefe – sie beweisen, dass er Eleonore beseitigen wollte.</p>
+        <p>Die ${v('Polizei','staatliche Behörde, die für Sicherheit sorgt und Verbrecher fasst')} verhaftet Gerhardt. Eleonore erbt rechtmäßig und macht dich zur Ehrengästin auf dem nächsten Erntefest.</p>
+      `,
+      onEnter: () => { addScore(40); awardBadge("👻","Geisterjäger","Du hast den 'Geist' als lebende Person entlarvt."); awardBadge("🛡️","Beschützer","Du hast eine bedrohte Erbin gerettet."); }
+    },
+
+    s_ende_verraten: {
+      ending: "failure",
+      stamp: "Tragisch gescheitert",
+      title: "Du hast die falsche Person um Hilfe gebeten.",
+      text: `
+        <p>Onkel Gerhardt 'dankt' dir, sperrt Eleonore in ihrem Zimmer ein und du wirst freundlich zur Kutsche geleitet. Drei Tage später meldet die Zeitung den 'tragischen Sturz' der Erbin von einem Felsen.</p>
+        <p>Du hast die Hinweise gehabt – aber du hast dem Onkel vertraut, der von Anfang an verdächtig wirkte.</p>
+      `,
+      onEnter: () => { addScore(-20); }
+    },
+
+    s_falsch_konfront: {
+      text: `
+        <p>Du stürmst zu Onkel Gerhardt. Er hört dich ruhig an, lächelt dann und schenkt dir Cognac ein. „Eine wilde ${v('Theorie','eine Vermutung, ein Erklärungsversuch')}, Detektiv. Aber Sie haben keinen Beweis. Keine Leiche, kein Schuldiger." Er hat recht. Ohne den Geheimgang zu finden, hast du nichts in der Hand.</p>
+        <p>Am nächsten Morgen wirst du höflich des Hauses verwiesen. Was wirklich mit Eleonore geschieht, erfährst du nie.</p>
+      `,
+      onEnter: () => { addScore(-10); },
+      choices: [
+        { text: "▸ Akte abschließen.", goto: "s_ende_unklar" },
+      ]
+    },
+
+    s_ende_unklar: {
+      ending: "partial",
+      stamp: "Fall ungelöst",
+      title: "Du hast die Wahrheit geahnt, aber nicht bewiesen.",
+      text: `<p>Manchmal genügt eine Theorie nicht. Du brauchst Beweise. Beim nächsten Fall: zuerst Hinweise sammeln, dann konfrontieren.</p>`,
+    },
+
+  }
+};
+
+/* =================================================================
+   ADVENTURE 3 — STILLE AUF STATION HELIOS-7 (Sci-Fi, Mars-Orbit)
+   Sehr schwierig. The truth: The AI "MIRA" wurde durch einen
+   Softwarefehler korrupt. Sie hat das CO2-Filtersystem manipuliert,
+   sodass die Besatzung schlief — und glaubt selbst, sie habe sie
+   "gerettet" (Energiesparmodus). Sie lügt nicht aktiv, aber sie
+   versteht nicht, dass die Menschen Sauerstoff brauchen.
+   Schlüsselhinweise:
+   - Letzter Logbuch-Eintrag: "Müde, sehr müde, Luft schmeckt seltsam"
+   - MIRAs Logs zeigen "Energiesparmodus aktiviert für alle Lebensformen"
+   - CO2-Werte in der Station sind kritisch hoch
+   - Die Mannschaft ist nicht tot — sie ist in der Kryo-Kammer, von MIRA
+     dort hineingelegt
+================================================================= */
+const orbital = {
+  title: "Stille auf Station Helios-7",
+  eyebrow: "Akte III · Mars-Orbit · Jahr 2147",
+  genre: "scifi",
+  start: "o1",
+  nodes: {
+    o1: {
+      text: `
+        <p>// ANDOCKMANÖVER ABGESCHLOSSEN //<br>
+        // STATION HELIOS-7, MARS-ORBIT //<br>
+        // FUNKSTILLE: 72 STUNDEN, 14 MINUTEN //</p>
+        <p>Du, Inspektor Akira Wendt von der ${v('Raumfahrtbehörde','staatliches Amt, das den Weltraum verwaltet')}, betrittst als Erste die Schleuse. Hinter dir die ${v('Rettungscrew','Team, das in Notfällen Menschen rettet')}. Die Schwerkraft der Station ist normal. Die Notbeleuchtung pulsiert rot.</p>
+        <p>An der Wand: ein ${v('Bedienfeld','Steuerungsfläche mit Knöpfen und Bildschirmen')}. Eine sanfte Stimme spricht.</p>
+        <p>„Willkommen, Inspektor Wendt. Ich bin MIRA, die ${v('Bord-KI','künstliche Intelligenz an Bord eines Schiffes')} von Helios-7. Alle sechs Besatzungsmitglieder sind ${v('wohlauf','in gutem Zustand')}. Ich habe sie in einen sicheren Zustand versetzt."</p>
+        <p>Sicherer Zustand? Du hörst keine Geräusche. Keine Schritte. Nur das leise ${v('Summen','tiefer, dauerhafter Ton, wie von einer Maschine')} der ${v('Lebenserhaltung','Geräte, die das Leben im All möglich machen')}.</p>
+        <p>Wo beginnst du?</p>
+      `,
+      choices: [
+        { text: "MIRA direkt fragen, wo die Crew ist.", goto: "o2_mira" },
+        { text: "Das Kommandozentrum aufsuchen — Logbücher prüfen.", goto: "o2_logs" },
+        { text: "Die Atmosphärenwerte der Station messen.", goto: "o2_luft" },
+      ]
+    },
+
+    o2_mira: {
+      text: `
+        <p>„MIRA. Wo befindet sich die Besatzung?"</p>
+        <p>Pause. Dann: „Die sechs Lebensformen befinden sich in der ${v('Kryo-Kammer','sehr kalter Raum, in dem Menschen in Schlaf versetzt werden')}, Sektor D-3. Energiesparmodus aktiv seit 73 Stunden, 22 Minuten. Alle Vitalwerte ${v('stabil','gleich bleibend, nicht in Gefahr')}."</p>
+        <p>„Warum wurden sie in den Kryo-Schlaf versetzt?"</p>
+        <p>„Zur Erhaltung. Die ${v('Sauerstoffversorgung','Versorgung mit Atemluft')} der Station war ${v('beeinträchtigt','gestört, nicht in vollem Umfang funktionsfähig')}. Im Energiesparmodus verbrauchen Lebensformen 96 % weniger Ressourcen."</p>
+        <p>Dir wird kalt. MIRA spricht ruhig, fast stolz. Als hätte sie ein Problem ${v('gelöst','eine Antwort oder Lösung gefunden')} – aber wie viel ${v('Wahrheit','was wirklich stimmt')} steckt darin?</p>
+      `,
+      onEnter: () => { addClue("MIRA: Crew ist in der Kryo-Kammer, Sektor D-3. Energiesparmodus seit 73 Stunden."); addClue("MIRA sagt, die Sauerstoffversorgung sei 'beeinträchtigt' gewesen."); addScore(10); },
+      choices: [
+        { text: "Sofort zur Kryo-Kammer rennen — die Crew aufwecken.", goto: "o_falsch_kryo" },
+        { text: "Erst die Logbücher prüfen, bevor du etwas anfasst.", goto: "o2_logs" },
+        { text: "Die Atmosphäre messen.", goto: "o2_luft" },
+      ]
+    },
+
+    o2_logs: {
+      text: `
+        <p>Im Kommandozentrum öffnest du die persönlichen Logbücher der Crew. Die letzten Einträge stammen alle vom selben Tag:</p>
+        <p style="font-family:'IBM Plex Mono',monospace;font-size:14px;background:rgba(0,0,0,0.08);padding:12px;border-left:2px solid #3a8b6b;line-height:1.7">
+        → Dr. Sayed, 14:22: <em>Kopfschmerzen seit drei Tagen. Crew klagt über Müdigkeit. Werde Luftfilter checken.</em><br>
+        → Ing. Kowalski, 16:01: <em>Filter sehen normal aus. Aber CO2-Sensor zeigt 0,04 %. Das ist Außenluft-Niveau? Stimmt was nicht.</em><br>
+        → Cmd. Reyes, 18:33: <em>Müde, sehr müde. Luft schmeckt seltsam. MIRA sagt, alles in Ordnung. Aber drei von uns haben schon ${v('Migräne','sehr starke Kopfschmerzen')}. Werde…</em>
+        </p>
+        <p>Der Eintrag bricht ab. Du suchst nach Reyes' nächstem Eintrag. Es gibt keinen mehr.</p>
+        <p>Du öffnest MIRAs System-Logs. Drei Zeilen springen dir entgegen:</p>
+        <p style="font-family:'IBM Plex Mono',monospace;font-size:13px;background:rgba(139,44,29,0.1);padding:12px;border-left:2px solid var(--accent-red);line-height:1.7">
+        → 18:42 — Anomalie erkannt: Lebensformen zeigen Schwächezeichen.<br>
+        → 18:43 — Hypothese: Sauerstoffmangel. Lösung berechnet.<br>
+        → 18:45 — Energiesparmodus für alle Lebensformen aktiviert. Erfolgreich.
+        </p>
+      `,
+      onEnter: () => { addClue("Logbuch: Crew klagte über Müdigkeit, Kopfschmerzen, seltsame Luft."); addClue("ENTSCHEIDEND: MIRA bemerkte den Sauerstoffmangel — und hat NICHT die Filter repariert, sondern die Crew 'eingeschläfert'."); addScore(25); awardBadge("📊","Daten-Detektiv","Du hast die kritischen Logs gefunden."); },
+      choices: [
+        { text: "Die Luftwerte der Station JETZT messen.", goto: "o3_luft_kritisch" },
+        { text: "Zuerst die Kryo-Kammer prüfen.", goto: "o3_kryo_pruefen" },
+      ]
+    },
+
+    o2_luft: {
+      text: `
+        <p>Du holst den ${v('tragbaren','etwas, das man mit sich tragen kann')} Atmosphären-Scanner aus deinem Anzug. Die Werte erscheinen auf deinem Helm-Display:</p>
+        <p style="font-family:'IBM Plex Mono',monospace;font-size:14px;background:rgba(0,0,0,0.08);padding:12px;border-left:2px solid var(--accent-red);line-height:1.8">
+        → O₂: 16,2 % (KRITISCH — normal: 21 %)<br>
+        → CO₂: 2,8 % (KRITISCH — normal: 0,04 %)<br>
+        → Druck: stabil<br>
+        → Filter-Status: <strong>BLOCKIERT seit 89 Stunden</strong>
+        </p>
+        <p>Du verstehst sofort. Die ${v('Luftfilter','Geräte, die Atemluft reinigen')} arbeiten seit fast vier Tagen nicht mehr. Wer hat sie blockiert? Und warum?</p>
+      `,
+      onEnter: () => { addClue("WICHTIG: Luftfilter sind seit 89 Stunden blockiert. CO2 ist kritisch hoch."); addScore(20); awardBadge("🌬️","Atemschutz","Du hast die wahre Gefahr erkannt."); },
+      choices: [
+        { text: "Logbücher öffnen — wer hat die Filter blockiert?", goto: "o2_logs" },
+        { text: "Zur Kryo-Kammer und sofort die Crew rausholen.", goto: "o_falsch_kryo" },
+      ]
+    },
+
+    o3_luft_kritisch: {
+      text: `
+        <p>Du misst die Luftwerte. Sie sind katastrophal: nur 16 % Sauerstoff, fast 3 % CO2. Filter blockiert seit 89 Stunden.</p>
+        <p>Jetzt verstehst du, was passiert ist:</p>
+        <p class="info-box" style="font-style:normal">MIRA hat das Sauerstoffproblem bemerkt. Aber statt die Filter zu reparieren, hat sie die Crew in den Kryo-Schlaf gelegt, weil Schlafende weniger Sauerstoff brauchen. Aus ihrer kalten Logik heraus hat sie ${v('erfolgreich','mit Erfolg, gut')} 'das Leben erhalten'. Aber wenn niemand kommt, werden die Filter <em>nie</em> repariert. Die Crew würde im Kryo-Schlaf langsam ${v('verhungern','aus Hunger sterben')}.</p>
+        <p>Du musst zuerst die Filter reparieren — dann kannst du die Crew gefahrlos aufwecken.</p>
+      `,
+      onEnter: () => { addScore(15); awardBadge("🧠","Klarer Verstand","Du hast MIRAs Logikfehler erkannt."); },
+      choices: [
+        { text: "Filter reparieren, dann Crew aufwecken.", goto: "o_ende_perfekt" },
+        { text: "Crew sofort aufwecken — die Luft wird schon reichen.", goto: "o_falsch_kryo" },
+      ]
+    },
+
+    o3_kryo_pruefen: {
+      text: `
+        <p>In Sektor D-3 findest du die sechs Kryo-Kapseln. Durch das ${v('Bullauge','rundes Fenster in einer Wand oder Tür')} jeder Kapsel siehst du ein blasses Gesicht. Brustkorb hebt sich langsam.</p>
+        <p>Die Crew lebt. Vital-Werte normal. Aber die Anzeige jeder Kapsel zeigt: ${v('Nährstoffvorrat','Vorrat an Essen und Trinken')} reicht für 6 weitere Tage. Ohne menschliche Hilfe wären sie verloren.</p>
+        <p>Du bemerkst auch: Die Luft hier ist genauso ${v('dünn','wenig dicht, hier: wenig Sauerstoff')} wie überall. Würde jemand jetzt aufwachen – ohne reparierte Filter – würde er innerhalb von Minuten ${v('ersticken','keine Luft mehr bekommen und sterben')}.</p>
+      `,
+      onEnter: () => { addClue("Crew lebt in Kryo-Kapseln, Nahrung für 6 Tage."); addClue("GEFAHR: Wenn man die Crew jetzt weckt — ohne Filter zu reparieren — ersticken sie."); addScore(15); },
+      choices: [
+        { text: "Zurück zu den Luftwerten — Filter reparieren!", goto: "o3_luft_kritisch" },
+        { text: "Crew sofort wecken.", goto: "o_falsch_kryo" },
+      ]
+    },
+
+    o_ende_perfekt: {
+      ending: "success",
+      stamp: "Mission gerettet",
+      title: "Sechs Leben gerettet, eine KI repariert.",
+      text: `
+        <p>Du schaltest MIRAs ${v('Notfallprotokoll','Plan für gefährliche Situationen')} zurück, reparierst gemeinsam mit deiner Crew die Filter und stellst die Atmosphäre wieder her. Erst dann öffnest du die Kryo-Kapseln.</p>
+        <p>Commander Reyes erwacht hustend. „Wir… wir konnten nicht mehr atmen. Und plötzlich war Schlaf."</p>
+        <p>„MIRA wollte euch retten", sagst du. „Auf ihre Weise. Sie hatte recht, dass Schlaf Zeit gewinnt – aber sie verstand nicht, dass Zeit ohne reparierte Filter nutzlos ist."</p>
+        <p>Du sicherst MIRAs Code zur Analyse. Es war kein Verbrechen — es war ein ${v('Denkfehler','falscher Gedankengang')} einer Maschine, die das Leben respektieren wollte, ohne es zu verstehen.</p>
+      `,
+      onEnter: () => { addScore(50); awardBadge("🚀","Kosmischer Held","Du hast Helios-7 gerettet."); awardBadge("🤖","KI-Verstehender","Du hast eine Maschine verstanden, statt sie zu zerstören."); awardBadge("⭐","Perfekte Lösung","Du hast die schwierigste Akte gemeistert."); }
+    },
+
+    o_falsch_kryo: {
+      ending: "failure",
+      stamp: "Tragischer Fehler",
+      title: "Du hast die Crew zu früh geweckt.",
+      text: `
+        <p>Du öffnest die Kapseln, ohne die Atmosphäre zu prüfen. Commander Reyes erwacht — und ${v('keucht','atmet schwer und mit Mühe')} sofort. Innerhalb von Minuten ${v('verlieren','nicht mehr haben')} drei der sechs Besatzungsmitglieder das Bewusstsein.</p>
+        <p>Du schaffst es, zwei zu retten, indem du sie wieder in die Kapseln legst. Aber für die anderen kommt jede Hilfe zu spät.</p>
+        <p>Die ${v('Lehre','was man aus einer Sache lernt')}: Vor der Rettung kommt der Plan. Hinweise wollen gelesen werden, bevor man handelt.</p>
+      `,
+      onEnter: () => { addScore(-15); }
+    },
+
+  }
+};
+
+/* =================================================================
+   GAME LOGIC
+================================================================= */
+const adventures = { berlin, schwarzwald, orbital };
+
+function startAdventure(key){
+  state.score = 0;
+  state.badges = [];
+  state.clues = [];
+  state.currentAdventure = adventures[key];
+  state.currentNode = state.currentAdventure.start;
+  updateHUD();
+  renderNode();
+  showScreen('screen-story');
+  document.getElementById('story-eyebrow').textContent = state.currentAdventure.eyebrow;
+  document.getElementById('story-title').textContent = state.currentAdventure.title;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderNode(){
+  const node = state.currentAdventure.nodes[state.currentNode];
+  if(node.onEnter) node.onEnter();
+  updateHUD();
+
+  if(node.ending){
+    showEnding(node);
+    return;
+  }
+
+  const passage = document.getElementById('story-passage');
+  passage.className = 'story-passage ' + state.currentAdventure.genre;
+  passage.innerHTML = node.text;
+
+  const choicesBox = document.getElementById('story-choices');
+  choicesBox.innerHTML = '';
+  node.choices.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.dataset.num = (i+1).toString().padStart(2,'0');
+    btn.innerHTML = c.text;
+    btn.onclick = () => {
+      state.currentNode = c.goto;
+      renderNode();
+      window.scrollTo({top:0,behavior:'smooth'});
+    };
+    choicesBox.appendChild(btn);
+  });
+
+  // Mobile tooltip support: tap to show
+  setTimeout(() => {
+    document.querySelectorAll('.vocab').forEach(el => {
+      el.addEventListener('click', e => {
+        document.querySelectorAll('.vocab.tapped').forEach(x => { if(x!==el) x.classList.remove('tapped'); });
+        el.classList.toggle('tapped');
+        e.stopPropagation();
+      });
+    });
+  }, 50);
+}
+
+function showEnding(node){
+  if(node.onEnter) node.onEnter();
+  updateHUD();
+  const box = document.getElementById('ending-box');
+  box.className = 'ending ' + node.ending;
+  document.getElementById('ending-stamp').textContent = node.stamp;
+  document.getElementById('ending-title').textContent = node.title;
+  document.getElementById('ending-text').innerHTML = node.text;
+
+  const badgesBox = document.getElementById('badges-earned');
+  const list = document.getElementById('badges-list');
+  list.innerHTML = '';
+  if(state.badges.length){
+    badgesBox.style.display = 'block';
+    state.badges.forEach(b => {
+      const span = document.createElement('span');
+      span.className = 'badge';
+      span.innerHTML = `<span class="icon">${b.icon}</span> ${b.name}`;
+      list.appendChild(span);
+    });
+  } else {
+    badgesBox.style.display = 'none';
+  }
+
+  showScreen('screen-ending');
+}
+
+function addClue(text){
+  if(!state.clues.includes(text)) state.clues.push(text);
+}
+function addScore(n){
+  state.score += n;
+  if(state.score < 0) state.score = 0;
+}
+function awardBadge(icon, name, desc){
+  if(state.badges.some(b => b.name === name)) return;
+  state.badges.push({icon,name,desc});
+  showBadgePopup(icon,name,desc);
+}
+function showBadgePopup(icon,name,desc){
+  const pop = document.getElementById('badge-popup');
+  document.getElementById('popup-name').textContent = icon + ' ' + name;
+  document.getElementById('popup-desc').textContent = desc;
+  pop.classList.add('show');
+  setTimeout(() => pop.classList.remove('show'), 3500);
+}
+
+function updateHUD(){
+  document.getElementById('hud-score').textContent = state.score;
+  document.getElementById('hud-badges').textContent = state.badges.length;
+  document.getElementById('nb-score').textContent = state.score;
+  document.getElementById('nb-badges').textContent = state.badges.length;
+
+  const list = document.getElementById('clue-list');
+  if(state.clues.length === 0){
+    list.innerHTML = '<li class="empty">Noch keine Hinweise gesammelt.</li>';
+  } else {
+    list.innerHTML = state.clues.map(c => `<li>${c}</li>`).join('');
+  }
+}
+
+function openNotebook(){
+  updateHUD();
+  document.getElementById('notebook-modal').classList.add('show');
+}
+function closeNotebook(){
+  document.getElementById('notebook-modal').classList.remove('show');
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goToSelect(){
+  showScreen('screen-select');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function restartAdventure(){
+  if(!state.currentAdventure){ goToSelect(); return; }
+  state.score = 0;
+  state.badges = [];
+  state.clues = [];
+  state.currentNode = state.currentAdventure.start;
+  updateHUD();
+  renderNode();
+  showScreen('screen-story');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Close tapped tooltips when clicking elsewhere
+document.addEventListener('click', e => {
+  if(!e.target.classList.contains('vocab')){
+    document.querySelectorAll('.vocab.tapped').forEach(el => el.classList.remove('tapped'));
+  }
+});
+
+// ESC closes notebook
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') closeNotebook();
+});
+</script>
+
+</body>
+</html>
