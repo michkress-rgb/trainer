@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Three-Point Shootout</title>
+  <style>
+    :root {
+      --bg1: #10182d;
+      --bg2: #263b67;
+      --card: rgba(255, 255, 255, 0.1);
+      --card2: rgba(255, 255, 255, 0.16);
+      --text: #f8fbff;
+      --muted: #c8d4ec;
+      --accent: #ffb545;
+      --good: #53e0a5;
+      --bad: #ff6b72;
+      --line: rgba(255,255,255,.22);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,181,69,.25), transparent 28%),
+        radial-gradient(circle at 80% 20%, rgba(83,224,165,.15), transparent 30%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      overflow-x: hidden;
+    }
+
+    .wrap {
+      width: min(1160px, 94vw);
+      margin: 0 auto;
+      padding: 28px 0 40px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1;
+      letter-spacing: -0.05em;
+      text-shadow: 0 10px 30px rgba(0,0,0,.3);
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      max-width: 740px;
+      line-height: 1.45;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.09);
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: #fff;
+      font-weight: 800;
+      white-space: nowrap;
+      box-shadow: 0 14px 40px rgba(0,0,0,.16);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel, .court {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.07));
+      border-radius: 28px;
+      box-shadow: 0 20px 70px rgba(0,0,0,.25);
+      backdrop-filter: blur(8px);
+    }
+
+    .panel { padding: 18px; }
+
+    .panel h2, .court h2 {
+      margin: 0 0 12px;
+      font-size: 1.18rem;
+      letter-spacing: .02em;
+    }
+
+    .player-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .player-card {
+      border: 2px solid transparent;
+      background: rgba(255,255,255,.08);
+      border-radius: 22px;
+      padding: 14px;
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .player-card:hover { transform: translateY(-2px); background: rgba(255,255,255,.13); }
+    .player-card.selected { border-color: var(--accent); background: rgba(255,181,69,.16); }
+
+    .pc-top {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 1000;
+      font-size: 1.1rem;
+      color: white;
+      border: 3px solid rgba(255,255,255,.7);
+      box-shadow: inset 0 -12px 20px rgba(0,0,0,.2), 0 8px 22px rgba(0,0,0,.25);
+    }
+
+    .name { font-weight: 1000; font-size: 1.05rem; }
+    .style { color: var(--muted); font-size: .9rem; margin-top: 2px; }
+    .tag { font-size: .78rem; font-weight: 900; background: rgba(0,0,0,.28); padding: 6px 8px; border-radius: 999px; }
+
+    .stats { display: grid; gap: 8px; }
+    .stat-row { display: grid; grid-template-columns: 86px 1fr 24px; gap: 8px; align-items: center; font-size: .86rem; color: #edf3ff; }
+    .bar { height: 10px; border-radius: 999px; background: rgba(0,0,0,.25); overflow: hidden; }
+    .fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #fff3ae, #ffb545); }
+
+    .court {
+      padding: 20px;
+      min-height: 680px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scoreboard {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .score-box {
+      background: rgba(0,0,0,.2);
+      border: 1px solid rgba(255,255,255,.14);
+      padding: 12px;
+      border-radius: 18px;
+      text-align: center;
+    }
+    .score-label { color: var(--muted); font-size: .82rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
+    .score-num { font-size: 2rem; font-weight: 1000; line-height: 1.1; }
+
+    .game-area {
+      height: 350px;
+      border-radius: 28px;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at center bottom, rgba(255,181,69,.18), transparent 40%),
+        linear-gradient(180deg, rgba(18, 31, 60, .65), rgba(10, 17, 34, .9));
+      border: 1px solid rgba(255,255,255,.18);
+    }
+
+    .court-lines {
+      position: absolute;
+      inset: auto 5% -75px 5%;
+      height: 190px;
+      border: 5px solid rgba(255,255,255,.28);
+      border-top-left-radius: 220px;
+      border-top-right-radius: 220px;
+      border-bottom: none;
+    }
+
+    .hoop {
+      position: absolute;
+      top: 42px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 155px;
+      height: 112px;
+    }
+    .backboard {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%);
+      width: 138px;
+      height: 82px;
+      border: 5px solid rgba(255,255,255,.9);
+      border-radius: 10px;
+      background: rgba(255,255,255,.08);
+    }
+    .rim {
+      position: absolute;
+      left: 50%;
+      top: 70px;
+      transform: translateX(-50%);
+      width: 76px;
+      height: 18px;
+      border: 5px solid #ff6d2d;
+      border-radius: 50%;
+      background: rgba(255,109,45,.08);
+      z-index: 3;
+    }
+    .net {
+      position: absolute;
+      top: 84px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 58px;
+      height: 40px;
+      background: repeating-linear-gradient(70deg, transparent 0 9px, rgba(255,255,255,.55) 10px 12px), repeating-linear-gradient(110deg, transparent 0 9px, rgba(255,255,255,.55) 10px 12px);
+      clip-path: polygon(0 0, 100% 0, 78% 100%, 22% 100%);
+      opacity: .95;
+    }
+
+    .shooter {
+      position: absolute;
+      bottom: 35px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 82px;
+      height: 128px;
+      transition: transform .12s ease;
+    }
+    .head { position:absolute; left: 23px; top:0; width:36px; height:36px; border-radius:50%; background:#ffd0a3; border:3px solid rgba(0,0,0,.15); }
+    .body { position:absolute; left:17px; top:34px; width:48px; height:58px; border-radius:14px 14px 20px 20px; background: var(--jersey, #4f8cff); border: 3px solid rgba(255,255,255,.65); }
+    .legs { position:absolute; left:16px; top:85px; width:50px; height:34px; display:flex; gap:8px; justify-content:center; }
+    .leg { width:15px; height:35px; border-radius: 0 0 10px 10px; background:#18223d; }
+    .arm { position:absolute; width:18px; height:52px; background:#ffd0a3; border-radius: 999px; top:42px; transform-origin: top center; }
+    .arm.left { left:4px; transform: rotate(20deg); }
+    .arm.right { right:4px; transform: rotate(-20deg); }
+
+    .ball {
+      position: absolute;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 26%, #ffc36d, #d56f1b 65%);
+      border: 2px solid rgba(78,35,10,.65);
+      left: calc(50% + 20px);
+      bottom: 128px;
+      display: none;
+      z-index: 2;
+      box-shadow: 0 10px 20px rgba(0,0,0,.28);
+    }
+    .ball::before, .ball::after { content:""; position:absolute; inset:4px; border:2px solid rgba(70,30,8,.42); border-left:0; border-right:0; border-radius:50%; }
+    .ball::after { transform: rotate(90deg); }
+
+    .message {
+      min-height: 48px;
+      margin: 14px 0 12px;
+      display: grid;
+      place-items: center;
+      font-size: clamp(1.2rem, 3vw, 2.1rem);
+      font-weight: 1000;
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 6px 18px rgba(0,0,0,.35);
+    }
+
+    .meter-wrap {
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 22px;
+      padding: 16px;
+    }
+
+    .meter-label-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-weight: 800;
+      font-size: .95rem;
+      margin-bottom: 10px;
+    }
+
+    .meter {
+      position: relative;
+      height: 42px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255,107,114,.65), rgba(255,181,69,.8), rgba(83,224,165,.85), rgba(255,181,69,.8), rgba(255,107,114,.65));
+      border: 3px solid rgba(255,255,255,.22);
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0,0,0,.25);
+    }
+
+    .sweet {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      border-left: 3px solid rgba(255,255,255,.95);
+      border-right: 3px solid rgba(255,255,255,.95);
+      background: rgba(255,255,255,.23);
+      box-shadow: 0 0 20px rgba(255,255,255,.45);
+    }
+
+    .needle {
+      position: absolute;
+      top: -6px;
+      width: 6px;
+      height: 54px;
+      border-radius: 999px;
+      background: #fff;
+      left: 0;
+      box-shadow: 0 0 12px rgba(255,255,255,.9), 0 0 24px rgba(0,0,0,.4);
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 16px;
+      padding: 13px 14px;
+      font-weight: 1000;
+      cursor: pointer;
+      color: #172036;
+      background: #fff;
+      box-shadow: 0 10px 28px rgba(0,0,0,.22);
+      transition: transform .15s ease, filter .15s ease;
+      font-size: .98rem;
+    }
+    button:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    button.primary { background: linear-gradient(180deg, #ffcc72, #ff9f2a); }
+    button.good { background: linear-gradient(180deg, #9fffd8, #47d99e); }
+    button:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+
+    .explain {
+      margin-top: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: .96rem;
+    }
+
+    .shot-spots {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .spot {
+      text-align: center;
+      padding: 8px 4px;
+      border-radius: 14px;
+      background: rgba(0,0,0,.2);
+      border: 1px solid rgba(255,255,255,.12);
+      font-weight: 900;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+    .spot.active { color: #fff; border-color: var(--accent); background: rgba(255,181,69,.18); }
+    .spot.done { color: var(--good); }
+
+    .flash {
+      position: absolute;
+      pointer-events: none;
+      inset: 0;
+      display: none;
+      place-items: center;
+      font-size: 8rem;
+      font-weight: 1000;
+      color: rgba(255,255,255,.1);
+      letter-spacing: -.08em;
+      transform: rotate(-8deg);
+    }
+
+    .tiny { font-size: .82rem; color: var(--muted); margin-top: 8px; }
+
+    @keyframes swish {
+      0% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+      55% { transform: translate(-50%, -190px) scale(.82); }
+      100% { transform: translate(-50%, -220px) scale(.45); opacity: 0; }
+    }
+    @keyframes missLeft {
+      0% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+      50% { transform: translate(-160px, -170px) scale(.88); }
+      100% { transform: translate(-230px, -80px) scale(.7); opacity: 0; }
+    }
+    @keyframes missRight {
+      0% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+      50% { transform: translate(120px, -170px) scale(.88); }
+      100% { transform: translate(210px, -80px) scale(.7); opacity: 0; }
+    }
+    @keyframes jump { 0%,100%{ transform: translateX(-50%) translateY(0);} 50%{ transform: translateX(-50%) translateY(-20px);} }
+    @keyframes pop { 0%{ transform: scale(.8); opacity:0;} 20%{opacity:1;} 100%{ transform: scale(1.25); opacity:0;} }
+
+    @media (max-width: 920px) {
+      .grid { grid-template-columns: 1fr; }
+      header { grid-template-columns: 1fr; }
+      .scoreboard { grid-template-columns: repeat(2, 1fr); }
+      .court { min-height: 620px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Three-Point Shootout</h1>
+        <div class="subtitle">Choose a player, balance strengths and weaknesses, then hit <strong>Space</strong> or click <strong>Shoot</strong> when the moving marker is inside the glowing window.</div>
+      </div>
+      <div class="pill">Classroom Reward Game</div>
+    </header>
+
+    <main class="grid">
+      <section class="panel">
+        <h2>1. Pick your player</h2>
+        <div class="player-list" id="playerList"></div>
+        <div class="explain">
+          <strong>Tradeoff:</strong> better accuracy gives a larger scoring window. Better focus slows the marker. Better clutch gives bonus chances on streaks. Better stamina keeps your window from shrinking late in the round.
+        </div>
+      </section>
+
+      <section class="court">
+        <h2>2. Take your shots</h2>
+        <div class="scoreboard">
+          <div class="score-box"><div class="score-label">Score</div><div class="score-num" id="score">0</div></div>
+          <div class="score-box"><div class="score-label">Shot</div><div class="score-num" id="shotCount">0/15</div></div>
+          <div class="score-box"><div class="score-label">Streak</div><div class="score-num" id="streak">0</div></div>
+          <div class="score-box"><div class="score-label">Best</div><div class="score-num" id="best">0</div></div>
+        </div>
+
+        <div class="game-area" id="gameArea">
+          <div class="court-lines"></div>
+          <div class="hoop"><div class="backboard"></div><div class="rim"></div><div class="net"></div></div>
+          <div class="ball" id="ball"></div>
+          <div class="shooter" id="shooter"><div class="head"></div><div class="body"></div><div class="arm left"></div><div class="arm right"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div></div>
+          <div class="flash" id="flash">SWISH</div>
+        </div>
+
+        <div class="message" id="message">Choose a player and start the round.</div>
+
+        <div class="meter-wrap">
+          <div class="meter-label-row"><span id="difficultyText">Window: --</span><span>Perfect zone = center of the window</span></div>
+          <div class="meter" id="meter"><div class="sweet" id="sweet"></div><div class="needle" id="needle"></div></div>
+          <div class="controls">
+            <button class="primary" id="startBtn">Start Round</button>
+            <button class="good" id="shootBtn" disabled>Shoot / Space</button>
+            <button id="resetBtn">Reset Best</button>
+          </div>
+          <div class="shot-spots" id="spots"></div>
+          <div class="tiny">Scoring: normal make = 3 points. Perfect shot = 4 points. Every 3-shot streak earns a “heat check” bonus that slightly widens the next window.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const players = [
+      { name: 'Ava Arc', initials: 'AA', color: '#4f8cff', style: 'Balanced shooter', tag: 'All-rounder', accuracy: 7, focus: 7, clutch: 6, stamina: 7 },
+      { name: 'Milo Marksman', initials: 'MM', color: '#ff6b72', style: 'Huge target window, fast meter', tag: 'Accurate', accuracy: 9, focus: 4, clutch: 5, stamina: 6 },
+      { name: 'Nia Quickstep', initials: 'NQ', color: '#53e0a5', style: 'Slow meter, smaller target', tag: 'Focused', accuracy: 5, focus: 9, clutch: 6, stamina: 7 },
+      { name: 'Leo Lightning', initials: 'LL', color: '#b47cff', style: 'Streak specialist', tag: 'Clutch', accuracy: 6, focus: 5, clutch: 9, stamina: 5 },
+      { name: 'Sam Steel', initials: 'SS', color: '#ffb545', style: 'Strong late-round stamina', tag: 'Steady', accuracy: 6, focus: 6, clutch: 5, stamina: 9 }
+    ];
+
+    const totalShots = 15;
+    let selected = players[0];
+    let score = 0, shots = 0, streak = 0, best = Number(localStorage.getItem('shootoutBest') || 0);
+    let running = false, needlePos = 0, direction = 1, raf = null;
+    let sweetLeft = 40, sweetWidth = 20;
+
+    const playerList = document.getElementById('playerList');
+    const shooter = document.getElementById('shooter');
+    const scoreEl = document.getElementById('score');
+    const shotCountEl = document.getElementById('shotCount');
+    const streakEl = document.getElementById('streak');
+    const bestEl = document.getElementById('best');
+    const messageEl = document.getElementById('message');
+    const needle = document.getElementById('needle');
+    const sweet = document.getElementById('sweet');
+    const meter = document.getElementById('meter');
+    const startBtn = document.getElementById('startBtn');
+    const shootBtn = document.getElementById('shootBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const difficultyText = document.getElementById('difficultyText');
+    const ball = document.getElementById('ball');
+    const flash = document.getElementById('flash');
+    const spots = document.getElementById('spots');
+
+    function renderPlayers() {
+      playerList.innerHTML = '';
+      players.forEach((p, i) => {
+        const card = document.createElement('div');
+        card.className = 'player-card' + (p === selected ? ' selected' : '');
+        card.innerHTML = `
+          <div class="pc-top">
+            <div class="avatar" style="background:${p.color}">${p.initials}</div>
+            <div><div class="name">${p.name}</div><div class="style">${p.style}</div></div>
+            <div class="tag">${p.tag}</div>
+          </div>
+          <div class="stats">
+            ${statLine('Accuracy', p.accuracy)}
+            ${statLine('Focus', p.focus)}
+            ${statLine('Clutch', p.clutch)}
+            ${statLine('Stamina', p.stamina)}
+          </div>`;
+        card.addEventListener('click', () => {
+          if (running && shots > 0 && shots < totalShots) return;
+          selected = p;
+          document.documentElement.style.setProperty('--accent', p.color);
+          shooter.style.setProperty('--jersey', p.color);
+          renderPlayers();
+          setupWindow();
+          messageEl.textContent = `${p.name} is ready.`;
+        });
+        playerList.appendChild(card);
+      });
+    }
+
+    function statLine(label, value) {
+      return `<div class="stat-row"><span>${label}</span><div class="bar"><div class="fill" style="width:${value*10}%"></div></div><strong>${value}</strong></div>`;
+    }
+
+    function renderSpots() {
+      spots.innerHTML = '';
+      ['Corner', 'Wing', 'Top', 'Wing', 'Corner'].forEach((label, i) => {
+        const div = document.createElement('div');
+        const currentRack = Math.floor(shots / 3);
+        div.className = 'spot' + (i === currentRack && shots < totalShots ? ' active' : '') + (i < currentRack ? ' done' : '');
+        div.textContent = label;
+        spots.appendChild(div);
+      });
+    }
+
+    function updateScoreboard() {
+      scoreEl.textContent = score;
+      shotCountEl.textContent = `${shots}/${totalShots}`;
+      streakEl.textContent = streak;
+      bestEl.textContent = best;
+      renderSpots();
+    }
+
+    function setupWindow() {
+      const fatigue = Math.max(0, shots - 7) * (1.15 - selected.stamina / 12);
+      const heatBonus = streak > 0 && streak % 3 === 0 ? selected.clutch * 0.9 : 0;
+      sweetWidth = Math.max(8, Math.min(34, 9 + selected.accuracy * 2.15 + heatBonus - fatigue));
+      const centerDrift = (Math.random() * 16) - 8;
+      sweetLeft = Math.max(8, Math.min(92 - sweetWidth, 50 - sweetWidth / 2 + centerDrift));
+      sweet.style.left = sweetLeft + '%';
+      sweet.style.width = sweetWidth + '%';
+      difficultyText.textContent = `Window: ${Math.round(sweetWidth)}% | ${selected.name}`;
+    }
+
+    function meterSpeed() {
+      return 0.85 + (10 - selected.focus) * 0.18 + Math.min(shots, 10) * 0.025;
+    }
+
+    function animate() {
+      if (!running) return;
+      needlePos += direction * meterSpeed();
+      if (needlePos >= 100) { needlePos = 100; direction = -1; }
+      if (needlePos <= 0) { needlePos = 0; direction = 1; }
+      needle.style.left = `calc(${needlePos}% - 3px)`;
+      raf = requestAnimationFrame(animate);
+    }
+
+    function startRound() {
+      score = 0; shots = 0; streak = 0; needlePos = 0; direction = 1; running = true;
+      startBtn.disabled = true;
+      shootBtn.disabled = false;
+      messageEl.textContent = 'Time your shot!';
+      setupWindow();
+      updateScoreboard();
+      cancelAnimationFrame(raf);
+      animate();
+    }
+
+    function shoot() {
+      if (!running || shots >= totalShots) return;
+      const center = sweetLeft + sweetWidth / 2;
+      const distance = Math.abs(needlePos - center);
+      const made = needlePos >= sweetLeft && needlePos <= sweetLeft + sweetWidth;
+      const perfect = made && distance <= Math.max(1.7, sweetWidth * 0.13);
+      shots++;
+
+      shooter.style.animation = 'jump .35s ease';
+      setTimeout(() => shooter.style.animation = '', 360);
+
+      ball.style.display = 'block';
+      ball.style.animation = made ? 'swish .7s ease forwards' : (needlePos < center ? 'missLeft .75s ease forwards' : 'missRight .75s ease forwards');
+      setTimeout(() => { ball.style.display = 'none'; ball.style.animation = ''; }, 780);
+
+      if (made) {
+        const points = perfect ? 4 : 3;
+        score += points;
+        streak++;
+        messageEl.textContent = perfect ? `Perfect release! +${points}` : `Swish! +${points}`;
+        messageEl.style.color = perfect ? '#fff3ae' : 'var(--good)';
+        flash.textContent = perfect ? 'PERFECT' : 'SWISH';
+        flash.style.display = 'grid';
+        flash.style.animation = 'pop .8s ease forwards';
+        setTimeout(() => { flash.style.display = 'none'; flash.style.animation = ''; }, 820);
+      } else {
+        streak = 0;
+        messageEl.textContent = distance < sweetWidth ? 'So close. Try again!' : 'Miss. Refocus!';
+        messageEl.style.color = 'var(--bad)';
+      }
+
+      updateScoreboard();
+      if (shots >= totalShots) endRound();
+      else setupWindow();
+    }
+
+    function endRound() {
+      running = false;
+      shootBtn.disabled = true;
+      startBtn.disabled = false;
+      cancelAnimationFrame(raf);
+      if (score > best) {
+        best = score;
+        localStorage.setItem('shootoutBest', String(best));
+        messageEl.textContent = `New best score: ${score}!`;
+        messageEl.style.color = '#fff3ae';
+      } else {
+        messageEl.textContent = `Round complete: ${score} points.`;
+        messageEl.style.color = '#fff';
+      }
+      updateScoreboard();
+    }
+
+    startBtn.addEventListener('click', startRound);
+    shootBtn.addEventListener('click', shoot);
+    resetBtn.addEventListener('click', () => {
+      best = 0;
+      localStorage.setItem('shootoutBest', '0');
+      updateScoreboard();
+      messageEl.textContent = 'Best score reset.';
+      messageEl.style.color = '#fff';
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        shoot();
+      }
+      if (e.code === 'Enter' && !startBtn.disabled) startRound();
+    });
+
+    document.documentElement.style.setProperty('--accent', selected.color);
+    shooter.style.setProperty('--jersey', selected.color);
+    renderPlayers();
+    setupWindow();
+    updateScoreboard();
+  </script>
+</body>
+</html>
