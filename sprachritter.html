@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Die Sprachritter von Bindewortheim</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Cinzel:wght@500;700;900&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #f4e8c8;
+    --parchment-dark: #e3d2a4;
+    --ink: #2a1810;
+    --ink-soft: #4a3424;
+    --gold: #c9a14a;
+    --gold-deep: #a87f2c;
+    --crimson: #8b1e2d;
+    --forest: #2d5a3d;
+    --forest-deep: #1e3d29;
+    --sky: #3a6b8c;
+    --plum: #4a2845;
+    --rust: #b85838;
+    --shadow: rgba(42, 24, 16, 0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100%;
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--ink);
+    background:
+      radial-gradient(ellipse at top, #e8d5a0 0%, transparent 60%),
+      radial-gradient(ellipse at bottom right, #d4b878 0%, transparent 50%),
+      radial-gradient(ellipse at bottom left, #c9a575 0%, transparent 50%),
+      var(--parchment);
+    background-attachment: fixed;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Parchment texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(139, 90, 43, 0.08) 0%, transparent 4%),
+      radial-gradient(circle at 80% 70%, rgba(139, 90, 43, 0.06) 0%, transparent 5%),
+      radial-gradient(circle at 50% 50%, rgba(168, 127, 44, 0.05) 0%, transparent 8%),
+      radial-gradient(circle at 10% 80%, rgba(139, 30, 45, 0.04) 0%, transparent 6%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.2 0 0 0 0 0.1 0 0 0 0 0.05 0 0 0 0.15 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+    mix-blend-mode: multiply;
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* ─── Header / Banner ─── */
+  header.banner {
+    text-align: center;
+    margin-bottom: 32px;
+    padding: 24px 16px;
+    position: relative;
+  }
+
+  header.banner::before, header.banner::after {
+    content: '❦';
+    color: var(--gold-deep);
+    font-size: 28px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.6;
+  }
+  header.banner::before { left: 8%; }
+  header.banner::after { right: 8%; }
+
+  h1.title {
+    font-family: 'Cinzel', serif;
+    font-weight: 900;
+    font-size: clamp(1.8rem, 5vw, 3.2rem);
+    color: var(--crimson);
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+    text-shadow: 2px 2px 0 var(--gold-deep), 3px 3px 0 var(--shadow);
+  }
+
+  .subtitle {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    color: var(--ink-soft);
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* ─── HUD: Badges + Progress ─── */
+  .hud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, var(--parchment-dark), var(--parchment));
+    border: 3px double var(--gold-deep);
+    border-radius: 8px;
+    padding: 14px 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.4);
+  }
+
+  .hud-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .hud-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+  }
+
+  .crystal-count {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--crimson);
+  }
+
+  .badges-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    background: radial-gradient(circle at 30% 30%, #f0e0a0, var(--gold-deep));
+    border: 2px solid var(--gold-deep);
+    box-shadow: 0 2px 6px var(--shadow), inset 0 -2px 4px rgba(0,0,0,0.2);
+    opacity: 0.15;
+    filter: grayscale(0.9);
+    transition: all 0.5s cubic-bezier(.34,1.56,.64,1);
+    cursor: help;
+    position: relative;
+  }
+
+  .badge.earned {
+    opacity: 1;
+    filter: grayscale(0);
+    animation: badge-pop 0.8s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  .badge.earned::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+    z-index: -1;
+    animation: badge-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes badge-pop {
+    0% { transform: scale(0) rotate(-180deg); }
+    60% { transform: scale(1.3) rotate(15deg); }
+    100% { transform: scale(1) rotate(0); }
+  }
+
+  @keyframes badge-glow {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+  }
+
+  /* Tooltip on badge */
+  .badge-tooltip {
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--parchment);
+    font-family: 'Cormorant Garamond', serif;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 100;
+  }
+  .badge:hover .badge-tooltip { opacity: 1; }
+
+  /* ─── Cards / Scrolls ─── */
+  .scroll {
+    background: linear-gradient(180deg, var(--parchment) 0%, var(--parchment-dark) 100%);
+    border: 2px solid var(--gold-deep);
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow:
+      0 6px 20px var(--shadow),
+      inset 0 1px 0 rgba(255,255,255,0.5),
+      inset 0 -2px 4px rgba(139, 90, 43, 0.1);
+    position: relative;
+  }
+
+  .scroll::before, .scroll::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--gold-deep);
+  }
+  .scroll::before {
+    top: 8px; left: 8px;
+    border-right: none; border-bottom: none;
+  }
+  .scroll::after {
+    bottom: 8px; right: 8px;
+    border-left: none; border-top: none;
+  }
+
+  h2.act-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    font-weight: 700;
+    color: var(--forest-deep);
+    text-align: center;
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  .narrative {
+    font-style: italic;
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 24px;
+    padding: 12px 16px;
+    border-top: 1px solid rgba(168, 127, 44, 0.3);
+    border-bottom: 1px solid rgba(168, 127, 44, 0.3);
+  }
+
+  /* ─── Start Screen ─── */
+  .start-screen {
+    text-align: center;
+  }
+
+  .quest-intro {
+    font-size: 1.2rem;
+    line-height: 1.7;
+    max-width: 680px;
+    margin: 0 auto 32px;
+    color: var(--ink-soft);
+  }
+
+  .grade-select {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+
+  .grade-card {
+    background: linear-gradient(160deg, var(--parchment), var(--parchment-dark));
+    border: 3px solid var(--gold-deep);
+    border-radius: 12px;
+    padding: 28px 36px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+    min-width: 240px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .grade-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(201, 161, 74, 0.3) 50%, transparent 60%);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
+
+  .grade-card:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 12px 28px var(--shadow);
+    border-color: var(--crimson);
+  }
+
+  .grade-card:hover::before { transform: translateX(100%); }
+
+  .grade-emblem {
+    font-size: 3.5rem;
+    margin-bottom: 12px;
+  }
+
+  .grade-card h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: var(--crimson);
+    margin-bottom: 6px;
+  }
+
+  .grade-card p {
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .grade-card[data-grade="4"] { border-color: var(--forest); }
+  .grade-card[data-grade="4"] h3 { color: var(--forest-deep); }
+  .grade-card[data-grade="5"] { border-color: var(--plum); }
+  .grade-card[data-grade="5"] h3 { color: var(--plum); }
+
+  /* ─── Exercise area ─── */
+  .exercise-area {
+    margin-top: 12px;
+  }
+
+  .exercise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .exercise-counter {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em;
+  }
+
+  .progress-track {
+    flex: 1;
+    min-width: 200px;
+    height: 14px;
+    background: var(--parchment-dark);
+    border: 1px solid var(--gold-deep);
+    border-radius: 7px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--forest), var(--gold), var(--crimson));
+    transition: width 0.6s cubic-bezier(.34,1.56,.64,1);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+
+  .question-text {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    text-align: center;
+    margin: 20px 0 24px;
+    color: var(--ink);
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    border-left: 4px solid var(--gold-deep);
+    border-right: 4px solid var(--gold-deep);
+  }
+
+  .question-text .blank {
+    display: inline-block;
+    min-width: 120px;
+    border-bottom: 2px dashed var(--crimson);
+    padding: 0 8px;
+    font-weight: 700;
+    color: var(--crimson);
+  }
+
+  .question-text .blank.filled {
+    border-bottom-style: solid;
+    background: rgba(201, 161, 74, 0.25);
+    border-radius: 4px;
+  }
+
+  /* ─── Multiple Choice Buttons ─── */
+  .choices {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  .choice-btn {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    padding: 14px 18px;
+    background: linear-gradient(160deg, #fff8e0, var(--parchment-dark));
+    color: var(--ink);
+    border: 2px solid var(--gold-deep);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 3px 0 var(--gold-deep), 0 4px 8px var(--shadow);
+    position: relative;
+  }
+
+  .choice-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 0 var(--gold-deep), 0 6px 12px var(--shadow);
+    background: linear-gradient(160deg, #fffae8, var(--parchment));
+  }
+
+  .choice-btn:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 var(--gold-deep);
+  }
+
+  .choice-btn.correct {
+    background: linear-gradient(160deg, #b8d8a8, var(--forest));
+    color: white;
+    border-color: var(--forest-deep);
+    box-shadow: 0 3px 0 var(--forest-deep);
+    animation: shimmer 0.6s;
+  }
+
+  .choice-btn.wrong {
+    background: linear-gradient(160deg, #d8a8a8, var(--crimson));
+    color: white;
+    border-color: #5a1020;
+    box-shadow: 0 3px 0 #5a1020;
+    animation: shake 0.4s;
+  }
+
+  .choice-btn:disabled { cursor: not-allowed; }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  @keyframes shimmer {
+    0% { box-shadow: 0 3px 0 var(--forest-deep), 0 0 0 rgba(201, 161, 74, 0); }
+    50% { box-shadow: 0 3px 0 var(--forest-deep), 0 0 24px rgba(201, 161, 74, 0.8); }
+    100% { box-shadow: 0 3px 0 var(--forest-deep), 0 0 0 rgba(201, 161, 74, 0); }
+  }
+
+  /* ─── Drag and Drop ─── */
+  .dnd-bank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(74, 40, 69, 0.08);
+    border: 2px dashed var(--plum);
+    border-radius: 8px;
+    margin: 20px 0;
+    min-height: 70px;
+  }
+
+  .word-tile {
+    font-family: 'Cinzel', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding: 10px 16px;
+    background: linear-gradient(160deg, #fff0c0, var(--gold));
+    color: var(--ink);
+    border: 2px solid var(--gold-deep);
+    border-radius: 6px;
+    cursor: grab;
+    user-select: none;
+    box-shadow: 0 3px 0 var(--gold-deep), 0 4px 10px var(--shadow);
+    transition: transform 0.15s, box-shadow 0.15s;
+    touch-action: none;
+  }
+
+  .word-tile:hover {
+    transform: translateY(-3px) rotate(-2deg);
+    box-shadow: 0 6px 0 var(--gold-deep), 0 8px 14px var(--shadow);
+  }
+
+  .word-tile.dragging {
+    opacity: 0.5;
+    transform: scale(1.1) rotate(5deg);
+    cursor: grabbing;
+  }
+
+  .word-tile.used {
+    opacity: 0.3;
+    pointer-events: none;
+    filter: grayscale(0.7);
+  }
+
+  .drop-zone {
+    display: inline-block;
+    min-width: 130px;
+    min-height: 36px;
+    padding: 4px 12px;
+    margin: 0 4px;
+    border: 2px dashed var(--crimson);
+    border-radius: 6px;
+    background: rgba(139, 30, 45, 0.06);
+    text-align: center;
+    vertical-align: middle;
+    transition: all 0.2s;
+    font-weight: 700;
+    color: var(--crimson);
+  }
+
+  .drop-zone.over {
+    background: rgba(201, 161, 74, 0.3);
+    border-color: var(--gold-deep);
+    transform: scale(1.05);
+  }
+
+  .drop-zone.filled {
+    background: rgba(45, 90, 61, 0.15);
+    border-style: solid;
+    border-color: var(--forest);
+    color: var(--forest-deep);
+  }
+
+  /* ─── Sentence sorting (drag items into order) ─── */
+  .sort-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    padding: 18px;
+    background: rgba(58, 107, 140, 0.08);
+    border: 2px solid var(--sky);
+    border-radius: 8px;
+    margin: 20px 0;
+    min-height: 70px;
+  }
+
+  .sort-piece {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 10px 14px;
+    background: linear-gradient(160deg, #d4e5f0, var(--sky));
+    color: white;
+    border: 2px solid #2a4f6a;
+    border-radius: 6px;
+    cursor: grab;
+    user-select: none;
+    box-shadow: 0 3px 0 #2a4f6a, 0 4px 8px var(--shadow);
+    transition: transform 0.2s;
+    touch-action: none;
+  }
+
+  .sort-piece:hover {
+    transform: translateY(-2px);
+  }
+
+  .sort-piece.dragging {
+    opacity: 0.6;
+  }
+
+  /* ─── Feedback ─── */
+  .feedback {
+    margin-top: 20px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    text-align: center;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s;
+  }
+
+  .feedback.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .feedback.correct {
+    background: linear-gradient(160deg, rgba(45, 90, 61, 0.15), rgba(45, 90, 61, 0.3));
+    color: var(--forest-deep);
+    border: 2px solid var(--forest);
+  }
+
+  .feedback.wrong {
+    background: linear-gradient(160deg, rgba(139, 30, 45, 0.1), rgba(139, 30, 45, 0.2));
+    color: var(--crimson);
+    border: 2px solid var(--crimson);
+  }
+
+  /* ─── Action buttons ─── */
+  .actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 12px 28px;
+    border: 2px solid var(--crimson);
+    border-radius: 6px;
+    background: linear-gradient(160deg, var(--crimson), #5a1020);
+    color: var(--parchment);
+    cursor: pointer;
+    box-shadow: 0 4px 0 #5a1020, 0 5px 12px var(--shadow);
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #5a1020, 0 7px 16px var(--shadow);
+  }
+
+  .btn:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #5a1020;
+  }
+
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .btn.secondary {
+    border-color: var(--ink-soft);
+    background: linear-gradient(160deg, var(--ink-soft), var(--ink));
+    box-shadow: 0 4px 0 var(--ink), 0 5px 12px var(--shadow);
+  }
+
+  .btn.secondary:hover:not(:disabled) {
+    box-shadow: 0 6px 0 var(--ink), 0 7px 16px var(--shadow);
+  }
+
+  /* ─── Victory Screen ─── */
+  .victory {
+    text-align: center;
+    padding: 32px 16px;
+    animation: victory-fade 1s ease-out;
+  }
+
+  @keyframes victory-fade {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .crown {
+    font-size: 5rem;
+    display: inline-block;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-12px) rotate(3deg); }
+  }
+
+  .victory h2 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    color: var(--crimson);
+    margin: 16px 0;
+    text-shadow: 2px 2px 0 var(--gold-deep);
+  }
+
+  .victory p {
+    font-size: 1.2rem;
+    line-height: 1.7;
+    max-width: 640px;
+    margin: 0 auto 16px;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
+  .stats-box {
+    display: inline-block;
+    background: linear-gradient(160deg, var(--parchment-dark), var(--parchment));
+    border: 3px double var(--gold-deep);
+    border-radius: 8px;
+    padding: 16px 32px;
+    margin: 16px 0;
+  }
+
+  .stats-box .stat {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: var(--crimson);
+    margin: 6px 0;
+  }
+
+  /* ─── Confetti ─── */
+  .confetti {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1000;
+    overflow: hidden;
+  }
+
+  .confetti-piece {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    top: -20px;
+    animation: confetti-fall linear forwards;
+  }
+
+  @keyframes confetti-fall {
+    to {
+      transform: translateY(110vh) rotate(720deg);
+      opacity: 0.2;
+    }
+  }
+
+  /* ─── Badge popup notification ─── */
+  .badge-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: linear-gradient(160deg, var(--parchment), var(--parchment-dark));
+    border: 4px double var(--gold-deep);
+    border-radius: 12px;
+    padding: 28px 40px;
+    text-align: center;
+    z-index: 2000;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    transition: transform 0.5s cubic-bezier(.34,1.56,.64,1);
+    max-width: 380px;
+  }
+
+  .badge-popup.show {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .badge-popup .big-badge {
+    font-size: 5rem;
+    margin-bottom: 12px;
+    display: inline-block;
+    animation: badge-spin 0.8s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  @keyframes badge-spin {
+    0% { transform: rotate(-180deg) scale(0); }
+    100% { transform: rotate(0) scale(1); }
+  }
+
+  .badge-popup h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--crimson);
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-popup p {
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+  }
+
+  /* ─── Conjunction reference card ─── */
+  .reference-box {
+    background: rgba(45, 90, 61, 0.08);
+    border-left: 4px solid var(--forest);
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 4px;
+    font-size: 0.98rem;
+    line-height: 1.5;
+  }
+  .reference-box strong {
+    color: var(--forest-deep);
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── Small responsive tweaks ─── */
+  @media (max-width: 600px) {
+    .scroll { padding: 20px 16px; }
+    .hud { padding: 12px; }
+    .badges-row { justify-content: center; }
+  }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <header class="banner">
+    <h1 class="title">Die Sprachritter von Bindewortheim</h1>
+    <p class="subtitle">~ Ein Abenteuer mit den magischen Bindewörtern ~</p>
+  </header>
+
+  <!-- ─── Start Screen ─── -->
+  <section id="start-screen" class="scroll start-screen">
+    <h2 class="act-title">Prolog · Der Ruf der Königin</h2>
+    <p class="narrative">
+      Im Königreich Bindewortheim sind die magischen Bindewörter aus den Schriften verschwunden!
+      Ohne sie zerfallen die Sätze, und niemand kann mehr verstehen, was die Menschen meinen.
+      Königin Adelheid sucht tapfere Sprachritter, die die verlorenen Bindewörter zurückbringen.
+    </p>
+    <p class="quest-intro">
+      Wähle deine Stufe, junger Held. Für jede Stufe wartet ein eigenes Abenteuer mit Aufgaben,
+      Orden und glitzernden Sprachkristallen. Wer alle Prüfungen besteht, wird zum Ritter geschlagen!
+    </p>
+
+    <div class="grade-select">
+      <div class="grade-card" data-grade="4" onclick="startQuest(4)">
+        <div class="grade-emblem">🛡️</div>
+        <h3>Klasse 4</h3>
+        <p>Knappenprüfung<br><em>und · oder · aber · denn · weil · dass</em></p>
+      </div>
+      <div class="grade-card" data-grade="5" onclick="startQuest(5)">
+        <div class="grade-emblem">⚔️</div>
+        <h3>Klasse 5</h3>
+        <p>Ritterprüfung<br><em>obwohl · während · sondern · damit · trotzdem · außerdem · entweder…oder · zwar…aber</em></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Quest Screen ─── -->
+  <section id="quest-screen" class="hidden">
+
+    <div class="hud">
+      <div class="hud-section">
+        <span class="hud-label">Sprachkristalle</span>
+        <span class="crystal-count">💎 <span id="crystal-count">0</span></span>
+      </div>
+      <div class="hud-section">
+        <span class="hud-label">Orden</span>
+        <div class="badges-row" id="badges-row"></div>
+      </div>
+      <div class="hud-section">
+        <button class="btn secondary" style="font-size: 0.85rem; padding: 8px 16px;" onclick="abortQuest()">Zurück</button>
+      </div>
+    </div>
+
+    <div class="scroll exercise-area">
+      <div class="exercise-header">
+        <span class="exercise-counter">Aufgabe <span id="current-num">1</span> von <span id="total-num">10</span></span>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width: 0%"></div></div>
+      </div>
+
+      <h2 class="act-title" id="act-title">Erstes Kapitel</h2>
+      <p class="narrative" id="act-narrative">Die Reise beginnt...</p>
+
+      <div id="exercise-content"></div>
+
+      <div class="feedback" id="feedback"></div>
+
+      <div class="actions">
+        <button class="btn" id="check-btn" onclick="checkAnswer()" disabled>Prüfen</button>
+        <button class="btn secondary hidden" id="next-btn" onclick="nextExercise()">Weiter →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Victory Screen ─── -->
+  <section id="victory-screen" class="hidden">
+    <div class="scroll victory">
+      <div class="crown">👑</div>
+      <h2 id="victory-title">Du bist zum Sprachritter geschlagen!</h2>
+      <p id="victory-text">Die Bindewörter sind gerettet, und Bindewortheim erstrahlt wieder in den klarsten Sätzen.</p>
+      <div class="stats-box">
+        <div class="stat">💎 Sprachkristalle: <span id="final-crystals">0</span></div>
+        <div class="stat">🏅 Orden: <span id="final-badges">0</span></div>
+        <div class="stat">📜 Richtige Antworten: <span id="final-correct">0</span> / <span id="final-total">0</span></div>
+      </div>
+      <div class="actions">
+        <button class="btn" onclick="restartQuest()">Noch einmal spielen</button>
+        <button class="btn secondary" onclick="backToStart()">Andere Stufe wählen</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Confetti container -->
+<div class="confetti" id="confetti"></div>
+
+<!-- Badge popup -->
+<div class="badge-popup" id="badge-popup">
+  <div class="big-badge" id="popup-badge-icon">🏅</div>
+  <h3 id="popup-badge-name">Neuer Orden!</h3>
+  <p id="popup-badge-desc">Du hast einen Orden verdient.</p>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+//  EXERCISE BANK
+// ════════════════════════════════════════════════════════════════
+
+const grade4Exercises = [
+  // Act 1: Multiple Choice
+  {
+    act: "Erstes Kapitel · Im verzauberten Wald",
+    narrative: "Du betrittst den Bindewald. Hier flüstern die Bäume zerbrochene Sätze. Hilf ihnen!",
+    type: "mc",
+    sentence: "Ich gehe in den Wald ___ ich sammle Pilze.",
+    choices: ["und", "weil", "dass", "oder"],
+    answer: "und",
+    hint: "Zwei Handlungen werden einfach verbunden."
+  },
+  {
+    act: "Erstes Kapitel · Im verzauberten Wald",
+    narrative: "",
+    type: "mc",
+    sentence: "Möchtest du Wasser ___ Saft trinken?",
+    choices: ["und", "aber", "oder", "denn"],
+    answer: "oder",
+    hint: "Du hast die Wahl zwischen zwei Dingen."
+  },
+  {
+    act: "Erstes Kapitel · Im verzauberten Wald",
+    narrative: "",
+    type: "mc",
+    sentence: "Ich bin müde, ___ ich gehe noch nicht ins Bett.",
+    choices: ["und", "aber", "weil", "dass"],
+    answer: "aber",
+    hint: "Hier steht ein Gegensatz zwischen den beiden Aussagen."
+  },
+
+  // Act 2: Drag and Drop
+  {
+    act: "Zweites Kapitel · Die Brücke der Begründung",
+    narrative: "An der alten Brücke versperrt ein Troll den Weg. Nur wer Gründe richtig nennt, darf passieren!",
+    type: "dnd",
+    sentence: "Lina nimmt einen Regenschirm mit, ___ es regnet draußen.",
+    bank: ["weil", "und", "oder", "aber"],
+    answer: "weil",
+    hint: "Hier wird ein Grund genannt."
+  },
+  {
+    act: "Zweites Kapitel · Die Brücke der Begründung",
+    narrative: "",
+    type: "dnd",
+    sentence: "Tom freut sich, ___ morgen seine Oma kommt.",
+    bank: ["dass", "denn", "weil", "und"],
+    answer: "weil",
+    hint: "Es geht um den Grund seiner Freude."
+  },
+  {
+    act: "Zweites Kapitel · Die Brücke der Begründung",
+    narrative: "",
+    type: "dnd",
+    sentence: "Wir bleiben heute zu Hause, ___ das Wetter ist sehr schlecht.",
+    bank: ["denn", "weil", "dass", "oder"],
+    answer: "denn",
+    hint: "„Denn“ steht zwischen zwei Hauptsätzen – das Verb bleibt an zweiter Stelle!"
+  },
+
+  // Act 3: "dass" sentences
+  {
+    act: "Drittes Kapitel · Die Halle der Worte",
+    narrative: "Im Königsschloss prüft die weise Bibliothekarin, ob du das Bindewort „dass“ richtig setzen kannst.",
+    type: "mc",
+    sentence: "Mama hat gesagt, ___ wir heute ins Schwimmbad gehen.",
+    choices: ["dass", "das", "weil", "denn"],
+    answer: "dass",
+    hint: "Wenn man es nicht durch „dieses“ oder „welches“ ersetzen kann, schreibt man „dass“ mit Doppel-s."
+  },
+  {
+    act: "Drittes Kapitel · Die Halle der Worte",
+    narrative: "",
+    type: "mc",
+    sentence: "Ich hoffe, ___ du bald wieder gesund wirst.",
+    choices: ["das", "dass", "denn", "aber"],
+    answer: "dass",
+    hint: "Hier folgt ein ganzer Nebensatz – also „dass“ mit Doppel-s."
+  },
+
+  // Act 4: Sentence ordering (drag pieces)
+  {
+    act: "Viertes Kapitel · Die Ordnung der Sätze",
+    narrative: "Die Sätze sind durcheinander geraten! Bringe die Wörter in die richtige Reihenfolge.",
+    type: "sort",
+    pieces: ["Ich", "lerne", "Deutsch,", "weil", "ich", "es", "schön", "finde."],
+    answer: ["Ich", "lerne", "Deutsch,", "weil", "ich", "es", "schön", "finde."],
+    hint: "Nach „weil“ steht das Verb am Satzende."
+  },
+  {
+    act: "Viertes Kapitel · Die Ordnung der Sätze",
+    narrative: "",
+    type: "sort",
+    pieces: ["Wir", "freuen", "uns,", "dass", "die", "Ferien", "beginnen."],
+    answer: ["Wir", "freuen", "uns,", "dass", "die", "Ferien", "beginnen."],
+    hint: "Auch nach „dass“ steht das Verb am Satzende."
+  }
+];
+
+const grade5Exercises = [
+  // Act 1: Recap + new
+  {
+    act: "Erstes Kapitel · Tor zum Königreich",
+    narrative: "Du näherst dich dem Schloss. Die Wächter fragen nach den Grundlagen, bevor du eintreten darfst.",
+    type: "mc",
+    sentence: "Ich gehe heute nicht zur Schule, ___ ich krank bin.",
+    choices: ["weil", "obwohl", "damit", "während"],
+    answer: "weil",
+    hint: "Hier wird der Grund genannt."
+  },
+  {
+    act: "Erstes Kapitel · Tor zum Königreich",
+    narrative: "",
+    type: "mc",
+    sentence: "Ich gehe heute zur Schule, ___ ich krank bin.",
+    choices: ["weil", "obwohl", "damit", "denn"],
+    answer: "obwohl",
+    hint: "Etwas geschieht, obwohl ein Hindernis im Weg steht – ein Gegengrund."
+  },
+
+  // Act 2: Subordinating conjunctions
+  {
+    act: "Zweites Kapitel · Im Turm der Logik",
+    narrative: "Im hohen Turm prüft Meister Walram, ob du Ursachen, Gegensätze und Absichten unterscheiden kannst.",
+    type: "dnd",
+    sentence: "Ich lerne fleißig, ___ ich gute Noten bekomme.",
+    bank: ["damit", "weil", "obwohl", "während"],
+    answer: "damit",
+    hint: "„Damit“ nennt eine Absicht oder ein Ziel."
+  },
+  {
+    act: "Zweites Kapitel · Im Turm der Logik",
+    narrative: "",
+    type: "dnd",
+    sentence: "___ meine Mutter kochte, las ich ein Buch.",
+    bank: ["Während", "Weil", "Obwohl", "Damit"],
+    answer: "Während",
+    hint: "Beide Handlungen geschehen zur gleichen Zeit."
+  },
+  {
+    act: "Zweites Kapitel · Im Turm der Logik",
+    narrative: "",
+    type: "dnd",
+    sentence: "Er ging spazieren, ___ es draußen sehr kalt war.",
+    bank: ["obwohl", "weil", "damit", "während"],
+    answer: "obwohl",
+    hint: "Hier steht ein Gegengrund: trotz der Kälte – also „obwohl“."
+  },
+
+  // Act 3: nicht…sondern / entweder…oder / zwar…aber
+  {
+    act: "Drittes Kapitel · Die Zwillingsbrücke",
+    narrative: "Über dem Fluss spannen sich Brücken aus zwei Bögen – die zweiteiligen Bindewörter. Verbinde sie richtig!",
+    type: "mc",
+    sentence: "Mira liest nicht gern Krimis, ___ Fantasy-Romane.",
+    choices: ["sondern", "aber", "oder", "denn"],
+    answer: "sondern",
+    hint: "Nach einer Verneinung kommt „sondern“ und gibt das Richtige an."
+  },
+  {
+    act: "Drittes Kapitel · Die Zwillingsbrücke",
+    narrative: "",
+    type: "mc",
+    sentence: "Wir gehen entweder ins Kino ___ ins Schwimmbad.",
+    choices: ["und", "oder", "aber", "sondern"],
+    answer: "oder",
+    hint: "„Entweder“ ruft nach seinem Zwilling „oder“."
+  },
+  {
+    act: "Drittes Kapitel · Die Zwillingsbrücke",
+    narrative: "",
+    type: "mc",
+    sentence: "Der Film war zwar lang, ___ er war sehr spannend.",
+    choices: ["sondern", "denn", "aber", "oder"],
+    answer: "aber",
+    hint: "„Zwar“ kündigt einen Gegensatz an, der mit „aber“ kommt."
+  },
+
+  // Act 4: Sentence position - "trotzdem", "außerdem"
+  {
+    act: "Viertes Kapitel · Die Halle der Konjunktionaladverbien",
+    narrative: "In dieser Halle leuchten Wörter wie „trotzdem“ und „außerdem“. Sie verschieben das Verb!",
+    type: "mc",
+    sentence: "Es regnete stark. ___ gingen wir spazieren.",
+    choices: ["Trotzdem", "Weil", "Obwohl", "Damit"],
+    answer: "Trotzdem",
+    hint: "Nach „Trotzdem“ am Satzanfang steht das Verb direkt danach: Trotzdem gingen wir…"
+  },
+  {
+    act: "Viertes Kapitel · Die Halle der Konjunktionaladverbien",
+    narrative: "",
+    type: "mc",
+    sentence: "Lukas spielt Klavier. ___ singt er im Chor.",
+    choices: ["Außerdem", "Sondern", "Damit", "Während"],
+    answer: "Außerdem",
+    hint: "„Außerdem“ fügt eine weitere Tatsache hinzu."
+  },
+
+  // Act 5: Drag pieces - final challenge
+  {
+    act: "Fünftes Kapitel · Der Thronsaal",
+    narrative: "Vor dem Thron der Königin musst du beweisen, dass du Sätze mit Nebensätzen sicher bauen kannst.",
+    type: "sort",
+    pieces: ["Ich", "freue", "mich,", "obwohl", "ich", "müde", "bin."],
+    answer: ["Ich", "freue", "mich,", "obwohl", "ich", "müde", "bin."],
+    hint: "Nach „obwohl“ steht das Verb am Ende des Nebensatzes."
+  },
+  {
+    act: "Fünftes Kapitel · Der Thronsaal",
+    narrative: "",
+    type: "sort",
+    pieces: ["Wir", "üben", "Deutsch,", "damit", "wir", "die", "Prüfung", "bestehen."],
+    answer: ["Wir", "üben", "Deutsch,", "damit", "wir", "die", "Prüfung", "bestehen."],
+    hint: "Auch nach „damit“ wandert das Verb ans Ende."
+  }
+];
+
+// ════════════════════════════════════════════════════════════════
+//  BADGES
+// ════════════════════════════════════════════════════════════════
+
+const badges = [
+  { id: 'first',   icon: '🌱', name: 'Erste Worte',           desc: 'Du hast deine erste Aufgabe gelöst!',          condition: s => s.correctCount >= 1 },
+  { id: 'streak3', icon: '🔥', name: 'Funkenflug',            desc: 'Drei richtige Antworten in Folge!',            condition: s => s.streak >= 3 },
+  { id: 'streak5', icon: '⚡', name: 'Sprachblitz',           desc: 'Fünf richtige Antworten in Folge!',            condition: s => s.streak >= 5 },
+  { id: 'half',    icon: '🛡️', name: 'Knappe',               desc: 'Die Hälfte des Weges geschafft!',              condition: s => s.currentIndex >= Math.floor(s.exercises.length / 2) && s.correctCount >= Math.floor(s.exercises.length / 2) - 1 },
+  { id: 'gem10',   icon: '💎', name: 'Kristallsammler',       desc: 'Zehn Sprachkristalle gefunden!',               condition: s => s.crystals >= 10 },
+  { id: 'gem20',   icon: '🏆', name: 'Schatzmeister',         desc: 'Zwanzig Sprachkristalle erobert!',             condition: s => s.crystals >= 20 },
+  { id: 'allcorrect', icon: '👑', name: 'Königlicher Orden', desc: 'Alle Aufgaben beim ersten Versuch richtig!',  condition: s => s.firstTryAll && s.currentIndex >= s.exercises.length },
+  { id: 'finish',  icon: '⚔️', name: 'Sprachritter',         desc: 'Die ganze Prüfung bestanden!',                 condition: s => s.currentIndex >= s.exercises.length }
+];
+
+// ════════════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════════════
+
+let state = {
+  grade: null,
+  exercises: [],
+  currentIndex: 0,
+  crystals: 0,
+  streak: 0,
+  correctCount: 0,
+  earnedBadges: new Set(),
+  currentAnswer: null,
+  answered: false,
+  firstTryThisQuestion: true,
+  firstTryAll: true
+};
+
+// ════════════════════════════════════════════════════════════════
+//  GAME FLOW
+// ════════════════════════════════════════════════════════════════
+
+function startQuest(grade) {
+  state = {
+    grade: grade,
+    exercises: grade === 4 ? [...grade4Exercises] : [...grade5Exercises],
+    currentIndex: 0,
+    crystals: 0,
+    streak: 0,
+    correctCount: 0,
+    earnedBadges: new Set(),
+    currentAnswer: null,
+    answered: false,
+    firstTryThisQuestion: true,
+    firstTryAll: true
+  };
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('victory-screen').classList.add('hidden');
+  document.getElementById('quest-screen').classList.remove('hidden');
+  document.getElementById('total-num').textContent = state.exercises.length;
+  renderBadges();
+  renderExercise();
+}
+
+function abortQuest() {
+  if (confirm('Möchtest du wirklich abbrechen? Dein Fortschritt geht verloren.')) {
+    backToStart();
+  }
+}
+
+function backToStart() {
+  document.getElementById('quest-screen').classList.add('hidden');
+  document.getElementById('victory-screen').classList.add('hidden');
+  document.getElementById('start-screen').classList.remove('hidden');
+}
+
+function restartQuest() {
+  startQuest(state.grade);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  RENDER EXERCISE
+// ════════════════════════════════════════════════════════════════
+
+function renderExercise() {
+  const ex = state.exercises[state.currentIndex];
+  state.answered = false;
+  state.currentAnswer = null;
+  state.firstTryThisQuestion = true;
+
+  document.getElementById('current-num').textContent = state.currentIndex + 1;
+  document.getElementById('progress-fill').style.width = ((state.currentIndex) / state.exercises.length * 100) + '%';
+
+  document.getElementById('act-title').textContent = ex.act;
+  document.getElementById('act-narrative').textContent = ex.narrative || '';
+  document.getElementById('act-narrative').style.display = ex.narrative ? 'block' : 'none';
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('show', 'correct', 'wrong');
+  fb.textContent = '';
+
+  document.getElementById('check-btn').classList.remove('hidden');
+  document.getElementById('check-btn').disabled = true;
+  document.getElementById('next-btn').classList.add('hidden');
+
+  const content = document.getElementById('exercise-content');
+  content.innerHTML = '';
+
+  if (ex.type === 'mc') renderMultipleChoice(ex, content);
+  else if (ex.type === 'dnd') renderDragAndDrop(ex, content);
+  else if (ex.type === 'sort') renderSort(ex, content);
+}
+
+// ─── Multiple Choice ───
+function renderMultipleChoice(ex, container) {
+  const q = document.createElement('div');
+  q.className = 'question-text';
+  q.innerHTML = ex.sentence.replace('___', '<span class="blank" id="blank-spot">____</span>');
+  container.appendChild(q);
+
+  const choices = document.createElement('div');
+  choices.className = 'choices';
+
+  ex.choices.forEach(choice => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = choice;
+    btn.onclick = () => {
+      // unselect others
+      choices.querySelectorAll('.choice-btn').forEach(b => b.style.outline = '');
+      btn.style.outline = '3px solid var(--crimson)';
+      btn.style.outlineOffset = '2px';
+      state.currentAnswer = choice;
+      document.getElementById('blank-spot').textContent = choice;
+      document.getElementById('blank-spot').classList.add('filled');
+      document.getElementById('check-btn').disabled = false;
+    };
+    choices.appendChild(btn);
+  });
+
+  container.appendChild(choices);
+}
+
+// ─── Drag and Drop (fill in blank) ───
+function renderDragAndDrop(ex, container) {
+  const q = document.createElement('div');
+  q.className = 'question-text';
+  q.innerHTML = ex.sentence.replace('___', '<span class="drop-zone" id="drop-zone" data-empty="true">hier ablegen</span>');
+  container.appendChild(q);
+
+  const bank = document.createElement('div');
+  bank.className = 'dnd-bank';
+  bank.id = 'word-bank';
+
+  // Shuffle bank
+  const shuffled = [...ex.bank].sort(() => Math.random() - 0.5);
+  shuffled.forEach(word => {
+    const tile = document.createElement('div');
+    tile.className = 'word-tile';
+    tile.textContent = word;
+    tile.draggable = true;
+    tile.dataset.word = word;
+    attachDragHandlers(tile);
+    bank.appendChild(tile);
+  });
+
+  container.appendChild(bank);
+
+  const dropZone = document.getElementById('drop-zone');
+  attachDropHandlers(dropZone);
+}
+
+function attachDragHandlers(tile) {
+  tile.addEventListener('dragstart', (e) => {
+    tile.classList.add('dragging');
+    e.dataTransfer.setData('text/plain', tile.dataset.word);
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  tile.addEventListener('dragend', () => tile.classList.remove('dragging'));
+
+  // Touch support
+  let touchClone = null;
+  let touchOffsetX = 0, touchOffsetY = 0;
+
+  tile.addEventListener('touchstart', (e) => {
+    if (tile.classList.contains('used')) return;
+    const touch = e.touches[0];
+    const rect = tile.getBoundingClientRect();
+    touchOffsetX = touch.clientX - rect.left;
+    touchOffsetY = touch.clientY - rect.top;
+    touchClone = tile.cloneNode(true);
+    touchClone.style.position = 'fixed';
+    touchClone.style.zIndex = '9999';
+    touchClone.style.opacity = '0.8';
+    touchClone.style.pointerEvents = 'none';
+    touchClone.style.left = (touch.clientX - touchOffsetX) + 'px';
+    touchClone.style.top = (touch.clientY - touchOffsetY) + 'px';
+    document.body.appendChild(touchClone);
+    tile.classList.add('dragging');
+    e.preventDefault();
+  }, { passive: false });
+
+  tile.addEventListener('touchmove', (e) => {
+    if (!touchClone) return;
+    const touch = e.touches[0];
+    touchClone.style.left = (touch.clientX - touchOffsetX) + 'px';
+    touchClone.style.top = (touch.clientY - touchOffsetY) + 'px';
+    // Highlight drop zones
+    const below = document.elementFromPoint(touch.clientX, touch.clientY);
+    document.querySelectorAll('.drop-zone, .sort-area').forEach(z => z.classList.remove('over'));
+    if (below) {
+      const zone = below.closest('.drop-zone, .sort-area');
+      if (zone) zone.classList.add('over');
+    }
+    e.preventDefault();
+  }, { passive: false });
+
+  tile.addEventListener('touchend', (e) => {
+    if (!touchClone) return;
+    const touch = e.changedTouches[0];
+    const below = document.elementFromPoint(touch.clientX, touch.clientY);
+    document.querySelectorAll('.drop-zone, .sort-area').forEach(z => z.classList.remove('over'));
+    if (below) {
+      const zone = below.closest('.drop-zone');
+      if (zone) {
+        handleDrop(zone, tile.dataset.word, tile);
+      } else {
+        const sortZone = below.closest('.sort-area');
+        if (sortZone && tile.parentElement.classList.contains('sort-area')) {
+          // reorder via insertion
+          handleSortInsert(sortZone, tile, touch.clientX);
+        }
+      }
+    }
+    touchClone.remove();
+    touchClone = null;
+    tile.classList.remove('dragging');
+  });
+}
+
+function attachDropHandlers(zone) {
+  zone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    zone.classList.add('over');
+  });
+  zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+  zone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    zone.classList.remove('over');
+    const word = e.dataTransfer.getData('text/plain');
+    const tile = document.querySelector(`.word-tile[data-word="${word}"]:not(.used)`);
+    handleDrop(zone, word, tile);
+  });
+}
+
+function handleDrop(zone, word, tile) {
+  // Return previously placed tile to bank if any
+  if (zone.dataset.empty === 'false') {
+    const prevWord = zone.dataset.currentWord;
+    const prevTile = document.querySelector(`.word-tile[data-word="${prevWord}"].used`);
+    if (prevTile) prevTile.classList.remove('used');
+  }
+  zone.textContent = word;
+  zone.classList.add('filled');
+  zone.dataset.empty = 'false';
+  zone.dataset.currentWord = word;
+  if (tile) tile.classList.add('used');
+  state.currentAnswer = word;
+  document.getElementById('check-btn').disabled = false;
+}
+
+// ─── Sentence Sort ───
+function renderSort(ex, container) {
+  const instr = document.createElement('div');
+  instr.className = 'question-text';
+  instr.textContent = 'Schiebe die Wörter in die richtige Reihenfolge.';
+  container.appendChild(instr);
+
+  const sortArea = document.createElement('div');
+  sortArea.className = 'sort-area';
+  sortArea.id = 'sort-area';
+
+  const shuffled = [...ex.pieces].sort(() => Math.random() - 0.5);
+  // Ensure not already sorted by chance
+  if (shuffled.join(' ') === ex.answer.join(' ') && shuffled.length > 2) {
+    [shuffled[0], shuffled[shuffled.length - 1]] = [shuffled[shuffled.length - 1], shuffled[0]];
+  }
+
+  shuffled.forEach(piece => {
+    const el = document.createElement('div');
+    el.className = 'sort-piece';
+    el.textContent = piece;
+    el.draggable = true;
+    el.dataset.piece = piece;
+    attachSortHandlers(el);
+    sortArea.appendChild(el);
+  });
+
+  container.appendChild(sortArea);
+
+  attachSortAreaHandlers(sortArea);
+
+  document.getElementById('check-btn').disabled = false; // can check anytime
+}
+
+function attachSortHandlers(el) {
+  el.addEventListener('dragstart', (e) => {
+    el.classList.add('dragging');
+    e.dataTransfer.setData('text/plain', el.dataset.piece);
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  el.addEventListener('dragend', () => el.classList.remove('dragging'));
+
+  // Touch
+  let touchClone = null;
+  let touchOffsetX = 0, touchOffsetY = 0;
+
+  el.addEventListener('touchstart', (e) => {
+    const touch = e.touches[0];
+    const rect = el.getBoundingClientRect();
+    touchOffsetX = touch.clientX - rect.left;
+    touchOffsetY = touch.clientY - rect.top;
+    touchClone = el.cloneNode(true);
+    touchClone.style.position = 'fixed';
+    touchClone.style.zIndex = '9999';
+    touchClone.style.opacity = '0.8';
+    touchClone.style.pointerEvents = 'none';
+    touchClone.style.left = (touch.clientX - touchOffsetX) + 'px';
+    touchClone.style.top = (touch.clientY - touchOffsetY) + 'px';
+    document.body.appendChild(touchClone);
+    el.classList.add('dragging');
+    e.preventDefault();
+  }, { passive: false });
+
+  el.addEventListener('touchmove', (e) => {
+    if (!touchClone) return;
+    const touch = e.touches[0];
+    touchClone.style.left = (touch.clientX - touchOffsetX) + 'px';
+    touchClone.style.top = (touch.clientY - touchOffsetY) + 'px';
+    e.preventDefault();
+  }, { passive: false });
+
+  el.addEventListener('touchend', (e) => {
+    if (!touchClone) return;
+    const touch = e.changedTouches[0];
+    const below = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (below) {
+      const sortArea = below.closest('.sort-area');
+      if (sortArea) {
+        handleSortInsert(sortArea, el, touch.clientX);
+      }
+    }
+    touchClone.remove();
+    touchClone = null;
+    el.classList.remove('dragging');
+  });
+}
+
+function attachSortAreaHandlers(area) {
+  area.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    const dragging = area.querySelector('.dragging');
+    if (!dragging) return;
+    const afterEl = getDragAfterElement(area, e.clientX);
+    if (afterEl == null) area.appendChild(dragging);
+    else area.insertBefore(dragging, afterEl);
+  });
+}
+
+function getDragAfterElement(container, x) {
+  const draggable = [...container.querySelectorAll('.sort-piece:not(.dragging)')];
+  return draggable.reduce((closest, child) => {
+    const box = child.getBoundingClientRect();
+    const offset = x - box.left - box.width / 2;
+    if (offset < 0 && offset > closest.offset) {
+      return { offset, element: child };
+    }
+    return closest;
+  }, { offset: -Infinity }).element;
+}
+
+function handleSortInsert(area, el, x) {
+  const afterEl = getDragAfterElement(area, x);
+  if (afterEl == null) area.appendChild(el);
+  else area.insertBefore(el, afterEl);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  CHECK ANSWER
+// ════════════════════════════════════════════════════════════════
+
+function checkAnswer() {
+  const ex = state.exercises[state.currentIndex];
+  let correct = false;
+
+  if (ex.type === 'mc' || ex.type === 'dnd') {
+    correct = (state.currentAnswer === ex.answer);
+
+    // Disable buttons / locked state
+    document.querySelectorAll('.choice-btn').forEach(b => {
+      b.disabled = true;
+      if (b.textContent === ex.answer) b.classList.add('correct');
+      else if (b.textContent === state.currentAnswer && !correct) b.classList.add('wrong');
+    });
+
+    if (ex.type === 'dnd') {
+      const zone = document.getElementById('drop-zone');
+      if (correct) {
+        zone.style.background = 'rgba(45, 90, 61, 0.3)';
+        zone.style.borderColor = 'var(--forest-deep)';
+      } else {
+        zone.style.background = 'rgba(139, 30, 45, 0.2)';
+        zone.style.borderColor = 'var(--crimson)';
+      }
+    }
+
+  } else if (ex.type === 'sort') {
+    const pieces = [...document.querySelectorAll('.sort-piece')].map(p => p.dataset.piece);
+    correct = pieces.join(' ') === ex.answer.join(' ');
+    document.querySelectorAll('.sort-piece').forEach(p => {
+      p.draggable = false;
+      p.style.cursor = 'default';
+      p.style.background = correct
+        ? 'linear-gradient(160deg, #b8d8a8, var(--forest))'
+        : 'linear-gradient(160deg, #d8a8a8, var(--crimson))';
+    });
+  }
+
+  showFeedback(correct, ex);
+
+  if (correct) {
+    state.correctCount++;
+    state.streak++;
+    let crystalsAwarded = state.firstTryThisQuestion ? 3 : 1;
+    state.crystals += crystalsAwarded;
+    updateCrystals();
+    if (state.streak >= 3) playConfetti(20);
+  } else {
+    state.streak = 0;
+    state.firstTryThisQuestion = false;
+    state.firstTryAll = false;
+  }
+
+  state.answered = true;
+  checkBadges();
+
+  document.getElementById('check-btn').classList.add('hidden');
+  document.getElementById('next-btn').classList.remove('hidden');
+
+  // If wrong, allow retry
+  if (!correct) {
+    document.getElementById('next-btn').textContent = 'Nochmal versuchen';
+    document.getElementById('next-btn').onclick = () => retryExercise();
+  } else {
+    document.getElementById('next-btn').textContent = state.currentIndex + 1 < state.exercises.length ? 'Weiter →' : 'Abenteuer beenden';
+    document.getElementById('next-btn').onclick = nextExercise;
+  }
+}
+
+function showFeedback(correct, ex) {
+  const fb = document.getElementById('feedback');
+  fb.classList.add('show');
+  if (correct) {
+    fb.classList.add('correct');
+    const cheers = [
+      '⚔️ Hervorragend! Der Sprachkristall gehört dir!',
+      '✨ Bravo, edler Knappe! Das war richtig!',
+      '🌟 Großartig! Die Königin wäre stolz auf dich!',
+      '💎 Glanzvoll! Die Bindewörter funkeln vor Freude!',
+      '🏰 Königlich! Du beherrschst diese Kunst!'
+    ];
+    fb.textContent = cheers[Math.floor(Math.random() * cheers.length)];
+  } else {
+    fb.classList.add('wrong');
+    fb.innerHTML = `❌ Nicht ganz! <strong>Richtige Antwort:</strong> „${Array.isArray(ex.answer) ? ex.answer.join(' ') : ex.answer}" <br><em style="font-size: 0.95rem; opacity: 0.85;">${ex.hint}</em>`;
+  }
+}
+
+function retryExercise() {
+  renderExercise();
+}
+
+function nextExercise() {
+  state.currentIndex++;
+  if (state.currentIndex >= state.exercises.length) {
+    showVictory();
+  } else {
+    renderExercise();
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  BADGES & UI
+// ════════════════════════════════════════════════════════════════
+
+function renderBadges() {
+  const row = document.getElementById('badges-row');
+  row.innerHTML = '';
+  badges.forEach(b => {
+    const el = document.createElement('div');
+    el.className = 'badge' + (state.earnedBadges.has(b.id) ? ' earned' : '');
+    el.innerHTML = `${b.icon}<span class="badge-tooltip">${b.name}</span>`;
+    row.appendChild(el);
+  });
+}
+
+function checkBadges() {
+  badges.forEach(b => {
+    if (!state.earnedBadges.has(b.id) && b.condition(state)) {
+      state.earnedBadges.add(b.id);
+      showBadgePopup(b);
+    }
+  });
+  renderBadges();
+}
+
+function updateCrystals() {
+  const el = document.getElementById('crystal-count');
+  el.textContent = state.crystals;
+  el.style.animation = '';
+  void el.offsetWidth;
+  el.style.animation = 'badge-pop 0.5s';
+}
+
+function showBadgePopup(badge) {
+  const popup = document.getElementById('badge-popup');
+  document.getElementById('popup-badge-icon').textContent = badge.icon;
+  document.getElementById('popup-badge-name').textContent = badge.name;
+  document.getElementById('popup-badge-desc').textContent = badge.desc;
+  popup.classList.add('show');
+  playConfetti(40);
+  setTimeout(() => popup.classList.remove('show'), 2500);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  CONFETTI
+// ════════════════════════════════════════════════════════════════
+
+function playConfetti(count = 30) {
+  const colors = ['#c9a14a', '#8b1e2d', '#2d5a3d', '#3a6b8c', '#4a2845', '#b85838'];
+  const container = document.getElementById('confetti');
+  for (let i = 0; i < count; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+    piece.style.animationDelay = (Math.random() * 0.5) + 's';
+    piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+    if (Math.random() > 0.5) piece.style.borderRadius = '50%';
+    container.appendChild(piece);
+    setTimeout(() => piece.remove(), 4500);
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  VICTORY
+// ════════════════════════════════════════════════════════════════
+
+function showVictory() {
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('quest-screen').classList.add('hidden');
+  document.getElementById('victory-screen').classList.remove('hidden');
+
+  const percent = state.correctCount / state.exercises.length;
+  let title, text;
+  if (percent === 1) {
+    title = '👑 Königlicher Sprachritter!';
+    text = `Unglaublich, ${state.grade === 4 ? 'edler Knappe' : 'tapferer Recke'}! Alles richtig! Die Königin reicht dir das goldene Schwert der Sprache. Die Bindewörter werden für immer von dir singen.`;
+  } else if (percent >= 0.75) {
+    title = '⚔️ Du bist zum Sprachritter geschlagen!';
+    text = 'Bindewortheim ist gerettet! Die Bindewörter erstrahlen wieder und die Königin verleiht dir den Orden der Klaren Sprache.';
+  } else if (percent >= 0.5) {
+    title = '🛡️ Tapferer Knappe!';
+    text = 'Du hast viele Bindewörter zurückgebracht – ein paar warten noch im Wald. Übe weiter, dann wirst du sicher zum Ritter geschlagen!';
+  } else {
+    title = '🌱 Junger Held in Ausbildung';
+    text = 'Jeder Ritter beginnt als Knappe. Übe noch einmal, und beim nächsten Mal kommst du noch weiter!';
+  }
+
+  document.getElementById('victory-title').textContent = title;
+  document.getElementById('victory-text').textContent = text;
+  document.getElementById('final-crystals').textContent = state.crystals;
+  document.getElementById('final-badges').textContent = state.earnedBadges.size;
+  document.getElementById('final-correct').textContent = state.correctCount;
+  document.getElementById('final-total').textContent = state.exercises.length;
+
+  playConfetti(80);
+  setTimeout(() => playConfetti(60), 800);
+}
+
+</script>
+
+</body>
+</html>
