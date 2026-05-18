@@ -136,12 +136,24 @@
   .stage{
     display:grid;
     grid-template-columns: 1fr 380px;
+    grid-template-areas:
+      "main side"
+      "map  side";
     gap:14px;
     max-width:1400px;
     margin:0 auto;
   }
+  .game-window{ grid-area: main; }
+  .sidebar    { grid-area: side; }
+  .mini-map   { grid-area: map;  }
   @media (max-width:1024px){
-    .stage{grid-template-columns:1fr}
+    .stage{
+      grid-template-columns:1fr;
+      grid-template-areas:
+        "main"
+        "map"
+        "side";
+    }
   }
 
   /* ───────────────────────────── Spielfenster ───────────────────────────── */
@@ -313,6 +325,98 @@
     font-weight:700;
   }
   .badge .em{font-size:.9rem}
+
+  /* ───────────────────────────── Persistente Mini-Karte ───────────────────────────── */
+  .mini-map{
+    border:2px solid var(--shadow);
+    border-radius:6px;
+    box-shadow: 0 0 0 1px var(--gold) inset, 0 4px 16px rgba(0,0,0,.5);
+    padding:10px 12px 14px;
+    position:relative;
+    overflow:hidden;
+  }
+  .mini-map-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:8px;
+    position:relative;z-index:2;
+  }
+  .mini-map-head h3{
+    font-family:'Cinzel', serif;
+    font-size:1rem;letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--shadow);
+    margin:0;
+  }
+  .mini-map-head h3::before{content:"🗺️  ";}
+  .mini-map-tabs{
+    display:flex;gap:4px;
+  }
+  .mini-tab{
+    background:var(--parchment-3);
+    border:1px solid var(--shadow);
+    padding:4px 10px;
+    font-family:'Cinzel',serif;
+    font-size:.72rem;letter-spacing:.12em;
+    cursor:pointer;color:var(--ink);
+    text-transform:uppercase;font-weight:600;
+    border-radius:2px;
+  }
+  .mini-tab.active{background:var(--gold);color:var(--parchment)}
+  .mini-tab:hover:not(.active){background:var(--parchment-2)}
+  .mini-expand{
+    background:transparent;
+    border:1px solid var(--gold);
+    color:var(--shadow);
+    padding:4px 10px;
+    font-family:'Cinzel',serif;
+    font-size:.7rem;letter-spacing:.12em;
+    cursor:pointer;
+    border-radius:2px;
+    text-transform:uppercase;
+  }
+  .mini-expand:hover{background:var(--gold);color:var(--parchment)}
+  .mini-map-svg-wrap{
+    width:100%;
+    background:
+      radial-gradient(ellipse at center, #f5e6c4 0%, #d9c39a 100%);
+    border:1px solid var(--shadow);
+    border-radius:3px;
+    position:relative;z-index:2;
+    overflow:hidden;
+  }
+  .mini-map-svg-wrap svg{
+    width:100%;
+    height:auto;
+    display:block;
+  }
+  /* Klickbare Räume auf der Karte */
+  .map-svg g[data-room]:hover rect:first-of-type{
+    filter: brightness(1.15);
+  }
+  .map-svg g[data-room][style*="cursor:pointer"]:hover{
+    transform: scale(1.03);
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+  .mini-legend{
+    margin-top:6px;
+    font-family:'Special Elite', monospace;
+    font-size:.7rem;
+    color:var(--shadow);
+    position:relative;z-index:2;
+    display:flex;flex-wrap:wrap;gap:10px;
+    justify-content:center;
+  }
+  .mini-legend .swatch{
+    display:inline-block;width:10px;height:10px;
+    border:1px solid var(--shadow);
+    vertical-align:middle;margin-right:3px;
+    border-radius:1px;
+  }
 
   /* ───────────────────────────── Karte (Modal) ───────────────────────────── */
   .map-button{
@@ -604,12 +708,32 @@
       <div class="badges" id="badges"><em style="color:#666">noch keine</em></div>
     </div>
   </aside>
+
+  <!-- Persistente Mini-Karte (immer sichtbar) -->
+  <section class="mini-map parchment">
+    <div class="mini-map-head">
+      <h3>Karte des Tals</h3>
+      <div class="mini-map-tabs">
+        <button class="mini-tab active" id="miniTabAbove" onclick="switchMiniMap('above')">Oberwelt</button>
+        <button class="mini-tab" id="miniTabBelow" onclick="switchMiniMap('below')">Unterwelt</button>
+      </div>
+      <button class="mini-expand" onclick="openMap()">Vergrößern ⛶</button>
+    </div>
+    <div style="font-family:'Special Elite',monospace;font-size:.78rem;color:var(--shadow);margin-bottom:6px;position:relative;z-index:2;text-align:center;font-style:italic;">
+      💡 Klicke auf einen <strong>angrenzenden Raum</strong>, um dorthin zu gehen.
+    </div>
+    <div class="mini-map-svg-wrap" id="miniMapWrap"></div>
+    <div class="mini-legend">
+      <span><span class="swatch" style="background:#c89c3a;border-color:#7a1a1a"></span>★ du bist hier</span>
+      <span><span class="swatch" style="background:#a8c97a"></span>besucht</span>
+      <span><span class="swatch" style="background:#e6d5b3;border:1.5px solid #8a6a1e"></span>erreichbar (klicken!)</span>
+      <span><span class="swatch" style="background:#d9c39a"></span>unbekannt</span>
+      <span>💎 Schatz · ┄ versperrt · ↕ Treppe</span>
+    </div>
+  </section>
 </div>
 
-<!-- ════════════════ Karten-Knopf ════════════════ -->
-<button class="map-button" onclick="openMap()">🗺️ Karte</button>
-
-<!-- ════════════════ Karten-Modal ════════════════ -->
+<!-- ════════════════ Karten-Modal (Vollbild zum Vergrößern) ════════════════ -->
 <div class="modal-bg" id="mapModal">
   <div class="modal">
     <button class="modal-close" onclick="closeMap()">Schließen ✕</button>
@@ -678,7 +802,7 @@ const ITEMS = {
 const ROOMS = {
   /* ══════════════ OBERWELT ══════════════ */
   lichtung: {
-    name:'Lichtung im Wald', section:'above', x:300, y:60,
+    name:'Lichtung im Wald', section:'above', gx:0, gy:0,
     text:`Du stehst auf einer sonnigen Lichtung. Ringsum stehen alte <strong>Eichen</strong>, deren Äste sich wie schützende Arme über dich wölben. In der Mitte der Lichtung liegt ein <strong>flacher Stein</strong>, und auf dem Stein etwas Helles.
 
 Im Norden führt ein <em>schmaler Pfad</em> tiefer in den Wald. Im Süden glitzert ein <strong>Bach</strong>. Im Osten steht ein <strong>altes Bauernhaus</strong>. Im Westen erheben sich <em>steile Felsen</em>.`,
@@ -688,7 +812,7 @@ Im Norden führt ein <em>schmaler Pfad</em> tiefer in den Wald. Im Süden glitze
     onLook:'Auf dem flachen Stein liegt etwas. Vielleicht solltest du unter dem Stein nachschauen?'
   },
   wald: {
-    name:'Tiefer Wald', section:'above', x:300, y:140,
+    name:'Tiefer Wald', section:'above', gx:0, gy:-1,
     text:`Hier wird der Wald dichter. Die Sonne dringt nur in dünnen Strahlen durch das Blätterdach. Es <em>raschelt</em> – vielleicht ein Tier, vielleicht etwas anderes.
 
 Du hörst hoch oben ein <strong>Eulenruf</strong>. Ein Pfad führt nach Norden zur <em>alten Mühle</em>, nach Süden zurück zur Lichtung, und nach Osten zu einer <em>Bienenwiese</em>.`,
@@ -697,7 +821,7 @@ Du hörst hoch oben ein <strong>Eulenruf</strong>. Ein Pfad führt nach Norden z
     encounter:'eule'
   },
   muehle: {
-    name:'Alte Mühle', section:'above', x:300, y:220,
+    name:'Alte Mühle', section:'above', gx:0, gy:-2,
     text:`Eine verfallene Wassermühle. Das Rad dreht sich quietschend in einem schmalen Bach. Drinnen riecht es nach <strong>altem Mehl</strong> und Staub. Auf einem Tisch liegt ein <strong>Messer</strong>, und an der Wand hängt ein <strong>Seil</strong>.
 
 In der Ecke führt eine <em>Falltür</em> hinunter in einen Keller. Nach Süden geht es zurück in den Wald.`,
@@ -705,7 +829,7 @@ In der Ecke führt eine <em>Falltür</em> hinunter in einen Keller. Nach Süden 
     items:['messer','seil'],
   },
   muehlenkeller: {
-    name:'Mühlenkeller', section:'above', x:380, y:220,
+    name:'Mühlenkeller', section:'above', gx:1, gy:-2,
     text:`Ein kühler, modriger Keller. Mehlsäcke stapeln sich. In einer dunklen Ecke siehst du etwas glimmen – Leuchtpilze! Und an der Wand: eine <strong>Inschrift</strong>:
 
 <em>„Drei plus vier ist sieben Schätze.
@@ -719,7 +843,7 @@ Eine schmale Treppe führt nach oben.`,
     hidden:{säcke:{ desc:'Hinter den Mehlsäcken findest du eine versteckte Notiz!', gives:['notiz'], once:true }},
   },
   bauernhaus: {
-    name:'Bauernhaus', section:'above', x:430, y:60,
+    name:'Bauernhaus', section:'above', gx:1, gy:0,
     text:`Das alte Haus deines Großonkels Aurelius. Die Tür steht halb offen. Drinnen: ein Tisch, ein Stuhl, ein verstaubtes <strong>Bücherregal</strong>. Auf dem Tisch liegt ein <strong>Apfel</strong>, ein Stück <strong>Brot</strong> und eine <strong>Wasserflasche</strong>.
 
 An der Wand hängt ein <strong>Schmiedehammer</strong>. Eine Wendeltreppe führt nach oben in den <em>Dachboden</em>. Im Westen geht es zur Lichtung.`,
@@ -728,7 +852,7 @@ An der Wand hängt ein <strong>Schmiedehammer</strong>. Eine Wendeltreppe führt
     hidden:{regal:{ desc:'Im Bücherregal entdeckst du eine Ölflasche, hinter den Büchern versteckt.', gives:['oel'], once:true }},
   },
   dachboden: {
-    name:'Dachboden', section:'above', x:510, y:60,
+    name:'Dachboden', section:'above', gx:2, gy:0,
     text:`Spinnweben hängen überall. Auf einer Truhe liegt eine <strong>Eulenfeder</strong>, daneben ein <strong>Zunder-Beutelchen</strong>. Aus einem kleinen Fenster siehst du das ganze Tal.
 
 In einer staubigen Ecke steht ein <strong>Handspiegel</strong>, mit der Spiegelseite zur Wand. Vorsicht – manche Dinge wollen nicht gesehen werden.`,
@@ -736,7 +860,7 @@ In einer staubigen Ecke steht ein <strong>Handspiegel</strong>, mit der Spiegels
     items:['feder','feuerzeug','spiegel'],
   },
   bach: {
-    name:'Klarer Bach', section:'above', x:300, y:300,
+    name:'Klarer Bach', section:'above', gx:0, gy:1,
     text:`Ein silberner Bach fließt zwischen mit Moos bewachsenen Steinen. Das Wasser ist eiskalt und klar. Am Ufer wächst eine seltene <strong>Bergblume</strong> – ein Edelweiß.
 
 Nach Norden geht es zur Lichtung. Im Süden verschwindet der Bach in einer <em>dunklen Höhle</em>. Im Westen liegen die <em>Steinklippen</em>.`,
@@ -744,7 +868,7 @@ Nach Norden geht es zur Lichtung. Im Süden verschwindet der Bach in einer <em>d
     items:['blume'],
   },
   felsen: {
-    name:'Steile Felsen', section:'above', x:170, y:200,
+    name:'Steile Felsen', section:'above', gx:-1, gy:0,
     text:`Hohe, graue Klippen ragen aus dem Boden. Ein <strong>schmaler Pfad</strong> schlängelt sich an ihnen entlang. Hier oben pfeift der Wind. Du siehst tief unten den Bach und im Westen, fast unsichtbar, einen <em>kleinen Felsspalt</em>, gerade breit genug für einen Menschen.
 
 In der Mitte einer Felswand ist eine <strong>Kerbe</strong> eingehauen – wie eine kleine Treppenstufe.`,
@@ -752,7 +876,7 @@ In der Mitte einer Felswand ist eine <strong>Kerbe</strong> eingehauen – wie e
     hidden:{kerbe:{ desc:'Du steigst auf die Kerbe und entdeckst eine Höhle hinter dem Felsvorsprung.', gives:[], unlocks:'felsspalt', once:true }},
   },
   felsspalt: {
-    name:'Felsspalt', section:'above', x:50, y:200, locked:true,
+    name:'Felsspalt', section:'above', gx:-2, gy:0, locked:true,
     text:`Ein enger Spalt führt in die Dunkelheit. Auf dem Boden liegen <strong>Knochen</strong> – sehr alte. An der Wand ist mit Kohle gekritzelt: <em>„Wer in die Tiefe will, der muss sich selbst zur Last fallen."</em>
 
 Im Boden klafft ein <strong>tiefer Schacht</strong> nach unten. Im Osten geht es zurück zu den Felsen.`,
@@ -760,7 +884,7 @@ Im Boden klafft ein <strong>tiefer Schacht</strong> nach unten. Im Osten geht es
     items:['knochen'],
   },
   wiese: {
-    name:'Bienenwiese', section:'above', x:430, y:140,
+    name:'Bienenwiese', section:'above', gx:1, gy:-1,
     text:`Eine sonnige Wiese voller Wildblumen. Bienen summen rund um einen großen <strong>Bienenstock</strong>. Süßer Honiggeruch liegt in der Luft. Aber Vorsicht – die Bienen sind nicht freundlich zu Fremden.
 
 Aus dem Stock tropft <strong>Honig</strong>. Wer ihn ohne Hilfe nimmt, wird gestochen. Aber wenn du <em>nachts</em> kommst, wenn die Bienen schlafen…
@@ -772,7 +896,7 @@ Im Westen geht es in den Wald.`,
     onTake:{honig:{require:'sleep', msg:'Die Bienen schwärmen sofort heraus und stechen dich! Du verlierst ein Leben.', damage:1}}
   },
   hoehleneingang: {
-    name:'Höhleneingang', section:'above', x:300, y:380,
+    name:'Höhleneingang', section:'above', gx:0, gy:2,
     text:`Hier verschwindet der Bach in einer geräumigen Höhle. Es ist kühl. Die Luft riecht nach feuchtem Stein. <strong>Hier endet die Welt der Sonne. Wenn du tiefer hinabsteigst, brauchst du Licht.</strong>
 
 Auf einem Stein vor dem Eingang liegt eine <strong>Ölflasche</strong> und ein <strong>Spaten</strong>, halb vom Moos überwachsen.
@@ -784,7 +908,7 @@ Nach Norden geht es zum Bach. Eine schmale Treppe führt <em>hinunter</em> in di
 
   /* ══════════════ UNTERWELT ══════════════ */
   grossehalle: {
-    name:'Große Halle', section:'below', x:300, y:60,
+    name:'Große Halle', section:'below', gx:0, gy:0,
     text:`Eine riesige unterirdische Halle. Die Decke verliert sich in der Dunkelheit. In der Mitte steht ein <strong>steinerner Altar</strong>. Vier Korridore führen in alle Himmelsrichtungen.
 
 Auf dem Altar liegt etwas, das schwach golden schimmert.
@@ -795,7 +919,7 @@ Nach Norden geht es zur <em>Schatzkammer</em>, nach Süden zur <em>Kristallhöhl
     hidden:{altar:{ desc:'Auf dem Altar liegt eine Goldmünze mit dem Antlitz eines Königs.', gives:['goldmuenze'], once:true }},
   },
   schatzkammer: {
-    name:'Schatzkammer', section:'below', x:300, y:-20, locked:true,
+    name:'Schatzkammer', section:'below', gx:0, gy:-1, locked:true,
     text:`Eine kleine Kammer, von Säulen umgeben. In der Mitte: ein Sockel, auf dem eine <strong>silberne Harfe</strong> ruht. Die Saiten zittern, als würden sie auf dich warten.
 
 An der Wand steht in goldenen Lettern:
@@ -816,7 +940,7 @@ und Tür wie Saite werden binden."</em>
     }
   },
   kristall: {
-    name:'Kristallhöhle', section:'below', x:300, y:140,
+    name:'Kristallhöhle', section:'below', gx:0, gy:1,
     text:`Wände aus glitzerndem Bergkristall. Dein Lampenlicht bricht sich in tausend Funken. In der Mitte hängt ein <strong>Sternenamulett</strong> an einer Spinnwebenkette von der Decke.
 
 Es ist kein Sockel da, kein Schalter. Wie kommst du heran?
@@ -828,7 +952,7 @@ Im Norden geht es zur großen Halle, im Süden zum <em>schwarzen See</em>.`,
     hidden:{amulett:{ desc:'Mit dem Seil schlingst du es um das Amulett und ziehst es vorsichtig herunter.', gives:['amulett'], require:'seil', once:true }},
   },
   schwarzer_see: {
-    name:'Schwarzer See', section:'below', x:300, y:220,
+    name:'Schwarzer See', section:'below', gx:0, gy:2,
     text:`Ein See aus tintenschwarzem Wasser. Kein Wind, keine Wellen. Auf der anderen Seite siehst du etwas blinken – ein <strong>Boot</strong>? Nein, etwas anderes.
 
 Du kannst nicht hinüberschwimmen – das Wasser ist eisig. Aber wer einen <em>Magier</em> kennt, der das richtige Wort sagt…
@@ -839,7 +963,7 @@ Im Norden geht es zur Kristallhöhle.`,
     hidden:{ufer:{ desc:'Am Ufer findest du eine vergessene Wasserflasche.', gives:['wasser'], once:true }},
   },
   pilzgarten: {
-    name:'Pilzgarten', section:'below', x:380, y:60,
+    name:'Pilzgarten', section:'below', gx:1, gy:0,
     text:`Eine Höhle voller <strong>Leuchtpilze</strong> in allen Farben – rot, blau, golden. Sie spenden ein sanftes Licht, sodass deine Laterne hier nicht nötig wäre. Auf einem Felsen sitzt ein <strong>Frosch</strong> und schaut dich neugierig an.
 
 „<em>Sprich, Wanderer</em>", sagt er plötzlich. „<em>Wer drei Pilze nennt, darf einen mitnehmen. Doch wehe dem, der vier nennt – die Magie verzehrt ihn.</em>"
@@ -862,7 +986,7 @@ Im Westen geht es zur großen Halle.`,
     }
   },
   bibliothek: {
-    name:'Verlorene Bibliothek', section:'below', x:220, y:60,
+    name:'Verlorene Bibliothek', section:'below', gx:-1, gy:0,
     text:`Hohe Regale aus dunklem Holz, gefüllt mit verstaubten Büchern. Eine zerbrochene Leiter lehnt an einem Regal. In der Luft schwebt der Geruch von altem Pergament.
 
 Auf einem Lesepult liegt aufgeschlagen ein <strong>schwarzes Buch</strong> – das <em>Buch der Schatten</em>. Doch wenn du es greifen willst, weichen die Seiten flatternd zurück. Das Buch will erst etwas von dir.
@@ -886,7 +1010,7 @@ Im Osten ist die große Halle.`,
     }
   },
   tiefe: {
-    name:'Tiefer Gang', section:'below', x:300, y:300,
+    name:'Tiefer Gang', section:'below', gx:2, gy:1,
     text:`Du steigst hinab in immer kältere Tiefen. Der Atem dampft. Hier unten ist <strong>jede Sekunde Laternenöl Gold wert</strong>. Wenn die Laterne ausgeht, kommen die <em>Grues</em>.
 
 Nach Süden führt ein Tunnel zur <em>Eishalle</em>. Nach Osten geht es zur <em>Drachengrotte</em>. Nach oben zurück zur großen Halle.`,
@@ -894,7 +1018,7 @@ Nach Süden führt ein Tunnel zur <em>Eishalle</em>. Nach Osten geht es zur <em>
     items:[],
   },
   eishalle: {
-    name:'Eishalle', section:'below', x:300, y:380,
+    name:'Eishalle', section:'below', gx:2, gy:2,
     text:`Ein gefrorener Saal. Eiszapfen hängen wie Zähne von der Decke. In der Mitte, auf einem Sockel aus blauem Eis: die <strong>Eiskrone</strong>.
 
 Vorsicht – du musst etwas in der Hand haben, das warm ist, oder die Krone friert deine Finger fest. (<em>Tipp: Was leuchtet und brennt?</em>)
@@ -904,7 +1028,7 @@ Nach Norden geht es zurück.`,
     hidden:{krone:{ desc:'Mit der brennenden Laterne in der einen, der Krone in der anderen Hand kannst du sie nehmen!', gives:['eiskrone'], require:'laterne_an', once:true }},
   },
   drachengrotte: {
-    name:'Drachengrotte', section:'below', x:380, y:300,
+    name:'Drachengrotte', section:'below', gx:3, gy:1,
     text:`Eine warme, rauchige Grotte. In der Mitte schläft ein <strong>kleiner Drache</strong>, kaum größer als ein Hund, auf einem Berg von Goldmünzen. Eine davon schimmert besonders – fast wie Bernstein.
 
 Wenn du an ihm vorbeischleichst, ohne ihn zu wecken, könntest du den <strong>Bernsteinkelch</strong> nehmen. Aber Drachen haben feine Ohren.
@@ -917,7 +1041,7 @@ Im Westen ist der tiefe Gang.`,
     onEnter:'Der Drache atmet ruhig im Schlaf. Pass auf, dass du ihn nicht weckst.'
   },
   tiefeshoehle: {
-    name:'Tiefe Höhle', section:'below', x:80, y:300,
+    name:'Tiefe Höhle', section:'below', gx:-3, gy:1,
     text:`Eine fast vergessene Kammer, tief unter den Felsen. Auf einem alten Tisch liegt eine vergilbte Pergamentrolle – und auf einem Sockel daneben ruht das letzte Geheimnis: die <strong>Rune des Aurelius</strong>.
 
 Aber wenn du sie nimmst, fängt der Raum an zu beben. Du musst schnell sein. (<em>Sehr</em> schnell.)
@@ -981,6 +1105,8 @@ const state = {
   treasures: 0,
   pendingRiddle: null,
   mapView:'above',
+  miniMapView:'above',
+  miniMapManual:false,
   wizardCooldown: 8,
   gameOver:false,
 };
@@ -1795,8 +1921,39 @@ function buildMaps(){
 
 function renderMapSVG(section){
   const rooms = Object.entries(ROOMS).filter(([k,r]) => r.section === section);
-  const w = 700, h = 460;
-  let svg = `<svg viewBox="0 0 ${w} ${h}" class="map-svg" xmlns="http://www.w3.org/2000/svg">`;
+
+  // Grid-Layout: cellW × cellH pro Gitterzelle. Räume sind als gx, gy gespeichert.
+  const cellW = 110, cellH = 90;
+  const boxW = 92, boxH = 64;
+  const padX = 40, padY = 60;  // Außenrand
+  const titleH = 38;
+
+  // Min/Max Grid-Koordinaten ermitteln
+  let minGx = 0, maxGx = 0, minGy = 0, maxGy = 0;
+  for(const [id, r] of rooms){
+    if(r.gx < minGx) minGx = r.gx;
+    if(r.gx > maxGx) maxGx = r.gx;
+    if(r.gy < minGy) minGy = r.gy;
+    if(r.gy > maxGy) maxGy = r.gy;
+  }
+  const colCount = maxGx - minGx + 1;
+  const rowCount = maxGy - minGy + 1;
+  const w = padX*2 + colCount * cellW;
+  const h = padY + titleH + rowCount * cellH + padY;
+
+  // Hilfsfunktion: Gitter → SVG-Pixel (Mittelpunkt der Box)
+  function center(r){
+    return {
+      cx: padX + (r.gx - minGx) * cellW + cellW/2,
+      cy: padY + titleH + (r.gy - minGy) * cellH + cellH/2,
+    };
+  }
+  function topLeft(r){
+    const c = center(r);
+    return { x: c.cx - boxW/2, y: c.cy - boxH/2 };
+  }
+
+  let svg = `<svg viewBox="0 0 ${w} ${h}" class="map-svg" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">`;
 
   // Hintergrund-Maserung
   svg += `<defs>
@@ -1805,62 +1962,109 @@ function renderMapSVG(section){
       <circle cx="2" cy="3" r=".5" fill="rgba(90,60,30,.15)"/>
       <circle cx="6" cy="5" r=".4" fill="rgba(90,60,30,.1)"/>
     </pattern>
+    <filter id="glow-${section}">
+      <feGaussianBlur stdDeviation="2.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
   </defs>`;
   svg += `<rect width="${w}" height="${h}" fill="url(#grain-${section})"/>`;
 
   // Titel
-  svg += `<text x="${w/2}" y="30" text-anchor="middle" font-family="Cinzel,serif" font-size="22" font-weight="700" fill="#3d2b18">${section==='above'?'Oberwelt — Wald, Felsen & Wiese':'Unterwelt — Die Sieben Hallen'}</text>`;
+  svg += `<text x="${w/2}" y="28" text-anchor="middle" font-family="Cinzel,serif" font-size="20" font-weight="700" fill="#3d2b18" letter-spacing="2">${section==='above'?'❦ OBERWELT ❦':'❦ UNTERWELT ❦'}</text>`;
 
-  // Verbindungen
+  // Verbindungen (cardinal)
+  const drawn = new Set();
   for(const [id, r] of rooms){
     if(!r.exits) continue;
+    const c1 = center(r);
     for(const [dir, target] of Object.entries(r.exits)){
       const t = ROOMS[target];
       if(!t || t.section !== section) continue;
-      const x1 = r.x + 40, y1 = r.y + 80;
-      const x2 = t.x + 40, y2 = t.y + 80;
-      const locked = t.locked;
-      svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${locked?'#7a1a1a':'#3d2b18'}" stroke-width="2" stroke-dasharray="${locked?'4 4':'0'}"/>`;
+      // Doppelte Linien vermeiden
+      const key = [id, target].sort().join('-');
+      if(drawn.has(key)) continue;
+      drawn.add(key);
+      const c2 = center(t);
+      // Verbindung "u" / "a" innerhalb derselben Welt ist eine Sondertreppe
+      const isStair = (dir==='u' || dir==='a');
+      const locked = t.locked || r.locked;
+      const stroke = locked ? '#7a1a1a' : (isStair ? '#5a4a2a' : '#3d2b18');
+      const dash   = locked ? '5 4' : (isStair ? '2 5' : '0');
+      svg += `<line x1="${c1.cx}" y1="${c1.cy}" x2="${c2.cx}" y2="${c2.cy}" stroke="${stroke}" stroke-width="2.5" stroke-dasharray="${dash}" stroke-linecap="round"/>`;
+      if(isStair){
+        // Treppensymbol in der Mitte
+        const mx = (c1.cx+c2.cx)/2, my = (c1.cy+c2.cy)/2;
+        svg += `<text x="${mx}" y="${my+4}" text-anchor="middle" font-size="14" fill="#5a4a2a">↕</text>`;
+      }
     }
   }
 
-  // Verbindung Ober- ↔ Unterwelt (Hinweis-Pfeile am Rand)
+  // Verbindung Ober- ↔ Unterwelt (visueller Hinweis)
   if(section==='above'){
-    // Höhleneingang führt nach unten
     const he = ROOMS.hoehleneingang;
-    svg += `<text x="${he.x+40}" y="${he.y+115}" text-anchor="middle" font-size="12" fill="#7a1a1a" font-weight="700">↓ Unterwelt</text>`;
+    const c = center(he);
+    svg += `<text x="${c.cx}" y="${c.cy + boxH/2 + 18}" text-anchor="middle" font-size="11" fill="#7a1a1a" font-weight="700">↓ zur Unterwelt</text>`;
     const fs = ROOMS.felsspalt;
-    svg += `<text x="${fs.x+40}" y="${fs.y+115}" text-anchor="middle" font-size="11" fill="#7a1a1a">↓ Tiefe</text>`;
+    const c2 = center(fs);
+    svg += `<text x="${c2.cx}" y="${c2.cy + boxH/2 + 18}" text-anchor="middle" font-size="11" fill="#7a1a1a" font-weight="700">↓ in die Tiefe</text>`;
   } else {
     const gh = ROOMS.grossehalle;
-    svg += `<text x="${gh.x+40}" y="${gh.y+15}" text-anchor="middle" font-size="11" fill="#7a1a1a">↑ Oberwelt</text>`;
+    const c = center(gh);
+    svg += `<text x="${c.cx}" y="${c.cy - boxH/2 - 6}" text-anchor="middle" font-size="11" fill="#7a1a1a" font-weight="700">↑ zur Oberwelt</text>`;
+    const th = ROOMS.tiefeshoehle;
+    const c2 = center(th);
+    svg += `<text x="${c2.cx}" y="${c2.cy - boxH/2 - 6}" text-anchor="middle" font-size="11" fill="#7a1a1a" font-weight="700">↑ zum Felsspalt</text>`;
   }
 
-  // Räume
+  // Räume zeichnen
+  const exitsFromCurrent = ROOMS[state.current]?.exits || {};
+  const reachableNow = new Set(Object.values(exitsFromCurrent));
+
   for(const [id, r] of rooms){
-    const cls = (id===state.current ? 'current' : (visitedRooms.has(id) ? 'visited' : ''));
-    const fill = cls==='current' ? '#c89c3a' : (cls==='visited' ? '#a8c97a' : '#e6d5b3');
-    const stroke = cls==='current' ? '#7a1a1a' : '#3d2b18';
-    const sw = cls==='current' ? 3 : 1.5;
-    svg += `<rect x="${r.x}" y="${r.y+50}" width="80" height="60" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" rx="3"/>`;
+    const tl = topLeft(r);
+    const isCurrent = id===state.current;
+    const isReachable = reachableNow.has(id);
+    const isVisited = visitedRooms.has(id);
+    const fill = isCurrent ? '#c89c3a' : (isVisited ? '#a8c97a' : (isReachable ? '#e6d5b3' : '#d9c39a'));
+    const stroke = isCurrent ? '#7a1a1a' : (isReachable ? '#8a6a1e' : '#3d2b18');
+    const sw = isCurrent ? 3.5 : (isReachable ? 2.5 : 1.5);
+
+    // Klickbare Gruppe
+    const cursor = isReachable && !isCurrent ? 'pointer' : 'default';
+    const opacity = isCurrent ? 1 : (isReachable || isVisited ? 1 : 0.85);
+    svg += `<g style="cursor:${cursor}" opacity="${opacity}" onclick="mapClick('${id}')" data-room="${id}">`;
+    // Schatten / Glanz für aktuellen Raum
+    if(isCurrent){
+      svg += `<rect x="${tl.x-3}" y="${tl.y-3}" width="${boxW+6}" height="${boxH+6}" fill="#c89c3a" opacity=".5" rx="6" filter="url(#glow-${section})"/>`;
+    }
+    svg += `<rect x="${tl.x}" y="${tl.y}" width="${boxW}" height="${boxH}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" rx="4">`;
+    if(isCurrent){
+      svg += `<animate attributeName="stroke-width" values="3;4.5;3" dur="1.6s" repeatCount="indefinite"/>`;
+    }
+    svg += `</rect>`;
+
     // Name (Zeilenumbruch)
-    const lines = wrapText(r.name, 12);
-    let ty = r.y + 50 + (60 - lines.length*12)/2 + 10;
+    const displayName = isVisited || isCurrent || isReachable ? r.name : '???';
+    const lines = wrapText(displayName, 12);
+    const totalH = lines.length * 12;
+    let ty = tl.y + (boxH - totalH)/2 + 10;
     for(const ln of lines){
-      svg += `<text x="${r.x+40}" y="${ty}" text-anchor="middle" font-size="10" font-weight="700" fill="#1a1410" font-family="Cinzel,serif">${ln}</text>`;
+      svg += `<text x="${tl.x + boxW/2}" y="${ty}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1a1410" font-family="Cinzel,serif" pointer-events="none">${ln}</text>`;
       ty += 12;
     }
-  }
-
-  // Legende-Markierung Schätze
-  for(const [id, r] of rooms){
+    // Schatz-Marker
     if(r.items){
       for(const it of r.items){
         if(ITEMS[it]&&ITEMS[it].treasure){
-          svg += `<text x="${r.x+72}" y="${r.y+60}" font-size="14">💎</text>`;
+          svg += `<text x="${tl.x + boxW - 6}" y="${tl.y + 14}" font-size="14" pointer-events="none">💎</text>`;
         }
       }
     }
+    // "Du bist hier" Marker
+    if(isCurrent){
+      svg += `<text x="${tl.x + boxW/2}" y="${tl.y - 6}" text-anchor="middle" font-size="11" font-weight="700" fill="#7a1a1a" font-family="Cinzel,serif" pointer-events="none">★ HIER ★</text>`;
+    }
+    svg += `</g>`;
   }
 
   svg += '</svg>';
@@ -1881,6 +2085,32 @@ function wrapText(text, limit){
   return lines;
 }
 
+/* ─── Klick auf Karte ─── */
+function mapClick(roomId){
+  if(state.gameOver) return;
+  if(state.pendingRiddle){ msg('Beantworte zuerst das Rätsel!','new'); return; }
+  if(roomId === state.current) return;
+
+  // Finde die Richtung, in der dieser Raum vom aktuellen Raum aus liegt
+  const r = ROOMS[state.current];
+  if(!r.exits){ msg('Du kannst von hier nichts erreichen.','new'); return; }
+  let dirKey = null;
+  for(const [k, v] of Object.entries(r.exits)){
+    if(v === roomId){ dirKey = k; break; }
+  }
+  if(!dirKey){
+    msg('Dorthin führt von hier kein Weg. Du musst über andere Räume gehen.', 'new');
+    renderAll();
+    return;
+  }
+  // Übersetzen in Tastenformat
+  const map = { n:'n', s:'s', o:'o', w:'w', a:'oben', u:'unten' };
+  const action = map[dirKey];
+  if(action){
+    doAction(action);
+  }
+}
+
 function openMap(){
   buildMaps();
   document.getElementById('mapModal').classList.add('open');
@@ -1894,6 +2124,28 @@ function switchMap(which){
   document.getElementById('tabBelow').classList.toggle('active', which==='below');
   document.getElementById('mapAbove').style.display = which==='above' ? 'block' : 'none';
   document.getElementById('mapBelow').style.display = which==='below' ? 'block' : 'none';
+}
+
+/* ─── Persistente Mini-Karte ─── */
+function switchMiniMap(which){
+  state.miniMapView = which;
+  state.miniMapManual = true; // Spieler hat selbst gewählt
+  document.getElementById('miniTabAbove').classList.toggle('active', which==='above');
+  document.getElementById('miniTabBelow').classList.toggle('active', which==='below');
+  renderMiniMap();
+}
+function renderMiniMap(){
+  // Automatisch zur richtigen Karte wechseln, wenn der Spieler die Welt wechselt
+  const currentSection = ROOMS[state.current]?.section;
+  if(currentSection && state.miniMapView !== currentSection){
+    // Wenn der Spieler über eine Treppe in die andere Welt geht,
+    // wechseln wir die Karte automatisch und setzen den manuellen Modus zurück.
+    state.miniMapView = currentSection;
+    state.miniMapManual = false;
+    document.getElementById('miniTabAbove').classList.toggle('active', currentSection==='above');
+    document.getElementById('miniTabBelow').classList.toggle('active', currentSection==='below');
+  }
+  document.getElementById('miniMapWrap').innerHTML = renderMapSVG(state.miniMapView);
 }
 
 function showCommands(){
@@ -1928,6 +2180,7 @@ function renderAll(){
   renderStatus();
   renderInventory();
   renderActions();
+  renderMiniMap();
 }
 
 function startGame(){
