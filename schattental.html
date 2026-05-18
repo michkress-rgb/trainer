@@ -1,0 +1,1945 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Das Geheimnis von Schattental – Ein deutsches Abenteuer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  /* ───────────────────────────── Schriftarten ───────────────────────────── */
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Special+Elite&display=swap');
+
+  :root{
+    --ink:        #1a1410;
+    --parchment:  #f0e3c8;
+    --parchment-2:#e6d5b3;
+    --parchment-3:#d9c39a;
+    --gold:       #8a6a1e;
+    --gold-bright:#c89c3a;
+    --blood:      #7a1a1a;
+    --moss:       #2f4a2a;
+    --shadow:     #3d2b18;
+    --night:      #0a0806;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+
+  body{
+    font-family:'Cormorant Garamond', Georgia, serif;
+    background:
+      radial-gradient(ellipse at top, #2a1f12 0%, #15100a 60%, #0a0806 100%),
+      var(--night);
+    color:var(--ink);
+    min-height:100vh;
+    padding:14px;
+    overflow-x:hidden;
+  }
+
+  /* ─── Pergament-Hintergrund mit Maserung ─── */
+  .parchment{
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(255,240,200,.4) 0%, transparent 40%),
+      radial-gradient(ellipse at 70% 80%, rgba(180,140,90,.3) 0%, transparent 50%),
+      linear-gradient(135deg, var(--parchment) 0%, var(--parchment-2) 50%, var(--parchment-3) 100%);
+    position:relative;
+  }
+  .parchment::before{
+    content:"";
+    position:absolute;inset:0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(90,60,30,.03) 2px, rgba(90,60,30,.03) 3px),
+      repeating-linear-gradient(90deg, transparent 0, transparent 7px, rgba(60,40,20,.02) 7px, rgba(60,40,20,.02) 8px);
+    pointer-events:none;mix-blend-mode:multiply;
+  }
+  .parchment::after{
+    content:"";
+    position:absolute;inset:0;
+    background:
+      radial-gradient(circle at 10% 10%, rgba(120,80,30,.25) 0%, transparent 8%),
+      radial-gradient(circle at 90% 30%, rgba(120,80,30,.2) 0%, transparent 6%),
+      radial-gradient(circle at 30% 90%, rgba(120,80,30,.3) 0%, transparent 7%),
+      radial-gradient(circle at 80% 70%, rgba(120,80,30,.18) 0%, transparent 5%);
+    pointer-events:none;
+  }
+
+  /* ───────────────────────────── Kopfzeile ───────────────────────────── */
+  header.banner{
+    text-align:center;
+    padding:18px 12px 14px;
+    border-bottom:3px double var(--gold);
+    margin-bottom:14px;
+    position:relative;
+    z-index:2;
+  }
+  header.banner h1{
+    font-family:'Cinzel', serif;
+    font-weight:900;
+    font-size:clamp(1.8rem, 4vw, 3rem);
+    letter-spacing:.12em;
+    color:var(--ink);
+    text-shadow: 2px 2px 0 var(--gold-bright), 4px 4px 0 rgba(60,40,15,.5);
+    line-height:1;
+  }
+  header.banner .sub{
+    font-family:'Cinzel', serif;
+    font-weight:500;
+    font-size:clamp(.85rem, 1.6vw, 1.15rem);
+    letter-spacing:.3em;
+    color:var(--gold);
+    margin-top:8px;
+    text-transform:uppercase;
+  }
+  header.banner .flourish{
+    color:var(--gold);
+    font-size:1.4rem;
+    margin:6px 0;
+    letter-spacing:.5em;
+  }
+
+  /* ───────────────────────────── Status-Leiste ───────────────────────────── */
+  .status{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(110px, 1fr));
+    gap:8px;
+    padding:10px 14px;
+    background: rgba(20,12,6,.55);
+    border:1px solid var(--gold);
+    border-radius:4px;
+    margin-bottom:14px;
+    position:relative;
+    z-index:3;
+    color:var(--parchment);
+    font-family:'Special Elite', monospace;
+  }
+  .stat{
+    display:flex;flex-direction:column;align-items:center;
+    text-align:center;
+    padding:4px;
+  }
+  .stat .label{font-size:.7rem;letter-spacing:.15em;color:var(--gold-bright);text-transform:uppercase}
+  .stat .val{font-size:1.2rem;font-weight:bold;color:var(--parchment)}
+  .stat.danger .val{color:#ff6b4a;animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.5}}
+
+  .lantern-bar{
+    width:100%;height:8px;background:#2a1a08;border:1px solid var(--gold);margin-top:4px;
+    border-radius:2px;overflow:hidden;
+  }
+  .lantern-fill{
+    height:100%;
+    background:linear-gradient(90deg,#ffd54a,#ff9a1a,#cc5500);
+    transition: width .4s ease;
+  }
+  .lantern-fill.dim{background:linear-gradient(90deg,#7a4a10,#3a2208)}
+
+  /* ───────────────────────────── Hauptlayout ───────────────────────────── */
+  .stage{
+    display:grid;
+    grid-template-columns: 1fr 380px;
+    gap:14px;
+    max-width:1400px;
+    margin:0 auto;
+  }
+  @media (max-width:1024px){
+    .stage{grid-template-columns:1fr}
+  }
+
+  /* ───────────────────────────── Spielfenster ───────────────────────────── */
+  .game-window{
+    border:2px solid var(--shadow);
+    border-radius:6px;
+    box-shadow:
+      0 0 0 1px var(--gold) inset,
+      0 12px 40px rgba(0,0,0,.6),
+      0 2px 6px rgba(0,0,0,.4);
+    padding:22px 26px;
+    min-height:520px;
+    position:relative;
+    overflow:hidden;
+  }
+  .room-title{
+    font-family:'Cinzel', serif;
+    font-weight:700;
+    font-size:1.6rem;
+    color:var(--ink);
+    border-bottom:1px solid var(--gold);
+    padding-bottom:6px;
+    margin-bottom:14px;
+    letter-spacing:.06em;
+    position:relative;z-index:2;
+  }
+  .room-title::before{content:"❦  ";color:var(--gold)}
+
+  .room-text{
+    font-size:1.12rem;
+    line-height:1.65;
+    color:var(--ink);
+    position:relative;z-index:2;
+    white-space:pre-wrap;
+  }
+  .room-text p{margin-bottom:.7em}
+  .room-text em{color:var(--blood);font-style:italic}
+  .room-text strong{color:var(--shadow);font-weight:700}
+
+  .exits{
+    margin-top:14px;
+    padding-top:10px;
+    border-top:1px dashed var(--gold);
+    font-style:italic;
+    color:var(--shadow);
+    position:relative;z-index:2;
+    font-size:1.05rem;
+  }
+  .exits b{color:var(--blood);font-style:normal;font-family:'Cinzel',serif;letter-spacing:.1em}
+
+  .messages{
+    margin-top:14px;
+    padding:10px 14px;
+    background: rgba(40,20,8,.12);
+    border-left:3px solid var(--gold);
+    font-family:'Special Elite', monospace;
+    font-size:.95rem;
+    min-height:50px;
+    max-height:160px;
+    overflow-y:auto;
+    position:relative;z-index:2;
+    color:var(--shadow);
+  }
+  .messages p{margin-bottom:.4em}
+  .messages .new{color:var(--blood);font-weight:bold}
+  .messages .ok{color:var(--moss);font-weight:bold}
+  .messages .magic{color:#5a2a8a;font-weight:bold}
+
+  /* ───────────────────────────── Rechte Spalte ───────────────────────────── */
+  .sidebar{display:flex;flex-direction:column;gap:14px}
+
+  .panel{
+    border:2px solid var(--shadow);
+    border-radius:6px;
+    box-shadow: 0 0 0 1px var(--gold) inset, 0 4px 16px rgba(0,0,0,.5);
+    padding:14px 16px;
+    position:relative;
+    overflow:hidden;
+  }
+  .panel h3{
+    font-family:'Cinzel', serif;
+    font-size:1rem;letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--shadow);
+    border-bottom:1px solid var(--gold);
+    padding-bottom:5px;margin-bottom:8px;
+    position:relative;z-index:2;
+  }
+
+  /* Inventar */
+  .inv-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:6px;
+    position:relative;z-index:2;
+  }
+  .inv-slot{
+    aspect-ratio:1;
+    border:1px dashed var(--shadow);
+    background: rgba(255,240,200,.3);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-size:.7rem;
+    padding:4px;
+    text-align:center;
+    color:var(--ink);
+    line-height:1.1;
+    transition: all .2s;
+    border-radius:3px;
+  }
+  .inv-slot.full{
+    background: rgba(138,106,30,.25);
+    border:1px solid var(--gold);
+    font-weight:700;
+    cursor:help;
+  }
+  .inv-slot .emoji{font-size:1.4rem;margin-bottom:2px;line-height:1}
+
+  /* Aktionen */
+  .actions{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:5px;
+    position:relative;z-index:2;
+  }
+  button.act{
+    font-family:'Cinzel', serif;
+    font-size:.78rem;
+    letter-spacing:.06em;
+    padding:8px 6px;
+    background: linear-gradient(180deg, var(--parchment), var(--parchment-3));
+    border:1px solid var(--shadow);
+    color:var(--ink);
+    cursor:pointer;
+    border-radius:3px;
+    transition: all .15s;
+    text-transform:uppercase;
+    font-weight:600;
+  }
+  button.act:hover:not(:disabled){
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+    color:var(--parchment);
+    transform:translateY(-1px);
+    box-shadow:0 3px 8px rgba(0,0,0,.3);
+  }
+  button.act:disabled{
+    opacity:.32;cursor:not-allowed;
+    filter:grayscale(.7);
+  }
+  button.act.dir{
+    background: linear-gradient(180deg, #d8c089, #b89855);
+    font-weight:700;
+  }
+
+  /* Abzeichen */
+  .badges{
+    display:flex;flex-wrap:wrap;gap:5px;
+    position:relative;z-index:2;
+  }
+  .badge{
+    display:inline-flex;align-items:center;gap:4px;
+    padding:4px 8px;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    color:var(--parchment);
+    font-family:'Cinzel',serif;
+    font-size:.72rem;
+    letter-spacing:.08em;
+    border-radius:12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,.3), 0 0 0 1px var(--shadow) inset;
+    font-weight:700;
+  }
+  .badge .em{font-size:.9rem}
+
+  /* ───────────────────────────── Karte (Modal) ───────────────────────────── */
+  .map-button{
+    position:fixed;
+    bottom:20px;right:20px;
+    z-index:50;
+    background: linear-gradient(135deg, var(--gold-bright), var(--blood));
+    color:var(--parchment);
+    border:2px solid var(--parchment);
+    padding:12px 18px;
+    font-family:'Cinzel',serif;
+    letter-spacing:.15em;
+    font-weight:700;
+    border-radius:30px;
+    cursor:pointer;
+    box-shadow:0 6px 20px rgba(0,0,0,.6);
+    font-size:.85rem;
+    text-transform:uppercase;
+  }
+  .map-button:hover{transform:scale(1.05)}
+
+  .modal-bg{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.85);
+    z-index:100;
+    align-items:center;justify-content:center;
+    padding:12px;
+  }
+  .modal-bg.open{display:flex}
+  .modal{
+    background: var(--parchment);
+    border:3px double var(--gold);
+    border-radius:8px;
+    padding:14px;
+    max-width:1100px;width:100%;
+    max-height:95vh;
+    overflow:auto;
+    position:relative;
+  }
+  .modal-close{
+    position:absolute;top:8px;right:12px;
+    background:var(--blood);color:var(--parchment);
+    border:none;padding:6px 12px;
+    font-family:'Cinzel',serif;
+    font-weight:700;
+    cursor:pointer;
+    border-radius:3px;
+    z-index:5;
+  }
+  .modal h2{
+    font-family:'Cinzel',serif;
+    color:var(--ink);
+    text-align:center;
+    margin-bottom:10px;
+    letter-spacing:.1em;
+  }
+
+  /* ───────────────────────────── SVG-Karte ───────────────────────────── */
+  .map-svg{
+    width:100%;
+    height:auto;
+    background:
+      radial-gradient(ellipse at center, #f5e6c4 0%, #d9c39a 100%);
+    border:1px solid var(--shadow);
+  }
+  .map-tabs{
+    display:flex;gap:6px;justify-content:center;margin:8px 0 10px;
+  }
+  .map-tab{
+    background:var(--parchment-3);
+    border:1px solid var(--shadow);
+    padding:6px 14px;
+    font-family:'Cinzel',serif;
+    font-size:.85rem;letter-spacing:.1em;
+    cursor:pointer;color:var(--ink);
+    text-transform:uppercase;font-weight:600;
+  }
+  .map-tab.active{background:var(--gold);color:var(--parchment)}
+  .map-legend{
+    font-family:'Special Elite',monospace;
+    font-size:.78rem;
+    padding:6px 10px;
+    background:rgba(0,0,0,.05);
+    margin-top:8px;
+    color:var(--shadow);
+  }
+  .map-legend span{display:inline-block;margin-right:14px}
+  .visited{fill:#a8c97a !important;}
+  .current{fill:#c89c3a !important;stroke:#7a1a1a !important;stroke-width:3 !important}
+
+  /* ───────────────────────────── Eingangs-Modal & Endbildschirm ───────────────────────────── */
+  .intro-modal, .end-modal{
+    position:fixed;inset:0;
+    background: radial-gradient(ellipse at center, rgba(20,10,4,.92), rgba(0,0,0,.98));
+    z-index:200;
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;
+  }
+  .intro-modal.hide, .end-modal.hide{display:none}
+  .intro-card, .end-card{
+    background: var(--parchment);
+    border:3px double var(--gold);
+    border-radius:8px;
+    padding:32px 36px;
+    max-width:680px;
+    text-align:center;
+    box-shadow: 0 0 60px rgba(200,156,58,.3);
+  }
+  .intro-card h2, .end-card h2{
+    font-family:'Cinzel',serif;
+    font-size:1.8rem;letter-spacing:.1em;
+    color:var(--blood);
+    margin-bottom:14px;
+  }
+  .intro-card p, .end-card p{
+    font-size:1.05rem;line-height:1.65;
+    color:var(--ink);
+    margin-bottom:12px;
+    text-align:left;
+  }
+  .intro-card button, .end-card button{
+    background: linear-gradient(135deg, var(--blood), #4a0d0d);
+    color:var(--parchment);
+    border:1px solid var(--gold);
+    padding:12px 28px;
+    font-family:'Cinzel',serif;
+    font-size:1rem;letter-spacing:.2em;
+    cursor:pointer;
+    margin-top:14px;
+    text-transform:uppercase;
+    border-radius:3px;
+    font-weight:700;
+  }
+  .intro-card button:hover, .end-card button:hover{
+    background: linear-gradient(135deg, var(--gold), var(--gold-bright));
+  }
+
+  /* Eingabefeld für Rätsel */
+  .riddle-input{
+    width:100%;padding:8px 10px;
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.05rem;
+    border:1px solid var(--shadow);
+    background: rgba(255,250,235,.8);
+    margin-top:8px;
+    border-radius:3px;
+  }
+
+  /* Düsterkeit (kein Licht) */
+  body.darkness .game-window{
+    background: radial-gradient(ellipse at center, #1a0808 0%, #000 100%) !important;
+    color:#a04040 !important;
+  }
+  body.darkness .room-title, body.darkness .room-text, body.darkness .exits{
+    color:#7a3030 !important;
+  }
+  body.darkness .parchment::before, body.darkness .parchment::after{display:none}
+
+  /* Magier-Erscheinung */
+  @keyframes wizard{
+    0%,100%{transform:translateY(0) rotate(0deg);opacity:0}
+    20%,80%{opacity:1}
+    50%{transform:translateY(-8px) rotate(2deg)}
+  }
+  .wizard-appears{
+    position:fixed;top:30%;left:50%;
+    transform:translateX(-50%);
+    z-index:90;
+    font-size:5rem;
+    animation: wizard 2.4s ease-out;
+    pointer-events:none;
+    filter:drop-shadow(0 0 20px #9a4ad8);
+  }
+
+  /* Scroll-Stil */
+  .messages::-webkit-scrollbar{width:8px}
+  .messages::-webkit-scrollbar-thumb{background:var(--gold);border-radius:4px}
+  .modal::-webkit-scrollbar{width:10px}
+  .modal::-webkit-scrollbar-thumb{background:var(--gold);border-radius:5px}
+
+  /* Hilfslinks */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;
+    flex-wrap:wrap;gap:8px;
+    margin-bottom:8px;
+  }
+  .topbar button{
+    background:transparent;
+    border:1px solid var(--gold);
+    color:var(--gold);
+    padding:5px 12px;
+    font-family:'Cinzel',serif;
+    font-size:.78rem;letter-spacing:.15em;
+    cursor:pointer;
+    border-radius:3px;
+    text-transform:uppercase;
+  }
+  .topbar button:hover{background:var(--gold);color:var(--ink)}
+
+  /* Hinweis-Banner */
+  .hint-banner{
+    background: linear-gradient(90deg, rgba(122,26,26,.18), rgba(122,26,26,.05));
+    border-left:3px solid var(--blood);
+    padding:8px 12px;
+    margin:10px 0;
+    font-family:'Special Elite',monospace;
+    font-size:.9rem;
+    color:var(--blood);
+    position:relative;z-index:2;
+  }
+</style>
+</head>
+<body class="parchment">
+
+<!-- ════════════════ Eingangs-Modal ════════════════ -->
+<div class="intro-modal" id="introModal">
+  <div class="intro-card parchment">
+    <h2>❦ Das Geheimnis von Schattental ❦</h2>
+    <p><strong>Du bist Wanderer.</strong> Vor langer Zeit verschwand dein Großonkel Aurelius im Tal von Schattental – ein vergessenes Königreich, halb über, halb unter der Erde. Er hinterließ dir nur einen Brief und einen alten, leeren Schlüsselbund.</p>
+    <p>Die Legende sagt, dass tief unter der Erde <em>sieben Schätze</em> verborgen liegen: der <strong>Bernsteinkelch</strong>, die <strong>silberne Harfe</strong>, die <strong>Goldmünze des Königs</strong>, das <strong>Sternenamulett</strong>, das <strong>Buch der Schatten</strong>, die <strong>Eiskrone</strong> und schließlich die <strong>Rune des Aurelius</strong>. Wer alle sieben findet und sie ans Tageslicht bringt, soll das Geheimnis lüften.</p>
+    <p>Aber hüte dich: Im Dunkeln lauern die <em>Grues</em> – uralte, geräuschlose Wesen, die nur Licht fürchten. Deine Laterne brennt nicht ewig. Und irgendwo im Tal wandert <strong>Michael der Magier</strong>, der weder gut noch böse ist – nur launisch.</p>
+    <p>Lies jedes Zimmer <em>sorgfältig</em>. Manche Dinge sind versteckt. Manche Türen öffnen sich nur, wenn du das richtige Wort sagst oder das richtige Werkzeug trägst.</p>
+    <p style="text-align:center;color:var(--blood);font-style:italic;">Möge dein Mut so hell brennen wie deine Laterne.</p>
+    <button onclick="startGame()">Das Abenteuer beginnen</button>
+  </div>
+</div>
+
+<!-- ════════════════ Endbildschirm ════════════════ -->
+<div class="end-modal hide" id="endModal">
+  <div class="end-card parchment">
+    <h2 id="endTitle">Ende</h2>
+    <div id="endBody"></div>
+    <button onclick="location.reload()">Neues Spiel beginnen</button>
+  </div>
+</div>
+
+<!-- ════════════════ Kopfzeile ════════════════ -->
+<header class="banner parchment">
+  <div class="flourish">❦ ⚜ ❦</div>
+  <h1>Das Geheimnis von Schattental</h1>
+  <div class="sub">Ein Abenteuer in sieben Schätzen</div>
+  <div class="flourish">❦ ⚜ ❦</div>
+</header>
+
+<div class="topbar">
+  <div></div>
+  <div>
+    <button onclick="document.getElementById('introModal').classList.remove('hide')">Anleitung</button>
+    <button onclick="showCommands()">Befehle</button>
+    <button onclick="if(confirm('Wirklich aufgeben und neu starten?'))location.reload()">Neu starten</button>
+  </div>
+</div>
+
+<!-- ════════════════ Status ════════════════ -->
+<div class="status" id="statusBar">
+  <div class="stat"><span class="label">Punkte</span><span class="val" id="stPoints">0</span></div>
+  <div class="stat"><span class="label">Schätze</span><span class="val" id="stTreas">0 / 7</span></div>
+  <div class="stat"><span class="label">Leben</span><span class="val" id="stLives">3</span></div>
+  <div class="stat"><span class="label">Hunger</span><span class="val" id="stHunger">satt</span></div>
+  <div class="stat" id="lanternStat"><span class="label">Laterne</span><span class="val" id="stLantern">—</span>
+    <div class="lantern-bar"><div class="lantern-fill" id="lanternFill" style="width:100%"></div></div>
+  </div>
+  <div class="stat"><span class="label">Züge</span><span class="val" id="stTurns">0</span></div>
+</div>
+
+<!-- ════════════════ Spielfläche ════════════════ -->
+<div class="stage">
+  <!-- Linke Seite: Spielfenster -->
+  <main class="game-window parchment" id="gameWindow">
+    <h2 class="room-title" id="roomTitle">—</h2>
+    <div class="room-text" id="roomText">—</div>
+    <div class="exits" id="exits">—</div>
+    <div class="messages" id="messages"></div>
+  </main>
+
+  <!-- Rechte Seite: Aktionen / Inventar / Abzeichen -->
+  <aside class="sidebar">
+    <div class="panel parchment">
+      <h3>Aktionen</h3>
+      <div class="actions" id="actions"></div>
+    </div>
+    <div class="panel parchment">
+      <h3>Inventar (max 8)</h3>
+      <div class="inv-grid" id="inventory"></div>
+    </div>
+    <div class="panel parchment">
+      <h3>Abzeichen</h3>
+      <div class="badges" id="badges"><em style="color:#666">noch keine</em></div>
+    </div>
+  </aside>
+</div>
+
+<!-- ════════════════ Karten-Knopf ════════════════ -->
+<button class="map-button" onclick="openMap()">🗺️ Karte</button>
+
+<!-- ════════════════ Karten-Modal ════════════════ -->
+<div class="modal-bg" id="mapModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeMap()">Schließen ✕</button>
+    <h2>Karte des Tals von Schattental</h2>
+    <div class="map-tabs">
+      <button class="map-tab active" id="tabAbove" onclick="switchMap('above')">Oberwelt</button>
+      <button class="map-tab" id="tabBelow" onclick="switchMap('below')">Unterwelt</button>
+    </div>
+    <div id="mapAbove"></div>
+    <div id="mapBelow" style="display:none"></div>
+    <div class="map-legend">
+      <span>⬜ unbesucht</span>
+      <span style="color:var(--moss)">🟩 besucht</span>
+      <span style="color:var(--blood)">🟧 du bist hier</span>
+      <span>━ Weg</span>
+      <span>┄ versteckt / Rätsel</span>
+      <span>↑↓ Treppen / Schächte</span>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════════
+   SPIELDATEN
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Gegenstände ─── */
+const ITEMS = {
+  /* Werkzeuge & Grundausstattung */
+  laterne:     {emoji:'🏮', name:'Laterne',         desc:'Eine alte Messinglaterne. Sie brennt nicht ewig.'},
+  oel:         {emoji:'🛢️', name:'Ölflasche',       desc:'Lampenöl. Füllt die Laterne wieder auf.'},
+  brot:        {emoji:'🍞', name:'Brot',            desc:'Ein hartes Stück Bauernbrot.'},
+  apfel:       {emoji:'🍎', name:'Apfel',           desc:'Rotbäckig und knackig.'},
+  wasser:      {emoji:'💧', name:'Wasserflasche',   desc:'Frisches Quellwasser.'},
+  seil:        {emoji:'🪢', name:'Seil',             desc:'Ein langes, kräftiges Hanfseil.'},
+  schluessel:  {emoji:'🗝️', name:'Eisenschlüssel',  desc:'Schwer und alt. Wofür wohl?'},
+  messer:      {emoji:'🔪', name:'Messer',           desc:'Scharf. Schneidet Seile, Pilze, Brot.'},
+  hammer:      {emoji:'🔨', name:'Hammer',           desc:'Ein schwerer Schmiedehammer.'},
+  spaten:      {emoji:'🪏', name:'Spaten',           desc:'Zum Graben. Gut für lockere Erde.'},
+  zauberstab:  {emoji:'🪄', name:'Zauberstab',       desc:'Holz, leicht, mit einem Sternchen am Ende.'},
+  feuerzeug:   {emoji:'🔥', name:'Zunder',           desc:'Funken und Zunder. Entzündet die Laterne.'},
+  /* Brief & Karten */
+  brief:       {emoji:'✉️', name:'Brief von Aurelius', desc:'„Sieben Schätze warten unter den Wurzeln…"'},
+  notiz:       {emoji:'📜', name:'Notiz',            desc:'Eine Zeile in alter Schrift: „Wo die Bienen schlafen, dort wache."'},
+  karte:       {emoji:'🗺️', name:'Karte',            desc:'Eine Skizze des Tals.'},
+  /* Schätze */
+  bernsteinkelch:{emoji:'🍯', name:'Bernsteinkelch', desc:'SCHATZ 1/7. Honigfarben, kühl im Innern.', treasure:true},
+  silberharfe: {emoji:'🪕', name:'Silberne Harfe',   desc:'SCHATZ 2/7. Singt bei Berührung.', treasure:true},
+  goldmuenze:  {emoji:'🪙', name:'Goldmünze',        desc:'SCHATZ 3/7. Trägt das Antlitz eines Königs.', treasure:true},
+  amulett:     {emoji:'⭐', name:'Sternenamulett',   desc:'SCHATZ 4/7. Es leuchtet schwach im Dunkeln.', treasure:true},
+  schattenbuch:{emoji:'📕', name:'Buch der Schatten',desc:'SCHATZ 5/7. Die Seiten flüstern.', treasure:true},
+  eiskrone:    {emoji:'❄️', name:'Eiskrone',         desc:'SCHATZ 6/7. Brennt vor Kälte in der Hand.', treasure:true},
+  rune:        {emoji:'🪬', name:'Rune des Aurelius',desc:'SCHATZ 7/7. Das letzte Geheimnis.', treasure:true},
+  /* Diverses */
+  pilz:        {emoji:'🍄', name:'Leuchtpilz',       desc:'Glimmt sanft. Verdorben? Heilkräftig?'},
+  blume:       {emoji:'🌼', name:'Edelweiß',         desc:'Eine seltene Bergblume.'},
+  knochen:     {emoji:'🦴', name:'Knochen',          desc:'Alt und blank gebleicht. Vielleicht für einen Hund?'},
+  honig:       {emoji:'🍯', name:'Honigwabe',        desc:'Klebrig, duftend, voller Bienen-Magie.'},
+  feder:       {emoji:'🪶', name:'Eulenfeder',       desc:'Schimmert silbern.'},
+  spiegel:     {emoji:'🪞', name:'Handspiegel',      desc:'Manche Wesen vertragen ihren eigenen Blick nicht.'},
+};
+
+/* ─── Räume ─── */
+/* Jedes Zimmer hat: id, name, beschreibung, ausgänge, gegenstände, hinweise (versteckt),
+   sektion ('above' oder 'below') und Koordinaten für die Karte. */
+const ROOMS = {
+  /* ══════════════ OBERWELT ══════════════ */
+  lichtung: {
+    name:'Lichtung im Wald', section:'above', x:300, y:60,
+    text:`Du stehst auf einer sonnigen Lichtung. Ringsum stehen alte <strong>Eichen</strong>, deren Äste sich wie schützende Arme über dich wölben. In der Mitte der Lichtung liegt ein <strong>flacher Stein</strong>, und auf dem Stein etwas Helles.
+
+Im Norden führt ein <em>schmaler Pfad</em> tiefer in den Wald. Im Süden glitzert ein <strong>Bach</strong>. Im Osten steht ein <strong>altes Bauernhaus</strong>. Im Westen erheben sich <em>steile Felsen</em>.`,
+    exits:{n:'wald', s:'bach', o:'bauernhaus', w:'felsen'},
+    items:['brief','laterne'],
+    hidden:{stein:{ desc:'Unter dem flachen Stein findest du eine kleine Lederrolle.', gives:['karte'], once:true }},
+    onLook:'Auf dem flachen Stein liegt etwas. Vielleicht solltest du unter dem Stein nachschauen?'
+  },
+  wald: {
+    name:'Tiefer Wald', section:'above', x:300, y:140,
+    text:`Hier wird der Wald dichter. Die Sonne dringt nur in dünnen Strahlen durch das Blätterdach. Es <em>raschelt</em> – vielleicht ein Tier, vielleicht etwas anderes.
+
+Du hörst hoch oben ein <strong>Eulenruf</strong>. Ein Pfad führt nach Norden zur <em>alten Mühle</em>, nach Süden zurück zur Lichtung, und nach Osten zu einer <em>Bienenwiese</em>.`,
+    exits:{n:'muehle', s:'lichtung', o:'wiese'},
+    items:[],
+    encounter:'eule'
+  },
+  muehle: {
+    name:'Alte Mühle', section:'above', x:300, y:220,
+    text:`Eine verfallene Wassermühle. Das Rad dreht sich quietschend in einem schmalen Bach. Drinnen riecht es nach <strong>altem Mehl</strong> und Staub. Auf einem Tisch liegt ein <strong>Messer</strong>, und an der Wand hängt ein <strong>Seil</strong>.
+
+In der Ecke führt eine <em>Falltür</em> hinunter in einen Keller. Nach Süden geht es zurück in den Wald.`,
+    exits:{s:'wald', u:'muehlenkeller'},
+    items:['messer','seil'],
+  },
+  muehlenkeller: {
+    name:'Mühlenkeller', section:'above', x:380, y:220,
+    text:`Ein kühler, modriger Keller. Mehlsäcke stapeln sich. In einer dunklen Ecke siehst du etwas glimmen – Leuchtpilze! Und an der Wand: eine <strong>Inschrift</strong>:
+
+<em>„Drei plus vier ist sieben Schätze.
+Wer sie zählt, der wird nicht eingehen.
+Aber wer sie greift mit gier'gen Händen,
+muss am Ende selbst verschwenden."</em>
+
+Eine schmale Treppe führt nach oben.`,
+    exits:{a:'muehle'},
+    items:['pilz'],
+    hidden:{säcke:{ desc:'Hinter den Mehlsäcken findest du eine versteckte Notiz!', gives:['notiz'], once:true }},
+  },
+  bauernhaus: {
+    name:'Bauernhaus', section:'above', x:430, y:60,
+    text:`Das alte Haus deines Großonkels Aurelius. Die Tür steht halb offen. Drinnen: ein Tisch, ein Stuhl, ein verstaubtes <strong>Bücherregal</strong>. Auf dem Tisch liegt ein <strong>Apfel</strong>, ein Stück <strong>Brot</strong> und eine <strong>Wasserflasche</strong>.
+
+An der Wand hängt ein <strong>Schmiedehammer</strong>. Eine Wendeltreppe führt nach oben in den <em>Dachboden</em>. Im Westen geht es zur Lichtung.`,
+    exits:{w:'lichtung', o:'dachboden'},
+    items:['apfel','brot','wasser','hammer'],
+    hidden:{regal:{ desc:'Im Bücherregal entdeckst du eine Ölflasche, hinter den Büchern versteckt.', gives:['oel'], once:true }},
+  },
+  dachboden: {
+    name:'Dachboden', section:'above', x:510, y:60,
+    text:`Spinnweben hängen überall. Auf einer Truhe liegt eine <strong>Eulenfeder</strong>, daneben ein <strong>Zunder-Beutelchen</strong>. Aus einem kleinen Fenster siehst du das ganze Tal.
+
+In einer staubigen Ecke steht ein <strong>Handspiegel</strong>, mit der Spiegelseite zur Wand. Vorsicht – manche Dinge wollen nicht gesehen werden.`,
+    exits:{w:'bauernhaus'},
+    items:['feder','feuerzeug','spiegel'],
+  },
+  bach: {
+    name:'Klarer Bach', section:'above', x:300, y:300,
+    text:`Ein silberner Bach fließt zwischen mit Moos bewachsenen Steinen. Das Wasser ist eiskalt und klar. Am Ufer wächst eine seltene <strong>Bergblume</strong> – ein Edelweiß.
+
+Nach Norden geht es zur Lichtung. Im Süden verschwindet der Bach in einer <em>dunklen Höhle</em>. Im Westen liegen die <em>Steinklippen</em>.`,
+    exits:{n:'lichtung', s:'hoehleneingang', w:'felsen'},
+    items:['blume'],
+  },
+  felsen: {
+    name:'Steile Felsen', section:'above', x:170, y:200,
+    text:`Hohe, graue Klippen ragen aus dem Boden. Ein <strong>schmaler Pfad</strong> schlängelt sich an ihnen entlang. Hier oben pfeift der Wind. Du siehst tief unten den Bach und im Westen, fast unsichtbar, einen <em>kleinen Felsspalt</em>, gerade breit genug für einen Menschen.
+
+In der Mitte einer Felswand ist eine <strong>Kerbe</strong> eingehauen – wie eine kleine Treppenstufe.`,
+    exits:{o:'lichtung', w:'felsspalt'},
+    hidden:{kerbe:{ desc:'Du steigst auf die Kerbe und entdeckst eine Höhle hinter dem Felsvorsprung.', gives:[], unlocks:'felsspalt', once:true }},
+  },
+  felsspalt: {
+    name:'Felsspalt', section:'above', x:50, y:200, locked:true,
+    text:`Ein enger Spalt führt in die Dunkelheit. Auf dem Boden liegen <strong>Knochen</strong> – sehr alte. An der Wand ist mit Kohle gekritzelt: <em>„Wer in die Tiefe will, der muss sich selbst zur Last fallen."</em>
+
+Im Boden klafft ein <strong>tiefer Schacht</strong> nach unten. Im Osten geht es zurück zu den Felsen.`,
+    exits:{o:'felsen', u:'tiefeshoehle'},
+    items:['knochen'],
+  },
+  wiese: {
+    name:'Bienenwiese', section:'above', x:430, y:140,
+    text:`Eine sonnige Wiese voller Wildblumen. Bienen summen rund um einen großen <strong>Bienenstock</strong>. Süßer Honiggeruch liegt in der Luft. Aber Vorsicht – die Bienen sind nicht freundlich zu Fremden.
+
+Aus dem Stock tropft <strong>Honig</strong>. Wer ihn ohne Hilfe nimmt, wird gestochen. Aber wenn du <em>nachts</em> kommst, wenn die Bienen schlafen…
+
+Im Westen geht es in den Wald.`,
+    exits:{w:'wald'},
+    items:[],
+    /* Honig nur nehmen, wenn Laterne aus / Hinweis verstanden */
+    onTake:{honig:{require:'sleep', msg:'Die Bienen schwärmen sofort heraus und stechen dich! Du verlierst ein Leben.', damage:1}}
+  },
+  hoehleneingang: {
+    name:'Höhleneingang', section:'above', x:300, y:380,
+    text:`Hier verschwindet der Bach in einer geräumigen Höhle. Es ist kühl. Die Luft riecht nach feuchtem Stein. <strong>Hier endet die Welt der Sonne. Wenn du tiefer hinabsteigst, brauchst du Licht.</strong>
+
+Auf einem Stein vor dem Eingang liegt eine <strong>Ölflasche</strong> und ein <strong>Spaten</strong>, halb vom Moos überwachsen.
+
+Nach Norden geht es zum Bach. Eine schmale Treppe führt <em>hinunter</em> in die große Halle.`,
+    exits:{n:'bach', u:'grossehalle'},
+    items:['oel','spaten'],
+  },
+
+  /* ══════════════ UNTERWELT ══════════════ */
+  grossehalle: {
+    name:'Große Halle', section:'below', x:300, y:60,
+    text:`Eine riesige unterirdische Halle. Die Decke verliert sich in der Dunkelheit. In der Mitte steht ein <strong>steinerner Altar</strong>. Vier Korridore führen in alle Himmelsrichtungen.
+
+Auf dem Altar liegt etwas, das schwach golden schimmert.
+
+Nach Norden geht es zur <em>Schatzkammer</em>, nach Süden zur <em>Kristallhöhle</em>, nach Osten zum <em>Pilzgarten</em>, nach Westen zum <em>Bibliotheksraum</em>. Eine Treppe führt zurück nach oben.`,
+    exits:{n:'schatzkammer', s:'kristall', o:'pilzgarten', w:'bibliothek', u:'tiefe', a:'hoehleneingang'},
+    items:[],
+    hidden:{altar:{ desc:'Auf dem Altar liegt eine Goldmünze mit dem Antlitz eines Königs.', gives:['goldmuenze'], once:true }},
+  },
+  schatzkammer: {
+    name:'Schatzkammer', section:'below', x:300, y:-20, locked:true,
+    text:`Eine kleine Kammer, von Säulen umgeben. In der Mitte: ein Sockel, auf dem eine <strong>silberne Harfe</strong> ruht. Die Saiten zittern, als würden sie auf dich warten.
+
+An der Wand steht in goldenen Lettern:
+
+<em>„Nur wer die Sprache der Alten kennt,
+darf in der Harfe Heimat finden.
+Sprich das Wort, das alles wendet,
+und Tür wie Saite werden binden."</em>
+
+(Das Lösungswort ist ein bekanntes <strong>Zauberwort aus 1001 Nacht</strong> – es öffnet jede Tür.)`,
+    exits:{s:'grossehalle'},
+    items:[],
+    locked_riddle: {
+      question:'Welches Zauberwort öffnet die Schatzkammer? (5 Buchstaben, aus 1001 Nacht)',
+      answer:'sesam',
+      reward:'Die Kammer öffnet sich mit einem Knirschen.',
+      gives:'silberharfe'
+    }
+  },
+  kristall: {
+    name:'Kristallhöhle', section:'below', x:300, y:140,
+    text:`Wände aus glitzerndem Bergkristall. Dein Lampenlicht bricht sich in tausend Funken. In der Mitte hängt ein <strong>Sternenamulett</strong> an einer Spinnwebenkette von der Decke.
+
+Es ist kein Sockel da, kein Schalter. Wie kommst du heran?
+
+Im Norden geht es zur großen Halle, im Süden zum <em>schwarzen See</em>.`,
+    exits:{n:'grossehalle', s:'schwarzer_see'},
+    items:[],
+    /* Erst erreichbar mit Seil ODER Stab */
+    hidden:{amulett:{ desc:'Mit dem Seil schlingst du es um das Amulett und ziehst es vorsichtig herunter.', gives:['amulett'], require:'seil', once:true }},
+  },
+  schwarzer_see: {
+    name:'Schwarzer See', section:'below', x:300, y:220,
+    text:`Ein See aus tintenschwarzem Wasser. Kein Wind, keine Wellen. Auf der anderen Seite siehst du etwas blinken – ein <strong>Boot</strong>? Nein, etwas anderes.
+
+Du kannst nicht hinüberschwimmen – das Wasser ist eisig. Aber wer einen <em>Magier</em> kennt, der das richtige Wort sagt…
+
+Im Norden geht es zur Kristallhöhle.`,
+    exits:{n:'kristall'},
+    items:[],
+    hidden:{ufer:{ desc:'Am Ufer findest du eine vergessene Wasserflasche.', gives:['wasser'], once:true }},
+  },
+  pilzgarten: {
+    name:'Pilzgarten', section:'below', x:380, y:60,
+    text:`Eine Höhle voller <strong>Leuchtpilze</strong> in allen Farben – rot, blau, golden. Sie spenden ein sanftes Licht, sodass deine Laterne hier nicht nötig wäre. Auf einem Felsen sitzt ein <strong>Frosch</strong> und schaut dich neugierig an.
+
+„<em>Sprich, Wanderer</em>", sagt er plötzlich. „<em>Wer drei Pilze nennt, darf einen mitnehmen. Doch wehe dem, der vier nennt – die Magie verzehrt ihn.</em>"
+
+Im Westen geht es zur großen Halle.`,
+    exits:{w:'grossehalle'},
+    items:[],
+    riddle:{ id:'frosch',
+      question:'Nenne genau drei essbare Pilze (deutsche Namen, durch Komma getrennt):',
+      check: a => {
+        const list = a.toLowerCase().split(/[,\s;]+/).filter(Boolean);
+        const valid = ['steinpilz','pfifferling','champignon','morchel','maronenröhrling','marone','austernpilz','butterpilz','rotkappe','hallimasch','parasol','krause glucke','shiitake','flockenstieliger'];
+        let hits = 0;
+        for(const w of list){ if(valid.some(v=>v.startsWith(w)||w.startsWith(v))) hits++; }
+        return list.length===3 && hits===3;
+      },
+      success:'Der Frosch nickt feierlich und überreicht dir einen leuchtenden Pilz.',
+      fail:'Der Frosch schüttelt traurig den Kopf. „Versuch es ein anderes Mal."',
+      gives:'pilz'
+    }
+  },
+  bibliothek: {
+    name:'Verlorene Bibliothek', section:'below', x:220, y:60,
+    text:`Hohe Regale aus dunklem Holz, gefüllt mit verstaubten Büchern. Eine zerbrochene Leiter lehnt an einem Regal. In der Luft schwebt der Geruch von altem Pergament.
+
+Auf einem Lesepult liegt aufgeschlagen ein <strong>schwarzes Buch</strong> – das <em>Buch der Schatten</em>. Doch wenn du es greifen willst, weichen die Seiten flatternd zurück. Das Buch will erst etwas von dir.
+
+Eine Stimme flüstert: „<em>Bilde einen vollständigen Satz im Präteritum mit dem Verb 'gehen' und mindestens fünf Wörtern. Dann gehöre ich dir.</em>"
+
+Im Osten ist die große Halle.`,
+    exits:{o:'grossehalle'},
+    items:[],
+    riddle:{ id:'praeteritum',
+      question:'Schreibe einen Satz im Präteritum mit „gehen" (mindestens 5 Wörter):',
+      check: a => {
+        const t = a.toLowerCase();
+        const hasPrat = /\bging\b|\bgingen\b|\bgingst\b/.test(t);
+        const words = t.split(/\s+/).filter(Boolean).length;
+        return hasPrat && words >= 5;
+      },
+      success:'Das Buch öffnet sich freiwillig und springt dir in die Hand!',
+      fail:'Das Buch knallt zu. „<em>Falsch! Versuch es noch einmal.</em>"',
+      gives:'schattenbuch'
+    }
+  },
+  tiefe: {
+    name:'Tiefer Gang', section:'below', x:300, y:300,
+    text:`Du steigst hinab in immer kältere Tiefen. Der Atem dampft. Hier unten ist <strong>jede Sekunde Laternenöl Gold wert</strong>. Wenn die Laterne ausgeht, kommen die <em>Grues</em>.
+
+Nach Süden führt ein Tunnel zur <em>Eishalle</em>. Nach Osten geht es zur <em>Drachengrotte</em>. Nach oben zurück zur großen Halle.`,
+    exits:{a:'grossehalle', s:'eishalle', o:'drachengrotte'},
+    items:[],
+  },
+  eishalle: {
+    name:'Eishalle', section:'below', x:300, y:380,
+    text:`Ein gefrorener Saal. Eiszapfen hängen wie Zähne von der Decke. In der Mitte, auf einem Sockel aus blauem Eis: die <strong>Eiskrone</strong>.
+
+Vorsicht – du musst etwas in der Hand haben, das warm ist, oder die Krone friert deine Finger fest. (<em>Tipp: Was leuchtet und brennt?</em>)
+
+Nach Norden geht es zurück.`,
+    exits:{n:'tiefe'},
+    hidden:{krone:{ desc:'Mit der brennenden Laterne in der einen, der Krone in der anderen Hand kannst du sie nehmen!', gives:['eiskrone'], require:'laterne_an', once:true }},
+  },
+  drachengrotte: {
+    name:'Drachengrotte', section:'below', x:380, y:300,
+    text:`Eine warme, rauchige Grotte. In der Mitte schläft ein <strong>kleiner Drache</strong>, kaum größer als ein Hund, auf einem Berg von Goldmünzen. Eine davon schimmert besonders – fast wie Bernstein.
+
+Wenn du an ihm vorbeischleichst, ohne ihn zu wecken, könntest du den <strong>Bernsteinkelch</strong> nehmen. Aber Drachen haben feine Ohren.
+
+(<em>Du brauchst etwas, was den Drachen besänftigt. Drachen lieben süße Dinge.</em>)
+
+Im Westen ist der tiefe Gang.`,
+    exits:{w:'tiefe'},
+    hidden:{kelch:{ desc:'Du legst die Honigwabe vorsichtig vor den Drachen. Er schnurrt zufrieden – und du nimmst den Bernsteinkelch.', gives:['bernsteinkelch'], require:'honig', once:true }},
+    onEnter:'Der Drache atmet ruhig im Schlaf. Pass auf, dass du ihn nicht weckst.'
+  },
+  tiefeshoehle: {
+    name:'Tiefe Höhle', section:'below', x:80, y:300,
+    text:`Eine fast vergessene Kammer, tief unter den Felsen. Auf einem alten Tisch liegt eine vergilbte Pergamentrolle – und auf einem Sockel daneben ruht das letzte Geheimnis: die <strong>Rune des Aurelius</strong>.
+
+Aber wenn du sie nimmst, fängt der Raum an zu beben. Du musst schnell sein. (<em>Sehr</em> schnell.)
+
+Nach oben geht es zum Felsspalt.`,
+    exits:{a:'felsspalt'},
+    items:[],
+    hidden:{rune:{ desc:'Du greifst die Rune. Der Boden bebt!', gives:['rune'], once:true, trigger:'rune_taken'}},
+  },
+};
+
+/* ─── Magier-Sprüche (Michael) ─── */
+const WIZARD_LINES = [
+  '„Hochwürden, ich habe dein Brot inspiziert. Es ist… enttäuschend." – und plötzlich ist dein Brot weg.',
+  '„Ich verfeinere deine Reise!" – PUFF! Du stehst woanders.',
+  '„Diese Laterne hat mir auch immer gut gefallen." – Er füllt sie heimlich auf.',
+  '„Ein Quiz! Schnell – wie heißt die Hauptstadt von Bayern?" – aber er beantwortet sie selbst und verschwindet.',
+  '„Du siehst müde aus." – Er gibt dir einen Apfel und verschwindet.',
+  '„Halt, Wanderer! Ich brauche ein Souvenir." – Etwas Wertloses aus deinem Inventar verschwindet.',
+  '„Auf Wiedersehen!" – Aber er ist immer noch da. „Nein, wirklich. Tschüss." – Jetzt ist er weg.',
+];
+
+/* ─── Aktionsliste ─── */
+const ACTIONS = [
+  {id:'n',         label:'Norden',         dir:true},
+  {id:'s',         label:'Süden',          dir:true},
+  {id:'o',         label:'Osten',          dir:true},
+  {id:'w',         label:'Westen',         dir:true},
+  {id:'oben',      label:'Hinauf',         dir:true},
+  {id:'unten',     label:'Hinunter',       dir:true},
+  {id:'umsehen',   label:'Umsehen'},
+  {id:'untersuchen',label:'Untersuchen'},
+  {id:'nehmen',    label:'Nehmen'},
+  {id:'ablegen',   label:'Ablegen'},
+  {id:'essen',     label:'Essen'},
+  {id:'trinken',   label:'Trinken'},
+  {id:'anzuenden', label:'Laterne an'},
+  {id:'loeschen',  label:'Laterne aus'},
+  {id:'nachfuellen',label:'Öl nachfüllen'},
+  {id:'lesen',     label:'Lesen'},
+  {id:'graben',    label:'Graben'},
+  {id:'rufen',     label:'Rufen'},
+  {id:'schlafen',  label:'Warten / Schlafen'},
+  {id:'inventar',  label:'Inventar prüfen'},
+];
+
+/* ════════════════════════════════════════════════════════════════════════
+   SPIELZUSTAND
+   ════════════════════════════════════════════════════════════════════════ */
+const state = {
+  current: 'lichtung',
+  inventory: [],
+  flags: { mill_unlocked:false, riddle_solved:{}, taken:{}, sleep:false, rune_taken:false },
+  points: 0,
+  lives: 3,
+  turns: 0,
+  lantern_on: false,
+  lantern_fuel: 100,    // %
+  hunger: 100,          // 100 = satt
+  badges: [],
+  treasures: 0,
+  pendingRiddle: null,
+  mapView:'above',
+  wizardCooldown: 8,
+  gameOver:false,
+};
+
+/* ════════════════════════════════════════════════════════════════════════
+   HILFSFUNKTIONEN
+   ════════════════════════════════════════════════════════════════════════ */
+function msg(text, cls=''){
+  const m = document.getElementById('messages');
+  const p = document.createElement('p');
+  if(cls) p.className = cls;
+  p.innerHTML = text;
+  m.appendChild(p);
+  m.scrollTop = m.scrollHeight;
+  // Halte nur die letzten ~30 Nachrichten
+  while(m.children.length > 30) m.removeChild(m.firstChild);
+}
+
+function addPoints(n, reason){
+  state.points += n;
+  if(reason) msg(`<strong>+${n} Punkte</strong> – ${reason}`, 'ok');
+}
+
+function addBadge(emoji, name, desc){
+  if(state.badges.find(b=>b.name===name)) return;
+  state.badges.push({emoji,name,desc});
+  msg(`🏆 <strong>Neues Abzeichen:</strong> ${emoji} <em>${name}</em> – ${desc}`, 'ok');
+  renderBadges();
+}
+
+function loseLife(reason){
+  state.lives--;
+  msg(`💀 <strong>${reason}</strong> Du verlierst ein Leben.`, 'new');
+  if(state.lives <= 0){ endGame(false, reason); }
+}
+
+function canTake(){ return state.inventory.length < 8; }
+
+function hasItem(id){ return state.inventory.includes(id); }
+
+function takeItem(id){
+  if(!canTake()){ msg('Du kannst nicht mehr tragen! Lass etwas ab.', 'new'); return false; }
+  state.inventory.push(id);
+  return true;
+}
+
+function removeItem(id){
+  const i = state.inventory.indexOf(id);
+  if(i>=0) state.inventory.splice(i,1);
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   DARSTELLUNG
+   ════════════════════════════════════════════════════════════════════════ */
+function renderRoom(){
+  const r = ROOMS[state.current];
+  document.getElementById('roomTitle').textContent = r.name;
+  document.getElementById('roomText').innerHTML = r.text;
+
+  // Ausgänge anzeigen
+  const dirNames = {n:'Norden', s:'Süden', o:'Osten', w:'Westen', oben:'Oben', unten:'Unten', a:'Hinauf', u:'Hinunter'};
+  const exitParts = [];
+  for(const [k,v] of Object.entries(r.exits||{})){
+    const name = dirNames[k] || k;
+    exitParts.push(name);
+  }
+  document.getElementById('exits').innerHTML = '<b>Ausgänge:</b> ' + (exitParts.join(' · ') || 'keine');
+
+  // Verdunklung
+  if(isDark()){
+    document.body.classList.add('darkness');
+    document.getElementById('roomText').innerHTML = '<em>Es ist stockfinster. Du siehst nichts. Etwas atmet in der Dunkelheit…</em><br><br>Wenn du nicht schnell Licht machst, wirst du gefressen.';
+    document.getElementById('roomTitle').textContent = 'Stockfinster';
+  } else {
+    document.body.classList.remove('darkness');
+  }
+}
+
+function isDark(){
+  const r = ROOMS[state.current];
+  // Pilzgarten ist immer hell
+  if(state.current === 'pilzgarten') return false;
+  if(r.section === 'above') return false;
+  return !state.lantern_on || state.lantern_fuel <= 0;
+}
+
+function renderStatus(){
+  document.getElementById('stPoints').textContent = state.points;
+  document.getElementById('stTreas').textContent = state.treasures + ' / 7';
+  document.getElementById('stLives').textContent = state.lives;
+  document.getElementById('stTurns').textContent = state.turns;
+  // Hunger
+  const h = state.hunger;
+  const hungerEl = document.getElementById('stHunger');
+  if(h > 70) hungerEl.textContent = 'satt';
+  else if(h > 40) hungerEl.textContent = 'hungrig';
+  else if(h > 15) hungerEl.textContent = 'sehr hungrig';
+  else hungerEl.textContent = 'verhungert!';
+  hungerEl.parentElement.classList.toggle('danger', h <= 15);
+
+  // Laterne
+  const lEl = document.getElementById('stLantern');
+  const lFill = document.getElementById('lanternFill');
+  if(!hasItem('laterne')){
+    lEl.textContent = '—';
+    lFill.style.width = '0%';
+  } else if(state.lantern_on){
+    lEl.textContent = `brennt (${Math.round(state.lantern_fuel)}%)`;
+    lFill.style.width = state.lantern_fuel + '%';
+    lFill.classList.remove('dim');
+    document.getElementById('lanternStat').classList.toggle('danger', state.lantern_fuel < 25);
+  } else {
+    lEl.textContent = `aus (${Math.round(state.lantern_fuel)}%)`;
+    lFill.style.width = state.lantern_fuel + '%';
+    lFill.classList.add('dim');
+    document.getElementById('lanternStat').classList.remove('danger');
+  }
+}
+
+function renderInventory(){
+  const inv = document.getElementById('inventory');
+  inv.innerHTML = '';
+  for(let i = 0; i < 8; i++){
+    const slot = document.createElement('div');
+    slot.className = 'inv-slot';
+    const id = state.inventory[i];
+    if(id){
+      const it = ITEMS[id];
+      slot.classList.add('full');
+      slot.innerHTML = `<span class="emoji">${it.emoji}</span><span>${it.name}</span>`;
+      slot.title = it.desc;
+    } else {
+      slot.textContent = '—';
+    }
+    inv.appendChild(slot);
+  }
+}
+
+function renderBadges(){
+  const el = document.getElementById('badges');
+  if(state.badges.length === 0){
+    el.innerHTML = '<em style="color:#666">noch keine</em>';
+    return;
+  }
+  el.innerHTML = '';
+  for(const b of state.badges){
+    const e = document.createElement('span');
+    e.className = 'badge';
+    e.innerHTML = `<span class="em">${b.emoji}</span> ${b.name}`;
+    e.title = b.desc;
+    el.appendChild(e);
+  }
+}
+
+function renderActions(){
+  const el = document.getElementById('actions');
+  el.innerHTML = '';
+  const r = ROOMS[state.current];
+  for(const a of ACTIONS){
+    const btn = document.createElement('button');
+    btn.className = 'act' + (a.dir ? ' dir' : '');
+    btn.textContent = a.label;
+    btn.dataset.id = a.id;
+
+    // Aktivieren / Deaktivieren
+    let enabled = true;
+    if(a.dir){
+      const dirMap = {oben:'a', unten:'u', n:'n', s:'s', o:'o', w:'w'};
+      const key = dirMap[a.id];
+      enabled = r.exits && (r.exits[key] !== undefined);
+      // Wenn versperrt
+      if(enabled && key){
+        const targetId = r.exits[key];
+        const target = ROOMS[targetId];
+        if(target && target.locked){
+          // Behalte aktiv, damit Rätsel ausgelöst werden kann
+        }
+      }
+    } else {
+      switch(a.id){
+        case 'nehmen':
+          enabled = (r.items && r.items.length > 0) || hasHidden();
+          break;
+        case 'ablegen':
+          enabled = state.inventory.length > 0;
+          break;
+        case 'essen':
+          enabled = hasItem('brot') || hasItem('apfel') || hasItem('pilz') || hasItem('honig');
+          break;
+        case 'trinken':
+          enabled = hasItem('wasser');
+          break;
+        case 'anzuenden':
+          enabled = hasItem('laterne') && !state.lantern_on && hasItem('feuerzeug') && state.lantern_fuel > 0;
+          break;
+        case 'loeschen':
+          enabled = state.lantern_on;
+          break;
+        case 'nachfuellen':
+          enabled = hasItem('oel') && hasItem('laterne');
+          break;
+        case 'lesen':
+          enabled = hasItem('brief') || hasItem('notiz') || hasItem('schattenbuch') || hasItem('karte');
+          break;
+        case 'graben':
+          enabled = hasItem('spaten');
+          break;
+        case 'rufen':
+          enabled = true;
+          break;
+        case 'untersuchen':
+          enabled = !!r.hidden || (r.items && r.items.length>0);
+          break;
+        case 'umsehen':
+        case 'inventar':
+        case 'schlafen':
+          enabled = true;
+          break;
+      }
+    }
+
+    if(!enabled) btn.disabled = true;
+    btn.onclick = () => doAction(a.id);
+    el.appendChild(btn);
+  }
+}
+
+function hasHidden(){
+  const r = ROOMS[state.current];
+  if(!r.hidden) return false;
+  for(const k of Object.keys(r.hidden)){
+    if(!state.flags.taken[state.current+'_'+k]) return true;
+  }
+  return false;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   AKTIONEN
+   ════════════════════════════════════════════════════════════════════════ */
+function doAction(id){
+  if(state.gameOver) return;
+  if(state.pendingRiddle){
+    msg('Beantworte zuerst das Rätsel!','new');
+    return;
+  }
+
+  switch(id){
+    case 'n': case 's': case 'o': case 'w': case 'oben': case 'unten':
+      move(id); break;
+    case 'umsehen':       lookAround(); break;
+    case 'untersuchen':   investigate(); break;
+    case 'nehmen':        takeAction(); break;
+    case 'ablegen':       dropAction(); break;
+    case 'essen':         eatAction(); break;
+    case 'trinken':       drinkAction(); break;
+    case 'anzuenden':     lightLantern(); break;
+    case 'loeschen':      extinguishLantern(); break;
+    case 'nachfuellen':   refillLantern(); break;
+    case 'lesen':         readAction(); break;
+    case 'graben':        digAction(); break;
+    case 'rufen':         callAction(); break;
+    case 'schlafen':      sleepAction(); break;
+    case 'inventar':      showInventory(); break;
+  }
+
+  advanceTurn();
+  renderAll();
+}
+
+function move(dir){
+  const r = ROOMS[state.current];
+  const dirMap = {oben:'a', unten:'u', n:'n', s:'s', o:'o', w:'w'};
+  const key = dirMap[dir];
+  const target = r.exits && r.exits[key];
+  if(!target){
+    msg('In diese Richtung führt kein Weg.', 'new');
+    return;
+  }
+  const t = ROOMS[target];
+  if(t.locked){
+    // Rätselraum
+    if(t.locked_riddle && !state.flags.riddle_solved[target]){
+      state.pendingRiddle = { roomId:target, ...t.locked_riddle };
+      promptRiddle();
+      return;
+    }
+    if(target === 'felsspalt' && !state.flags.taken['felsen_kerbe']){
+      msg('Du brauchst einen Weg, um über die Felskerbe zu klettern. Untersuche die Felsen genauer.', 'new');
+      return;
+    }
+  }
+  // Wechseln
+  state.current = target;
+  msg(`Du gehst nach ${dirNameLong(dir)}.`);
+  const room = ROOMS[state.current];
+  if(room.onEnter) msg(room.onEnter);
+  // Falls Drache und Honig nicht: Wache prüfen
+  if(state.current === 'drachengrotte' && !hasItem('honig') && !state.flags.taken['drachengrotte_kelch']){
+    if(Math.random() < 0.25){
+      msg('Der Drache öffnet ein Auge. Er knurrt leise. Beim nächsten Mal könnte er aufwachen!', 'new');
+    }
+  }
+  // Karte aktualisieren
+  visited(state.current);
+  maybeSpawnWizard();
+}
+
+function dirNameLong(d){
+  return {n:'Norden', s:'Süden', o:'Osten', w:'Westen', oben:'oben', unten:'unten'}[d] || d;
+}
+
+function lookAround(){
+  const r = ROOMS[state.current];
+  msg('Du siehst dich aufmerksam um.');
+  if(r.items && r.items.length > 0){
+    const names = r.items.map(i=>ITEMS[i].name).join(', ');
+    msg('Hier liegt: <em>' + names + '</em>');
+  }
+  if(r.onLook){
+    msg('<em>' + r.onLook + '</em>');
+  }
+  if(r.hidden){
+    for(const [k,v] of Object.entries(r.hidden)){
+      if(state.flags.taken[state.current+'_'+k]) continue;
+      // Gib kleinen Hinweis
+      msg('💡 Hier scheint etwas <em>versteckt</em> zu sein. Versuche es mit „Untersuchen".');
+      break;
+    }
+  }
+}
+
+function investigate(){
+  const r = ROOMS[state.current];
+  if(!r.hidden){
+    msg('Du suchst genau, findest aber nichts Neues.');
+    return;
+  }
+  let found = false;
+  for(const [k, v] of Object.entries(r.hidden)){
+    if(state.flags.taken[state.current+'_'+k]) continue;
+    // Voraussetzung prüfen
+    if(v.require){
+      if(v.require === 'sleep' && !state.flags.sleep){ continue; }
+      if(v.require === 'laterne_an' && !state.lantern_on){
+        msg('Du brauchst Licht in der Hand, um das zu nehmen.', 'new');
+        continue;
+      }
+      if(v.require !== 'sleep' && v.require !== 'laterne_an' && !hasItem(v.require)){
+        msg(`Du siehst, dass hier etwas wäre, aber du brauchst <strong>${ITEMS[v.require].name}</strong>.`, 'new');
+        continue;
+      }
+    }
+    msg('🔍 ' + v.desc, 'ok');
+    state.flags.taken[state.current+'_'+k] = true;
+    found = true;
+    if(v.gives){
+      for(const g of v.gives){
+        if(takeItem(g)){
+          msg(`Du nimmst <strong>${ITEMS[g].name}</strong>.`, 'ok');
+          if(ITEMS[g].treasure){
+            state.treasures++;
+            addPoints(50, 'Schatz gefunden: ' + ITEMS[g].name);
+            addBadge('💎', ITEMS[g].name, 'Schatz ' + state.treasures + '/7 gefunden');
+          } else {
+            addPoints(8, 'Versteckten Gegenstand gefunden');
+          }
+        }
+      }
+    }
+    if(v.unlocks){
+      ROOMS[v.unlocks].locked = false;
+    }
+    if(v.trigger === 'rune_taken'){
+      state.flags.rune_taken = true;
+      msg('💥 Der Boden bebt! Du musst rasch zurück nach oben fliehen, bevor die Höhle einstürzt!', 'new');
+    }
+  }
+  if(!found){
+    msg('Du suchst genau, findest aber nichts Neues.');
+  }
+}
+
+function takeAction(){
+  const r = ROOMS[state.current];
+  if(!r.items || r.items.length === 0){
+    if(hasHidden()){
+      msg('Hier liegt nichts offen. Untersuche den Raum genauer.');
+    } else {
+      msg('Hier ist nichts zum Nehmen.');
+    }
+    return;
+  }
+  // Spezielle Beschränkungen
+  for(const id of [...r.items]){
+    // Honigwabe-Bienen-Logik
+    if(id === 'honig' && state.current === 'wiese'){
+      if(!state.flags.sleep){
+        msg('🐝 Du streckst die Hand aus – sofort summen die Bienen wütend! Sie stechen dich. Versuch es nachts, wenn sie schlafen.', 'new');
+        loseLife('Bienenstiche!');
+        return;
+      }
+    }
+    if(!takeItem(id)){
+      msg('Dein Beutel ist voll. Lass etwas ab.', 'new');
+      return;
+    }
+    msg(`Du nimmst <strong>${ITEMS[id].name}</strong>.`, 'ok');
+    if(ITEMS[id].treasure){
+      state.treasures++;
+      addPoints(50, 'Schatz: ' + ITEMS[id].name);
+      addBadge('💎', ITEMS[id].name, 'Schatz ' + state.treasures + '/7');
+    } else {
+      addPoints(3, ITEMS[id].name + ' aufgenommen');
+    }
+    const i = r.items.indexOf(id);
+    if(i >= 0) r.items.splice(i, 1);
+  }
+}
+
+function dropAction(){
+  if(state.inventory.length === 0){ msg('Du trägst nichts.'); return; }
+  // Lass den Spieler ein Stück wählen
+  const choice = prompt('Was möchtest du ablegen? Schreibe den Namen:\n\n' +
+    state.inventory.map((id,i)=> (i+1)+'. '+ITEMS[id].name).join('\n'));
+  if(!choice) return;
+  let idx = parseInt(choice) - 1;
+  if(isNaN(idx)){
+    idx = state.inventory.findIndex(id => ITEMS[id].name.toLowerCase().startsWith(choice.toLowerCase()));
+  }
+  if(idx >= 0 && idx < state.inventory.length){
+    const id = state.inventory[idx];
+    // Schatz fallen lassen verboten
+    if(ITEMS[id].treasure){
+      if(!confirm('Wirklich einen Schatz ablegen? Du verlierst Punkte!')) return;
+      state.treasures = Math.max(0, state.treasures - 1);
+      state.points = Math.max(0, state.points - 50);
+    }
+    state.inventory.splice(idx, 1);
+    const r = ROOMS[state.current];
+    if(!r.items) r.items = [];
+    r.items.push(id);
+    msg(`Du legst <strong>${ITEMS[id].name}</strong> ab.`);
+  }
+}
+
+function eatAction(){
+  if(hasItem('brot')){
+    removeItem('brot'); state.hunger = Math.min(100, state.hunger + 50);
+    msg('Du isst das Brot. Du fühlst dich gestärkt.', 'ok'); addPoints(2);
+  } else if(hasItem('apfel')){
+    removeItem('apfel'); state.hunger = Math.min(100, state.hunger + 35);
+    msg('Du isst den Apfel. Knackig und süß.', 'ok'); addPoints(2);
+  } else if(hasItem('honig')){
+    if(!confirm('Du brauchst Honig vielleicht noch! Trotzdem essen?')) return;
+    removeItem('honig'); state.hunger = Math.min(100, state.hunger + 25);
+    msg('Du löffelst den Honig. Süß!', 'ok');
+  } else if(hasItem('pilz')){
+    removeItem('pilz');
+    if(Math.random() < 0.3){
+      loseLife('Der Pilz war giftig!');
+    } else {
+      state.hunger = Math.min(100, state.hunger + 20);
+      msg('Der Pilz schmeckt erdig, aber gut.', 'ok');
+    }
+  } else {
+    msg('Du hast nichts zum Essen.');
+  }
+}
+
+function drinkAction(){
+  if(hasItem('wasser')){
+    removeItem('wasser');
+    state.hunger = Math.min(100, state.hunger + 10);
+    msg('Du trinkst das frische Wasser.', 'ok');
+    addPoints(1);
+  } else {
+    msg('Du hast nichts zu trinken.');
+  }
+}
+
+function lightLantern(){
+  if(!hasItem('laterne')){ msg('Du hast keine Laterne.'); return; }
+  if(!hasItem('feuerzeug')){ msg('Du brauchst Zunder zum Anzünden!'); return; }
+  if(state.lantern_fuel <= 0){ msg('Die Laterne ist leer! Erst Öl nachfüllen.'); return; }
+  state.lantern_on = true;
+  msg('🔥 Die Laterne brennt mit warmem Licht.', 'ok');
+}
+
+function extinguishLantern(){
+  state.lantern_on = false;
+  msg('Du löschst die Laterne. (Sie spart jetzt Öl, aber Vorsicht in der Tiefe!)');
+}
+
+function refillLantern(){
+  if(!hasItem('oel')){ msg('Du hast kein Öl.'); return; }
+  if(!hasItem('laterne')){ msg('Du hast keine Laterne.'); return; }
+  removeItem('oel');
+  state.lantern_fuel = 100;
+  msg('Du füllst die Laterne mit Öl. Sie ist wieder voll.', 'ok');
+  addPoints(2);
+  addBadge('🛢️','Vorsorge','Laterne nachgefüllt');
+}
+
+function readAction(){
+  if(hasItem('brief')){
+    msg('Du liest den Brief von Aurelius:<br><em>„Liebster Großneffe, wenn du dies liest, bin ich fort. Im Tal von Schattental warten sieben Schätze. Sie alle führen zur Wahrheit über unsere Familie. Doch hüte dich vor der Dunkelheit – und vertraue keinem Magier, der Michael heißt. Dein Aurelius."</em>');
+  }
+  if(hasItem('notiz')){
+    msg('Auf der Notiz steht: <em>„Wo die Bienen schlafen, dort wache."</em> – Vielleicht solltest du <strong>nachts</strong> zur Bienenwiese gehen?');
+  }
+  if(hasItem('karte')){
+    msg('Die Karte zeigt das Tal. Sie öffnet sich, wenn du auf den Karten-Knopf rechts unten klickst!');
+  }
+  if(hasItem('schattenbuch')){
+    msg('Das Buch flüstert: <em>„Sieben Schätze, sieben Türen, sieben Wege zurück ans Licht. Nur wer alle hat, kehrt heim."</em>', 'magic');
+  }
+}
+
+function digAction(){
+  const r = ROOMS[state.current];
+  if(!hasItem('spaten')){ msg('Du hast keinen Spaten.'); return; }
+  if(state.current === 'wiese' && !state.flags.taken['wiese_grab']){
+    msg('Du gräbst nahe dem Bienenstock und findest – eine alte <strong>Honigwabe</strong>, in ein Tuch gewickelt!', 'ok');
+    if(takeItem('honig')){
+      state.flags.taken['wiese_grab'] = true;
+      addPoints(15, 'Verborgene Honigwabe ausgegraben');
+      addBadge('🪏','Erdwurm','Etwas Vergrabenes ausgegraben');
+    }
+  } else if(state.current === 'lichtung' && !state.flags.taken['lichtung_grab']){
+    msg('Du gräbst neben dem flachen Stein und findest einen alten Eisenschlüssel.', 'ok');
+    if(takeItem('schluessel')){
+      state.flags.taken['lichtung_grab'] = true;
+      addPoints(10);
+    }
+  } else {
+    msg('Du gräbst eine Weile, findest aber nichts Interessantes.');
+  }
+}
+
+function callAction(){
+  const name = prompt('Wen oder was rufst du? (z.B. „Michael", „Hilfe", „Aurelius")');
+  if(!name) return;
+  const n = name.toLowerCase().trim();
+  if(n.includes('michael')){
+    msg('Du rufst laut „Michael!" – Eine Weile passiert nichts. Dann: <em>PUFF!</em>', 'magic');
+    triggerWizard(true);
+  } else if(n.includes('aurelius')){
+    msg('Du rufst nach deinem Großonkel. Nur Echo antwortet… aber war da ein Flüstern?', 'magic');
+    addPoints(1);
+  } else if(n.includes('hilf')){
+    msg('Tipp: Lies jedes Zimmer genau, untersuche überall, und vergiss nie, die Laterne nachzufüllen!');
+  } else {
+    msg('Niemand antwortet.');
+  }
+}
+
+function sleepAction(){
+  msg('Du lehnst dich an einen Stein und schließt die Augen…');
+  state.flags.sleep = !state.flags.sleep;
+  if(state.flags.sleep){
+    msg('🌙 <em>Es wird Nacht. Die Welt wird still. Die Bienen schlafen jetzt.</em>', 'magic');
+    addBadge('🌙','Nachtwandler','Die Nacht erlebt');
+  } else {
+    msg('🌅 <em>Du erwachst. Die Sonne steigt wieder.</em>', 'magic');
+  }
+  // Schlafen verbraucht Hunger
+  state.hunger = Math.max(0, state.hunger - 25);
+}
+
+function showInventory(){
+  if(state.inventory.length === 0){ msg('Du trägst nichts bei dir.'); return; }
+  msg('Du trägst: ' + state.inventory.map(id=> ITEMS[id].emoji + ' ' + ITEMS[id].name).join(', '));
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   ZUG-MECHANIK
+   ════════════════════════════════════════════════════════════════════════ */
+function advanceTurn(){
+  state.turns++;
+
+  // Laterne brennt herunter
+  if(state.lantern_on){
+    state.lantern_fuel = Math.max(0, state.lantern_fuel - 3);
+    if(state.lantern_fuel === 0){
+      state.lantern_on = false;
+      msg('🌑 Die Laterne flackert und erlischt!', 'new');
+    } else if(state.lantern_fuel <= 15 && !state.flags.warned){
+      msg('⚠️ Die Laterne wird schwach! Fülle bald Öl nach!', 'new');
+      state.flags.warned = true;
+    } else if(state.lantern_fuel > 30){
+      state.flags.warned = false;
+    }
+  }
+
+  // Hunger
+  if(state.turns % 6 === 0){
+    state.hunger = Math.max(0, state.hunger - 5);
+    if(state.hunger === 0){
+      loseLife('Du bist vor Hunger zusammengebrochen!');
+      state.hunger = 30; // Wiederbelebung
+    } else if(state.hunger === 15){
+      msg('🍞 Du hast großen Hunger! Iss bald etwas.', 'new');
+    }
+  }
+
+  // Grue im Dunkeln
+  if(isDark()){
+    if(Math.random() < 0.45){
+      loseLife('🐺 EIN GRUE HAT DICH GEFRESSEN! Im Dunkeln darfst du nicht bleiben!');
+    } else {
+      msg('Du hörst etwas Schweres atmen. Mach schnell Licht!', 'new');
+    }
+  }
+
+  // Bebende Höhle (nach Rune)
+  if(state.flags.rune_taken && !state.flags.escaped){
+    if(state.current !== 'lichtung' && state.current !== 'bauernhaus'){
+      if(Math.random() < 0.15){
+        msg('💥 Ein Felsbrocken stürzt herab!', 'new');
+        if(Math.random() < 0.5) loseLife('Du wurdest von einem Felsbrocken getroffen!');
+      }
+    } else {
+      state.flags.escaped = true;
+      addBadge('🏃','Entronnen','Der einstürzenden Höhle entkommen');
+      addPoints(20);
+    }
+  }
+
+  // Sieg prüfen
+  if(state.treasures === 7 && state.current === 'lichtung'){
+    endGame(true);
+  }
+
+  // Magier-Cooldown
+  state.wizardCooldown--;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   MAGIER MICHAEL
+   ════════════════════════════════════════════════════════════════════════ */
+function maybeSpawnWizard(){
+  if(state.wizardCooldown <= 0 && Math.random() < 0.18){
+    triggerWizard();
+  }
+}
+
+function triggerWizard(forced){
+  state.wizardCooldown = 12;
+  const line = WIZARD_LINES[Math.floor(Math.random()*WIZARD_LINES.length)];
+  showWizardAnim();
+  msg('🧙‍♂️ <strong>Michael der Magier erscheint!</strong>', 'magic');
+  msg('<em>"' + line + '"</em>', 'magic');
+
+  // Zufällige Aktion
+  const roll = Math.random();
+  if(roll < 0.25){
+    // Teleport
+    const above = Object.keys(ROOMS).filter(k => ROOMS[k].section==='above');
+    const dest = above[Math.floor(Math.random()*above.length)];
+    state.current = dest;
+    msg('💫 Du landest mit einem PUFF in einem anderen Ort!', 'magic');
+    visited(dest);
+  } else if(roll < 0.45 && state.inventory.length > 0){
+    // Stehle etwas Wertloses
+    const trash = state.inventory.filter(id => !ITEMS[id].treasure && !['laterne','feuerzeug'].includes(id));
+    if(trash.length > 0){
+      const stolen = trash[Math.floor(Math.random()*trash.length)];
+      removeItem(stolen);
+      msg('🪄 Michael nimmt deinen <strong>' + ITEMS[stolen].name + '</strong> mit!', 'magic');
+    }
+  } else if(roll < 0.6){
+    // Schenkt einen Apfel
+    if(canTake()){
+      takeItem('apfel');
+      msg('🍎 Michael wirft dir einen Apfel zu.', 'magic');
+    }
+  } else if(roll < 0.75){
+    // Füllt Laterne
+    if(hasItem('laterne')){
+      state.lantern_fuel = 100;
+      msg('✨ Deine Laterne ist plötzlich wieder voll!', 'magic');
+    }
+  } else if(roll < 0.9){
+    // Quiz
+    askWizardQuiz();
+  } else {
+    msg('Michael verschwindet, ohne etwas zu tun.', 'magic');
+  }
+}
+
+const WIZARD_QUIZ = [
+  {q:'Schnell, schnell! Wie lautet der Genitiv Singular von „das Kind"?', a:['des kindes','des kind\'s','des kinds']},
+  {q:'Wie schreibt man die Mehrzahl von „die Maus"?', a:['die mäuse','mäuse']},
+  {q:'Welcher Artikel: ___ Mädchen ist klein.', a:['das']},
+  {q:'Konjugiere „sein" in der 1. Pers. Plural Präteritum:', a:['waren','wir waren']},
+  {q:'Wie lautet das Partizip II von „bringen"?', a:['gebracht']},
+  {q:'Welches Wort ist ein Adjektiv: „schnell", „gehen", „Auto"?', a:['schnell']},
+];
+function askWizardQuiz(){
+  const q = WIZARD_QUIZ[Math.floor(Math.random()*WIZARD_QUIZ.length)];
+  const ans = prompt('🧙‍♂️ Michael flüstert: „Beantworte schnell, oder ich nehme deine Goldmünze!"\n\n' + q.q);
+  if(!ans){
+    if(hasItem('goldmuenze')){
+      removeItem('goldmuenze'); state.treasures--;
+      msg('Michael zaubert deine Goldmünze weg! Du musst sie wiederfinden.', 'new');
+    } else {
+      msg('Michael schmollt und verschwindet.', 'magic');
+    }
+    return;
+  }
+  const correct = q.a.some(x => ans.toLowerCase().trim() === x.toLowerCase());
+  if(correct){
+    addPoints(10, 'Michaels Quiz richtig beantwortet');
+    addBadge('🎓','Sprachmeister','Eine von Michaels Fragen gelöst');
+    msg('„Richtig!" Michael wirft dir mürrisch eine Goldmünze entgegen… nein, einen Apfel. Es ist nur ein Apfel.', 'magic');
+    if(canTake()) takeItem('apfel');
+  } else {
+    msg(`„Falsch! Die richtige Antwort wäre: <strong>${q.a[0]}</strong>" – Michael lacht und verschwindet.`, 'new');
+  }
+}
+
+function showWizardAnim(){
+  const e = document.createElement('div');
+  e.className = 'wizard-appears';
+  e.textContent = '🧙‍♂️';
+  document.body.appendChild(e);
+  setTimeout(()=>e.remove(), 2400);
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   RÄTSEL
+   ════════════════════════════════════════════════════════════════════════ */
+function promptRiddle(){
+  const r = state.pendingRiddle;
+  msg('🔒 <strong>' + r.question + '</strong>', 'magic');
+  setTimeout(() => {
+    const ans = prompt(r.question);
+    if(ans === null){
+      msg('Du gehst zurück.', 'new');
+      state.pendingRiddle = null;
+      return;
+    }
+    let ok = false;
+    if(r.check){ ok = r.check(ans); }
+    else if(r.answer){ ok = ans.toLowerCase().trim() === r.answer.toLowerCase(); }
+    if(ok){
+      msg('✅ ' + r.success, 'ok');
+      addPoints(25, 'Rätsel gelöst');
+      addBadge('🧩','Rätsel-Knacker','Ein Rätsel gelöst');
+      state.flags.riddle_solved[r.roomId] = true;
+      ROOMS[r.roomId].locked = false;
+      // Reward
+      if(r.gives){
+        if(takeItem(r.gives)){
+          msg('Du nimmst <strong>' + ITEMS[r.gives].name + '</strong>!', 'ok');
+          if(ITEMS[r.gives].treasure){
+            state.treasures++;
+            addPoints(50, 'Schatz: ' + ITEMS[r.gives].name);
+            addBadge('💎', ITEMS[r.gives].name, 'Schatz ' + state.treasures + '/7');
+          }
+        }
+      }
+      // Betritt nun den Raum
+      state.current = r.roomId;
+      visited(r.roomId);
+    } else {
+      msg('❌ ' + r.fail, 'new');
+    }
+    state.pendingRiddle = null;
+    renderAll();
+  }, 200);
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   ENDE
+   ════════════════════════════════════════════════════════════════════════ */
+function endGame(won, reason){
+  state.gameOver = true;
+  const modal = document.getElementById('endModal');
+  const title = document.getElementById('endTitle');
+  const body = document.getElementById('endBody');
+  modal.classList.remove('hide');
+  if(won){
+    title.textContent = '🏆 SIEG! 🏆';
+    body.innerHTML = `<p>Du stehst auf der Lichtung im Wald, alle sieben Schätze in deinem Beutel. Aus den Bäumen tritt eine Gestalt, die du noch nie gesehen hast – und doch erkennst du sie sofort.</p>
+    <p>„<em>Du hast es geschafft, mein Großneffe</em>", sagt Aurelius. „<em>Das Geheimnis von Schattental ist nun deins.</em>"</p>
+    <p><strong>Endpunkte: ${state.points}</strong><br>
+    <strong>Schätze: ${state.treasures} / 7</strong><br>
+    <strong>Züge: ${state.turns}</strong><br>
+    <strong>Abzeichen: ${state.badges.length}</strong></p>`;
+  } else {
+    title.textContent = '💀 Du bist gestorben';
+    body.innerHTML = `<p><em>${reason || 'Dein Abenteuer endet hier.'}</em></p>
+    <p>Aber gib nicht auf! Versuche es noch einmal.</p>
+    <p><strong>Endpunkte: ${state.points}</strong><br>
+    <strong>Schätze: ${state.treasures} / 7</strong><br>
+    <strong>Züge: ${state.turns}</strong></p>`;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   KARTE
+   ════════════════════════════════════════════════════════════════════════ */
+const visitedRooms = new Set();
+
+function visited(id){ visitedRooms.add(id); }
+
+function buildMaps(){
+  document.getElementById('mapAbove').innerHTML = renderMapSVG('above');
+  document.getElementById('mapBelow').innerHTML = renderMapSVG('below');
+}
+
+function renderMapSVG(section){
+  const rooms = Object.entries(ROOMS).filter(([k,r]) => r.section === section);
+  const w = 700, h = 460;
+  let svg = `<svg viewBox="0 0 ${w} ${h}" class="map-svg" xmlns="http://www.w3.org/2000/svg">`;
+
+  // Hintergrund-Maserung
+  svg += `<defs>
+    <pattern id="grain-${section}" patternUnits="userSpaceOnUse" width="8" height="8">
+      <rect width="8" height="8" fill="transparent"/>
+      <circle cx="2" cy="3" r=".5" fill="rgba(90,60,30,.15)"/>
+      <circle cx="6" cy="5" r=".4" fill="rgba(90,60,30,.1)"/>
+    </pattern>
+  </defs>`;
+  svg += `<rect width="${w}" height="${h}" fill="url(#grain-${section})"/>`;
+
+  // Titel
+  svg += `<text x="${w/2}" y="30" text-anchor="middle" font-family="Cinzel,serif" font-size="22" font-weight="700" fill="#3d2b18">${section==='above'?'Oberwelt — Wald, Felsen & Wiese':'Unterwelt — Die Sieben Hallen'}</text>`;
+
+  // Verbindungen
+  for(const [id, r] of rooms){
+    if(!r.exits) continue;
+    for(const [dir, target] of Object.entries(r.exits)){
+      const t = ROOMS[target];
+      if(!t || t.section !== section) continue;
+      const x1 = r.x + 40, y1 = r.y + 80;
+      const x2 = t.x + 40, y2 = t.y + 80;
+      const locked = t.locked;
+      svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${locked?'#7a1a1a':'#3d2b18'}" stroke-width="2" stroke-dasharray="${locked?'4 4':'0'}"/>`;
+    }
+  }
+
+  // Verbindung Ober- ↔ Unterwelt (Hinweis-Pfeile am Rand)
+  if(section==='above'){
+    // Höhleneingang führt nach unten
+    const he = ROOMS.hoehleneingang;
+    svg += `<text x="${he.x+40}" y="${he.y+115}" text-anchor="middle" font-size="12" fill="#7a1a1a" font-weight="700">↓ Unterwelt</text>`;
+    const fs = ROOMS.felsspalt;
+    svg += `<text x="${fs.x+40}" y="${fs.y+115}" text-anchor="middle" font-size="11" fill="#7a1a1a">↓ Tiefe</text>`;
+  } else {
+    const gh = ROOMS.grossehalle;
+    svg += `<text x="${gh.x+40}" y="${gh.y+15}" text-anchor="middle" font-size="11" fill="#7a1a1a">↑ Oberwelt</text>`;
+  }
+
+  // Räume
+  for(const [id, r] of rooms){
+    const cls = (id===state.current ? 'current' : (visitedRooms.has(id) ? 'visited' : ''));
+    const fill = cls==='current' ? '#c89c3a' : (cls==='visited' ? '#a8c97a' : '#e6d5b3');
+    const stroke = cls==='current' ? '#7a1a1a' : '#3d2b18';
+    const sw = cls==='current' ? 3 : 1.5;
+    svg += `<rect x="${r.x}" y="${r.y+50}" width="80" height="60" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" rx="3"/>`;
+    // Name (Zeilenumbruch)
+    const lines = wrapText(r.name, 12);
+    let ty = r.y + 50 + (60 - lines.length*12)/2 + 10;
+    for(const ln of lines){
+      svg += `<text x="${r.x+40}" y="${ty}" text-anchor="middle" font-size="10" font-weight="700" fill="#1a1410" font-family="Cinzel,serif">${ln}</text>`;
+      ty += 12;
+    }
+  }
+
+  // Legende-Markierung Schätze
+  for(const [id, r] of rooms){
+    if(r.items){
+      for(const it of r.items){
+        if(ITEMS[it]&&ITEMS[it].treasure){
+          svg += `<text x="${r.x+72}" y="${r.y+60}" font-size="14">💎</text>`;
+        }
+      }
+    }
+  }
+
+  svg += '</svg>';
+  return svg;
+}
+
+function wrapText(text, limit){
+  const words = text.split(/\s+/);
+  const lines = [];
+  let cur = '';
+  for(const w of words){
+    if((cur + ' ' + w).trim().length > limit){
+      if(cur) lines.push(cur);
+      cur = w;
+    } else cur = (cur + ' ' + w).trim();
+  }
+  if(cur) lines.push(cur);
+  return lines;
+}
+
+function openMap(){
+  buildMaps();
+  document.getElementById('mapModal').classList.add('open');
+}
+function closeMap(){
+  document.getElementById('mapModal').classList.remove('open');
+}
+function switchMap(which){
+  state.mapView = which;
+  document.getElementById('tabAbove').classList.toggle('active', which==='above');
+  document.getElementById('tabBelow').classList.toggle('active', which==='below');
+  document.getElementById('mapAbove').style.display = which==='above' ? 'block' : 'none';
+  document.getElementById('mapBelow').style.display = which==='below' ? 'block' : 'none';
+}
+
+function showCommands(){
+  alert(`BEFEHLE (klicke die Knöpfe rechts):
+  
+• Bewegen: Norden / Süden / Osten / Westen / Hinauf / Hinunter
+• Erkunden: Umsehen (allgemein), Untersuchen (versteckte Dinge)
+• Gegenstände: Nehmen, Ablegen, Inventar prüfen
+• Überleben: Essen, Trinken
+• Licht: Laterne an / aus / Öl nachfüllen
+• Lesen (Brief, Notizen, Bücher)
+• Spaten: Graben (an manchen Orten)
+• Rufen: Spreche jemanden an (z.B. „Michael")
+• Warten / Schlafen: Zeit vergeht – nützlich auf der Bienenwiese!
+
+TIPPS:
+• Du kannst nur 8 Sachen tragen.
+• Die Laterne brennt nur in der Unterwelt nötig – aber sie verbraucht Öl!
+• Ohne Licht kommen die Grues. Du stirbst.
+• Du hast 3 Leben.
+• Hunger ist gefährlich.
+• Michael ist unberechenbar.
+
+ZIEL: Finde alle 7 Schätze und bringe sie zur LICHTUNG IM WALD (Startpunkt).`);
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   INITIALISIERUNG
+   ════════════════════════════════════════════════════════════════════════ */
+function renderAll(){
+  renderRoom();
+  renderStatus();
+  renderInventory();
+  renderActions();
+}
+
+function startGame(){
+  document.getElementById('introModal').classList.add('hide');
+  visited(state.current);
+  msg('🌿 Dein Abenteuer beginnt! Lies das Zimmer sorgfältig.', 'ok');
+  msg('Tipp: Klicke „Umsehen" und „Untersuchen", um etwas Verstecktes zu finden.');
+  renderAll();
+}
+
+// Initial Rendering (vor Spielstart)
+renderAll();
+</script>
+</body>
+</html>
