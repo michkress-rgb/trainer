@@ -690,13 +690,16 @@
 
     <p>Du sollst <strong>sieben Erbstücke</strong> der Familie wiederfinden, die in den Räumen und Gewölben verstreut liegen. Doch das ist nur die Hälfte deines Auftrags. Das eigentliche Rätsel ist: <em>Was geschah wirklich mit Aurelius?</em> Briefe, Tagebücher, Zeitungsausschnitte und alte Bücher liegen überall – wer sie aufmerksam liest, kann am Ende die Wahrheit zusammensetzen.</p>
 
-    <p><strong>Im Dunkel der Unterwelt</strong> lauern die Grues. Ohne Licht wirst du gefressen. <strong>Michael der Magier</strong> wandert ziellos durchs Tal – manchmal hilft er, manchmal stiehlt er, oft fragt er Grammatik.</p>
+    <p><strong>Im Dunkel der Unterwelt</strong> lauern die Grues. Ohne Licht wirst du gefressen. <strong>Michael der Magier</strong> wandert ziellos durchs Tal – manchmal hilft er, manchmal stiehlt er, oft fragt er Grammatik. Es gibt Gerüchte über ein <em>Schutzamulett</em>, das ihn fernhält — aber nur eine begrenzte Zeit.</p>
+
+    <p>Suche tief in der Unterwelt: dort soll sich ein <em>verwirrendes Labyrinth</em> befinden, in dem die Wände selbst Spiegelbilder werfen. Und wer Michael wirklich kennt, weiß: für die richtige Schmeichelei tut er fast alles…</p>
 
     <p style="background:rgba(110,26,35,.1);padding:10px 14px;border-left:3px solid var(--crimson);font-style:italic;">Am Ende des Abenteuers musst du <strong>vier Fragen</strong> über das beantworten, was wirklich in Mondbruch geschehen ist. Lies darum jedes Dokument <em>sehr</em> sorgfältig. Schreib mit, wenn nötig.</p>
 
     <p style="text-align:center;color:var(--crimson);font-style:italic;font-size:1.1rem;">Möge dein Mut so hell brennen wie deine Laterne.</p>
 
-    <div style="text-align:center"><button onclick="startGame()">Das Abenteuer beginnen</button></div>
+    <div style="text-align:center"><button onclick="startGame()">Das Abenteuer beginnen</button>
+    <button id="introLoadBtn" onclick="loadGame()" style="display:none;margin-left:10px;background:linear-gradient(135deg, var(--brass), var(--brass-2));">📂 Letzten Spielstand laden</button></div>
   </div>
 </div>
 
@@ -757,6 +760,8 @@
   <div>
     <button onclick="document.getElementById('introModal').classList.remove('hide')">Anleitung</button>
     <button onclick="showCommands()">Befehle</button>
+    <button onclick="saveGame()">💾 Speichern</button>
+    <button onclick="loadGame()">📂 Laden</button>
     <button onclick="if(confirm('Wirklich aufgeben und neu starten?'))location.reload()">Neu starten</button>
   </div>
 </div>
@@ -854,6 +859,8 @@ const ITEMS = {
   knochen:    {emoji:'🦴', name:'Knochen',          desc:'Alt und blank gebleicht.'},
   tinte:      {emoji:'🖋️', name:'Tintenfass',       desc:'Halb leer. Die Tinte ist schwarz wie Pech.'},
   muenze_alt: {emoji:'🪙', name:'verbeulte Münze',  desc:'Sehr alt. Mit einem fremden Wappen.'},
+  schutzamulett: {emoji:'🛡️', name:'Schutzamulett', desc:'Ein altes Silberamulett mit einer Inschrift: „Vor falschen Freunden schützt dies Stück." Hält Michael fern — aber nur dreimal. Danach verschwindet es spurlos.'},
+  teleportring: {emoji:'💫', name:'Ring der Teleportation', desc:'Ein dünner Goldring mit eingravierten Runen. Wer ihn dreht, gelangt zu einem beliebigen schon besuchten Ort.'},
 
   /* ─── DOKUMENTE (lesbar) ─── */
   brief_aurelius: {emoji:'✉️', name:'Brief von Aurelius', desc:'Aurelius\' letzter Brief an dich.',  document:true},
@@ -1116,9 +1123,14 @@ Nach Norden geht es zur Lichtung. Im Süden verschwindet der Bach in einer dunkl
 
 In der Mitte einer der Felswände ist eine Kerbe eingehauen — wie eine sorgfältig gemeißelte Treppenstufe. Sie ist alt, aber tief. Wer auf sie tritt, könnte den Felsvorsprung erklimmen.
 
+Wenn du genauer hinsiehst, entdeckst du zwischen zwei Felsplatten eine schmale, kaum sichtbare <em>Nische</em> — als hätte jemand dort etwas verborgen, das nicht gefunden werden sollte.
+
 Im Westen erkennst du, fast unsichtbar, einen schmalen Felsspalt — gerade breit genug für einen Menschen.`,
     exits:{o:'lichtung', w:'felsspalt'},
-    hidden:{kerbe:{ desc:'Du steigst auf die Kerbe und siehst dahinter den Felsspalt geöffnet — er war zuvor nicht passierbar gewesen.', gives:[], unlocks:'felsspalt', once:true, points:8 }},
+    hidden:{
+      kerbe:{ desc:'Du steigst auf die Kerbe und siehst dahinter den Felsspalt geöffnet — er war zuvor nicht passierbar gewesen.', gives:[], unlocks:'felsspalt', once:true, points:8 },
+      nische:{ desc:'In einer schmalen Nische zwischen zwei Felsplatten findest du ein silbernes Amulett an einer Lederschnur. Eine Inschrift: „Vor falschen Freunden schützt dies Stück."', gives:['schutzamulett'], once:true, points:15 }
+    },
   },
   felsspalt: {
     name:'Felsspalt', section:'above', gx:-2, gy:0, locked:true,
@@ -1272,10 +1284,72 @@ Im Osten ist die Große Halle.`,
 
 Hier unten ist <strong>jede Sekunde Laternenöl wertvoll wie Gold</strong>. Wenn die Laterne ausgeht, kommen die Grues — und du wirst nicht zurückkehren.
 
-Nach Süden führt ein Tunnel zur <em>Eishalle</em>. Nach Osten geht es zur <em>Drachengrotte</em>. Nach oben zurück zur Großen Halle.`,
-    exits:{a:'grossehalle', s:'eishalle', o:'drachengrotte'},
+Nach Süden führt ein Tunnel zur <em>Eishalle</em>. Nach Osten geht es zur <em>Drachengrotte</em>. Nach Westen öffnet sich ein <strong>schwarzer Torbogen</strong>, über dem in roter Kreide gekritzelt steht: <em>„Wer hier eintritt, vergisst den Weg."</em> Nach oben zurück zur Großen Halle.`,
+    exits:{a:'grossehalle', s:'eishalle', o:'drachengrotte', w:'labyrinth_tor'},
     items:[],
   },
+
+  /* ──────────── LABYRINTH ──────────── */
+  labyrinth_tor: {
+    name:'Tor zum Labyrinth', section:'below', gx:-2, gy:2, labyrinth:true,
+    text:`Vor dir öffnet sich ein verwirrender Wirrwarr aus schwarzen Stein-Korridoren. Vier Gänge führen weg — jeder sieht aus wie der nächste. An der Wand neben dem Tor steht in eingeritzter, alter Schrift:
+
+<em>„Vier Gänge, vier Lügen. Nur einer führt weiter. Wer den Spiegel im Herzen trägt, dem zeigt das Labyrinth den Weg."</em>
+
+Über dem Bogen hängt ein staubiger Spiegel — zerbrochen, aber noch lesbar.
+
+Nach Osten geht es zurück zum Tiefen Gang.`,
+    exits:{o:'tiefe', n:'spiegelgang_a', s:'spiegelgang_b', w:'echo_saal', u:'falsche_krypta'},
+    items:[],
+  },
+  spiegelgang_a: {
+    name:'Spiegelgang', section:'below', gx:-3, gy:2, labyrinth:true,
+    text:`Ein schmaler Gang, dessen Wände aus poliertem Obsidian bestehen. Dein eigenes Spiegelbild läuft neben dir mit — manchmal einen Schritt zu langsam. Manchmal lächelt es, wenn du nicht lächelst.
+
+Vier Öffnungen führen in alle Richtungen. Keine ist beschriftet. Du hast schon das Gefühl, hier gewesen zu sein — aber bist du es?`,
+    exits:{n:'spiegelgang_a', s:'labyrinth_tor', o:'echo_saal', w:'spiegelgang_b'},
+    items:[],
+  },
+  spiegelgang_b: {
+    name:'Spiegelgang', section:'below', gx:-2, gy:3, labyrinth:true,
+    text:`Ein schmaler Gang, dessen Wände aus poliertem Obsidian bestehen. Dein eigenes Spiegelbild läuft neben dir mit — manchmal einen Schritt zu langsam. Manchmal lächelt es, wenn du nicht lächelst.
+
+Vier Öffnungen führen in alle Richtungen. Keine ist beschriftet. Du hast schon das Gefühl, hier gewesen zu sein — aber bist du es?`,
+    exits:{n:'labyrinth_tor', s:'spiegelgang_b', o:'falsche_krypta', w:'echo_saal'},
+    items:[],
+  },
+  echo_saal: {
+    name:'Echo-Saal', section:'below', gx:-3, gy:3, labyrinth:true,
+    text:`Ein runder Saal, in dem jedes Geräusch siebenfach widerhallt. Selbst dein Atem klingt wie ein ganzes Chor. An den Wänden glänzen feine, silbrige Linien — als ob jemand mit nassem Finger Buchstaben gezeichnet hätte, die nun trocknen.
+
+Wenn du genau hinhörst, scheint der Hall zu sagen: <em>„Wer dreimal in dieselbe Richtung geht, findet nichts. Wer den Mut hat, zurückzukehren, findet alles."</em>
+
+Vier Öffnungen führen in alle Richtungen.`,
+    exits:{n:'spiegelgang_a', s:'echo_saal', o:'spiegelgang_b', w:'labyrinth_herz'},
+    items:[],
+  },
+  falsche_krypta: {
+    name:'Falsche Krypta', section:'below', gx:-1, gy:3, labyrinth:true,
+    text:`Eine Krypta mit sieben steinernen Sarkophagen. Auf jedem ist ein Name eingemeißelt — doch die Namen ändern sich, wenn du wegsiehst und wieder zurückschaust. Einmal liest du „Aurelius". Beim nächsten Blick „Susanne". Beim dritten Blick deinen eigenen Namen.
+
+Es ist eine Falle. Wer hier zu lange bleibt, verliert sich selbst. Geh weiter.
+
+Vier Öffnungen führen in alle Richtungen — aber drei davon sind nur Spiegelbilder.`,
+    exits:{n:'falsche_krypta', s:'spiegelgang_b', o:'labyrinth_tor', w:'echo_saal'},
+    items:[],
+  },
+  labyrinth_herz: {
+    name:'Herz des Labyrinths', section:'below', gx:-4, gy:3, labyrinth:true,
+    text:`Endlich — eine stille, kleine Kammer im Zentrum des Labyrinths. Hier hört das Verwirren auf. Auf einem schlichten Steinsockel in der Mitte liegt nichts — oder doch?
+
+Wenn das Schutzamulett verloren ging und in die Unterwelt geflohen ist, könnte es <em>hier</em> wieder erscheinen. Sieh genau hin.
+
+Im Osten führt der Weg endlich zuverlässig zurück.`,
+    exits:{o:'echo_saal'},
+    items:[],
+    hidden:{sockel:{ desc:'Auf dem Sockel ruht — wie aus dem Nichts gekommen — wieder dein verlorenes Schutzamulett. Drei neue Anwendungen!', gives:['schutzamulett'], require:'amulet_lost', once:true, points:30 }},
+  },
+
   eishalle: {
     name:'Eishalle', section:'below', gx:2, gy:2,
     text:`Ein gefrorener Saal. Vom Gewölbe hängen Eiszapfen wie spitze Zähne. Die Luft ist so kalt, dass deine Atemwolken sich vor dir zu kleinen Wolken bilden, bevor sie fallen.
@@ -1378,6 +1452,7 @@ const ACTIONS = [
   {id:'graben',    label:'Graben'},
   {id:'rufen',     label:'Rufen'},
   {id:'schlafen',  label:'Warten / Schlafen'},
+  {id:'teleport',  label:'💫 Teleportieren'},
   {id:'finale',    label:'★ FINALE',  special:true},
 ];
 
@@ -1402,6 +1477,7 @@ const state = {
   miniMapView:'above',
   mapView:'above',
   wizardCooldown: 8,
+  amulet_uses: 0,
   gameOver:false,
 };
 const visitedRooms = new Set();
@@ -1592,6 +1668,7 @@ function renderActions(){
         case 'untersuchen':  enabled = !!r.hidden; break;
         case 'umsehen':
         case 'schlafen':     enabled = true; break;
+        case 'teleport':     enabled = hasItem('teleportring') && visitedRooms.size > 1; break;
         case 'finale':       enabled = state.treasures >= 7 && state.current === 'lichtung'; break;
       }
     }
@@ -1633,6 +1710,7 @@ function doAction(id){
     case 'graben':       digAction(); break;
     case 'rufen':        callAction(); break;
     case 'schlafen':     sleepAction(); break;
+    case 'teleport':     teleportAction(); break;
     case 'finale':       triggerFinale(); return;
   }
   advanceTurn();
@@ -1671,6 +1749,25 @@ function move(dir){
       warning = '⚠️ Du steigst ins Dunkel hinab — zünde sofort die Laterne an!\n\nWeiter?';
     }
     if(!confirm(warning)){ msg('Du bleibst lieber im Licht.', 'ok'); return; }
+  }
+
+  // Labyrinth-Verwirrung: 35% Chance, dass die gewählte Richtung dich woanders hinführt
+  // (Spiegel kann den Effekt aufheben)
+  const currentRoom = ROOMS[state.current];
+  if(currentRoom.labyrinth && ROOMS[target].labyrinth && target !== 'tiefe' && state.current !== 'labyrinth_tor'){
+    if(!hasItem('spiegel') && Math.random() < 0.35){
+      const others = Object.keys(ROOMS).filter(k => ROOMS[k].labyrinth && k !== state.current && k !== 'labyrinth_tor' && k !== 'labyrinth_herz');
+      const newTarget = others[Math.floor(Math.random()*others.length)];
+      state.current = newTarget;
+      msg('🌀 Du gehst nach ' + dirNameLong(dir) + ' — aber das Labyrinth verdreht den Weg. Du verlierst die Orientierung…', 'magic');
+      const room = ROOMS[state.current];
+      if(room.onEnter) msg(room.onEnter);
+      visited(state.current);
+      maybeSpawnWizard();
+      return;
+    } else if(hasItem('spiegel') && Math.random() < 0.5){
+      msg('🪞 Der Handspiegel in deiner Tasche blitzt — die Spiegel-Magie bleibt machtlos!', 'ok');
+    }
   }
 
   state.current = target;
@@ -1720,7 +1817,11 @@ function investigate(){
         msg('Du brauchst Licht in der Hand, um das zu nehmen.', 'new');
         continue;
       }
-      if(v.require !== 'sleep' && v.require !== 'laterne_an' && !hasItem(v.require)){
+      if(v.require === 'amulet_lost' && !state.flags.amulet_lost){
+        msg('Hier liegt etwas auf dem Sockel — aber es ist nur Staub. Vielleicht später…', 'new');
+        continue;
+      }
+      if(!['sleep','laterne_an','amulet_lost'].includes(v.require) && !hasItem(v.require)){
         msg(`Du erkennst, dass hier etwas verborgen ist, aber du brauchst dafür: <strong>${ITEMS[v.require].name}</strong>.`, 'new');
         continue;
       }
@@ -1732,6 +1833,11 @@ function investigate(){
       for(const g of v.gives){
         if(takeItem(g)){
           msg(`Du nimmst <strong>${ITEMS[g].name}</strong>.`, 'ok');
+          if(g === 'schutzamulett'){
+            // Bei Wieder-Aufnahme: Zähler zurücksetzen, damit man wieder 3 Schutzanwendungen hat
+            state.amulet_uses = 0;
+            state.flags.amulet_lost = false;
+          }
           if(ITEMS[g].treasure){
             state.treasures++;
             addPoints(50, 'Erbstück gefunden: ' + ITEMS[g].name);
@@ -1904,6 +2010,27 @@ function callAction(){
   const name = prompt('Wen oder was rufst du? (z.B. „Michael", „Hilfe", „Aurelius", „Susanne")');
   if(!name) return;
   const n = name.toLowerCase().trim();
+
+  // Sondersatz für den Ring der Teleportation
+  if(/michael\s+ist\s+der\s+beste/.test(n)){
+    if(state.flags.got_ring){
+      msg('Du rufst „Michael ist der Beste" — aber niemand antwortet. Den Ring hast du schon.', 'magic');
+      return;
+    }
+    msg('🧙‍♂️ <em>PUFF!</em> Michael erscheint, lacht hochmütig und sagt:', 'magic');
+    msg('<em>„Endlich erkennst du es! Hier — als Geschenk eines wahren Meisters. Aber sag das niemandem."</em>', 'magic');
+    if(canTake()){
+      takeItem('teleportring');
+      state.flags.got_ring = true;
+      msg('💫 Michael drückt dir einen <strong>Ring der Teleportation</strong> in die Hand und verschwindet!', 'ok');
+      addPoints(25, 'Ring der Teleportation erhalten');
+      addBadge('💫','Schmeichler','Michael mit Schmeichelei manipuliert');
+    } else {
+      msg('Aber dein Beutel ist voll! Michael schmollt und verschwindet wieder. Versuch es nochmal, wenn du Platz hast.', 'new');
+    }
+    return;
+  }
+
   if(n.includes('michael')){
     msg('Du rufst laut „Michael!" — Eine Weile passiert nichts. Dann: <em>PUFF!</em>', 'magic');
     triggerWizard(true);
@@ -1930,13 +2057,39 @@ function sleepAction(){
   state.hunger = Math.max(0, state.hunger - 25);
 }
 
+function teleportAction(){
+  if(!hasItem('teleportring')){ msg('Du hast keinen Ring der Teleportation.', 'new'); return; }
+  const places = [...visitedRooms].filter(id => id !== state.current);
+  if(places.length === 0){ msg('Du warst noch nirgends sonst.', 'new'); return; }
+  const list = places.map((id,i)=> (i+1)+'. '+ROOMS[id].name).join('\n');
+  const choice = prompt('💫 Wohin möchtest du dich teleportieren? Nummer oder Name eingeben:\n\n' + list);
+  if(!choice) return;
+  let idx = parseInt(choice) - 1;
+  if(isNaN(idx)){
+    idx = places.findIndex(id => ROOMS[id].name.toLowerCase().startsWith(choice.toLowerCase().trim()));
+  }
+  if(idx < 0 || idx >= places.length){ msg('Diesen Ort kennst du nicht.', 'new'); return; }
+  const target = places[idx];
+  const t = ROOMS[target];
+
+  // Warnung wenn ins Dunkel
+  if(t.section === 'below' && target !== 'pilzgarten' && !state.lantern_on){
+    if(!confirm('⚠️ Du teleportierst dich in einen dunklen Raum ohne Licht! Sicher?')) return;
+  }
+
+  state.current = target;
+  msg('💫 <strong>Der Ring funkelt!</strong> Du verschwindest in einem Wirbel aus goldenem Staub und materialisierst dich in: <em>' + t.name + '</em>!', 'magic');
+  if(t.onEnter) msg(t.onEnter);
+  visited(target);
+}
+
 /* ════════════════════════════════════════════════════════════════════════
    ZUG-MECHANIK
    ════════════════════════════════════════════════════════════════════════ */
 function advanceTurn(){
   state.turns++;
   if(state.lantern_on){
-    state.lantern_fuel = Math.max(0, state.lantern_fuel - 3);
+    state.lantern_fuel = Math.max(0, state.lantern_fuel - 1.5);
     if(state.lantern_fuel === 0){
       state.lantern_on = false;
       msg('🌑 Die Laterne flackert und erlischt!', 'new');
@@ -2001,6 +2154,25 @@ function maybeSpawnWizard(){
 }
 
 function triggerWizard(forced){
+  // SCHUTZAMULETT — blockt Michael bis zu 3 mal
+  if(hasItem('schutzamulett')){
+    state.amulet_uses = (state.amulet_uses || 0) + 1;
+    state.wizardCooldown = 6;
+    const remaining = 3 - state.amulet_uses;
+    if(state.amulet_uses < 3){
+      msg('🛡️ <strong>Das Schutzamulett glüht silbern auf!</strong> Michael wird zurückgestoßen, bevor er erscheinen kann. <em>(Noch ' + remaining + ' Schutz' + (remaining===1?'':'e') + ' übrig.)</em>', 'ok');
+      addPoints(5);
+    } else {
+      // Dritte und letzte Nutzung — Amulett verschwindet und teleportiert in die Unterwelt
+      removeItem('schutzamulett');
+      state.flags.amulet_lost = true;
+      // Wähle Zielraum: das Herz des Labyrinths
+      msg('🛡️💨 Das Schutzamulett glüht ein letztes Mal — und Michael wird zurückgestoßen. Doch dann <strong>zerspringt die Lederschnur</strong>, und das Amulett verschwindet in einem Wirbel aus silbernem Staub! Du spürst, dass es irgendwo tief in der Unterwelt wieder erschienen ist…', 'magic');
+      addBadge('🛡️','Geschützt','Amulett dreimal benutzt');
+      addPoints(10);
+    }
+    return;
+  }
   state.wizardCooldown = 12;
   const line = WIZARD_LINES[Math.floor(Math.random()*WIZARD_LINES.length)];
   showWizardAnim();
@@ -2504,6 +2676,85 @@ ZIEL:
 }
 
 /* ════════════════════════════════════════════════════════════════════════
+   SPEICHERN & LADEN
+   ════════════════════════════════════════════════════════════════════════ */
+const SAVE_KEY = 'mondbruch_save_v1';
+
+function saveGame(){
+  try {
+    // Erfasse den mutierten Zustand der Räume
+    const roomSnapshot = {};
+    for(const [id, r] of Object.entries(ROOMS)){
+      roomSnapshot[id] = {
+        items: r.items ? [...r.items] : [],
+        locked: r.locked || false,
+      };
+    }
+    const snapshot = {
+      version: 1,
+      timestamp: new Date().toISOString(),
+      state: {
+        ...state,
+        docsRead: [...state.docsRead],   // Set → Array
+        flags: { ...state.flags, riddle_solved: { ...state.flags.riddle_solved }, taken: { ...state.flags.taken } },
+      },
+      visited: [...visitedRooms],
+      rooms: roomSnapshot,
+    };
+    localStorage.setItem(SAVE_KEY, JSON.stringify(snapshot));
+    const time = new Date().toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'});
+    msg('💾 <strong>Spielstand gespeichert!</strong> (' + time + ')', 'ok');
+  } catch(e){
+    msg('❌ Speichern fehlgeschlagen: ' + e.message, 'new');
+    console.error(e);
+  }
+}
+
+function loadGame(){
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw){
+      msg('Kein gespeicherter Spielstand gefunden.', 'new');
+      return;
+    }
+    const data = JSON.parse(raw);
+    if(!confirm('Gespeicherten Spielstand laden?\n\nGespeichert am: ' + new Date(data.timestamp).toLocaleString('de-DE') + '\nZüge: ' + (data.state.turns || 0) + ' · Punkte: ' + (data.state.points || 0))){
+      return;
+    }
+    // Räume zurücksetzen
+    for(const [id, snap] of Object.entries(data.rooms || {})){
+      if(ROOMS[id]){
+        ROOMS[id].items = [...(snap.items || [])];
+        ROOMS[id].locked = snap.locked;
+      }
+    }
+    // Zustand wiederherstellen
+    Object.assign(state, data.state);
+    state.docsRead = new Set(data.state.docsRead || []);
+    // visitedRooms wiederherstellen
+    visitedRooms.clear();
+    for(const id of (data.visited || [])) visitedRooms.add(id);
+
+    // Modale schließen, falls offen
+    document.getElementById('introModal').classList.add('hide');
+    document.getElementById('endModal').classList.add('hide');
+    document.getElementById('docModal').classList.remove('open');
+    document.getElementById('riddleModal').classList.remove('open');
+    document.getElementById('mapModal').classList.remove('open');
+
+    // Nachrichtenbox löschen
+    document.getElementById('messages').innerHTML = '';
+    msg('📂 <strong>Spielstand geladen!</strong> Weiter geht\'s in: <em>' + ROOMS[state.current].name + '</em>', 'ok');
+    renderAll();
+  } catch(e){
+    msg('❌ Laden fehlgeschlagen: ' + e.message, 'new');
+    console.error(e);
+  }
+}
+
+function hasSaveGame(){ return !!localStorage.getItem(SAVE_KEY); }
+
+/* ════════════════════════════════════════════════════════════════════════
    INITIALISIERUNG
    ════════════════════════════════════════════════════════════════════════ */
 function renderAll(){
@@ -2521,7 +2772,13 @@ function startGame(){
   visited(state.current);
   msg('🌿 Dein Abenteuer beginnt! Lies das Zimmer sorgfältig.', 'ok');
   msg('💡 Tipp: Sammle Dokumente (📜) und klicke sie im Inventar, um sie zu lesen.', 'clue');
+  msg('💾 Tipp: Du kannst jederzeit „💾 Speichern" klicken!', 'clue');
   renderAll();
+}
+
+// Beim Start: Falls Spielstand existiert, „Laden"-Knopf im Intro-Modal anzeigen
+if(hasSaveGame()){
+  document.getElementById('introLoadBtn').style.display = 'inline-block';
 }
 
 renderAll();
