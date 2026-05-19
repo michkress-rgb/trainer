@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hamburger-Rallye Deluxe · Argumentieren lernen</title>
+<style>
+:root{
+  --bg:#f6efd9;
+  --ink:#221b13;
+  --card:#fff9ea;
+  --accent:#8f4f24;
+  --accent2:#2f6f73;
+  --accent3:#b93434;
+  --gold:#d6a33a;
+  --muted:#746b5d;
+  --green:#2e7d45;
+  --red:#b73535;
+  --blue:#3569a8;
+  --pink:#d96a8c;
+  --shadow:0 12px 30px rgba(50,35,10,.16);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(214,163,58,.28), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(47,111,115,.18), transparent 30%),
+    linear-gradient(180deg,#fff8e7,var(--bg));
+  color:var(--ink);
+  overflow-x:hidden;
+}
+header{
+  padding:22px 28px 16px;
+  background:linear-gradient(90deg,#3d2315,#8f4f24);
+  color:#fff7dd;
+  border-bottom:5px solid var(--gold);
+}
+header h1{margin:0;font-size:clamp(26px,4vw,46px);letter-spacing:.4px}
+header p{margin:8px 0 0;max-width:1180px;font-size:16px;line-height:1.45}
+main{
+  display:grid;
+  grid-template-columns:minmax(300px,430px) minmax(330px,1fr) minmax(260px,330px);
+  gap:18px;padding:18px;max-width:1780px;margin:auto
+}
+main.board-hidden{grid-template-columns:minmax(330px,1fr) minmax(260px,330px)}
+main.board-hidden .board-wrap{display:none}
+body.compact-board main{grid-template-columns:minmax(260px,350px) minmax(330px,1fr) minmax(240px,310px)}
+.panel{
+  background:rgba(255,249,232,.97);
+  border:2px solid rgba(143,79,36,.25);
+  border-radius:22px;
+  box-shadow:var(--shadow);
+  padding:18px;
+}
+.board-wrap,.cheat-wrap{position:sticky;top:12px;align-self:start;max-height:calc(100vh - 24px);overflow:auto}
+h2,h3{margin:0 0 10px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.stat{
+  background:#fffdf4;
+  border:1px solid #ead9ae;
+  border-radius:16px;
+  padding:10px;
+}
+.stat strong{display:block;font-size:22px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+button,.buttonish{
+  border:0;
+  border-radius:14px;
+  padding:10px 14px;
+  font-weight:800;
+  cursor:pointer;
+  background:var(--accent2);
+  color:white;
+  box-shadow:0 4px 0 rgba(0,0,0,.16);
+  transition:transform .15s ease, filter .15s ease;
+}
+button:hover{filter:brightness(1.08);transform:translateY(-1px)}
+button:disabled{background:#aaa;cursor:not-allowed;box-shadow:none;transform:none}
+.secondary{background:#6d5e50}
+.danger{background:#a33}
+.gold{background:#ae7a13}
+.pink{background:#b24666}
+.small{font-size:13px;padding:8px 10px}
+.board{
+  display:grid;
+  grid-template-columns:repeat(8,1fr);
+  gap:7px;
+  padding:12px;
+  background:#3b271a;
+  border-radius:22px;
+  border:5px solid #caa65d;
+}
+.cell{
+  aspect-ratio:1/1;
+  border-radius:14px;
+  background:#fff3c8;
+  border:2px solid #e0c177;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-weight:800;
+  position:relative;
+  font-size:11px;
+  color:#2d2116;
+  overflow:hidden;
+}
+.cell.path{background:#fff7dc}
+.cell.start{background:#d6f2d0}
+.cell.zitat{background:#dbeaff}
+.cell.aufhaenger{background:#ffe1bc}
+.cell.hamburger{background:#f8d7ef}
+.cell.beleg{background:#dcf2e9}
+.cell.stil{background:#f5e2bb}
+.cell.pruefung{background:#ffd7d7}
+.cell.bonus{background:#fff1a3}
+.cell.boss{background:#e5ddff;border-color:#8e74d1}
+.cell.event{background:#fdd9a8;border-color:#d47b22}
+.cell.empty{background:#553924;border-color:#553924;color:transparent}
+.cell .tag{font-size:10px}
+.pawn{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--accent3);
+  border:4px solid #fff;
+  position:absolute;
+  box-shadow:0 4px 8px rgba(0,0,0,.35);
+  transform:translate(-8px,-8px);
+  transition:all .35s cubic-bezier(.2,1.4,.5,1);
+  z-index:3;
+}
+.pawn.cpu{
+  background:#3569a8;
+  width:26px;height:26px;
+  transform:translate(10px,10px);
+}
+.pawn.both{box-shadow:0 0 0 5px rgba(214,163,58,.55),0 4px 8px rgba(0,0,0,.35)}
+.legend{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:12px;font-size:13px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.swatch{width:18px;height:18px;border-radius:5px;border:1px solid #b59c6a;display:inline-block}
+.task-area{min-height:720px;min-width:0}
+.topbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 12px}
+.compact-toggle{background:#5b4d3f}
+.notice{
+  background:#fffdf4;border-left:6px solid var(--gold);padding:12px 14px;border-radius:12px;margin:10px 0;color:#3a2b1d
+}
+.taskbox{
+  background:#fffdf6;border:1px solid #ead9ae;border-radius:20px;padding:16px;margin-top:14px;
+}
+.pill{display:inline-block;background:#eee1c0;border-radius:99px;padding:4px 10px;margin:0 5px 6px 0;font-size:13px;font-weight:800}
+.text-sample{
+  background:#f8f4e8;border:1px dashed #b69959;border-radius:14px;padding:13px;margin:10px 0;line-height:1.55;white-space:pre-wrap
+}
+.drop-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+.dropzone{
+  min-height:86px;border:2px dashed #b99d66;border-radius:16px;background:#fff8e3;padding:10px;
+}
+.dropzone h4{margin:0 0 8px;font-size:15px;color:#58422a}
+.dragitem{
+  padding:10px 12px;margin:8px 0;background:white;border:2px solid #d8c186;border-radius:14px;cursor:grab;
+  box-shadow:0 2px 6px rgba(0,0,0,.08);line-height:1.35
+}
+.dragitem:active{cursor:grabbing}
+.choice{
+  padding:13px;margin:10px 0;border:2px solid #dbc58a;border-radius:16px;background:white;cursor:pointer;
+}
+.choice.selected{border-color:var(--blue);background:#eaf2ff}
+.feedback{
+  border-radius:16px;padding:12px;margin-top:12px;font-weight:650;line-height:1.45
+}
+.good{background:#dff2df;border:1px solid #8cc58c;color:#164b21}
+.bad{background:#ffe0df;border:1px solid #dd918d;color:#68201c}
+.neutral{background:#eef0f3;border:1px solid #c4c9cf;color:#2f343a}
+textarea,input[type=text]{
+  width:100%;border:2px solid #d7c28b;border-radius:14px;padding:10px;font:inherit;background:white;
+}
+textarea{min-height:110px;line-height:1.45}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.badge{
+  background:#f0e0bf;border:1px solid #c4a263;color:#4b351c;border-radius:999px;padding:7px 10px;font-weight:800;font-size:13px
+}
+.badge.earned{background:#ffe083;color:#372300;border-color:#b9850b}
+.progressbar{height:18px;background:#eadfbe;border-radius:20px;overflow:hidden}
+.progressbar div{height:100%;background:linear-gradient(90deg,#e7b663,#6e3b21,#e4542d,#ffd98a);width:0%;transition:width .4s ease}
+.burger-meter{display:flex;gap:4px;margin:10px 0}
+.layer-dot{flex:1;text-align:center;border-radius:12px;padding:6px 3px;background:#e7d8ad;font-size:12px;font-weight:800;opacity:.45}
+.layer-dot.done{opacity:1;transform:translateY(-1px);box-shadow:0 3px 0 rgba(0,0,0,.1)}
+.cheat-card{
+  background:#fffdf6;border:1px solid #ead9ae;border-radius:16px;padding:12px;margin:10px 0;line-height:1.42
+}
+.cheat-card h3{font-size:18px}
+.cheat-list{padding-left:18px;margin:8px 0}
+.cheat-list li{margin:5px 0}
+.mascotBox{
+  display:grid;grid-template-columns:92px 1fr;gap:10px;align-items:center;
+  background:#fff7d7;border:2px solid #e2ba55;border-radius:18px;padding:10px;margin-bottom:10px
+}
+.mascotSpeech{font-weight:750;line-height:1.35}
+.mascotSvg{width:90px;height:90px}
+.mascotSvg .mouthHappy{display:block}
+.mascotSvg .mouthSad,.mascotSvg .mouthAngry{display:none}
+.mascotSad .mouthHappy,.mascotAngry .mouthHappy{display:none}
+.mascotSad .mouthSad{display:block}
+.mascotAngry .mouthAngry{display:block}
+.computer-card{
+  background:#f3f7ff;border:1px solid #b9c9ea;border-left:6px solid var(--blue);
+  border-radius:16px;padding:10px 12px;margin:10px 0;line-height:1.4
+}
+.event-card{
+  background:#fff5d6;border:1px solid #d6b15b;border-left:6px solid var(--gold);
+  border-radius:16px;padding:10px 12px;margin:10px 0;line-height:1.4
+}
+.steal-card{
+  background:#e6f7ea;border:1px solid #8bc998;border-left:6px solid var(--green);
+  border-radius:16px;padding:10px 12px;margin:10px 0;line-height:1.4
+}
+.burgerBuild{
+  width:min(520px,100%);
+  margin:14px auto;
+  min-height:230px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  align-items:center;
+}
+.burgerLayer{
+  width:80%;
+  min-height:30px;
+  margin:-1px 0;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  text-align:center;
+  padding:7px;
+  box-shadow:0 3px 0 rgba(0,0,0,.12);
+}
+.topbun{background:#f0bd5b;border-radius:60px 60px 22px 22px;height:48px}
+.claim{background:#7a3e24;color:white}
+.reason{background:#f6df52}
+.evidence{background:#6fb66f;color:white}
+.explain{background:#e24f2d;color:white}
+.bottombun{background:#e6a84a;border-radius:22px 22px 40px 40px;height:42px}
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.50);display:none;align-items:center;justify-content:center;padding:18px;z-index:20
+}
+.modal.open{display:flex}
+.modal-content{
+  background:#fffaf0;border-radius:24px;max-width:900px;max-height:88vh;overflow:auto;padding:22px;box-shadow:0 20px 80px rgba(0,0,0,.4)
+}
+.closex{float:right;background:#7c332b}
+details{
+  border:1px solid #ead9ae;border-radius:14px;padding:10px;margin:10px 0;background:#fffdf6
+}
+summary{font-weight:800;cursor:pointer}
+.kriterium{display:grid;grid-template-columns:110px 1fr;gap:10px;margin:8px 0}
+.kriterium strong{color:#693b20}
+.footer-note{font-size:12px;color:var(--muted);line-height:1.35;margin-top:12px}
+.dieSpin{animation:spinDie .55s ease}
+@keyframes spinDie{0%{transform:rotate(0) scale(1)}50%{transform:rotate(360deg) scale(1.35)}100%{transform:rotate(720deg) scale(1)}}
+.burst{
+  position:fixed;pointer-events:none;z-index:50;font-weight:900;font-size:24px;animation:burst 1s ease forwards;
+}
+@keyframes burst{0%{opacity:0;transform:translateY(0) scale(.8)}20%{opacity:1}100%{opacity:0;transform:translateY(-80px) scale(1.5)}}
+.confetti{
+  position:fixed;top:-20px;width:10px;height:16px;background:#d6a33a;z-index:60;animation:fall 2.5s linear forwards
+}
+@keyframes fall{to{transform:translateY(110vh) rotate(740deg);opacity:.2}}
+@media(max-width:1250px){
+  main{grid-template-columns:minmax(290px,420px) minmax(330px,1fr)}
+  .cheat-wrap{position:static;grid-column:1/-1;max-height:none}
+}
+@media(max-width:980px){
+  main{grid-template-columns:1fr}
+  .board-wrap,.cheat-wrap{position:static;max-height:none}
+}
+@media(max-width:760px){
+  .drop-row{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .cell{font-size:10px;border-radius:10px}
+  .mascotBox{grid-template-columns:1fr;text-align:center}
+  .mascotSvg{margin:auto}
+}
+@media print{
+  header,.board-wrap .actions,button,.modal{display:none!important}
+  main{display:block}
+  .panel{box-shadow:none;border:1px solid #999}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Hamburger-Rallye Deluxe</h1>
+  <p>Ein umfangreiches Trainingsspiel für argumentative Texte: Aufhänger, These, Hamburger-Methode, Belege, Zitatklammern, Stil, Bosskämpfe und Burger-Bauen. Bürgermeister Burger begleitet dich.</p>
+</header>
+
+<main>
+<section class="panel board-wrap" id="boardPanel">
+  <h2>Spielbrett</h2>
+  <div class="stats">
+    <div class="stat"><span>Punkte</span><strong id="points">0</strong></div>
+    <div class="stat"><span>Position</span><strong id="pos">Start</strong></div>
+    <div class="stat"><span>Runden</span><strong id="laps">0</strong></div>
+    <div class="stat"><span>Würfel</span><strong id="die">–</strong></div>
+    <div class="stat"><span>Computer</span><strong id="cpuPos">Start</strong></div>
+    <div class="stat"><span>Serie</span><strong id="streak">0</strong></div>
+  </div>
+  <div class="progressbar" title="Burger-Fortschritt"><div id="lapProgress"></div></div>
+  <div class="burger-meter" id="burgerMeter"></div>
+  <div class="actions">
+    <button id="rollBtn" onclick="rollDie()">Würfeln</button>
+    <button class="pink" onclick="startBurgerBuildMode()">Burger-Bauen</button>
+    <button class="compact-toggle" onclick="toggleBoard()">Brett ausblenden</button>
+    <button class="compact-toggle" onclick="toggleCompactBoard()">Brett schmal</button>
+    <button class="secondary" onclick="openHelp()">Regeln & Methode</button>
+    <button class="gold" onclick="saveGame()">Speichern</button>
+    <button class="secondary" onclick="loadGame()">Laden</button>
+    <button class="secondary" onclick="exportSave()">Export</button>
+    <label class="buttonish secondary small">Import <input id="importFile" type="file" accept=".json" style="display:none" onchange="importSave(event)"></label>
+    <button class="danger" onclick="resetGame()">Neu starten</button>
+  </div>
+  <div class="board" id="board"></div>
+  <div class="legend">
+    <span><i class="swatch" style="background:#d6f2d0"></i> Start</span>
+    <span><i class="swatch" style="background:#ffe1bc"></i> Aufhänger</span>
+    <span><i class="swatch" style="background:#f8d7ef"></i> Hamburger</span>
+    <span><i class="swatch" style="background:#dcf2e9"></i> Beleg</span>
+    <span><i class="swatch" style="background:#dbeaff"></i> Zitat</span>
+    <span><i class="swatch" style="background:#fdd9a8"></i> Ereignis</span>
+    <span><i class="swatch" style="background:#e5ddff"></i> Boss</span>
+    <span><i class="swatch" style="background:#fff1a3"></i> Bonus</span>
+  </div>
+  <h3 style="margin-top:18px">Abzeichen</h3>
+  <div class="badges" id="badges"></div>
+  <p class="footer-note">Die Daten werden nur lokal im Browser gespeichert. Die Datei funktioniert offline.</p>
+</section>
+
+<section class="panel task-area">
+  <div class="topbar">
+    <h2 style="margin-right:auto">Trainingsstation</h2>
+    <button class="compact-toggle small" onclick="toggleBoard()">Spielbrett ein-/ausblenden</button>
+  </div>
+  <div class="mascotBox" id="mascotBox">
+    <div id="mascotSvgHost"></div>
+    <div class="mascotSpeech" id="mascotSpeech">Willkommen! Ich bin Bürgermeister Burger. Ich prüfe, ob deine Argumente saftig, sauber geschichtet und nicht labbrig sind.</div>
+  </div>
+  <div class="notice" id="intro">
+    Klicke auf <b>Würfeln</b> oder starte direkt mit <b>Burger-Bauen</b>. Ziel: zwei Runden schaffen und mindestens 300 Punkte sammeln.
+  </div>
+  <div id="taskHost"></div>
+</section>
+
+<aside class="panel cheat-wrap">
+  <h2>Hamburger-Spickzettel</h2>
+  <div class="cheat-card">
+    <h3>Der perfekte Absatz</h3>
+    <ol class="cheat-list">
+      <li><b>Behauptung:</b> klare Aussage zum Argument.</li>
+      <li><b>Begründung:</b> warum stimmt das?</li>
+      <li><b>Beleg / Beispiel:</b> Textstelle, Material, Erfahrung, konkreter Fall.</li>
+      <li><b>Erklärung:</b> was zeigt der Beleg?</li>
+      <li><b>Rückbindung:</b> zurück zur These.</li>
+    </ol>
+  </div>
+  <div class="cheat-card">
+    <h3>Klammerzitate</h3>
+    <p><b>Material:</b> (Material 1, Z. 12–14)</p>
+    <p><b>Nur Zeilen:</b> (Z. 3–4)</p>
+    <p>Ein Zitat steht nie allein. Es wird eingebettet und erklärt.</p>
+  </div>
+  <div class="cheat-card">
+    <h3>Cambridge-Blick</h3>
+    <ul class="cheat-list">
+      <li>präzise statt allgemein</li>
+      <li>differenziert statt pauschal</li>
+      <li>geordnete Absätze</li>
+      <li>Belege auswerten, nicht abladen</li>
+      <li>sachlicher, kontrollierter Stil</li>
+    </ul>
+  </div>
+  <div class="cheat-card">
+    <h3>Burger-Meter</h3>
+    <p>Beim Fortschritt baust du einen Burger: Brötchen, Patty, Soße, Salat und Schlussbrötchen. Am Rundenende wartet ein Bosskampf.</p>
+  </div>
+</aside>
+</main>
+
+<div class="modal" id="tutorialModal">
+  <div class="modal-content">
+    <button class="closex" onclick="closeTutorial()">Losspielen</button>
+    <h2>Willkommen in der Hamburger-Rallye!</h2>
+    <div class="mascotBox">
+      <div id="tutorialMascot"></div>
+      <div class="mascotSpeech">Ich bin <b>Bürgermeister Burger</b>. Meine Stadt hat ein Problem: Zu viele Aufsätze sind matschig. Deine Aufgabe: Baue stabile Argumente!</div>
+    </div>
+    <p>Die Hamburger-Methode hilft dir, argumentative Texte klar zu bauen. Ein guter Absatz ist wie ein Burger: Jede Schicht hat eine Aufgabe. Wenn eine Schicht fehlt, fällt alles auseinander.</p>
+    <div class="burgerBuild">
+      <div class="burgerLayer topbun">Oberes Brötchen: klare Behauptung</div>
+      <div class="burgerLayer claim">Patty: Begründung</div>
+      <div class="burgerLayer evidence">Salat: Beispiel / Beleg</div>
+      <div class="burgerLayer explain">Ketchup: Erklärung</div>
+      <div class="burgerLayer bottombun">Unteres Brötchen: Rückbindung</div>
+    </div>
+    <p><b>Merksatz:</b> Ein Beleg ist erst dann stark, wenn du erklärst, was er beweist.</p>
+  </div>
+</div>
+
+<div class="modal" id="helpModal">
+  <div class="modal-content">
+    <button class="closex" onclick="closeHelp()">Schließen</button>
+    <h2>Regeln, Hamburger Methode und Bewertungsblick</h2>
+    <p>Du spielst gegen den Computer. Nach dem Würfeln erscheint eine Aufgabe. Gute Antworten bringen Punkte. Ereignisfelder können dich vor- oder zurückwerfen, dir einen Schutzschild geben oder dich eine Runde aussetzen lassen. Der Computer spielt nach jedem deiner Züge mit, macht aber gelegentlich typische Aufsatzfehler. Wenn er patzt, darfst du über eine Zusatzfrage Punkte stehlen und ein Feld vorrücken.</p>
+    <details open>
+      <summary>Hamburger Methode</summary>
+      <div class="kriterium"><strong>Einleitung</strong><span>Aufhänger, Thema, Streitfrage, klare These.</span></div>
+      <div class="kriterium"><strong>Absatz</strong><span>Behauptung, Begründung, Beleg/Beispiel, Erklärung, Rückbindung.</span></div>
+      <div class="kriterium"><strong>Fazit</strong><span>Urteil, Gewichtung, Ausblick. Keine bloße Wiederholung.</span></div>
+    </details>
+    <details open>
+      <summary>Bosskampf</summary>
+      <p>Am Ende jeder Runde diagnostizierst du einen ganzen Absatz. Du suchst fehlende Schichten, schwache Belege und unklare Rückbindungen.</p>
+    </details>
+    <details open>
+      <summary>Zitieren mit Klammern</summary>
+      <p>Kurze Belege können mit Klammern eingefügt werden: <b>„…“ (Z. 12–14)</b> oder <b>(Material 2, Z. 8–10)</b>.</p>
+    </details>
+  </div>
+</div>
+
+<script>
+const boardLayout = [
+  0,1,2,3,4,5,6,7,
+  27,-1,-1,-1,-1,-1,-1,8,
+  26,-1,35,36,37,38,-1,9,
+  25,-1,34,-1,-1,39,-1,10,
+  24,-1,33,-1,-1,40,-1,11,
+  23,-1,32,31,30,29,-1,12,
+  22,-1,-1,-1,-1,-1,-1,13,
+  21,20,19,18,17,16,15,14
+];
+
+const fieldTypes = [
+"start","aufhaenger","hamburger","beleg","zitat","event","stil","pruefung",
+"bonus","hamburger","beleg","zitat","event","stil","boss",
+"aufhaenger","hamburger","beleg","zitat","event","pruefung","bonus",
+"aufhaenger","hamburger","beleg","zitat","event","stil","boss",
+"bonus","hamburger","beleg","zitat","event","pruefung","hamburger",
+"beleg","stil","zitat","event","boss"
+];
+
+const labels = {
+start:"Start", aufhaenger:"Aufhänger", hamburger:"Hamburger", beleg:"Beleg",
+zitat:"Zitat", stil:"Stil", pruefung:"Prüfung", bonus:"Bonus", boss:"Boss", event:"Ereignis"
+};
+
+let state = {
+  points:0, position:0, laps:0, locked:false, streak:0,
+  cpuPosition:0, cpuLaps:0, cpuPoints:0, cpuStreak:0,
+  stealAvailable:false, skipNext:false, shields:0, doubleBurger:false,
+  badges:[], completed:[], currentTask:null, lastEvent:"", tutorialSeen:false
+};
+
+const badges = [
+  {id:"aufhaenger", name:"Aufhänger-Profi", test:s=>s.completed.filter(x=>x==="aufhaenger").length>=3},
+  {id:"zitat", name:"Zitat-Kapitän", test:s=>s.completed.filter(x=>x==="zitat").length>=3},
+  {id:"hamburger", name:"Burgermeister", test:s=>s.completed.filter(x=>x==="hamburger").length>=5},
+  {id:"streak", name:"Fünfer-Serie", test:s=>s.streak>=5},
+  {id:"punkte", name:"300-Punkte-Krone", test:s=>s.points>=300},
+  {id:"runden", name:"Zwei-Runden-Held", test:s=>s.laps>=2},
+  {id:"dieb", name:"Punktedieb", test:s=>s.completed.includes("steal")},
+  {id:"schild", name:"Gerettet!", test:s=>s.shields>0},
+  {id:"boss", name:"Boss-Besieger", test:s=>s.completed.includes("boss")},
+  {id:"builder", name:"Burger-Architekt", test:s=>s.completed.includes("burgerbauen")}
+];
+
+const tasks = {
+aufhaenger:[
+ {type:"choice", title:"Welcher Aufhänger ist am stärksten?", prompt:"Thema: Sollten Smartphones im Unterricht häufiger bewusst eingesetzt werden? Wähle den Aufhänger, der aus Cambridge-Perspektive am besten vorbereitet: klar, fokussiert, nicht platt, mit guter Überleitung zur Argumentation.",
+  choices:["Heutzutage gibt es Smartphones und alle haben eins und deshalb schreibe ich jetzt darüber.","Wenn ein Gerät zugleich Wörterbuch, Kamera, Notizbuch und Ablenkungsmaschine ist, stellt sich nicht die Frage, ob es in der Schule existiert, sondern wie klug man damit umgeht.","Smartphones sind schlecht, weil alle Kinder nur noch TikTok gucken."], answer:1, points:18,
+  explain:"Der zweite Aufhänger ist konkret, sprachlich kontrolliert und führt direkt zur Streitfrage."},
+ {type:"rank", title:"Aufhänger nach Qualität ordnen", prompt:"Ziehe die Aufhänger von oben nach unten: stärkster zuerst, schwächster zuletzt.",
+  items:[{id:"a", text:"Seit der Mensch Werkzeuge benutzt, verändert Technik nicht nur, was er tut, sondern auch, wie er denkt."},{id:"b", text:"Technik ist ein sehr wichtiges Thema und jeder weiß das."},{id:"c", text:"Manche Schüler schreiben schneller eine Nachricht als einen klaren Gedanken; gerade deshalb muss Schule digitale Gewohnheiten nicht ignorieren, sondern prüfen."}], answer:["c","a","b"], points:22,
+  explain:"Der erste Platz ist schülernah und problemorientiert. Der letzte bleibt leer und allgemein."},
+ {type:"choice", title:"These oder Thema?", prompt:"Welche Formulierung ist eine echte These und nicht nur ein Thema?",
+  choices:["In diesem Aufsatz geht es um Hausaufgaben.","Hausaufgaben sollten nicht abgeschafft, sondern gezielter eingesetzt werden, weil sie nur dann sinnvoll sind, wenn sie Vorbereitung, Übung oder Vertiefung leisten.","Viele Menschen reden über Hausaufgaben und Schule."], answer:1, points:16,
+  explain:"Eine These nimmt eine erkennbare Position ein und enthält eine begründbare Richtung."},
+ {type:"choice", title:"Zu dramatisch?", prompt:"Welche Einleitung wirkt am wenigsten sachlich und sollte überarbeitet werden?",
+  choices:["Während einige Jugendliche ihr Handy als Werkzeug sehen, erleben andere es als ständige Ablenkung.","Wer Smartphones in der Schule erlaubt, zerstört endgültig die Bildung und öffnet dem Chaos die Tür.","Die Frage nach Smartphones im Unterricht berührt Konzentration, Chancengleichheit und Medienkompetenz."], answer:1, points:14,
+  explain:"Übertreibungen schwächen eine Argumentation, weil sie unpräzise und unsachlich wirken."}
+],
+hamburger:[
+ {type:"burgerBuild", title:"Burger-Bauen: vollständiger Absatz", prompt:"Baue einen vollständigen 5-Schichten-Absatz. Ziehe die Teile in die richtige Reihenfolge.",
+  items:[
+    {id:"hb1", layer:"Behauptung", text:"Hausaufgaben sind nur dann sinnvoll, wenn sie eine erkennbare Lernfunktion haben."},
+    {id:"hb2", layer:"Begründung", text:"Denn ohne klares Ziel üben Schüler vor allem Pflichterfüllung, nicht unbedingt Verständnis."},
+    {id:"hb3", layer:"Beleg / Beispiel", text:"Eine kurze Vorbereitung auf eine Diskussion kann sinnvoll sein; zehn fast gleiche Aufgaben nach einem verstandenen Prinzip dagegen kaum."},
+    {id:"hb4", layer:"Erklärung", text:"Das Beispiel zeigt, dass nicht die Menge, sondern die Passung zur Unterrichtsstunde entscheidend ist."},
+    {id:"hb5", layer:"Rückbindung", text:"Deshalb sollten Hausaufgaben nicht abgeschafft, sondern gezielter geplant werden."}
+  ], answer:["hb1","hb2","hb3","hb4","hb5"], points:34,
+  explain:"Der Absatz hat alle Schichten: Behauptung, Begründung, Beispiel, Erklärung, Rückbindung."},
+ {type:"sort", title:"Hamburger-Absatz bauen", prompt:"Ordne die Teile eines starken Argumentationsabsatzes.",
+  items:[{id:"b", text:"Denn wenn Aufgaben ohne klares Ziel gestellt werden, üben Schüler vor allem Gehorsam, nicht Verständnis."},{id:"d", text:"Deshalb sollten Hausaufgaben nicht nach Menge, sondern nach Lernfunktion bewertet werden."},{id:"a", text:"Hausaufgaben sind nur dann sinnvoll, wenn sie eine erkennbare Funktion haben."},{id:"c", text:"Ein Vokabeltraining vor einer Diskussion kann vorbereiten; zehn ähnliche Rechenpäckchen nach einem verstandenen Prinzip dagegen kaum."}], answer:["a","b","c","d"], points:25,
+  explain:"Starker Absatz: Behauptung, Begründung, Beispiel, Rückbindung."},
+ {type:"missingLayer", title:"Welche Burger-Schicht fehlt?", prompt:"Lies den Absatz. Welche Schicht fehlt am deutlichsten?",
+  sample:"Digitale Geräte sollten im Unterricht nicht grundsätzlich verboten werden. Ein Verbot verhindert nicht, dass Jugendliche Medien nutzen. Deshalb sollte die Schule Smartphones nicht ignorieren.",
+  choices:["ein konkretes Beispiel oder ein Beleg","eine Behauptung","eine Rückbindung"], answer:0, points:22,
+  explain:"Der Absatz behauptet und begründet, aber er bleibt abstrakt. Ein Beispiel oder Beleg fehlt."},
+ {type:"missingLayer", title:"Wo fällt der Burger auseinander?", prompt:"Welche Schicht fehlt?",
+  sample:"Viele Jugendliche sind nachmittags müde. Eine Studie sagt, dass sie oft erschöpft sind. Deshalb sind Hausaufgaben problematisch.",
+  choices:["eine Erklärung, was der Beleg für das Argument zeigt","ein Zitatzeichen nach jedem Wort","ein Thema"], answer:0, points:22,
+  explain:"Der Beleg wird erwähnt, aber nicht ausgewertet. Die Erklärung ist die Ketchup-Schicht."},
+ {type:"dragCategories", title:"Hamburger-Schichten erkennen", prompt:"Ziehe die Textteile in die passende Schicht.",
+  categories:[{id:"einleitung", title:"Oberes Brötchen: Einleitung"},{id:"hauptteil", title:"Belag: Hauptteil"},{id:"fazit", title:"Unteres Brötchen: Fazit"}],
+  items:[{id:"i1", cat:"einleitung", text:"Wenn Lernen nach der Schulglocke einfach weitergeht, stellt sich die Frage, wo Übung endet und Überlastung beginnt."},{id:"h1", cat:"hauptteil", text:"Ein zweiter Grund ist die soziale Ungleichheit: Nicht jedes Kind erhält zu Hause dieselbe Unterstützung."},{id:"f1", cat:"fazit", text:"Darum liegt die Lösung nicht in einem pauschalen Verbot, sondern in besseren, kürzeren und sinnvolleren Aufgaben."},{id:"h2", cat:"hauptteil", text:"Zum Beispiel kann eine kurze Vorbereitung auf eine Debatte allen helfen, im Unterricht aktiver teilzunehmen."}], points:24,
+  explain:"Einleitung öffnet die Streitfrage, Hauptteil entfaltet Argumente, Fazit gewichtet und schließt."},
+ {type:"choice", title:"Beste Rückbindung", prompt:"Ein Absatz argumentiert, dass Klassenfahrten den Zusammenhalt stärken. Welche Rückbindung ist am stärksten?",
+  choices:["Das war mein Argument.","Daran sieht man, dass Klassenfahrten nicht nur Freizeit sind, sondern soziales Lernen ermöglichen.","Außerdem gibt es noch andere Sachen."], answer:1, points:15,
+  explain:"Die Rückbindung verbindet das Beispiel wieder mit der These und wertet es aus."},
+ {type:"sort", title:"Einleitung sortieren", prompt:"Ordne die Einleitung nach Hamburger-Methode.",
+  items:[{id:"c", text:"Besonders umstritten ist dabei die Frage, ob schriftliche Übungen zu Hause noch zeitgemäß sind."},{id:"a", text:"Nach einem langen Schultag beginnt für viele Jugendliche eine zweite Runde Arbeit am Küchentisch."},{id:"d", text:"Ich vertrete die Position, dass Hausaufgaben sinnvoll bleiben können, wenn sie begrenzt, zielklar und differenziert sind."},{id:"b", text:"Das Thema Hausaufgaben betrifft Leistung, Freizeit und Gerechtigkeit."}], answer:["a","b","c","d"], points:24,
+  explain:"Bildhafter Einstieg, Thema, Zuspitzung der Streitfrage, klare These."},
+ {type:"swap", title:"Schichten tauschen", prompt:"Zwei Schichten sind vertauscht. Welche Reihenfolge wäre richtig?",
+  items:[{id:"s1", text:"Zum Beispiel kann eine Schule Hausaufgaben durch kurze Lernchecks ersetzen."},{id:"s2", text:"Daran sieht man, dass die Funktion wichtiger ist als die bloße Menge."},{id:"s3", text:"Hausaufgaben sollten nicht nach Tradition, sondern nach Lernwirkung beurteilt werden."},{id:"s4", text:"Denn eine Aufgabe ist nur sinnvoll, wenn sie Verständnis aufbaut oder überprüft."}], answer:["s3","s4","s1","s2"], points:28,
+  explain:"Erst Behauptung, dann Begründung, dann Beispiel, dann Erklärung/Rückbindung."}
+],
+beleg:[
+ {type:"choice", title:"Beleg richtig nutzen", prompt:"Welcher Satz erklärt einen Beleg am besten, statt ihn nur hinzustellen?",
+  choices:["Im Material steht: „viele Jugendliche fühlen sich nachmittags erschöpft“ (Z. 7).","Die Aussage, dass sich „viele Jugendliche nachmittags erschöpft“ fühlen (Z. 7), zeigt, dass zusätzliche Aufgaben nicht automatisch produktives Lernen bedeuten.","„Viele Jugendliche fühlen sich nachmittags erschöpft“."], answer:1, points:20,
+  explain:"Das Zitat ist eingebettet und wird ausgewertet."},
+ {type:"dragCategories", title:"Behauptung, Begründung, Beispiel", prompt:"Ziehe die Teile in die richtige Funktion.",
+  categories:[{id:"behauptung", title:"Behauptung"},{id:"begruendung", title:"Begründung"},{id:"beispiel", title:"Beispiel / Beleg"}],
+  items:[{id:"x1", cat:"behauptung", text:"Digitale Geräte sollten im Unterricht nicht grundsätzlich verboten werden."},{id:"x2", cat:"begruendung", text:"Ein Verbot verhindert nicht, dass Jugendliche Medien nutzen; es verhindert nur, dass sie den bewussten Umgang lernen."},{id:"x3", cat:"beispiel", text:"So kann eine Klasse Quellen vergleichen, indem sie dieselbe Nachricht auf drei verschiedenen Seiten überprüft."}], points:20,
+  explain:"Behauptung stellt die Position auf, Begründung erklärt warum, Beispiel macht es anschaulich."},
+ {type:"choice", title:"Schwacher Beleg", prompt:"Welcher Beleg ist am schwächsten?",
+  choices:["Eine Befragung der Klasse könnte zeigen, wie viele Schüler Hausaufgaben als hilfreich erleben.","Mein Freund findet das auch, also stimmt es.","Ein konkretes Beispiel wäre eine vorbereitende Lektüre, ohne die eine Diskussion kaum möglich ist."], answer:1, points:14,
+  explain:"Ein einzelner Freund ist als Beleg zu zufällig und nicht verallgemeinerbar."},
+ {type:"choice", title:"Beispiel passend?", prompt:"These: „Schule sollte Medienkompetenz systematisch trainieren.“ Welches Beispiel passt am besten?",
+  choices:["Die Klasse analysiert, warum zwei Internetseiten dieselbe Nachricht unterschiedlich darstellen.","Viele Schüler mögen Sport.","Früher gab es keine Smartphones."], answer:0, points:15,
+  explain:"Das Beispiel zeigt genau die Fähigkeit, die in der These gefordert wird."}
+],
+zitat:[
+ {type:"citation", title:"Zitatklammer reparieren", prompt:"Setze eine korrekte Klammerangabe ein. Vorgabe: Das Zitat stammt aus Material 1, Zeilen 12 bis 14. Schreibe nur die Klammer.",
+  answer:["(Material 1, Z. 12–14)","(Material 1, Z. 12-14)","(Mat. 1, Z. 12–14)","(Mat. 1, Z. 12-14)"], points:18,
+  explain:"Eine klare Klammerangabe nennt Material und Zeilen: (Material 1, Z. 12–14)."},
+ {type:"choice", title:"Zitat einbetten", prompt:"Welche Variante bettet das Zitat am besten ein?",
+  choices:["„ständig erreichbar“ (Z. 5).","Der Autor kritisiert, dass Jugendliche „ständig erreichbar“ seien (Z. 5), und verbindet dies mit Konzentrationsproblemen.","In Zeile 5 steht ständig erreichbar und das ist gut."], answer:1, points:20,
+  explain:"Das Zitat wird grammatisch eingebaut und danach erklärt."},
+ {type:"citation", title:"Nur Zeilenangabe", prompt:"Das Material ist im Aufgabenkopf eindeutig genannt. Das Zitat stammt aus den Zeilen 3 bis 4. Schreibe eine knappe korrekte Klammer.",
+  answer:["(Z. 3–4)","(Z. 3-4)"], points:14,
+  explain:"Wenn das Material eindeutig ist, kann eine reine Zeilenangabe genügen."},
+ {type:"choice", title:"Zitatmenge", prompt:"Welche Strategie ist in einer kurzen Argumentation meist am besten?",
+  choices:["Möglichst lange Zitate, damit der eigene Text voller Material ist.","Kurze, treffende Zitate oder Verweise, die anschließend erklärt werden.","Keine Belege, weil die eigene Meinung reicht."], answer:1, points:16,
+  explain:"Kurze Belege zeigen Textkenntnis, ohne die eigene Argumentation zu verdrängen."}
+],
+stil:[
+ {type:"choice", title:"Stil verbessern", prompt:"Welche Version ist sprachlich am stärksten?",
+  choices:["Hausaufgaben sind halt irgendwie nervig und bringen manchmal nichts.","Hausaufgaben können belastend sein, wenn sie nur mechanisch wiederholen und keinen erkennbaren Lernzweck erfüllen.","Hausaufgaben sind doof, weil doof."], answer:1, points:18,
+  explain:"Die zweite Version ist präzise, sachlich und differenziert."},
+ {type:"dragCategories", title:"Register erkennen", prompt:"Ordne die Formulierungen zu.",
+  categories:[{id:"sachlich", title:"sachlich / passend"},{id:"umgang", title:"zu umgangssprachlich"},{id:"ueber", title:"zu übertrieben"}],
+  items:[{id:"r1", cat:"sachlich", text:"Dies spricht dafür, digitale Geräte gezielt und kontrolliert einzusetzen."},{id:"r2", cat:"umgang", text:"Das Handy-Gedöns nervt halt manchmal voll."},{id:"r3", cat:"ueber", text:"Smartphones sind der Untergang jeder echten Bildung."}], points:20,
+  explain:"Ein überzeugender Aufsatz braucht einen kontrollierten, sachlichen Stil."},
+ {type:"choice", title:"Bessere Verknüpfung", prompt:"Welche Verknüpfung macht die Argumentation am klarsten?",
+  choices:["Und dann und dann und dann.","Ein weiterer Aspekt ist jedoch, dass nicht alle Lernenden dieselben Bedingungen zu Hause haben.","Außerdem halt so."], answer:1, points:14,
+  explain:"Die Formulierung zeigt einen neuen Aspekt und bleibt sachlich."},
+ {type:"rewrite", title:"Formulierung verbessern", prompt:"Verbessere diesen Satz sachlich und präzise: „Handys machen alle dumm und darum weg damit.“",
+  sample:"Eine mögliche Lösung: Smartphones sollten nicht pauschal erlaubt werden, aber ihr Einsatz muss begründet, begrenzt und pädagogisch sinnvoll sein.", points:20,
+  explain:"Wichtig sind Sachlichkeit, Differenzierung und eine klare Position ohne pauschale Abwertung."}
+],
+pruefung:[
+ {type:"evaluate", title:"Mini-Aufsatz bewerten", prompt:"Lies den kurzen Text und ordne ihn einer Qualitätsstufe zu.",
+  sample:"Heutzutage gibt es Technik. Technik ist gut und schlecht. Ich finde, dass man Handys in der Schule benutzen sollte, weil es praktisch ist. Man kann googeln und Fotos machen. Manche spielen aber auch. Am Ende kann man sagen, dass es Vorteile und Nachteile gibt.",
+  choices:["Stark: klare These, differenzierte Argumente, gute Beispiele, kontrollierter Stil.","Mittel: verständlich, aber allgemein; wenige genaue Belege; Schluss bleibt formelhaft.","Schwach: unverständlich und ohne erkennbare Position."], answer:1, points:22,
+  explain:"Der Text ist verständlich, aber sehr allgemein. Es fehlen Tiefe, genaue Beispiele und prägnante Struktur."},
+ {type:"evaluate", title:"Absatzqualität prüfen", prompt:"Welche Kritik ist am treffendsten?",
+  sample:"Ein weiterer Grund gegen Hausaufgaben ist, dass Schüler Freizeit brauchen. Freizeit ist wichtig. Ohne Freizeit ist es schlecht. Deshalb sind Hausaufgaben nicht gut.",
+  choices:["Der Absatz hat eine klare Richtung, aber die Begründung kreist nur um dieselbe Aussage und braucht ein konkretes Beispiel.","Der Absatz ist perfekt, weil er viele kurze Sätze hat.","Der Absatz ist falsch, weil Freizeit nie wichtig ist."], answer:0, points:20,
+  explain:"Die Position ist erkennbar, aber die Begründung entwickelt sich kaum."},
+ {type:"rank", title:"Schluss-Sätze ordnen", prompt:"Ordne die Fazits nach Qualität: stärkstes zuerst.",
+  items:[{id:"a", text:"Zusammenfassend lässt sich sagen, dass die beste Lösung ein Mittelweg ist: nicht mehr Hausaufgaben, sondern bessere."},{id:"b", text:"Das war mein Aufsatz und ich hoffe, er hat Ihnen gefallen."},{id:"c", text:"Darum sollten Schulen Hausaufgaben prüfen, kürzen und stärker an klare Lernziele binden."}], answer:["c","a","b"], points:22,
+  explain:"Das stärkste Fazit ist handlungsorientiert und konkret."},
+ {type:"evaluate", title:"Cambridge-Blick", prompt:"Welche Rückmeldung wäre für diesen Text am fairsten?",
+  sample:"Die Autorin zeigt, dass Bewegung nicht nur für den Körper, sondern auch für Konzentration wichtig ist. Wenn Schulen Pausen kürzen, gewinnen sie vielleicht Unterrichtszeit, verlieren aber Aufmerksamkeit. Ein Beispiel dafür ist eine Doppelstunde ohne aktive Unterbrechung, in der viele Schüler zwar sitzen, aber kaum noch aufnehmen. Deshalb sollte Schule Pausen nicht als verlorene Zeit betrachten.",
+  choices:["Stark: klare Argumentationslinie, gutes Beispiel, präzise Rückbindung.","Schwach: kein Thema erkennbar.","Zu persönlich und ohne Zusammenhang."], answer:0, points:24,
+  explain:"Der Absatz ist klar aufgebaut und wertet das Beispiel aus."}
+],
+bonus:[
+ {type:"choice", title:"Bonus: treffender Begriff", prompt:"Welche Formulierung passt am besten zur Hamburger Methode?",
+  choices:["Beispiel ohne Erklärung","Behauptung – Begründung – Beispiel – Rückbindung","Meinung – Meinung – Meinung"], answer:1, points:25,
+  explain:"Diese Kette hilft, Absätze überzeugend aufzubauen."},
+ {type:"citation", title:"Bonus-Zitat", prompt:"Zitat aus Material 3, Zeile 21. Schreibe die Klammer.",
+  answer:["(Material 3, Z. 21)","(Mat. 3, Z. 21)"], points:20,
+  explain:"Bei einer einzelnen Zeile schreibt man: Z. 21."},
+ {type:"rewrite", title:"Bonus: stärkere These", prompt:"Formuliere eine bessere These zu: „Schuluniformen: ja oder nein?“",
+  sample:"Eine starke These nimmt eine Position ein und bleibt begründbar, zum Beispiel: Schuluniformen können das Gemeinschaftsgefühl stärken, sollten aber nur eingeführt werden, wenn Schüler an der Entscheidung beteiligt werden.", points:24,
+  explain:"Eine gute These ist nicht bloß ein Thema, sondern eine klare, differenzierte Position."}
+],
+boss:[
+ {type:"boss", title:"Bosskampf: Absatzdiagnose", prompt:"Diagnostiziere den ganzen Absatz. Was ist das größte Problem?",
+  sample:"Hausaufgaben sind schlecht. Viele Schüler haben keine Lust darauf. „Jugendliche brauchen Freizeit“ (Material 1, Z. 8). Außerdem ist Schule anstrengend. Deshalb sollte man weniger machen.",
+  choices:["Der Absatz hat eine Meinung, aber keine saubere Hamburger-Struktur: Begründung und Beleg werden kaum erklärt, die Rückbindung bleibt ungenau.","Der Absatz ist stark, weil er ein Zitat enthält.","Das größte Problem ist nur, dass er zu kurz ist."], answer:0, points:40,
+  explain:"Ein Zitat allein reicht nicht. Der Beleg muss erklärt und an die These zurückgebunden werden."},
+ {type:"boss", title:"Bosskampf: Fehlende These", prompt:"Was müsste dieser Absatz zuerst bekommen?",
+  sample:"Viele Menschen benutzen jeden Tag digitale Geräte. In Schulen gibt es auch Computer. Manche Lehrer erlauben Handys, andere nicht. Es gibt viele Meinungen.",
+  choices:["eine klare These oder Streitfrage","mehr Ausrufezeichen","ein längeres Zitat am Anfang"], answer:0, points:38,
+  explain:"Ohne These weiß der Leser nicht, wohin der Text argumentiert."}
+],
+event:[
+ {type:"methodQuiz", title:"Hamburger-Inspektion", prompt:"Bürgermeister Burger prüft spontan: Was gehört in einen starken Argumentationsabsatz?",
+  choices:["Behauptung, Begründung, Beleg/Beispiel, Erklärung, Rückbindung","Nur Meinung und Schluss","Ein Zitat ohne Kommentar"], answer:0, points:18,
+  explain:"Das ist die Grundschichtung eines starken Hamburger-Absatzes."}
+]
+};
+
+function mascotSvg(){
+ return `<svg class="mascotSvg" viewBox="0 0 120 120" aria-label="Bürgermeister Burger">
+  <ellipse cx="60" cy="35" rx="46" ry="24" fill="#e7ad4c" stroke="#8d5a24" stroke-width="3"/>
+  <circle cx="38" cy="28" r="3" fill="#fff3c0"/><circle cx="55" cy="20" r="3" fill="#fff3c0"/><circle cx="78" cy="31" r="3" fill="#fff3c0"/>
+  <rect x="18" y="44" width="84" height="14" rx="7" fill="#5aa35f"/>
+  <rect x="22" y="55" width="76" height="18" rx="8" fill="#6c351f"/>
+  <path d="M20 75 Q35 65 50 75 T80 75 T102 75" fill="none" stroke="#d92929" stroke-width="8" stroke-linecap="round"/>
+  <ellipse cx="60" cy="89" rx="43" ry="18" fill="#d98b36" stroke="#8d5a24" stroke-width="3"/>
+  <circle cx="45" cy="48" r="5" fill="#221b13"/><circle cx="75" cy="48" r="5" fill="#221b13"/>
+  <path class="mouthHappy" d="M48 62 Q60 72 72 62" fill="none" stroke="#221b13" stroke-width="4" stroke-linecap="round"/>
+  <path class="mouthSad" d="M48 68 Q60 58 72 68" fill="none" stroke="#221b13" stroke-width="4" stroke-linecap="round"/>
+  <path class="mouthAngry" d="M48 66 L72 66" fill="none" stroke="#221b13" stroke-width="4" stroke-linecap="round"/>
+  <path d="M42 43 L32 37 M78 43 L88 37" stroke="#221b13" stroke-width="3" stroke-linecap="round"/>
+  <rect x="30" y="2" width="60" height="14" rx="3" fill="#333"/>
+  <rect x="40" y="0" width="40" height="26" rx="4" fill="#333"/>
+ </svg>`;
+}
+function setMascot(mode,msg){
+ const box=document.getElementById("mascotBox");
+ box.classList.remove("mascotSad","mascotAngry");
+ if(mode==="sad") box.classList.add("mascotSad");
+ if(mode==="angry") box.classList.add("mascotAngry");
+ document.getElementById("mascotSpeech").innerHTML=msg;
+}
+
+function init(){
+ document.getElementById("mascotSvgHost").innerHTML=mascotSvg();
+ document.getElementById("tutorialMascot").innerHTML=mascotSvg();
+ initBoard();
+ const seen=localStorage.getItem("hamburgerRallyeTutorialSeen");
+ if(!seen){document.getElementById("tutorialModal").classList.add("open");}
+}
+
+function initBoard(){
+ const b=document.getElementById("board");
+ b.innerHTML="";
+ boardLayout.forEach(n=>{
+   const c=document.createElement("div");
+   if(n<0){c.className="cell empty"; b.appendChild(c); return;}
+   const type = fieldTypes[n] || "start";
+   c.className="cell path "+type;
+   c.id="cell"+n;
+   c.innerHTML = n===0 ? "Start" : `<span>${n}<br><span class="tag">${labels[type]}</span></span>`;
+   b.appendChild(c);
+ });
+ renderPawn();
+ renderBadges();
+ renderBurgerMeter();
+ updateStats();
+}
+function renderPawn(){
+ document.querySelectorAll(".pawn").forEach(p=>p.remove());
+ const cell=document.getElementById("cell"+state.position);
+ if(cell){
+   const p=document.createElement("div");
+   p.className="pawn" + (state.position===state.cpuPosition ? " both" : "");
+   p.title="Du";
+   cell.appendChild(p);
+ }
+ const cpuCell=document.getElementById("cell"+state.cpuPosition);
+ if(cpuCell){
+   const cp=document.createElement("div");
+   cp.className="pawn cpu";
+   cp.title="Computer";
+   cpuCell.appendChild(cp);
+ }
+}
+function updateStats(){
+ document.getElementById("points").textContent=state.points;
+ document.getElementById("pos").textContent=state.position===0?"Start":state.position;
+ document.getElementById("laps").textContent=state.laps;
+ document.getElementById("cpuPos").textContent=state.cpuPosition===0?"Start":state.cpuPosition;
+ document.getElementById("streak").textContent=state.streak>2 ? state.streak+" 🔥" : state.streak;
+ document.getElementById("lapProgress").style.width=(state.position/40*100)+"%";
+ document.getElementById("rollBtn").disabled=state.locked;
+ renderBurgerMeter();
+}
+function renderBurgerMeter(){
+ const layers=["Brötchen","Patty","Soße","Salat","Deckel"];
+ const progress=Math.floor((state.position/41)*layers.length);
+ document.getElementById("burgerMeter").innerHTML=layers.map((l,i)=>`<div class="layer-dot ${i<=progress?'done':''}">${l}</div>`).join("");
+}
+function checkBadges(){
+ badges.forEach(b=>{ if(!state.badges.includes(b.id) && b.test(state)) {state.badges.push(b.id); confetti(20); burst("🏅 "+b.name);}});
+ renderBadges();
+}
+function renderBadges(){
+ const host=document.getElementById("badges");
+ host.innerHTML=badges.map(b=>`<span class="badge ${state.badges.includes(b.id)?'earned':''}">${b.name}</span>`).join("");
+}
+function animateDie(val){
+ const el=document.getElementById("die");
+ el.textContent="⚂";
+ el.classList.add("dieSpin");
+ let ticks=0;
+ const faces=["⚀","⚁","⚂","⚃","⚄","⚅"];
+ const timer=setInterval(()=>{el.textContent=faces[Math.floor(Math.random()*6)]; ticks++; if(ticks>8){clearInterval(timer); el.textContent=val; el.classList.remove("dieSpin");}},55);
+}
+function rollDie(){
+ if(state.locked) return;
+ if(state.skipNext){
+   state.skipNext=false;
+   document.getElementById("die").textContent="Pause";
+   addEventMessage("Ketchup-Falle: Du klebst fest und musst eine Runde aussetzen. Danach bist du wieder dran.");
+   computerTurn();
+   updateStats();
+   return;
+ }
+ const die=Math.floor(Math.random()*6)+1;
+ animateDie(die);
+ setTimeout(()=>{
+  movePlayer(die);
+  renderPawn(); updateStats();
+  const type=fieldTypes[state.position] || "aufhaenger";
+  if(type==="boss"){showRandomTask("boss");return;}
+  if(type==="event"){runRandomEvent();return;}
+  maybeBoardEvent("player");
+  showRandomTask(type);
+ },520);
+}
+function movePlayer(steps){
+ let oldLap=state.laps;
+ let newPos=state.position+steps;
+ if(newPos>=41){newPos=newPos%41; state.laps++; confetti(35); burst("Bosskampf!");}
+ state.position=newPos;
+ if(state.laps>oldLap){setTimeout(()=>showRandomTask("boss"),650);}
+}
+function moveCpu(steps){
+ let newPos=state.cpuPosition+steps;
+ if(newPos>=41){newPos=newPos%41; state.cpuLaps++;}
+ state.cpuPosition=newPos;
+}
+function addEventMessage(msg, cls="event-card"){
+ const host=document.getElementById("taskHost");
+ host.innerHTML = `<div class="${cls}">${msg}</div>` + host.innerHTML;
+ state.lastEvent=msg;
+}
+function runRandomEvent(){
+ const events=[
+  {name:"Zurück zum Anfang!", weight:3, fn:()=>{state.position=0; setMascot("angry","Keine These? Das ist burgerpolizeilich kritisch. Zurück zum Anfang!"); return "Zurück zum Anfang! Dein Aufsatz hat keine These — die Lehrkraft schickt dich an den Start zurück!";}},
+  {name:"Ketchup-Falle", weight:12, fn:()=>{state.skipNext=true; setMascot("sad","Achtung, klebrige Ketchup-Falle. Struktur hilft, aber heute klebst du fest."); return "Ketchup-Falle: Du trittst in eine klebrige Soße aus unklaren Beispielen. Du verlierst den nächsten Zug.";}},
+  {name:"Gewürzgurke", weight:18, fn:()=>{state.points+=25; burst("+25 🥒"); setMascot("happy","Knackige Gewürzgurke! Ein präzises Beispiel gibt extra Biss."); return "Gewürzgurke: Knackiges Beispiel gefunden. +25 Punkte.";}},
+  {name:"Doppelter Burger", weight:12, fn:()=>{state.doubleBurger=true; setMascot("happy","Doppelter Burger! Die nächste gelöste Aufgabe zählt doppelt."); return "Doppelter Burger: Beantworte die nächste Aufgabe richtig und du bekommst doppelte Punkte.";}},
+  {name:"Hamburger-Inspektion", weight:18, fn:()=>{showRandomTask("event"); return "INSPECTION";}},
+  {name:"Sesamkörner-Regen", weight:25, fn:()=>{let pts=5+Math.floor(Math.random()*16); state.points+=pts; burst("+"+pts+" ✨"); setMascot("happy","Sesamkörner-Regen! Kleine Präzisionen sammeln sich."); return "Sesamkörner-Regen: Überall kleine Bonuspunkte. +"+pts+" Punkte.";}}
+ ];
+ let bag=[];
+ events.forEach(e=>{for(let i=0;i<e.weight;i++) bag.push(e)});
+ const ev=bag[Math.floor(Math.random()*bag.length)];
+ const msg=ev.fn();
+ renderPawn(); updateStats();
+ if(msg!=="INSPECTION"){
+   document.getElementById("taskHost").innerHTML=`<div class="event-card"><b>${ev.name}</b><br>${msg}</div><p><button onclick="showRandomTask('hamburger')">Weiter mit Hamburger-Aufgabe</button></p>`;
+   computerTurn();
+ }
+}
+function maybeBoardEvent(who){
+ const roll=Math.random();
+ if(who==="player"){
+   if(roll<0.06){runRandomEvent();}
+   else if(roll<0.12){movePlayer(2); state.points+=8; addEventMessage("Mini-Glücksfeld: Dein Aufhänger sitzt. Du gehst 2 Felder vor und erhältst 8 Punkte.");}
+   else if(roll<0.18){
+     if(state.shields>0){state.shields--; addEventMessage("Falle abgewehrt: Dein Struktur-Schild verhindert das Zurückgehen.");}
+     else {state.position=Math.max(0,state.position-2); addEventMessage("Rutschfeld: Ein Beispiel wurde nicht erklärt. Du gehst 2 Felder zurück.");}
+   }else if(roll<0.22){state.shields++; addEventMessage("Schutzkarte: Du erhältst einen Struktur-Schild. Er verhindert einmal ein Zurückgehen.");}
+ }
+ renderPawn(); updateStats();
+}
+function computerTurn(){
+ const die=Math.floor(Math.random()*6)+1;
+ moveCpu(die);
+ const taunts=[
+   "Der Computer murmelt: „Ich schreibe immer zuerst die These. Meistens jedenfalls.“",
+   "Der Computer sagt: „Ich habe ein Zitat gefunden. Jetzt muss ich nur noch wissen, was es bedeutet.“",
+   "Der Computer ruft: „Mein Aufhänger ist bestimmt dramatisch genug!“",
+   "Der Computer flüstert: „Behauptung, Begründung, Beispiel ... irgendwas fehlt doch.“",
+   "Der Computer grinst: „Ich kann auch Cambridge. Vielleicht.“",
+   "Der Computer behauptet: „Ein Burger ohne Unterbrötchen ist auch ein Burger.“ Bürgermeister Burger zweifelt."
+ ];
+ const mistake=Math.random()<0.42;
+ let msg=`<b>Computerzug:</b> Der Computer würfelt ${die} und landet auf Feld ${state.cpuPosition}. ${taunts[Math.floor(Math.random()*taunts.length)]}`;
+ if(mistake){
+   state.stealAvailable=true;
+   state.cpuPoints=Math.max(0,state.cpuPoints-6);
+   msg += ` <br><b>Fehler!</b> Der Computer hat gerade ein Zitat ohne Erklärung hingeworfen. Du darfst Punkte stehlen.`;
+ }else{
+   state.cpuPoints+=10;
+   msg += ` <br>Diesmal war seine Antwort brauchbar. Er erhält 10 Punkte.`;
+ }
+ renderPawn(); updateStats();
+ return msg;
+}
+function stealChallenge(){
+ if(!state.stealAvailable){return;}
+ state.locked=true; updateStats();
+ const t={type:"choice", fieldType:"bonus", points:18, title:"Stehlen: Fehler des Computers ausnutzen",
+   prompt:"Der Computer schrieb: „Viele Jugendliche sind nach der Schule erschöpft“ (Material 2, Z. 6–7). Welche Fortsetzung macht daraus einen echten Beleg?",
+   choices:["Das ist ein Zitat und deshalb bin ich fertig.","Damit wird deutlich, dass zusätzliche Aufgaben nicht automatisch zu besserem Lernen führen, wenn Energie und Konzentration bereits fehlen.","Das steht da halt und das ist meine Meinung."],
+   answer:1, explain:"Ein Beleg wird erst stark, wenn er erklärt und mit dem Argument verbunden wird."};
+ state.currentTask=t; state.stealAvailable=false; renderTask(t);
+ document.getElementById("taskHost").innerHTML = `<div class="steal-card"><b>Stehlchance!</b> Wenn du diese Aufgabe löst, bekommst du Zusatzpunkte und rückst ein Feld vor.</div>` + document.getElementById("taskHost").innerHTML;
+}
+
+function showRandomTask(type){
+ state.locked=true; updateStats();
+ const list=tasks[type] || tasks.aufhaenger;
+ const task=JSON.parse(JSON.stringify(list[Math.floor(Math.random()*list.length)]));
+ task.fieldType=type;
+ state.currentTask=task;
+ document.getElementById("intro").innerHTML=`<b>${labels[type] || "Station"}</b>: Lies genau. Manche Aufgaben haben mehrere fast richtige Antworten.`;
+ renderTask(task);
+}
+function startBurgerBuildMode(){
+ const list=tasks.hamburger.filter(t=>t.type==="burgerBuild");
+ const task=JSON.parse(JSON.stringify(list[0]));
+ task.fieldType="hamburger"; state.currentTask=task; state.locked=true; renderTask(task); updateStats();
+ setMascot("happy","Burger-Bauen ist die Königsdisziplin. Baue den Absatz so, dass keine Schicht fehlt.");
+}
+function renderTask(t){
+ const host=document.getElementById("taskHost");
+ if(t.type==="choice" || t.type==="evaluate" || t.type==="boss" || t.type==="missingLayer" || t.type==="methodQuiz"){
+   host.innerHTML=`
+    <div class="taskbox">
+      <span class="pill">${labels[t.fieldType]}</span><span class="pill">${t.points} Punkte möglich</span>
+      <h3>${t.title}</h3><p>${t.prompt}</p>
+      ${t.sample?`<div class="text-sample">${escapeHtml(t.sample)}</div>`:""}
+      <div>${t.choices.map((c,i)=>`<div class="choice" onclick="selectChoice(${i})" data-i="${i}">${escapeHtml(c)}</div>`).join("")}</div>
+      <button onclick="checkChoice()">Antwort prüfen</button>
+      <div id="feedback"></div>
+    </div>`;
+ }
+ if(t.type==="rank" || t.type==="sort" || t.type==="swap"){
+   const shuffled=[...t.items].sort(()=>Math.random()-0.5);
+   host.innerHTML=`
+    <div class="taskbox">
+      <span class="pill">${labels[t.fieldType]}</span><span class="pill">${t.points} Punkte möglich</span>
+      <h3>${t.title}</h3><p>${t.prompt}</p>
+      <div class="dropzone" id="rankZone" ondragover="allowDrop(event)" ondrop="dropToZone(event)">
+       ${shuffled.map(item=>dragItem(item.id,item.text)).join("")}
+      </div>
+      <button onclick="checkRank()">Reihenfolge prüfen</button>
+      <div id="feedback"></div>
+    </div>`;
+   enableReorder("rankZone");
+ }
+ if(t.type==="burgerBuild"){
+   const shuffled=[...t.items].sort(()=>Math.random()-0.5);
+   host.innerHTML=`
+    <div class="taskbox">
+      <span class="pill">Burger-Bauen</span><span class="pill">${t.points} Punkte möglich</span>
+      <h3>${t.title}</h3><p>${t.prompt}</p>
+      <div class="burgerBuild" id="visualBurger"><div class="burgerLayer topbun">Noch kein Burger gebaut</div></div>
+      <div class="dropzone" id="rankZone" ondragover="allowDrop(event)" ondrop="dropToZone(event)">
+       ${shuffled.map(item=>dragItem(item.id, item.layer+": "+item.text)).join("")}
+      </div>
+      <button onclick="checkBurgerBuild()">Burger prüfen</button>
+      <div id="feedback"></div>
+    </div>`;
+   enableReorder("rankZone");
+   document.getElementById("rankZone").addEventListener("drop",()=>setTimeout(updateVisualBurger,50));
+ }
+ if(t.type==="dragCategories"){
+   const shuffled=[...t.items].sort(()=>Math.random()-0.5);
+   host.innerHTML=`
+    <div class="taskbox">
+      <span class="pill">${labels[t.fieldType]}</span><span class="pill">${t.points} Punkte möglich</span>
+      <h3>${t.title}</h3><p>${t.prompt}</p>
+      <div class="drop-row">${t.categories.map(cat=>`<div class="dropzone" data-cat="${cat.id}" ondragover="allowDrop(event)" ondrop="dropToZone(event)"><h4>${cat.title}</h4></div>`).join("")}</div>
+      <h4>Textteile</h4>
+      <div class="dropzone" ondragover="allowDrop(event)" ondrop="dropToZone(event)">${shuffled.map(item=>dragItem(item.id,item.text)).join("")}</div>
+      <button onclick="checkCategories()">Zuordnung prüfen</button>
+      <div id="feedback"></div>
+    </div>`;
+ }
+ if(t.type==="citation"){
+   host.innerHTML=`
+    <div class="taskbox">
+      <span class="pill">${labels[t.fieldType]}</span><span class="pill">${t.points} Punkte möglich</span>
+      <h3>${t.title}</h3><p>${t.prompt}</p>
+      <input id="citationInput" type="text" placeholder="z. B. (Material 1, Z. 12–14)">
+      <button onclick="checkCitation()">Antwort prüfen</button>
+      <div id="feedback"></div>
+    </div>`;
+ }
+ if(t.type==="rewrite"){
+   host.innerHTML=`
+    <div class="taskbox">
+      <span class="pill">${labels[t.fieldType]}</span><span class="pill">${t.points} Punkte möglich</span>
+      <h3>${t.title}</h3><p>${t.prompt}</p>
+      <textarea id="rewriteInput" placeholder="Schreibe hier deine verbesserte Formulierung."></textarea>
+      <button onclick="checkRewrite()">Abgeben</button>
+      <details><summary>Hilfekarte anzeigen</summary><div class="text-sample">${escapeHtml(t.sample)}</div></details>
+      <div id="feedback"></div>
+    </div>`;
+ }
+}
+function updateVisualBurger(){
+ const t=state.currentTask;
+ const order=[...document.querySelectorAll("#rankZone .dragitem")].map(x=>x.id);
+ const classes=["topbun","claim","reason","evidence","explain","bottombun"];
+ const names=order.map((id,i)=> {
+   const item=t.items.find(x=>x.id===id);
+   return `<div class="burgerLayer ${classes[Math.min(i,classes.length-1)]}">${escapeHtml(item?item.layer:"Schicht")}</div>`;
+ }).join("");
+ document.getElementById("visualBurger").innerHTML=names || `<div class="burgerLayer topbun">Noch kein Burger gebaut</div>`;
+}
+function dragItem(id,text){return `<div class="dragitem" draggable="true" id="${id}" ondragstart="drag(event)">${escapeHtml(text)}</div>`}
+function drag(ev){ev.dataTransfer.setData("text", ev.target.id)}
+function allowDrop(ev){ev.preventDefault()}
+function dropToZone(ev){
+ ev.preventDefault();
+ const id=ev.dataTransfer.getData("text");
+ const el=document.getElementById(id);
+ const zone=ev.target.closest(".dropzone");
+ if(zone && el) zone.appendChild(el);
+}
+function enableReorder(zoneId){
+ const zone=document.getElementById(zoneId);
+ document.querySelectorAll(".dragitem").forEach(item=>{
+   item.addEventListener("dragstart",()=>item.classList.add("dragging"));
+   item.addEventListener("dragend",()=>item.classList.remove("dragging"));
+ });
+ zone.addEventListener("drop", e=>{
+   e.preventDefault();
+   const id=e.dataTransfer.getData("text");
+   const dragged=document.getElementById(id);
+   const after=getDragAfterElement(zone,e.clientY);
+   if(after==null) zone.appendChild(dragged); else zone.insertBefore(dragged,after);
+ });
+}
+function getDragAfterElement(container,y){
+ const els=[...container.querySelectorAll(".dragitem:not(.dragging)")];
+ return els.reduce((closest,child)=>{
+   const box=child.getBoundingClientRect();
+   const offset=y-box.top-box.height/2;
+   if(offset<0 && offset>closest.offset) return {offset,element:child};
+   return closest;
+ },{offset:Number.NEGATIVE_INFINITY}).element;
+}
+let selectedChoice=null;
+function selectChoice(i){
+ selectedChoice=i;
+ document.querySelectorAll(".choice").forEach(c=>c.classList.remove("selected"));
+ document.querySelector(`.choice[data-i="${i}"]`).classList.add("selected");
+}
+function checkChoice(){
+ const t=state.currentTask;
+ if(selectedChoice===null){feedback("Bitte wähle zuerst eine Antwort.","neutral");return;}
+ finish(selectedChoice===t.answer,t);
+ selectedChoice=null;
+}
+function checkRank(){
+ const t=state.currentTask;
+ const order=[...document.querySelectorAll("#rankZone .dragitem")].map(x=>x.id);
+ const ok=JSON.stringify(order)===JSON.stringify(t.answer);
+ finish(ok,t, ok?null:`Richtige Reihenfolge: ${t.answer.map(id=>t.items.find(i=>i.id===id).text).join(" → ")}`);
+}
+function checkBurgerBuild(){
+ updateVisualBurger();
+ const t=state.currentTask;
+ const order=[...document.querySelectorAll("#rankZone .dragitem")].map(x=>x.id);
+ const ok=JSON.stringify(order)===JSON.stringify(t.answer);
+ if(ok){state.completed.push("burgerbauen"); confetti(30);}
+ finish(ok,t, ok?null:`Burger-Rezept: ${t.answer.map(id=>t.items.find(i=>i.id===id).layer).join(" → ")}`);
+}
+function checkCategories(){
+ const t=state.currentTask;
+ let ok=true;
+ t.items.forEach(item=>{
+   const el=document.getElementById(item.id);
+   const z=el.closest(".dropzone");
+   if(!z || z.dataset.cat!==item.cat) ok=false;
+ });
+ finish(ok,t);
+}
+function norm(s){return s.trim().replaceAll("–","-").replace(/\s+/g," ").toLowerCase()}
+function checkCitation(){
+ const t=state.currentTask;
+ const v=norm(document.getElementById("citationInput").value);
+ const ok=t.answer.map(norm).includes(v);
+ finish(ok,t);
+}
+function checkRewrite(){
+ const t=state.currentTask;
+ const v=document.getElementById("rewriteInput").value.trim();
+ let score=0;
+ if(v.length>=70) score++;
+ if(/[.;:]/.test(v)) score++;
+ if(/weil|da|denn|jedoch|allerdings|wenn|deshalb|daher|sollte|könnte/i.test(v)) score++;
+ if(!/doof|dumm|halt|voll|immer|alle|nie/i.test(v)) score++;
+ const ok=score>=3;
+ finish(ok,t, ok?null:"Tipp: Schreibe sachlich, vermeide Pauschalurteile, baue eine Begründung oder Einschränkung ein.");
+}
+function finish(ok,t,extra){
+ let pts=ok?t.points:Math.max(3,Math.floor(t.points*.25));
+ if(state.doubleBurger && ok){pts*=2; state.doubleBurger=false; burst("Doppelter Burger!"); confetti(20);}
+ if(t.title && t.title.startsWith("Stehlen") && ok){pts += 10; movePlayer(1); state.completed.push("steal");}
+ state.points+=pts;
+ state.streak=ok?state.streak+1:0;
+ state.completed.push(t.fieldType);
+ if(t.fieldType==="boss" && ok){state.completed.push("boss");}
+ checkBadges();
+ updateStats();
+ if(ok){setMascot("happy","Saftig! Diese Schicht hält. Genau so wird ein Argument tragfähig."); burst("+"+pts+" 🎉"); if(state.streak && state.streak%5===0) confetti(25);}
+ else{setMascot("sad","Autsch. Der Burger rutscht. Lies die Erklärung und achte auf die fehlende Schicht.");}
+ const cpuMsg=computerTurn();
+ const stealButton = state.stealAvailable ? `<p><button class="gold" onclick="stealChallenge()">Fehler stehlen</button></p>` : "";
+ feedback(`${ok?"Richtig / überzeugend!":"Noch nicht ganz."} Du erhältst ${pts} Punkte. ${t.explain}${extra? " " + extra:""}<div class="computer-card">${cpuMsg}</div>${stealButton}`, ok?"good":"bad");
+ state.locked=false;
+ updateStats();
+ if(state.laps>=2 && state.points>=300){
+   document.getElementById("feedback").innerHTML += `<div class="feedback good"><b>Ziel erreicht:</b> Zwei Runden und mindestens 300 Punkte. Du hast die Hamburger-Rallye Deluxe bestanden.</div>`;
+   confetti(80);
+ }
+}
+function feedback(msg,cls){document.getElementById("feedback").innerHTML=`<div class="feedback ${cls}">${msg}</div>`}
+function burst(text){
+ const el=document.createElement("div");
+ el.className="burst";
+ el.textContent=text;
+ el.style.left=(20+Math.random()*60)+"vw";
+ el.style.top=(55+Math.random()*20)+"vh";
+ document.body.appendChild(el);
+ setTimeout(()=>el.remove(),1100);
+}
+function confetti(n=30){
+ for(let i=0;i<n;i++){
+  const c=document.createElement("div");
+  c.className="confetti";
+  c.style.left=Math.random()*100+"vw";
+  c.style.background=["#d6a33a","#b93434","#2f6f73","#3569a8","#d96a8c"][Math.floor(Math.random()*5)];
+  c.style.animationDelay=(Math.random()*.45)+"s";
+  document.body.appendChild(c);
+  setTimeout(()=>c.remove(),3000);
+ }
+}
+function toggleBoard(){
+ const main=document.querySelector("main");
+ main.classList.toggle("board-hidden");
+}
+function toggleCompactBoard(){document.body.classList.toggle("compact-board")}
+function openHelp(){document.getElementById("helpModal").classList.add("open")}
+function closeHelp(){document.getElementById("helpModal").classList.remove("open")}
+function closeTutorial(){localStorage.setItem("hamburgerRallyeTutorialSeen","1");document.getElementById("tutorialModal").classList.remove("open")}
+function saveGame(){localStorage.setItem("hamburgerRallyeSaveDeluxe",JSON.stringify(state)); alert("Gespeichert.");}
+function loadGame(){
+ const s=localStorage.getItem("hamburgerRallyeSaveDeluxe") || localStorage.getItem("hamburgerRallyeSave");
+ if(!s){alert("Kein Spielstand gefunden.");return;}
+ state=Object.assign({cpuPosition:0,cpuLaps:0,cpuPoints:0,cpuStreak:0,stealAvailable:false,skipNext:false,shields:0,doubleBurger:false,lastEvent:""}, JSON.parse(s));
+ state.locked=false; initBoard(); document.getElementById("taskHost").innerHTML=""; alert("Geladen.");
+}
+function exportSave(){
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+ const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="hamburger-rallye-deluxe-spielstand.json"; a.click();
+}
+function importSave(e){
+ const f=e.target.files[0]; if(!f)return;
+ const r=new FileReader();
+ r.onload=()=>{try{state=Object.assign({cpuPosition:0,cpuLaps:0,cpuPoints:0,cpuStreak:0,stealAvailable:false,skipNext:false,shields:0,doubleBurger:false,lastEvent:""}, JSON.parse(r.result)); state.locked=false; initBoard(); alert("Importiert.");}catch(err){alert("Die Datei konnte nicht gelesen werden.");}};
+ r.readAsText(f);
+}
+function resetGame(){
+ if(confirm("Wirklich neu starten?")){
+  localStorage.removeItem("hamburgerRallyeSaveDeluxe");
+  state={points:0,position:0,laps:0,locked:false,streak:0,cpuPosition:0,cpuLaps:0,cpuPoints:0,cpuStreak:0,stealAvailable:false,skipNext:false,shields:0,doubleBurger:false,badges:[],completed:[],currentTask:null,lastEvent:"",tutorialSeen:false};
+  initBoard(); document.getElementById("taskHost").innerHTML="";
+ }
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
+init();
+</script>
+</body>
+</html>
